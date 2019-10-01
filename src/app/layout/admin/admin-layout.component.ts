@@ -30,7 +30,7 @@ import { NgbTabTitle } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class AdminLayoutComponent implements OnInit {
-    title = 'SEIL DANJO';
+    title = 'IDM';
     version = AppConfig.VERSION;
     page_title: string = '메인';
     navitems = this.globals.configs['menu'];
