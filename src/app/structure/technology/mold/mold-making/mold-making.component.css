@@ -1,0 +1,30 @@
+.modal-dialog.modal-xl {
+    width: 70%;
+}
+.modal-content.modal-xl {
+    min-height: 60%;
+}
+
+.table input {margin-left: 10px}
+
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+}

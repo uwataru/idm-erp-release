@@ -1,0 +1,209 @@
+<div class="panel panel-default" id="print-target-sales-slips">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-9 m-b-xs">
+            <form [formGroup]="searchForm">
+                <label for="rcv_date" class="control-label text-sm">판매일자</label>
+                <input type="text"
+                    formControlName="rcv_date"
+                    id="rcv_date"
+                    (keyup.enter)="GetAll()"
+                    bsDatepicker
+                    (bsValueChange)="onValueChange($event)"
+                    placement="bottom left"
+                    class="input-sm form-control w-xs inline v-middle" />
+                <input formControlName="sch_partner_name"
+                    [typeahead]="listPartners"
+                    typeaheadOptionField="Alias"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectListPartner($event)"
+                    placeholder="거래처명"
+                    class="input-sm form-control w-sm inline v-middle"
+                    id="sch_partner_name" />
+                <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                <label for="slip_no" class="control-label text-sm m-l">전표번호</label>
+                <input type="text" formControlName="slip_no" id="slip_no" class="input-sm form-control w-sm inline v-middle">
+            </form>
+            </div>
+            <div class="col-sm-3 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            class="bootstrap"
+            [style.height.px] = gridHeight
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [virtualization]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번" [width]="140" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명" [width]="160" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="sales_qty" name="수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_price" name="단가" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="sales_price" name="금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_date" name="납품일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="sales_date" name="판매일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
+        </ngx-datatable>
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="760px">합계</td>
+                <td width="111px" class="text-right">
+                    <span>{{ totalSalesPrice | numberFormat }}</span>
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+            </table>
+            <!-- <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="150px" class="text-center">합계</td>
+                <td width="150px" class="text-right"></td>
+                <td></td>
+                <td width="150px" class="text-right pd9">
+                    <span *ngIf="totalRcvWeight >= 1000">{{ totalRcvWeight | numberFormat }}</span>
+                    <span *ngIf="totalRcvWeight < 1000">{{ totalRcvWeight }}</span>
+                </td>
+                <td width="150px" class="text-right"></td>
+                <td width="149px" class="text-right pd9">
+                    <span *ngIf="totalOrderAmount >= 1000">{{ totalOrderAmount | numberFormat }}</span>
+                    <span *ngIf="totalOrderAmount < 1000">{{ totalOrderAmount }}</span>
+                </td>
+            </tr>
+            </tbody>
+            </table> -->
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <form [formGroup]="inputForm">
+                <input formControlName="dr_acct_name"
+                    id="dr_acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event,'dr')"
+                    placeholder="차변계정"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <input formControlName="cr_acct_name"
+                    id="cr_acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event, 'cr')"
+                    placeholder="대변계정"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <button (click)="Save()" [disabled]="!inputForm.valid || selected.length < 1" class="btn btn-sm btn-primary btn-addon"><i class="glyphicon glyphicon-save"></i>저장</button>
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-sales-slips', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+                </form>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #PrintResultsModal="bs-modal" id="printSlip" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" id="print-target-sa-slips">
+		<div class="modal-content modal-content-print">
+			<div class="modal-header">
+				<button type="button" class="close hidden-print" aria-label="Close" (click)="PrintResultsModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">판매처리결과</h4>
+			</div>
+			<div class="modal-body">
+                <button type="button" class="btn btn-sm btn-info btn-addon btn-print hidden-print"
+                        (click)="electronService.readyPrint('print-target-sa-slips')"><i
+                        class="glyphicon glyphicon-print"></i>인쇄</button>
+
+                <div class="m-b-sm">전표번호: {{ slipNo }}</div>
+
+                <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+        		<thead>
+        		<tr>
+                    <th>차변계정</th>
+        			<th>금액</th>
+        			<th>적요</th>
+        			<th>금액</th>
+        			<th>대변계정</th>
+        		</tr>
+        		</thead>
+        		<tbody>
+                <tr *ngFor="let row of resultRows">
+                    <td class="text-center">{{ row.dr_acct_name }}</td>
+                    <td class="text-right">
+                        <span>{{ row.dr_amount | numberFormat }}</span>
+                    </td>
+        			<td class="text-center">{{ row.brief_summary }}</td>
+                    <td class="text-right">
+                        <span>{{ row.cr_amount | numberFormat }}</span>
+                    </td>
+                    <td class="text-center">{{ row.cr_acct_name }}</td>
+        		</tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

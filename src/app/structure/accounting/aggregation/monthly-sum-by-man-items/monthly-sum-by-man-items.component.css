@@ -1,0 +1,41 @@
+
+
+/deep/ .row-color {
+    font-weight:bold;
+    color:#000;
+    background-color:#efefef !important;
+  }
+.print-input {
+  display: none !important;
+}
+
+  @media print {
+    .panel-body {
+      display: table !important;
+    }
+  
+    .ngx-datatable {
+      height: unset !important;
+    }
+  
+    .datatable-body {
+      height: unset !important;
+    }
+  
+    .datatable-scroll {
+      display: table !important;
+    }
+  
+    .datatable-row-wrapper {
+      page-break-inside: avoid;
+    }
+   .print-input {
+     display: unset !important;
+   }
+   .print-v .datatable-row-center {
+    width: 1000px !important;
+   }
+   .print-v .ngx-datatable {
+    width: 1000px !important;
+   }
+  }

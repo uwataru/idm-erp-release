@@ -1,0 +1,29 @@
+.panel-body.input-form {
+    border-bottom: 1px solid #eaeff0;
+    font-size: 13px;
+}
+
+.panel-body.input-form .form-group {
+    margin:3px;
+}
+
+.v_slip_no {
+    display: inline-block;
+    pading: 3px 0 3px 10px;
+    text-align: center;
+}
+
+.t-approval {
+    padding-bottom:8px;
+    text-align: center;
+}
+
+.v-approval {
+    padding: 8px 8px 5px 8px;
+    border: 1px solid #eaeff0;
+    text-align: center;
+}
+
+.devidedCell {
+    height:24px;
+}

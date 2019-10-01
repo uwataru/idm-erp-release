@@ -1,0 +1,27 @@
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+        font-size: 11px !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    } 
+ 
+    .table-responsive tr :nth-last-child(0n+1) {
+        width: 50px;
+    }
+
+}

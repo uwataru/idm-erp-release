@@ -1,0 +1,135 @@
+<div class="panel panel-default" id="print-target-gl-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                    <label for="sch_year" class="control-label text-sm">조회년월</label>
+                    <input type="text" formControlName="sch_year" id="sch_year" class="input-sm form-control w-xs inline v-middle">
+                    <input type="text" formControlName="sch_month" id="sch_month" class="input-sm form-control w-xs inline v-middle m-l-xs">
+                    <button (click)="getAll()" [disabled]="! searchForm.valid" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right hidden-print">
+                <button class="btn btn-sm btn-success btn-addon" (click)="openModal('upload','')">
+                    <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body print-h">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [rowClass]="getRowClass"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'single'"
+            [virtualization]="false"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="debit_carryover" name="이월차변금액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="debit" name="당월차변금액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="account" name="계정과목"></ngx-datatable-column>
+            <ngx-datatable-column prop="credit" name="당월대변금액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="credit_carryover" name="이월대변금액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-gl-comp', '', '')">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+    </footer>    
+        
+</div>
+
+<!-- <div id="print_area" style="display:none;">
+    <table #printArea>
+        <thead>
+            <tr>
+                <td class="p_debit_carryover text-center">이월차변금액</td>
+                <td class="p_debit text-center">당월차변금액</td>
+                <td class="p_account text-center">계정과목</td>
+                <td class="p_credit text-center">당월대변금액</td>
+                <td class="p_credit_carryover text-center">이월대변금액</td>
+            </tr>
+        </thead>
+    </table>
+</div> -->
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">총계정원장 엑셀 업로드</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center padder-v">
+                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="uploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>
+

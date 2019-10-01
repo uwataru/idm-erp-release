@@ -1,0 +1,250 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <span class="h4 block text-center">{{ panelTitle }}</span>
+    </div>
+
+    <div class="panel-body">
+
+
+        <form [formGroup]="closeForm">
+
+        <div class="row">
+			<label for="year" class="col-sm-2 control-label text-right">
+                작업년월
+            </label>
+            <div class="col-sm-10">
+                <input type="text" formControlName="year" id="year" class="input-sm form-control w-xs inline v-middle">
+                <input type="text" formControlName="month" id="month" class="input-sm form-control w-xs inline v-middle m-l-xs">
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="mgmt_items_close" class="col-sm-2 control-label text-right m-t">
+                작업선택
+            </label>
+            <div class="col-sm-6">
+                <div class="panel panel-default m-t">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="checkbox-inline m-l">
+                                        <input type="checkbox" formControlName="mgmt_items_close">관리내역 마감작업
+                                    </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" formControlName="trial_balance">시산표 작성
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="checkbox-inline m-l">
+                                        <input type="checkbox" formControlName="acct_close">계정과목 마감작업
+                                    </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" formControlName="pay_plan_cal">지불계획서 계산
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="col-sm-4">
+                <ngx-datatable
+                    class="bootstrap"
+                    [rows]="rows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [selected]="selected"
+                    [selectionType]="'checkbox'"
+                    [selectAllRowsOnPage]="false">
+                    <ngx-datatable-column prop="approver" name="결재자"></ngx-datatable-column>
+                    <ngx-datatable-column prop="slip_cnt" name="전표수"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>-->
+        </div>
+
+        </form>
+
+    </div>
+
+    <div class="panel-footer">
+        <div class="text-right">
+            <button class="btn btn-sm btn-primary btn-addon" [disabled]="! closeForm.valid || !closeForm.value.trial_balance" (click)="closeSave()"><i class="glyphicon glyphicon-plus"></i>저장</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="input-form" class="modal fade input-form" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+				<input type="hidden" id="reservation_id" name="reservation_id" />
+				<input type="hidden" id="goods_name" name="goods_name" />
+				<input type="hidden" id="fare_per_person" name="fare_per_person" />
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="passenger_name" class="col-lg-2 control-label">
+                            사번 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-sm" />
+                        </div>
+                    </div>
+				</div>
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="passenger_name" class="col-lg-2 control-label">
+                            이름 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control inline w-sm" />
+    					</div>
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            패스워드<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control inline w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="passenger_name" class="col-lg-2 control-label">
+                            부서명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+    					<div class="col-lg-4">
+    						<input type="text" name="passenger_name" id="passenger_name" value="" class="form-control w-sm" />
+    					</div>
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            직급명
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            메일주소
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-md" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            입사일자
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-sm" />
+                        </div>
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            퇴사일자
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            전화번호
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="passenger_phone" class="col-lg-2 control-label">
+                            집주소
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+<div id="delete-form" class="modal fade delete-form" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    선택하신 사용자를 삭제하시겠습니까?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>
+    

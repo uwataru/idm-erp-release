@@ -1,0 +1,370 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input type="text" formControlName="sch_product_code" id="sch_product_code" class="input-sm form-control w-sm inline v-middle" placeholder="제품코드" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button (click)="openModal('upload','')" class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="management_no" name="금형관리번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_line" name="작업LINE"></ngx-datatable-column>
+            <ngx-datatable-column prop="mold_material" name="재질" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="mold_size" name="규격" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_limits" name="기준수명" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="last_work_date" name="최종인하일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="remaining_limits" name="잔여수명" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="mold_stand_no" name="보관" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="repair_partner_name" name="인하업체" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="repair_order_date" name="발주일" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="repair_rcv_req_date" name="요구일" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="id" name="수정&middot;폐기" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <button (click)="openModal('delete','selected')" [disabled]="selected.length == 0" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>폐기
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-xl-center">
+		<div class="modal-content modal-xl">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body row">
+
+                <div class="col-lg-4">
+                    <table class="table table-bordered b-light" style="border-top:1px solid #eaeff0">
+                    <tbody>
+                    <tr>
+                        <th>
+                            <label for="product_code">제품번호</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="product_code" id="product_code" (blur)="loadProductInfo($event)" nextFocus="partner_name" class="form-control input-sm w-sm" />
+                            <input type="hidden" formControlName="product_name" id="product_name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="partner_name">거래처</label>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm" />
+                            <input type="hidden" formControlName="partner_code" id="partner_code" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>작업LINE</th>
+                        <td class="text-center">
+                            {{ productionLine }}
+                            <input type="hidden" formControlName="production_line" id="production_line" class="form-control input-sm w-sm" />
+                        </td>
+                        <td class="text-center">
+                            {{ equipmentName }}
+                            <input type="hidden" formControlName="equipment_name" id="equipment_name" class="form-control input-sm w-sm" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="prod_partner_name">제작처</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input formControlName="prod_partner_name" id="prod_partner_name"
+                                [typeahead]="inputPartners"
+                                typeaheadOptionField="Name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectInputPartner($event)"
+                                placeholder="거래처명"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input type="hidden" formControlName="prod_partner_code" id="prod_partner_code" />
+                            <!-- <input type="text" formControlName="production_company" id="production_company" nextFocus="production_date" class="form-control input-sm w-sm" /> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="production_date">제작일</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="production_date" id="production_date" bsDatepicker placement="bottom left" (bsValueChange)="onProductionDateChange($event)" nextFocus="production_costs" class="form-control input-sm w-sm" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="production_costs">금액</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" decimal [(ngModel)]="production_costs" formControlName="production_costs" id="production_costs" nextFocus="mold_size" class="form-control input-sm w-sm text-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="mold_size">금형규격</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="mold_size" id="mold_size" nextFocus="mold_material" class="form-control input-sm w-sm text-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="mold_material">금형재질</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="mold_material" id="mold_material" nextFocus="production_limits" class="form-control input-sm w-sm" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="production_limits">수명수량</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" decimal [(ngModel)]="production_limits" formControlName="production_limits" id="production_limits" nextFocus="mold_stand_no" class="form-control input-sm w-sm text-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="mold_stand_no">보관위치</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="mold_stand_no" id="mold_stand_no" nextFocus="management_no" class="form-control input-sm w-sm" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label for="management_no">관리번호</label>
+                            <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </th>
+                        <td colspan="2">
+                            <input type="text" formControlName="management_no" id="management_no" class="form-control input-sm w-sm" />
+                        </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+
+                <div class="col-lg-4">
+                    <ngx-datatable
+                        [style.height.px] = 380
+                        class="bootstrap"
+                        [rows]="moldrows"
+                        [columnMode]="'force'"
+                        [headerHeight]="30"
+                        [scrollbarV]="true"
+                        [rowHeight]="30"
+                        (select)='onMoldSelect($event)'
+                        [selectionType]="'single'"
+                        [selectAllRowsOnPage]="false"
+                        [messages]="messages">
+                        <!-- <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                            <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                                <label class="i-checks i-checks-sm m-b-none">
+                                    <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                                </label>
+                            </ng-template>
+                            <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                <label class="i-checks i-checks-sm m-b-none">
+                                    <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                                </label>
+                            </ng-template>
+                        </ngx-datatable-column> -->
+                        <ngx-datatable-column prop="management_no" name="금형관리번호" [width]="180" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+                        <ngx-datatable-column prop="repair_date" name="제작일" [width]="150" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                                <span *ngIf='value != ""'>{{ value }}</span>
+                                <span *ngIf='value == ""'>{{ row.production_date }}</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+
+                <div class="col-lg-4">
+                    <table class="table table-bordered b-light" style="border-top:1px solid #eaeff0">
+                    <tbody>
+                    <tr>
+                        <th width="100px">기종</th>
+                        <td colspan="2"> <span class="m-l-sm">{{ productType }}</span> </td>
+                    </tr>
+                    <tr>
+                        <th>위도번</th>
+                        <td colspan="2"> <span class="m-l-sm">{{ subDrawingNo }}</span> </td>
+                    </tr>
+                    <tr>
+                        <th>도번</th>
+                        <td colspan="2"> <span class="m-l-sm">{{ drawingNo }}</span> </td>
+                    </tr>
+                    <tr>
+                        <th>제품명</th>
+                        <td colspan="2"> <span class="m-l-sm">{{ productName }}</span> </td>
+                    </tr>
+                    <tr>
+                        <th>재질</th>
+                        <td colspan="2"> <span class="m-l-sm">{{ material }}</span> </td>
+                    </tr>
+                    <tr>
+                        <th>규격</th>
+                        <td> <span class="m-l-sm">{{ size }}</span> </td>
+                        <td> <span class="m-l-sm">{{ cutLength }}</span> </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ statusFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ statusConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close" #changeStatusClose>취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ uploadFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" #uploadFileSrc />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

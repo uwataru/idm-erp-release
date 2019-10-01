@@ -1,0 +1,170 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="mgmt_item_no" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_name" name="관리항목"></ngx-datatable-column>
+            <ngx-datatable-column prop="use_item_values" name="관리내역" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    <span class="block m-t-xs">{{ value === 1 ? 'O' : 'X' }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="use_item_balance" name="잔액관리" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    <span class="block m-t-xs">{{ value === 1 ? 'O' : 'X' }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_no" name="수정&middot삭제" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-sm-6 hidden-xs">
+                <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+
+			<div class="modal-body">
+
+                <table>
+                <tr>
+                    <th width="100px">
+    					<label for="input_date">등록일</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="input_date" id="input_date" required class="form-control input-sm w-xs" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="mgmt_item_name">관리항목</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="mgmt_item_name" id="mgmt_item_name" required class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="use_item_values">관리내역</label>
+                    </th>
+                    <td>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" formControlName="use_item_values" id="use_item_values" />사용
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="use_item_balance">잔액관리</label>
+                    </th>
+                    <td>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" formControlName="use_item_balance" id="use_item_balance" />사용
+                        </label>
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ deleteConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

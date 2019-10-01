@@ -1,0 +1,256 @@
+<div class="panel panel-default" id="print-target-unsold-main">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <form [formGroup]="searchForm">
+                    <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+                    <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
+                    <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" />
+                    <input formControlName="sch_partner_name"
+                        [typeahead]="listPartners"
+                        typeaheadOptionField="Alias"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectListPartner($event)"
+                        placeholder="거래처명"
+                        class="input-sm form-control w-sm inline v-middle"
+                        id="sch_partner_name" />
+                    <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [scrollbarH]="false"
+            [scrollbarV]="true"
+            [virtualization]="false"
+            [rowHeight]="30"
+            [messages]="messages">
+            <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="hold_over_un_sold__qty" name="전기이월" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="return_qty" name="반품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="bad_qty" name="납품불량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="sales_qty" name="판매수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="sales_price" name="판매금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="50" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="50" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="un_sold_qty" name="미판매재고" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="un_sold_price" name="미판매금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="is_completed" name="내역" [width]="50" [canAutoResize]="false" [resizeable]="false" cellClass="text-center hidden-print">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.product_code)" class="btn btn-xs btn-primary">내역</button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+        <div class="table-responsive print-table">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="120px" class="text-center">계</td>
+                <td width="120px" class="text-right"></td>
+                <td></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="110px" class="text-right">
+                    <span>{{ totalSalesPrice | numberFormat }}</span>
+
+                </td>
+                <td width="50px"></td>
+                <td width="50px"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="110px" class="text-right">
+                    <span>{{ totalUnSoldPrice | numberFormat }}</span>
+
+                </td>
+                <td width="66px"></td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-unsold-main', '', electronService.PRINT_OPT.LANDSCAPE)"><i class="glyphicon glyphicon-print"></i>인쇄</button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-xl-center">
+		<div class="modal-content modal-xl">
+        <div  id="print-target-unsold-modal" style="padding:20px;">
+			<div class="modal-header">
+				<button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+				<input type="hidden" id="reservation_id" name="reservation_id" />
+				<input type="hidden" id="goods_name" name="goods_name" />
+				<input type="hidden" id="fare_per_person" name="fare_per_person" />
+
+
+                <table class="table table-bordered view" style="text-align: center">
+                    <tr>
+                        <th>제품번호</th>
+                        <td width="180px"><span>{{ detail_product_code }}</span></td>
+                        <th>제품명</th>
+                        <td width="200px"><span>{{ detail_product_name }}</span></td>
+                        <th>도번</th>
+                        <td width="200px"><span>{{ detail_drawing_no }}</span></td>
+                        <th>거래처</th>
+                        <td width="200px"><span>{{ detail_partner_name }}</span></td>
+                        <th>조회기간</th>
+                        <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
+                    </tr>
+				</table>
+
+                <ngx-datatable
+                    style="min-height:120px;max-height:420px;"
+                    class="bootstrap"
+                    [rows]="detailRows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30">
+                    <ngx-datatable-column prop="delivery_date" name="일자" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="return_qty" name="반품수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="bad_qty" name="납품불량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="sales_qty" name="판매수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="product_price" name="판매단가" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="sales_price" name="판매금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="un_sold_qty" name="미판매재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                    <ngx-datatable-column prop="un_sold_price" name="미판매금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+                </ngx-datatable>
+
+                <div class="table-responsive">
+            		<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            		<tbody>
+            		<tr>
+                        <td width="100px" class="text-center">계</td>
+                        <td></td>
+                        <td width="80px" class="text-right"></td>
+                        <td width="80px" class="text-right"></td>
+                        <td width="80px" class="text-right"></td>
+                        <td width="80px" class="text-right"></td>
+                        <td width="90px" class="text-right"></td>
+                        <td width="110px" class="text-right">{{ detailsums_sales_price }}</td>
+                        <td width="60px"></td>
+                        <td width="60px"></td>
+                        <td width="80px" class="text-right"></td>
+                        <td width="110px" class="text-right">{{ detailsums_forwarding_weight }}</td>
+            		</tr>
+            		</tbody>
+            		</table>
+            	</div>
+            </div>
+
+            <div class="modal-footer hidden-print">
+				<div class="text-center">
+                    <button type="button" class="btn btn-info" (click)="electronService.readyPrint('print-target-unsold-modal', '', electronService.PRINT_OPT.LANDSCAPE)">
+                        인쇄
+                    </button>
+                    <button type="button" class="btn btn-success" (click)="excelDownDetail()">엑셀</button>
+                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
+				</div>
+            </div>
+
+        </div>
+        </div>
+	</div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

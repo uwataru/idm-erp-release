@@ -1,0 +1,329 @@
+<div class="panel panel-default" id="print-target-screening-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="text-right hidden-print">
+            <button (click)="openModal('upload')" class="btn btn-sm btn-success btn-addon">
+            <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+            </button>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [virtualization]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="poc_no" name="POC No" [width]="140" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="line_code" name="작업LINE" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호" [width]="140" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번"[width]="180" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명" [width]="200" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="screening" name="선별여부" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span *ngIf="value == 'Y'">O</span>
+                    <span *ngIf="value == 'N'"></span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="input_date" name="생산일자" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_qty" name="생산수량" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="screening_qty" name="선별대기수량" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <div class="panel-footer hidden-print">
+        <div class="row">
+            <div class="col-sm-6">
+                <button (click)="openModal('noScreening')" [disabled]="selected.length == 0" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>무선별
+                </button>
+            </div>
+    		<div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('Screening')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>선별
+                </button>
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-screening-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()" ><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</div>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+            <input type="hidden" formControlName="forging_id" id="forging_id" />
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="input_date" class="col-lg-5 control-label">
+                            작업일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="input_date" id="input_date" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="worker_name" class="col-lg-5 control-label">
+                            작업자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="worker_name" id="worker_name" class="form-control inline input-sm w-xs" />
+                            <!-- <select class="form-control w-sm inline v-middle">
+                                <option value="1">작업자1</option>
+                                <option value="2">작업자2</option>
+                                <option value="3">작업자3</option>
+                                <option value="4">작업자4</option>
+                            </select> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="working_time" class="col-lg-5 control-label">
+                            근무시간 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="working_time" id="working_time" class="form-control inline input-sm w-xs" /> 시간
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="working_stime" class="col-lg-5 control-label">
+                            시작 / 종료
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="working_stime" id="working_stime" class="form-control inline input-sm w-xxs" /> /
+                            <input type="text" formControlName="working_etime" id="working_etime" class="form-control inline input-sm w-xxs" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="poc_no" class="col-lg-5 control-label">
+                            POC No
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="poc_no" id="poc_no" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="product_code" class="col-lg-5 control-label">
+                            제품번호
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="product_code" id="product_code" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="product_name" class="col-lg-5 control-label">
+                            제품명
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="product_name" id="product_name" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-lg-5 control-label">
+                            생산수량
+                        </label>
+                        <div class="col-lg-7">
+                            <span>{{ productionQty | numberFormat }}</span>
+                            <span class="m-l">{{ screeningQty | numberFormat }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="screening_qty" class="col-lg-5 control-label">
+                            선별수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="screening_qty" id="screening_qty" class="form-control input-sm w-sm text-right" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="defective_qty" class="col-lg-5 control-label">
+                            불량수량
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="defective_qty" id="defective_qty" class="form-control input-sm w-sm text-right" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="defective_classification" class="col-lg-5 control-label">
+                            불량내용
+                        </label>
+                        <div class="col-lg-7">
+                            <select formControlName="defective_classification" id="defective_classification" class="input-sm form-control w-sm inline v-middle">
+                                <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="regenerative_qty" class="col-lg-5 control-label">
+                            재생수량
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="regenerative_qty" id="regenerative_qty" class="form-control input-sm w-sm text-right" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="regenerative_details" class="col-lg-5 control-label">
+                            재생내용
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="regenerative_details" id="regenerative_details" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div bsModal #NoScreeningModal="bs-modal" id="no-screening" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="NoScreeningModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">무선별</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    선택하신 제품을 선별하지 않고 완료처리하시겠습니까?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="NoScreening(selectedId)" class="btn btn-danger btn-save">무선별</button>
+                    <button type="button" (click)="NoScreeningModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ uploadFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" #uploadFileSrc />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

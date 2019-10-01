@@ -1,0 +1,140 @@
+<div class="panel panel-default" id="print-main-list">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs">
+                <form [formGroup]="searchForm">
+                    <label for="sch_sdate" class="control-label text-sm">기간설정:</label>
+                    <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
+                    <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" />
+                    <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div id="dnd_head" class="head dnd-row">
+            <div class="cell production_line">라인</div>
+            <div class="cell material">재질</div>
+            <div class="cell size">규격</div>
+            <div class="cell steel_maker">지정메이커</div>
+            <div class="cell work_date">작업일자</div>
+            <div class="cell product_code">제품번호</div>
+            <div class="cell drawing_no">도번</div>
+            <div class="cell product_name">품명</div>
+            <div class="cell order_qty">수량(EA)</div>
+            <div class="cell per_input_weight">투중(Kg)</div>
+            <div class="cell input_weight">전체중량(Kg)</div>
+            <div class="cell inventory_weight">재고중량(Kg)</div>
+            <div class="cell order_weight">발주중량(Kg)</div>
+            <div class="cell insufficient_weight">과부족(Kg)</div>
+        </div>
+        <div class="dnd_body">
+            <div *ngFor="let subrows of rows">
+                <div *ngFor="let row of subrows.subData" class="dnd-row">
+                    <div class="cell production_line text-center">&nbsp; {{ row.production_line }} &nbsp;</div>
+                    <div class="cell material text-center">&nbsp; {{ row.material }} &nbsp;</div>
+                    <div class="cell size text-center">&nbsp; {{ row.size }} &nbsp;</div>
+                    <div class="cell steel_maker text-center">&nbsp; {{ row.steel_maker }} &nbsp;</div>
+                    <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>
+                    <div class="cell product_code text-center">&nbsp; {{ row.product_code }} &nbsp;</div>
+                    <div class="cell drawing_no">&nbsp; {{ row.drawing_no }} &nbsp;</div>
+                    <div class="cell product_name">&nbsp; {{ row.product_name }} &nbsp;</div>
+                    <div class="cell order_qty text-right">&nbsp; {{ row.order_qty > 0 ? (row.order_qty | numberFormat) : '' }} &nbsp;</div>
+                    <div class="cell per_input_weight text-right">&nbsp; {{ row.per_input_weight > 0 ? row.per_input_weight : '' }} &nbsp;</div>
+                    <div class="cell input_weight text-right">&nbsp; {{ row.input_weight > 0 ? (row.input_weight | numberFormat) : '' }} &nbsp;</div>
+                    <div class="cell inventory_weight text-right">&nbsp; {{ row.production_time }} &nbsp;</div>
+                    <div class="cell order_weight text-right">&nbsp;  &nbsp;</div>
+                    <div class="cell insufficient_weight text-center">&nbsp; {{ row.promised_date }} &nbsp;</div>
+                </div>
+                <div *ngIf="subrows.subTotal" class="sum dnd-row">
+                    <div class="cell production_line text-center">&nbsp; 계 &nbsp;</div>
+                    <div class="cell material text-center">&nbsp; &nbsp;</div>
+                    <div class="cell size text-center">&nbsp; &nbsp;</div>
+                    <div class="cell steel_maker text-right">&nbsp; &nbsp;</div>
+                    <div class="cell work_date text-center">&nbsp; &nbsp;</div>
+                    <div class="cell product_code text-center">&nbsp; &nbsp;</div>
+                    <div class="cell drawing_no">&nbsp; &nbsp;</div>
+                    <div class="cell product_name">&nbsp; &nbsp;</div>
+                    <div class="cell order_qty text-right">&nbsp; &nbsp;</div>
+                    <div class="cell per_input_weight text-right">&nbsp; &nbsp;</div>
+                    <div class="cell input_weight text-right">&nbsp; {{ subrows.subTotal.input_weight | numberFormat }} &nbsp;</div>
+                    <div class="cell inventory_weight text-right">&nbsp;
+                        <span>{{ subrows.subTotal.inven_weight | numberFormat }}</span>&nbsp;
+                    </div>
+                    <div class="cell order_weight text-right">&nbsp;{{ subrows.subTotal.order_weight | numberFormat }} &nbsp;</div>
+                    <div class="cell insufficient_weight text-right">&nbsp;
+                        <span *ngIf="subrows.subTotal.insufficient_weight >= 1000">{{ subrows.subTotal.insufficient_weight | numberFormat }}</span>
+                        <span *ngIf="subrows.subTotal.insufficient_weight < 1000 && subrows.subTotal.insufficient_weight > 0">{{ subrows.subTotal.insufficient_weight }}</span>
+                        <span *ngIf="subrows.subTotal.insufficient_weight < 0 && subrows.subTotal.insufficient_weight > -1000" class="text-danger">{{ subrows.subTotal.insufficient_weight }}</span>
+                        <span *ngIf="subrows.subTotal.insufficient_weight < -1000" class="text-danger">{{ subrows.subTotal.insufficient_weight | numberFormat }}</span> &nbsp;
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="100px" class="text-center">합계</td>
+                <td width="150px" class="text-right"></td>
+                <td width="120px" class="text-right"></td>
+                <td width="120px" class="text-right"></td>
+                <td></td>
+                <td width="150px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right">12,345</td>
+                <td width="90px" class="text-right"></td>
+                <td width="110px" class="text-right">12,345,678</td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+        -->
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-4 hidden-xs">
+            </div>
+            <div class="col-sm-8 text-right">
+                <button type="button" class="btn btn-sm btn-info btn-addon"
+                        (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button type="button" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

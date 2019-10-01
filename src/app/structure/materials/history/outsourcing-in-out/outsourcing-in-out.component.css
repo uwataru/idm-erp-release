@@ -1,0 +1,33 @@
+#order_type_text{
+    display: none !important;
+ }
+
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+    
+    #order_type_text{
+        display: unset !important;
+     }
+ 
+    /* .table-responsive tr :nth-last-child(0n+1) {
+        width: 110px;
+    } */
+}

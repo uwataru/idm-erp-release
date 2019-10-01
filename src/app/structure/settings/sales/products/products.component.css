@@ -1,0 +1,11 @@
+.ac-list {
+    overflow-y: scroll;
+    position: absolute;
+    z-index: 9999;
+    height:200px;
+    border: 1px solid red;
+    display: none;
+}
+
+span.size {width:30px; text-align: center;}
+span.cut_length {width:40px; text-align: center;}

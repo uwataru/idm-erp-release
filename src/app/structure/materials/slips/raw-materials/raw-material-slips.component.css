@@ -1,0 +1,75 @@
+.table-condensed td.pd9 {
+    padding-right:9px;
+}
+
+.btn-print {
+    position:absolute;
+    z-index: 10;
+    top: -42px;
+    right: 50px;
+}
+
+@media print {
+    .ngx-datatable {
+        display: table !important;
+        padding-right: 16px !important;
+        height: unset !important;
+        width: 1024px !important;
+    }
+
+    .datatable-body {
+        height: unset !important;
+        max-height: unset !important;
+    }
+
+    .datatable-scroll {
+        display: table !important;
+    }
+
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+
+    .rms-print-mat-width{
+        width: 11% !important;
+    }
+    .rms-print-size-width{
+        width: 5% !important;
+    }
+    .rms-print-par-width{
+        width: 11% !important;
+    }
+    .rms-print-wei-width{
+        width: 5.4% !important;
+    }
+    .rms-print-pri-width{
+        width: 5.4% !important;
+    }
+    .rms-print-ord-width{
+        width: 9% !important;
+    }
+
+    .rms-print-sum{
+        margin-right: -15px;
+    }
+    .rms-print-width1{
+        width: 185px
+    }
+    .rms-print-width2{
+        width: 65px;
+    }
+    .rms-print-width3{
+        width: 198px;
+    }
+    .rms-print-width4{
+        width: 92px;
+    }
+    .rms-print-width5{
+        width: 90px;
+    }
+    .rms-print-width6{
+        width: 143px;
+    }
+
+}

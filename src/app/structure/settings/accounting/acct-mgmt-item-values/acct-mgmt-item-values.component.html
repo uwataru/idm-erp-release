@@ -1,0 +1,190 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <form [formGroup]="searchForm">
+                <input formControlName="sch_acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event)"
+                    placeholder="계정과목"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <select formControlName="sch_mgmt_item_no" (change)="schAcctItems($event)" class="input-sm form-control w-sm inline v-middle">
+                    <option [ngValue]="item.code" *ngFor="let item of acctItems">{{item.name}}</option>
+                </select>
+                <button (click)="GetAll()" class="btn btn-sm btn-default">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!-- <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="mgmt_item_value_no" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_name" name="관리항목"></ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_value_name_alias" name="약식명칭"></ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_value_name" name="정식명칭"></ngx-datatable-column>
+            <ngx-datatable-column prop="id" name="수정&middot삭제" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-sm-6 hidden-xs">
+                <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','')" [disabled]="schMgmtItemNo == 0" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+
+			<div class="modal-body">
+
+                <table>
+                <tr>
+                    <th width="100px">
+    					<label for="input_date">등록일</label>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="input_date" id="input_date" required class="form-control input-sm w-xs" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="mgmt_item_no">계정과목</label>
+                    </th>
+                    <td>
+                        {{ AcctName }}
+                        <input type="hidden" formControlName="acct_code" id="acct_code" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="mgmt_item_no">관리항목</label>
+                    </th>
+                    <td>
+                        {{ MgmtItemName }}
+                        <input type="hidden" formControlName="mgmt_item_no" id="mgmt_item_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="mgmt_item_value_name_alias">약식명칭</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="mgmt_item_value_name_alias" id="mgmt_item_value_name_alias" required class="form-control input-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+    					<label for="mgmt_item_value_name">정식명칭</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="mgmt_item_value_name" id="mgmt_item_value_name" required class="form-control input-sm" />
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade delete-confirm" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    선택하신 관리내역을 삭제하시겠습니까?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+.modal-dialog.modal-sm {
+    width: 400px;
+}
+.modal-dialog.modal-sm label {
+    padding-left: 50px;
+}
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+}

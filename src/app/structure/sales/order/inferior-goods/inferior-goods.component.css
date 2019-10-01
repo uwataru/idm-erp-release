@@ -1,0 +1,34 @@
+.datatable-body {
+    height: unset !important;
+    max-height: 600px;
+}
+
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+  
+    .ngx-datatable{
+        height: unset !important;
+    }
+  
+    .datatable-body{
+        max-height: unset !important;
+        height: unset !important;
+    }
+
+    .datatable-scroll {
+        display: table !important;
+    }
+  
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+    .table-responsive tr :nth-last-child(0n+1) {
+        width: 110px;
+    }
+  }
+
+  
+

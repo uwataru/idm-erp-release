@@ -1,0 +1,129 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading text-center">
+        <span class="h4 block">{{ panelTitle }}</span>
+    </div>
+
+    <div class="panel-body">
+
+        <table class="table">
+        <thead>
+		<tr>
+            <th>공정</th>
+			<th *ngFor="let process of processArray">{{ process }}</th>
+            <th>수정 &middot; 삭제</th>
+		</tr>
+		</thead>
+        <tbody>
+        <tr *ngFor="let partner of priceData">
+            <td>{{ partner.name }}</td>
+			<td *ngFor="let price of partner.price">
+                <span>{{ price | numberFormat }}</span>
+            </td>
+            <td>
+                <button (click)="openModal('edit', partner.code, partner.name)" class="btn btn-xs btn-primary">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button>
+                <button (click)="openModal('delete', partner.code, partner.name)" class="btn btn-xs btn-danger">
+                    <i class="glyphicon glyphicon-trash"></i>
+                </button>
+            </td>
+		</tr>
+        </tbody>
+        </table>
+
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <!-- <button class="btn btn-sm btn-danger btn-addon" (click)="openModal('delete','selected')">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button> -->
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','','')" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <table>
+                <tr>
+                    <th>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        <label for="partner_name">열처리업체</label>
+                    </th>
+                    <td>
+                        <input formControlName="partner_name" id="partner_name"
+                            [typeahead]="inputPartners"
+                            typeaheadOptionField="Alias"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectInputPartner($event)"
+                            placeholder="거래처명"
+                            class="input-sm form-control w-sm inline v-middle" />
+                        <input type="hidden" formControlName="partner_code" id="partner_code" />
+                    </td>
+                </tr>
+                <tr *ngFor="let item of heatingProcess">
+                    <th>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        <label for="cfg_name">{{ item.CfgName }}</label>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="{{ item.CfgCode }}_price" id="{{ item.CfgCode }}_price" required class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ deleteConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

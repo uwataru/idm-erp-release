@@ -1,0 +1,101 @@
+<div class="panel panel-default" id="print-target-vs-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+
+        <form [formGroup]="searchForm">
+            <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+            <input type="text"
+                formControlName="sch_sdate"
+                id="sch_sdate"
+                bsDatepicker
+                placement="bottom left"
+                class="form-control inline input-sm w-xs" /> ~
+            <input type="text"
+                formControlName="sch_edate"
+                id="sch_edate"
+                bsDatepicker
+                placement="bottom left"
+                class="form-control inline input-sm w-xs m-r" />
+
+            <label class="i-checks hidden-print">
+                <input type="radio" formControlName="acct_code" value="111110">
+                <i></i>부가세대급금 &nbsp;
+            </label>
+            <label class="i-checks hidden-print">
+                <input type="radio" formControlName="acct_code" value="210110">
+                <i></i>부가세예수금 &nbsp;
+            </label>
+            <button (click)="GetAll()" [disabled]="! searchForm.valid" class="btn btn-sm btn-default hidden-print">검색</button>
+            <input id="acct_code_text" type="text" class="text-center input-sm form-control w-sm v-middle">
+        </form>
+    </div>
+
+    <div class="panel-body print-h">
+        <ngx-datatable
+            class="bootstrap"
+            [style.height.px] = gridHeight
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [rowClass]="getRowClass"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [virtualization]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="partner_name" name="거래처" [width]="250" [canAutoResize]="false" [resizeable]="false" cell></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_biz_no" name="사업자등록번호" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="price" name="공급가액" [width]="180" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active" *ngIf="value == 0"> &nbsp;</div>
+                    <div class="wrapper-xs active" *ngIf="!value == 0">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>                
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="vat" name="부가가치세" [width]="180" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active" *ngIf="value == 0"> &nbsp;</div>
+                    <div class="wrapper-xs active" *ngIf="!value == 0">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>                
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="slip_no" name="전표번호" cellClass="print-width" headerClass="print-width"></ngx-datatable-column>
+        </ngx-datatable>
+
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-vs-comp', '', '')">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+</div>
+    

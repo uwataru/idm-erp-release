@@ -1,0 +1,83 @@
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 text-center">
+            <span class="title">{{ panelTitle }}</span>
+        </div>
+        <div class="col-sm-4">
+            <table class="approval" align="right">
+            <tr>
+                <td rowspan="2" class="td1">결재</td>
+                <td class="td2">담당</td>
+                <td class="td2">과장</td>
+            </tr>
+            <tr>
+                <td class="blank">&nbsp;</td>
+                <td class="blank">&nbsp;</td>
+            </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <span class="text-xs">출력일자 : {{ today }}</span>
+        </div>
+        <div class="col-sm-4 text-center">
+            <span class="text-xs">작업라인 : 3000H</span>
+        </div>
+        <div class="col-sm-4 text-right">
+            <span class="text-xs">Page 1 of 1</span>
+        </div>
+    </div>
+
+	<div class="table-responsive">
+		<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+		<thead>
+		<tr>
+			<th class="text-center">작업일</th>
+			<th class="text-center">시간</th>
+            <th class="text-center">제품번호</th>
+            <th class="text-center">도번</th>
+            <th class="text-center">제품명</th>
+			<th class="text-center">수량</th>
+			<th class="text-center">수주등록일</th>
+            <th class="text-center">약속일</th>
+            <th class="text-center">재질</th>
+            <th class="text-center">규격</th>
+            <th class="text-center">소재단중</th>
+            <th class="text-center">제품단중</th>
+            <th class="text-center">금형</th>
+            <th class="text-center">위치</th>
+            <th class="text-center">J</th>
+            <th class="text-center">M</th>
+            <th class="text-center">POC No</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="text-center">12/20</td>
+			<td class="text-center">09:33</td>
+            <td class="text-center">003-1055</td>
+            <td class="text-center">192-413-008-0AF</td>
+            <td class="text-center">베벨기어(21-37)</td>
+			<td class="text-center">400</td>
+			<td class="text-center">12/05</td>
+			<td class="text-center">12/29</td>
+            <td class="text-center">SCM420H</td>
+			<td class="text-center">110</td>
+			<td class="text-center">12.00</td>
+            <td class="text-center">10.20</td>
+			<td class="text-center">350</td>
+			<td class="text-center">18-36</td>
+			<td class="text-center">500</td>
+            <td class="text-center"></td>
+            <td class="text-center">201712-0001</td>
+		</tr>
+		</tbody>
+        <tfoot>
+        <tr>
+            <td colspan="17">총Item수: 23</td>
+        </tr>
+        </tfoot>
+		</table>
+	</div>

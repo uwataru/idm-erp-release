@@ -1,0 +1,25 @@
+@media print {
+    .ngx-datatable {
+        display: table !important;
+        padding-right: 16px !important;
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+        max-height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    } 
+
+    .print-table td:nth-last-child(0n+1){
+        width: 50px !important;
+    }
+
+}

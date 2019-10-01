@@ -1,0 +1,157 @@
+<div class="panel panel-default" id="print-target-tb-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+
+            <div class="col-sm-8 m-b-xs">
+                <form [formGroup]="searchForm">
+                    <label for="sch_year" class="control-label text-sm">조회년월</label>
+                    <select formControlName="sch_year" id="sch_year" class="input-sm form-control w-xs inline v-middle">                        
+                        <option [value]="year" *ngFor="let year of years">{{ year }}</option>
+                    </select>
+                    <select formControlName="sch_month" id="sch_month" class="input-sm form-control w-xs inline v-middle">
+                        <option value="00">전기이월</option>
+                        <option [value]="month" *ngFor="let month of months">{{ month }}</option>
+                    </select>
+                    <button (click)="getAll()" [disabled]="! searchForm.valid" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            
+            <div class="col-sm-4 text-right hidden-print">
+                <button class="btn btn-sm btn-success btn-addon" (click)="openModal('upload','')">
+                    <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [virtualization]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="debit_balance" name="차변잔액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="debit_sum" name="차변합계" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="account" name="계정과목">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value.split(' ').join('&nbsp;') }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="credit_sum" name="대변합계" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="credit_balance" name="대변잔액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="debit_amount" name="당월차변" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="credit_amount" name="당월대변" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-tb-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+    </footer>
+    
+
+</div>
+
+
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ uploadFormTitle }}</h4>
+            </div>
+            <div class="modal-body">
+                
+                <select class="input-sm form-control w-xs inline v-middle" #excel_sch_year>                        
+                    <option [value]="year" *ngFor="let year of years" [selected]="year==currYear">{{ year }}</option>
+                </select>
+                <select class="input-sm form-control w-xs inline v-middle" #excel_sch_month>
+                    <option value="00">전기이월</option>
+                    <option [value]="month" *ngFor="let month of months" [selected]="month==currMonth">{{ month }}</option>
+                </select>
+                
+                <div class="text-center padder-v">            
+                    <input type="file" placeholder="Upload file" accept=".xls,.xlsx" #uploadFileSrc />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="uploadFileSrc.value=''; uploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>
+

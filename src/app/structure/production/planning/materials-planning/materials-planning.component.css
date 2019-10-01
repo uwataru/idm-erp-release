@@ -1,0 +1,107 @@
+.modal-dialog.modal-xl {
+    width: 70%;
+}
+.modal-content.modal-xl {
+    min-height: 60%;
+}
+
+.panel {margin-bottom: 0}
+
+div.dnd-row.head {
+    border-top: 1px solid #eee;
+    padding-right: 17px;
+}
+div.dnd-row.head .cell {
+    text-align: center;
+}
+div.dnd_body {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    width: 100%;
+    height: 590px;
+}
+div.dnd-row {
+    min-width: 1260px;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+div.sum {
+    background-color: #f0f5fa;
+}
+/*
+div.dnd_body .dnd-row:hover {
+    border: 1px solid #0099ff;
+}
+*/
+div.dnd-row::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+div.cell {
+    padding: 3px 0;
+    border-right: 1px solid #eee;
+    float: left;
+}
+div.cell.production_line {min-width: 70px; width: 3%;}
+div.cell.material {min-width:100px; width: 9%;}
+div.cell.size {min-width:60px; width: 4%;}
+div.cell.steel_maker {min-width:30px; width: 7%;}
+div.cell.work_date {min-width:100px; width: 7%;}
+div.cell.product_code {min-width:100px; width: 10%;}
+div.cell.drawing_no {min-width:110px; width: 11%;}
+div.cell.product_name {min-width:120px; width: 11%;}
+div.cell.order_qty {min-width:60px; width: 6%;}
+div.cell.per_input_weight {min-width:70px; width: 5%;}
+div.cell.input_weight {min-width:70px; width: 6%;}
+div.cell.inventory_weight {min-width:70px; width: 6%;}
+div.cell.order_weight {min-width:70px; width: 6%;}
+div.cell.insufficient_weight {min-width:60px; width: 6%;}
+
+
+@media print {
+    .panel-body {
+        font-size: 11px;
+        /*width: 98%;*/
+        /*margin-left: 30px;*/
+    }
+    div.dnd-row.head {
+        padding-right: unset;
+    }
+    div.dnd_body {
+        display: table !important;
+        overflow-x: hidden;
+        overflow-y: visible;
+        width: 100%;
+        min-height: unset;
+        max-height: unset;
+        border-left: 1px solid #eee;
+        border-right: 1px solid #eee;
+        /*font-size: 10px;*/
+    }
+
+    div.dnd-row {
+        min-width: unset;
+    }
+
+    div.cell.production_line {min-width: unset; width: 3%;}
+    div.cell.material {min-width:unset; width: 9%;}
+    div.cell.size {min-width:unset; width: 4%;}
+    div.cell.steel_maker {min-width:unset; width: 7%;}
+    div.cell.work_date {min-width:unset; width: 7%;}
+    div.cell.product_code {min-width:unset; width: 10%;}
+    div.cell.drawing_no {min-width:unset; width: 11%;}
+    div.cell.product_name {min-width:unset; width: 11%;}
+    div.cell.order_qty {min-width:unset; width: 6%;}
+    div.cell.per_input_weight {min-width:unset; width: 5%;}
+    div.cell.input_weight {min-width:unset; width: 7%;}
+    div.cell.inventory_weight {min-width:unset; width: 7%;}
+    div.cell.order_weight {min-width:unset; width: 7%;}
+    div.cell.insufficient_weight {min-width:unset; width: 6%;}
+    div.cell{
+        overflow-x: hidden;
+        white-space: nowrap;
+    }
+}

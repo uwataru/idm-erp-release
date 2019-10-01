@@ -1,0 +1,65 @@
+<div class="panel panel-default" id="print-target-mh-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <label for="passenger_phone" class="control-label text-sm">거래처</label>
+                <input type="text" class="input-sm form-control w-xs inline v-middle" id="partners" />
+                <label for="passenger_phone" class="control-label text-sm m-l">조회기간</label>
+                <input type="text" class="input-sm form-control w-xs inline v-middle" id="sch_sdate" /> ~
+                <input type="text" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+                <button class="btn btn-sm btn-default hidden-print">검색</button>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = 630
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [scrollbarH]="false"
+            [scrollbarV]="true"
+            [messages]="messages">
+            <ngx-datatable-column prop="delivery_date" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+            <ngx-datatable-column prop="management_no" name="금형관리번호"></ngx-datatable-column>
+            <ngx-datatable-column prop="mold_size" name="규격" [width]="80" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="mold_material" name="재질" [width]="80" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_date" name="제작일" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">></ngx-datatable-column>
+            <ngx-datatable-column prop="quantity" name="상각수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_costs" name="금액" cellClass="text-right"></ngx-datatable-column>
+            <ngx-datatable-column prop="last_work_date" name="최종인하일" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="sale_price" name="인하금액" cellClass="text-right"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="잔여수명" [width]="70" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="mold_stand_no" name="보관위치" [width]="70" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="비고"></ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>

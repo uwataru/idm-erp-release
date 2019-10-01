@@ -1,0 +1,99 @@
+<div class="panel panel-default" id="print-target-svs-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs">
+                <form [formGroup]="searchForm">
+                    <label for="sch_year" class="control-label text-sm">년 월</label>
+                    <input type="text" formControlName="sch_year" id="sch_year" class="input-sm form-control w-xxs inline v-middle" /> -
+                    <input type="text" formControlName="sch_month" id="sch_month" class="input-sm form-control w-xxs inline v-middle" />
+                    <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body print-h">
+        <ngx-datatable
+            [style.height.px]=630
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [scrollbarH]="false"
+            [scrollbarV]="true"
+            [virtualization]="false"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="partner_code" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label *ngIf="row.slip_no == ''" class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+            <ngx-datatable-column prop="amount" name="매출액" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} 원</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="vat_amount" name="부가세예수금" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <input
+                        type="text"
+                        id="vat_amount_{{row.partner_code}}"
+                        [value]="value | numberFormat"
+                        [attr.disabled]="row.slip_no == '' ? null : 'disabled'"
+                        class="form-control input-sm w-xs inline text-right" /> 원
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="slip_no" name="전표번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="brief_summary" name="적요"></ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <form [formGroup]="inputForm">
+                <input formControlName="acct_name"
+                    id="acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event)"
+                    placeholder="차변계정"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <button [disabled]="selected.length == 0" (click)="Save()" class="btn btn-sm btn-primary btn-addon"><i class="glyphicon glyphicon-plus"></i>저장</button>
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-svs-comp', '', '')">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+                </form>
+    		</div>
+        </div>
+	</footer>
+</div>

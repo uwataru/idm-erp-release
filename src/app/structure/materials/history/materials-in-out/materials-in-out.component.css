@@ -1,0 +1,34 @@
+@media print {
+    .ngx-datatable {
+        display: table;
+        height: unset !important;
+        padding-right: 16px;
+    }
+    .panel-body {
+        display: block !important;
+    }
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+    .table-responsive tr :nth-last-child(0n+1) {
+        width: 61px;
+    }
+    /* .table-responsive tr :nth-child(0n+1) {
+        width: 100px;
+    }  */
+    /* 명세서 인쇄 */
+    /* .print-table {
+        padding-right: 16px;
+    }
+    .print-table td:nth-last-child(0n+1){
+        width: 50px;
+    } */
+}

@@ -1,0 +1,216 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="user_name" name="이름"></ngx-datatable-column>
+            <ngx-datatable-column prop="user_id" name="아이디"></ngx-datatable-column>
+            <ngx-datatable-column prop="dept_name" name="부서"></ngx-datatable-column>
+            <ngx-datatable-column prop="position_name" name="직급"></ngx-datatable-column>
+            <ngx-datatable-column prop="user_phone" name="연락처" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="user_email" name="E-mail"></ngx-datatable-column>
+            <ngx-datatable-column prop="joining_date" name="입사일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="id" name="수정&middot삭제" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+				<!-- <input type="hidden" id="id" name="id" /> -->
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="user_id" class="col-lg-2 control-label">
+                            사번 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" formControlName="user_id" id="user_id" class="form-control w-sm" />
+                        </div>
+                    </div>
+				</div>
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="user_name" class="col-lg-2 control-label">
+                            이름 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" formControlName="user_name" id="user_name" class="form-control inline w-sm" />
+    					</div>
+                        <label for="user_pw" class="col-lg-2 control-label">
+                            패스워드<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" formControlName="user_pw" id="user_pw" class="form-control inline w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+    					<label for="dept_name" class="col-lg-2 control-label">
+                            부서명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+    					<div class="col-lg-4">
+    						<input type="text" formControlName="dept_name" id="dept_name" class="form-control w-sm" />
+    					</div>
+                        <label for="position_name" class="col-lg-2 control-label">
+                            직급명
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" formControlName="position_name" id="position_name" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="user_email" class="col-lg-2 control-label">
+                            메일주소
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" formControlName="user_email" id="user_email" class="form-control w-md" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="joining_date" class="col-lg-2 control-label">
+                            입사일자
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" formControlName="joining_date" id="joining_date" class="form-control w-sm" />
+                        </div>
+                        <label for="retirement_date" class="col-lg-2 control-label">
+                            퇴사일자
+                        </label>
+                        <div class="col-lg-4">
+                            <input type="text" formControlName="retirement_date" id="retirement_date" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="user_phone" class="col-lg-2 control-label">
+                            전화번호
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" formControlName="user_phone" id="user_phone" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="user_addr" class="col-lg-2 control-label">
+                            집주소
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" formControlName="user_addr" id="user_addr" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    선택하신 사용자를 삭제하시겠습니까?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

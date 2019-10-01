@@ -1,0 +1,402 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input formControlName="sch_partner_name"
+                    [typeahead]="listPartners"
+                    typeaheadOptionField="Alias"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectListPartner($event)"
+                    placeholder="거래처명"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle" placeholder="제품번호" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!-- <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form" (click)="openModal('upload','')">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (select)='onSelect($event)'
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_reg_no" name="등록번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="forging_partner_name" name="외주업체"></ngx-datatable-column>
+            <ngx-datatable-column prop="material_supply_type" name="소재지급" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span *ngIf='value == 1'>유상</span>
+                    <span *ngIf='value == 2'>무상</span>
+                    <span *ngIf='value == 3'>도급</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="material_cost" name="재료비" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="forging_cost" name="단조비" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="outsourcing_cost" name="외주단가" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <div class="panel-footer">
+        <div class="row">
+			<div class="col-sm-6 hidden-xs">
+
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal()" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>발주
+                </button>
+    		</div>
+        </div>
+	</div>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-xl-center">
+		<div class="modal-content modal-xl">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-8">
+
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="product_code" class="col-lg-2 control-label">
+                                    제품번호
+                                </label>
+            					<div class="col-lg-10">
+            						<input type="text" formControlName="product_code" id="product_code" nextFocus="product_reg_no" class="form-control w-sm" />
+                                    <input type="hidden" formControlName="product_name" />
+                                    <input type="hidden" formControlName="drawing_no" />
+            					</div>
+                            </div>
+        				</div>
+
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="product_reg_no" class="col-lg-2 control-label">
+                                    등록번호
+                                </label>
+            					<div class="col-lg-4">
+            						<input type="text" formControlName="product_reg_no" id="product_reg_no" nextFocus="outs_partner_name" class="form-control w-sm" />
+            					</div>
+                                <label for="order_date" class="col-lg-2 control-label">
+                                    발주일<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="order_date" id="order_date" bsDatepicker placement="bottom left" nextFocus="partner_name" class="form-control w-sm" />
+                                </div>
+                            </div>
+        				</div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="outs_partner_name" class="col-lg-2 control-label">
+                                    외주업체
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="outs_partner_name" id="outs_partner_name" nextFocus="ref_matl_supl_type" class="form-control w-sm" />
+                                    <input type="hidden" formControlName="outs_partner_code" />
+                                </div>
+                                <label for="partner_name" class="col-lg-2 control-label">
+                                    단조업체<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <input formControlName="partner_name" id="partner_name"
+                                        [typeahead]="inputPartners"
+                                        typeaheadOptionField="Name"
+                                        [typeaheadOptionsLimit]="50"
+                                        [typeaheadScrollable]="true"
+                                        [typeaheadMinLength]="0"
+                                        (typeaheadOnSelect)="onSelectInputPartner($event)"
+                                        placeholder="거래처명"
+                                        autocomplete="off"
+                                        class="input-sm form-control w-sm inline v-middle" />
+                                    <input type="hidden" formControlName="partner_code" id="partner_code" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="ref_matl_supl_type" class="col-lg-2 control-label">
+                                    소재지급
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="ref_matl_supl_type" id="ref_matl_supl_type" nextFocus="matl_cost" class="form-control w-sm" />
+                                </div>
+                                <label for="matl_supl_type" class="col-lg-2 control-label">
+                                    소재지급<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <label class="i-checks">
+                                        <input type="radio" formControlName="matl_supl_type" value="1">
+                                        <i></i>유상
+                                    </label>
+                                    <label class="i-checks">
+                                        <input type="radio" formControlName="matl_supl_type" value="2">
+                                        <i></i>무상
+                                    </label>
+                                    <label class="i-checks">
+                                        <input type="radio" formControlName="matl_supl_type" value="3">
+                                        <i></i>도급
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="matl_cost" class="col-lg-2 control-label">
+                                    재료비
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="matl_cost" id="matl_cost" nextFocus="forging_cost" class="form-control w-sm text-right" />
+                                </div>
+                                <label for="order_qty" class="col-lg-2 control-label">
+                                    수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="order_qty" id="order_qty" (blur)="calculInputWeightTotal()" nextFocus="rcv_req_date" class="form-control w-sm text-right" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="forging_cost" class="col-lg-2 control-label">
+                                    단조비
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="forging_cost" id="forging_cost" nextFocus="outs_cost" class="form-control w-sm text-right" />
+                                </div>
+                                <label for="rcv_req_date" class="col-lg-2 control-label">
+                                    입고요구일<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="rcv_req_date" id="rcv_req_date" bsDatepicker placement="bottom left" nextFocus="poc_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="outs_cost" class="col-lg-2 control-label">
+                                    외주단가
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="outs_cost" id="outs_cost" nextFocus="material" class="form-control w-sm text-right" />
+                                </div>
+                                <label for="poc_no" class="col-lg-2 control-label">
+                                    POC No<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="poc_no" id="poc_no" nextFocus="steel_maker" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="material" class="col-lg-2 control-label">
+                                    재질
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="material" id="material" nextFocus="size" class="form-control w-sm" />
+                                </div>
+                                <label for="steel_maker" class="col-lg-2 control-label">
+                                    지정메이커
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="steel_maker" id="steel_maker" nextFocus="storage" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="size" class="col-lg-2 control-label">
+                                    규격
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="size" id="size" nextFocus="input_weight" class="form-control w-sm text-right" />
+                                </div>
+                                <label for="storage" class="col-lg-2 control-label">
+                                    보관장소
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="storage" id="storage" nextFocus="ms_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="input_weight" class="col-lg-2 control-label">
+                                    투입단중
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="input_weight" id="input_weight" class="form-control w-sm text-right" />
+                                </div>
+                                <label for="ms_no" class="col-lg-2 control-label">
+                                    지정M.S.NO
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="ms_no" id="ms_no" nextFocus="estimated_weight" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-lg-2 control-label">
+
+                                </label>
+                                <div class="col-lg-4">
+
+                                </div>
+                                <label for="estimated_weight" class="col-lg-2 control-label">
+                                    예상사용중량
+                                </label>
+                                <div class="col-lg-4">
+                                    <input type="text" formControlName="estimated_weight" id="estimated_weight" class="form-control w-sm" />
+                                    <input type="hidden" formControlName="used_rcv_items" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--
+                    <div class="col-lg-7">
+
+                        <div class="text-center m">
+                            <span class="h5 font-bold">원자재재고현황</span>
+                        </div>
+
+                        <ngx-datatable
+                            [style.height.px] = "200"
+                            class="bootstrap"
+                            [rows]="materialRows"
+                            [columnMode]="'force'"
+                            [headerHeight]="30"
+                            [rowHeight]="30"
+                            [scrollbarV]="true"
+                            [scrollbarH]="false"
+                            [selected]="selectedRcvItems"
+                            [selectionType]="'checkbox'"
+                            [selectAllRowsOnPage]="false"
+                            (select)='onSelectRcvItems($event)'
+                            [messages]="messages">
+                            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                                    <label class="i-checks i-checks-sm m-b-none">
+                                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                                    </label>
+                                </ng-template>
+                                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                    <label class="i-checks i-checks-sm m-b-none">
+                                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                                    </label>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column prop="material_code" name="자재코드" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="material" name="재질" [width]="110" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="size" name="규격" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+                            <ngx-datatable-column prop="steel_maker" name="메이커" [width]="110" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="partner_name" name="거래처" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="storage" name="보관장소" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="rcv_date" name="입고일" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+                            <ngx-datatable-column prop="ms_no" name="M.S.NO" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                            <ngx-datatable-column prop="remaining_weight" name="재고중량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                                    <span>{{ value | numberFormat }}</span>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+
+                    </div>
+                    -->
+                    
+                </div>
+
+            </div>
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

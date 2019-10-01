@@ -1,0 +1,29 @@
+.panel-body {
+    table {
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: 1px solid #cccccc;
+
+        thead {
+            th {
+                background-color: #e5e9ef;
+            }
+        }
+
+        th, td {
+            border-right: 1px solid #cccccc;
+            text-align: center;
+        }
+    }
+}
+.modal-body {
+    table {
+        tr {
+            th {
+                width: 120px;
+                padding-right: 10px;
+                text-align: right;
+            }
+        }
+    }
+}

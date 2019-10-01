@@ -1,0 +1,30 @@
+.row-color {
+    font-weight:bold;
+    color:#000;
+    background-color:#efefef !important;
+}
+
+
+#tb-payment-plan { width:100%; }
+
+#tb-payment-plan thead th { border:1px solid #000; text-align:center; padding:3px; background-color:#ebebeb; }
+#tb-payment-plan tbody tr td { border:1px solid #000; padding:3px; }
+
+#tb-payment-plan .partner_name { width:10%; }
+#tb-payment-plan .prev_amount { width:6%; text-align:right; }
+#tb-payment-plan .amount1 { width:6%; text-align:right; }
+#tb-payment-plan .amount2 { width:6%; text-align:right; }
+#tb-payment-plan .sum1 { width:6%; text-align:right; }
+#tb-payment-plan .sum2 { width:6%; text-align:right; }
+#tb-payment-plan .amount3 { width:6%; text-align:right; }
+#tb-payment-plan .amount4 { width:6%; text-align:right; }
+#tb-payment-plan .amount5 { width:6%; text-align:right; }
+#tb-payment-plan .sum3 { width:6%; text-align:right; }
+#tb-payment-plan .sub_amount1 { width:6%; text-align:right; }
+#tb-payment-plan .sub_amount2 { width:6%; text-align:right; }
+#tb-payment-plan .pay_type1 { width:4%; text-align:right; }
+#tb-payment-plan .pay_type2 { width:4%; text-align:right; }
+#tb-payment-plan .pay_amount { width:6%; text-align:right; }
+
+@media print {
+}

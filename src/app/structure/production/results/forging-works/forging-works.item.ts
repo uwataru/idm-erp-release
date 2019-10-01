@@ -1,0 +1,42 @@
+export class Item {
+    //id: number;
+    totalCount: number;
+    data: {
+        input_date: number;
+        poc_no: string;
+        production_line: string;
+        working_group: number;
+        product_code: string;
+        product_name: string;
+        drawing_no: string;
+        material: string;
+        size: number;
+        mold_no: number;
+        result_classification: string;
+        production_qty: number;
+        defective_classification: number;
+        order_qty: number;
+        cutting_qty: number;
+        forging_qty: number;
+        defective_qty: number;
+        lucre_qty: number;
+        loss_qty: number;
+        forging_sum: number;
+        defective_sum: number;
+        lucre_sum: number;
+        loss_sum: number;
+        working_sday: string;
+        working_stime: string;
+        working_eday: string;
+        working_etime: string;
+        working_time: number;
+        preparation_time: number;
+        meal_time: number;
+        failure_time: number;
+        stop_time: number;
+        real_working_time: number;
+    };
+    maxResultCount: number;
+    result: string;
+    errorMessage: string;
+}

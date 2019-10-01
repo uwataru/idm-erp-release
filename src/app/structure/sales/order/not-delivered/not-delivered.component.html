@@ -1,0 +1,622 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input formControlName="sch_partner_name"
+                    [typeahead]="listPartners"
+                    typeaheadOptionField="Alias"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectListPartner($event)"
+                    placeholder="거래처명"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <input type="text" formControlName="sch_order_no" id="sch_order_no" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle" placeholder="수주번호" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+
+                <!-- <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg" [ngClass]="{'btn-primary':sch_st === 1, 'btn-default':sch_st !== 1}">사용</button> -->
+                <!-- <button (click)="changeSubMenu(0)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 0, 'btn-default':sch_st !== 0}">숨김</button> -->
+                <!-- <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">삭제</button> -->
+                <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 9, 'btn-default':sch_st !== 99}">전체</button> -->
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!-- <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form" (click)="openModal('upload','')">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'single'"
+            (select)='onSelect($event)'
+            [messages]="messages">
+            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="poc_no" name="POC NO" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_date" name="요구일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="promised_date" name="약속일자" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="order_qty" name="수주수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_qty" name="납품실적" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_inventory_cnt" name="제품재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="outs_qty" name="외주재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="production_qty" name="단조재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="ms_no" name="M.S No" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="invoice_id" name="송장" [width]="30" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <i *ngIf="value > 0" data-toggle="modal" data-target="#invoice" (click)="openModal('view',value)" class="glyphicon glyphicon-paperclip"></i>
+                </ng-template>
+            </ngx-datatable-column>
+            <!-- <ngx-datatable-column prop="id" name="납품처리" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button data-toggle="modal" data-target="#input-form" (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        납품처리
+                    </button>
+                </ng-template>
+            </ngx-datatable-column> -->
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <!-- <button class="btn btn-sm btn-danger btn-addon" data-toggle="modal" data-target="#change-status-confirm" (click)="openModal('delete','selected')">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button> -->
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('create', '')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>납품처리
+                </button>
+                <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+            <input type="hidden" formControlName="order_qty" id="order_qty" value="" />
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="delivery_date" class="col-lg-4 control-label">
+                                    납품일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="delivery_date" id="delivery_date" nextFocus="partner_name" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="passenger_name" class="col-lg-4 control-label">
+                                    거래처 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+            					<div class="col-lg-8">
+                                    <input formControlName="partner_name" id="partner_name"
+                                        [typeahead]="inputPartners"
+                                        typeaheadOptionField="Alias"
+                                        [typeaheadOptionsLimit]="50"
+                                        [typeaheadScrollable]="true"
+                                        [typeaheadMinLength]="0"
+                                        (typeaheadOnSelect)="onSelectInputPartner($event)"
+                                        placeholder="거래처명"
+                                        class="input-sm form-control w-sm inline v-middle" />
+                                    <input type="hidden" formControlName="partner_code" id="partner_code" />
+            					</div>
+                            </div>
+        				</div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="product_code" class="col-lg-4 control-label">
+                                    제품번호 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="product_code" id="product_code" nextFocus="product_price" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="product_name" class="col-lg-4 control-label">
+                                    제품명
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-md" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="delivery_qty" class="col-lg-5 control-label">
+                                    수주수량 / 제품재고
+                                </label>
+                                <div class="col-lg-7">
+                                    <span class="m-t">{{ order_qty | numberFormat }}</span>
+                                    /
+                                    <span class="m-t">{{ normal_qty | numberFormat }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="delivery_qty" class="col-lg-4 control-label">
+                                    납품수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" decimal [(ngModel)]="delivable_qty" (blur)="calculDeliveryPrice()" formControlName="delivery_qty" id="delivery_qty" nextFocus="product_price" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="product_price" class="col-lg-4 control-label">
+                                    단가
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" decimal [(ngModel)]="product_price" (blur)="calculDeliveryPrice()" formControlName="product_price" id="product_price" nextFocus="delivery_price" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="delivery_price" class="col-lg-4 control-label">
+                                    금액
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" decimal [(ngModel)]="delivery_price" formControlName="delivery_price" id="delivery_price" nextFocus="order_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-6">
+
+                        <div style="height:94px"></div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="order_no" class="col-lg-4 control-label">수주번호</label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="order_no" id="order_no" nextFocus="poc_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="poc_no" class="col-lg-4 control-label">
+                                    POC No
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="poc_no" id="poc_no" nextFocus="ms_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="product_type" class="col-lg-4 control-label">
+                                    M.S No
+                                </label>
+            					<div class="col-lg-8">
+            						<input type="text" formControlName="ms_no" id="ms_no" nextFocus="transport_vehicle" class="form-control w-sm" />
+            					</div>
+                            </div>
+        				</div>
+
+        				<div class="form-group">
+                            <div class="row">
+            					<label for="sub_drawing_no" class="col-lg-4 control-label">
+                                    운송차량 <span class="text-xs text-danger glyphicon"></span>
+                                </label>
+            					<div class="col-lg-8">
+            						<input type="text" formControlName="transport_vehicle" id="transport_vehicle" nextFocus="unload_place" class="form-control w-sm" />
+            					</div>
+                            </div>
+        				</div>
+
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="drawing_no" class="col-lg-4 control-label">
+                                    하차장소 <span class="text-xs text-danger glyphicon"></span>
+                                </label>
+            					<div class="col-lg-8">
+            						<input type="text" formControlName="unload_place" id="unload_place" class="form-control w-sm" />
+            					</div>
+                            </div>
+        				</div>
+
+                    </div>
+
+                </div>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" *ngIf="isInvoice == false" (click)="deliveryCompletion()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" *ngIf="isInvoice == true" (click)="openModal('view',invoiceNo)" id="btn-invoice" class="btn btn-success btn-save">송장</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">
+                        <span *ngIf="isInvoice == false">취소</span>
+                        <span *ngIf="isInvoice == true">닫기</span>
+                    </button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<!-- 송장 -->
+<div bsModal #InvoiceModal="bs-modal" id="invoice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+            <button type="button" class="btn btn-sm btn-info btn-addon btn-print"
+                    (click)="electronService.readyPrint('print-target-delivered')"><i class="glyphicon glyphicon-print"></i>인쇄
+            </button>
+
+            <div class="print-area" [style.height.px]="viewModalHeight" id="print-target-delivered">
+                <div class="row">
+                    <div class="col-xs-4"><span id="delivered-no" style="position:absolute;top:35px;left:80px">납품No : {{
+                        invoiceNo }}</span></div>
+                    <div class="col-xs-5 text-center">
+                        <span class="title title1 print-target-delivered-title">{{ panel1Title }}</span>
+                    </div>
+                    <div class="col-xs-3">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table class="approval" align="right" style="border-top:2px solid #000;">
+                    <tr>
+                        <td rowspan="3" class="td1">공<br />급<br />자</td>
+                        <td class="td2">등록<br />번호</td>
+                        <td colspan="3" class="td4">613-81-19833</td>
+                        <td rowspan="3" class="td1">공<br />급<br />받<br />는<br />자</td>
+                        <td class="td2">등록<br />번호</td>
+                        <td colspan="3" class="td4">{{ partnerBizNo }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td2">상호<br />(법인)</td>
+                        <td class="td3">세일단조<br />주식회사</td>
+                        <td class="td1">성<br />명</td>
+                        <td class="td3">김수권</td>
+                        <td class="td2">상호<br />(법인)</td>
+                        <td class="td3">{{ partnerName }}</td>
+                        <td class="td1">성<br />명</td>
+                        <td class="td3">{{ partnerCeo }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td2">사업장<br />주소</td>
+                        <td class="td4" colspan="3" style="text-align:left;padding-left:10px">진주시 진성면 동부로 1259번길 86</td>
+                        <td class="td2">사업장<br />주소</td>
+                        <td class="td4" colspan="3" style="text-align:left;padding-left:10px">{{ partnerAddr }}</td>
+                    </tr>
+                    </table>
+                    <table class="approval" align="right">
+                    <tr>
+                        <td rowspan="2" width="60px">기종</td>
+                        <td rowspan="2" width="120px">도번&middot;품명</td>
+                        <td rowspan="2" width="100px">단가</td>
+                        <td rowspan="2" width="180px" colspan="2">수량</td>
+                        <td rowspan="2" width="120px">금액</td>
+                        <td width="120px">수주번호</td>
+                    </tr>
+                    <tr>
+                        <td>POC NO</td>
+                    </tr>
+                    <tr>
+                        <td>{{ productType }}</td>
+                        <td>
+                            {{ drawingNo }}<br />
+                            {{ productName }}
+                        </td>
+                        <td>{{ productPrice | numberFormat }}원</td>
+                        <td colspan="2">
+                            <table style="width:100%">
+                            <tr>
+                                <td width="40%" height="24px">입고수</td>
+                                <td width="60%" style="text-align: right;padding-right: 10px;border-right:0">{{ deliveryQty | numberFormat }}</td>
+                            </tr>
+                            <tr>
+                                <td height="24px">합격수</td>
+                                <td style="border-right:0;"></td>
+                            </tr>
+                            <tr>
+                                <td height="24px" style="border-bottom:0">불합격</td>
+                                <td style="border-bottom:0;border-right:0"></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td>{{ deliveryPrice | numberFormat }}원</td>
+                        <td>
+                            <table style="width:100%">
+                            <tr>
+                                <td height="36px" style="border-right:0">{{ orderNo }}</td>
+                            </tr>
+                            <tr>
+                                <td height="36px" style="border-bottom:0;border-right:0">{{ pocNo }}</td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" height="32px">경비과 확인</td>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" height="32px">재고통제과 확인</td>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">확인</td>
+                        <td height="22px">재고통제과</td>
+                        <td>공정검사과</td>
+                        <td>외주과</td>
+                        <td>경리과</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="35px">&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">비고</td>
+                        <td rowspan="2" colspan="5">&nbsp;</td>
+                        <td>검사확인</td>
+                    </tr>
+                    <tr>
+                        <td height="35px">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3">인수자<br />확인</td>
+                        <td height="30px">납품자 및 차량NO</td>
+                        <td class="td9" colspan="6" style="text-align:left;padding-left:10px;">
+                            {{transportVehicle}}
+                            <span *ngIf="transportVehicle && unloadPlace">/</span>
+                            {{unloadPlace}}</td>
+                    </tr>
+                    <tr>
+                        <td height="30px">경 비 과</td>
+                        <td colspan="6">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="30px">재고통제과</td>
+                        <td colspan="6">&nbsp;</td>
+                    </tr>
+                    </table>
+                </div>
+
+
+                <div class="row m-t-lg">
+                    <div class="col-xs-4"></div>
+                    <div class="col-xs-5 text-center">
+                        <span class="title title1 print-target-delivered-title">{{ panel2Title }}</span>
+                    </div>
+                    <div class="col-xs-3">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table class="approval" align="right" style="border-top:2px solid #000;">
+                    <tr>
+                        <td rowspan="3" class="td1">공<br />급<br />자</td>
+                        <td class="td2">등록<br />번호</td>
+                        <td colspan="3" class="td4">613-81-19833</td>
+                        <td rowspan="3" class="td1">공<br />급<br />받<br />는<br />자</td>
+                        <td class="td2">등록<br />번호</td>
+                        <td colspan="3" class="td4">{{ partnerBizNo }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td2">상호<br />(법인)</td>
+                        <td class="td3">세일단조<br />주식회사</td>
+                        <td class="td1">성<br />명</td>
+                        <td class="td3">김수권</td>
+                        <td class="td2">상호<br />(법인)</td>
+                        <td class="td3">{{ partnerName }}</td>
+                        <td class="td1">성<br />명</td>
+                        <td class="td3">{{ partnerCeo }}</td>
+                    </tr>
+                    <tr>
+                        <td class="td2">사업장<br />주소</td>
+                        <td class="td4" colspan="3" style="text-align:left;padding-left:10px">진주시 진성면 동부로 1259번길 86</td>
+                        <td class="td2">사업장<br />주소</td>
+                        <td class="td4" colspan="3" style="text-align:left;padding-left:10px">{{ partnerAddr }}</td>
+                    </tr>
+                    </table>
+                    <table class="approval" align="right">
+                    <tr>
+                        <td rowspan="2" width="60px">기종</td>
+                        <td rowspan="2" width="120px">도번&middot;품명</td>
+                        <td rowspan="2" width="100px">단가</td>
+                        <td rowspan="2" width="180px" colspan="2">수량</td>
+                        <td rowspan="2" width="120px">금액</td>
+                        <td width="120px">수주번호</td>
+                    </tr>
+                    <tr>
+                        <td>POC NO</td>
+                    </tr>
+                    <tr>
+                        <td>{{ productType }}</td>
+                        <td>
+                            {{ drawingNo }}<br />
+                            {{ productName }}
+                        </td>
+                        <td>{{ productPrice | numberFormat }}원</td>
+                        <td colspan="2">
+                            <table style="width:100%">
+                            <tr>
+                                <td width="40%" height="24px">입고수</td>
+                                <td width="60%" style="text-align: right;padding-right: 10px;border-right:0">{{ deliveryQty | numberFormat }}</td>
+                            </tr>
+                            <tr>
+                                <td height="24px">합격수</td>
+                                <td style="border-right:0;"></td>
+                            </tr>
+                            <tr>
+                                <td height="24px" style="border-bottom:0">불합격</td>
+                                <td style="border-bottom:0;border-right:0"></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td>{{ deliveryPrice | numberFormat }}원</td>
+                        <td>
+                            <table style="width:100%">
+                            <tr>
+                                <td height="36px" style="border-right:0">{{ orderNo }}</td>
+                            </tr>
+                            <tr>
+                                <td height="36px" style="border-bottom:0;border-right:0">{{ pocNo }}</td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" height="32px">경비과 확인</td>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" height="32px">재고통제과 확인</td>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">확인</td>
+                        <td height="22px">재고통제과</td>
+                        <td>공정검사과</td>
+                        <td>외주과</td>
+                        <td>경리과</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="35px">&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">비고</td>
+                        <td rowspan="2" colspan="5">&nbsp;</td>
+                        <td>검사확인</td>
+                    </tr>
+                    <tr>
+                        <td height="35px">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3">인수자<br />확인</td>
+                        <td height="30px">납품자 및 차량NO</td>
+                        <td class="td9" colspan="6" style="text-align:left;padding-left:10px;">
+                            {{transportVehicle}}
+                            <span *ngIf="transportVehicle && unloadPlace">/</span>
+                            {{unloadPlace}}</td>
+                    </tr>
+                    <tr>
+                        <td height="30px">경 비 과</td>
+                        <td colspan="6">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="30px">재고통제과</td>
+                        <td colspan="6">&nbsp;</td>
+                    </tr>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

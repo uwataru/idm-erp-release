@@ -1,0 +1,97 @@
+/*.panel-body{*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    display: table;*/
+/*}*/
+
+#tblProductAnalysis {
+    .tbody-scroll {
+        width: 100%;
+        //min-height: 300px;
+        max-height: 608px;
+        overflow-y: auto;
+        display: block !important;
+    }
+
+    thead {
+        display: block;
+    }
+
+    .w50 {
+        width: 50px;
+    }
+
+    .w60 {
+        width: 65px;
+    }
+
+
+    .w70 {
+        width: 85px;
+    }
+
+    .w110 {
+        width: 115px;
+    }
+
+    .w120 {
+        width: 120px;
+    }
+}
+
+
+@media print {
+    .panel-body {
+        //display: table !important;
+    }
+
+    .tbody-scroll{
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        max-height: none !important;
+    }
+
+    table, thead, tbody{
+        //display: table;
+    }
+
+    tr {
+        padding: unset !important;
+        page-break-inside: avoid;
+    }
+
+    td span {
+        margin:0px !important;
+    }
+
+    #tblProductAnalysis {
+        .print-w50 {
+            width: 40px;
+        }
+
+        .print-w60 {
+            width: 45px;
+        }
+
+        .print-w70 {
+            width: 65px;
+        }
+
+        .print-w75 {
+            width: 68px;
+        }
+
+        .print-w110 {
+            width: 80px;
+        }
+
+        .print-w120 {
+            width: 69px;
+        }
+    }
+
+    #tblProductAnalysis * {
+        font-size: 10px;
+    }
+
+}

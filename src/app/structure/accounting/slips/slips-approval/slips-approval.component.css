@@ -1,0 +1,29 @@
+.panel-body.input-form {
+    border-bottom: 1px solid #eaeff0;
+    font-size: 13px;
+}
+
+.panel-body.input-form .form-group {
+    margin:3px;
+}
+
+.panel-body.input-form input.w-xxs {
+    width:42px;
+}
+
+.v_slip_no {
+    display: inline-block;
+    pading: 3px 0 3px 10px;
+    text-align: center;
+}
+
+button > span.badge {
+    background-color: #3399dd;
+    font-size: 85%;
+    top: -15px;
+    margin-right: -15px;
+}
+
+div.pull-right {
+    float:right;
+}

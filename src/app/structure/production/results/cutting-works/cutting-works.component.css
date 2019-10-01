@@ -1,0 +1,303 @@
+.modal-dialog.modal-xl {
+    width: 70%;
+}
+.modal-content.modal-xl {
+    min-height: 60%;
+}
+
+.panel {margin-bottom: 0}
+
+div.head {
+    overflow-x: hidden;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 2px solid #eee;
+}
+div.head .cell {
+    text-align: center;
+}
+div.body {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    width: 100%;
+    height: 590px;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+div.dnd-row {
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+div.body .dnd-row:hover {
+    border: 1px solid #0099ff;
+}
+div.body .dnd-row.active {
+	background-color: #f5f5f9;
+	border: 1px solid #0099ff;
+}
+div.body .dnd-row.caution {
+	background-color: #fff5f5;
+}
+div.body .dnd-row span.label {
+	position: absolute;
+    top: 5px;
+    right:5px;
+}
+
+div.dnd-row::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+div.cell {
+    padding: 3px 0;
+    border-right: 1px solid #eee;
+    float: left;
+}
+div.cell.product_code {width:130px;}
+div.cell.product_name {width:170px;}
+div.cell.material {width:150px;}
+div.cell.size {width:50px;}
+div.cell.steel_maker {width:150px;}
+div.cell.release_type {width:100px;}
+div.cell.poc_no {width:150px;}
+div.cell.order_qty {width:80px;}
+div.cell.input_weight {width:80px;}
+div.cell.forwarding_weight {width:80px;}
+div.cell.cutting_qty {width:100px;}
+div.blank {width:17px;}
+
+.modal-lg {
+    width:760px;
+}
+
+.btn-print {
+    position:absolute;
+    z-index: 10;
+    bottom: 20px;
+    right: 40px;
+}
+
+.print-area {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 740px;
+    height: 750px;
+    margin: 10px;
+    padding: 5px 10px 5px 5px;
+}
+
+table {
+    font-size:12px;
+}
+
+#update-confirm .changed-reason-header {
+    padding:5px;
+    background-color: #f0f0f0;
+}
+
+#update-confirm .changed-reason-body .before,
+#update-confirm .changed-reason-body .after {
+    padding: 0;
+    border: 1px solid #aaccee;
+    text-align: center;
+}
+
+#update-confirm .changed-reason-body .title {
+    padding:5px 0;
+    background-color: #aaccee;
+}
+
+#update-confirm .changed-reason-body .content {
+    padding:20px;
+}
+
+#cutting-work-allocation .title {
+    display: inline-block;
+    padding:18px 20px 12px 20px;
+    border-bottom:3px double #000;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+.title1 {
+    margin:10px 0 10px 0;
+}
+.title2 {
+    margin:30px 0 10px 0;
+}
+
+table.barcode {
+    width: 540px;
+    height: 50px;
+    margin: 10px 0 0 20px;
+}
+
+table.barcode th {
+    width:30px;
+    padding-top: 5px;
+    vertical-align: top;
+}
+
+table.barcode td {
+    width:240px;
+}
+
+table.approval {
+    width:210px;
+    height:60px;
+    margin:10px 0 0 0;
+    border-top:2px solid #000;
+    border-left:2px solid #000;
+    font-size: 12px;
+    font-weight: bold;
+}
+table.approval td{
+    border-right:2px solid #000;
+    border-bottom:2px solid #000;
+    text-align: center;
+}
+table.approval td.td1{
+    width:30px;
+    height:60px;
+    line-height: 300%;
+}
+table.approval td.td2{
+    width:80px;
+    height:20px;
+}
+
+table.work-order {
+    width: 100%;
+    margin: 20px 0 10px 0;
+}
+table.work-order th {
+    width:100px;
+    height:20px;
+    font-weight: normal;
+    text-align: right;
+}
+table.work-order td {
+    padding-left:5px;
+}
+table.work-order td span.dotted_box {
+    display: block;
+    height:20px;
+    border:1px dotted #000;
+}
+.box1 { width: 170px }
+.box2 { width: 150px }
+.box3 { width: 100px }
+.col1, .col2, .col3 { float: left; }
+.col1 { width: 250px; }
+.col2 { width: 250px; }
+.col3 { width: 200px; }
+
+table.weight {
+    width: 100%;
+    border-top:2px solid #000;
+    border-left:2px solid #000;
+}
+table.weight td{
+    border-right:2px solid #000;
+    border-bottom:2px solid #000;
+    text-align: center;
+}
+
+.b-b-dotted {
+    border-bottom:1px dotted #000;
+}
+
+
+#forging-work-allocation .title {
+    display: inline-block;
+    margin:30px 0 10px 0;
+    padding:0 10px 5px 10px;
+    _border-bottom:2px solid #333;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+table.work-line {
+    width: 100%;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+table.approval {
+    width:130px;
+    height:60px;
+    margin:10px 10px 0 0;
+    border-top:2px solid #333;
+    border-left:2px solid #333;
+    font-size: 12px;
+    font-weight: bold;
+}
+table.approval td{
+    border-right:2px solid #333;
+    border-bottom:2px solid #333;
+    text-align: center;
+}
+table.approval td.td1{
+    width:30px;
+    height:60px;
+    line-height: 300%;
+}
+table.approval td.td2{
+    width:80px;
+    height:20px;
+    letter-spacing: 12px;
+}
+
+.inventory_status_message {
+    width: 300px;
+    padding-top: 10px;
+}
+.inventory_status_message table.details {
+    border: 1px solid #eeeeee;
+    font-size:11px;
+}
+.inventory_status_message table.details th {
+    padding: 2px 0;
+    border-right: 1px solid #eeeeee;
+    text-align: center;
+}
+.inventory_status_message table.details td {
+    padding-right: 10px;
+    border-top: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
+    line-height: 100%;
+    text-align: right;
+}
+
+
+@media print {
+    div.dnd_head{
+        /*font-size: 11px;*/
+    }
+    .panel-body .body {
+        display: table !important;
+        overflow-x: hidden;
+        overflow-y: visible;
+        width: 100%;
+        min-height: unset;
+        max-height: unset;
+        border-left: 1px solid #eee;
+        border-right: 1px solid #eee;
+        /*font-size: 12px;*/
+    }
+
+    div.cell.product_code {width:100px;}
+    div.cell.product_name {width:198px;}
+    div.cell.material {width:110px;}
+    div.cell.size {width:45px;}
+    div.cell.steel_maker {width:110px;}
+    div.cell.release_type {width:75px;}
+    div.cell.poc_no {width:125px;}
+    div.cell.order_qty {width:75px;}
+    div.cell.input_weight {width:75px;}
+    div.cell.forwarding_weight {width:75px;}
+    div.cell.cutting_qty {width:75px;}
+}

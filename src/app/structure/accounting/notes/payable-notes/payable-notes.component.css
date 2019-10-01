@@ -1,0 +1,38 @@
+.all-row-color {
+    color:#000;
+    font-weight:bold;
+    background-color:#c4c4c4 !important;
+}
+.row-color {
+    color:#000;
+    font-weight:bold;
+    background-color:#dddddd !important;
+}
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+    .print-h .ngx-datatable {
+        width: 700px !important;
+    }
+    .print-h .datatable-row-center {
+        width: 700px !important;
+    }
+}

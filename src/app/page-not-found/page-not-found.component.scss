@@ -1,0 +1,35 @@
+.close_window {
+    text-align: right;
+}
+.container {
+    width: 70%;
+    height: 70%;
+    margin: 40px auto;
+}
+.outer {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.inner {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.centered {
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    padding: 1em;
+}
+h4, span, #reload {
+    margin: 15px;
+}
+h4, #reload{
+    margin-top: 50px;
+}
+.main {
+    font-size: 50px;
+    color: crimson;
+    font-style: bold;
+}

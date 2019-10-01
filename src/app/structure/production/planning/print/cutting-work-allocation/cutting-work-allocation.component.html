@@ -1,0 +1,429 @@
+<div class="row b-b">
+    <div class="col-xs-3 text-xs">세일단조</div>
+    <div class="col-xs-6 text-xs text-center">"사람평생 건강관리 &nbsp; 기업평생 품질관리"</div>
+    <div class="col-xs-3 text-xs text-right">{{ data.input_date }}</div>
+</div>
+
+<div class="row">
+    <div class="col-xs-8">
+        <div class="row">
+            <div class="col-xs-5"></div>
+            <div class="col-xs-7 text-right">
+                <span class="title title1">{{ panelTitle }}</span>
+            </div>
+        </div>
+        <div class="row">
+            <table class="barcode">
+            <tr>
+                <th>절<br />단</th>
+                <td>
+                    <ngx-barcode
+                        [bc-element-type]="elementType"
+                        [bc-value]="cuttingValue"
+                        [bc-format]="format"
+                        [bc-line-color]="lineColor"
+                        [bc-width]="width"
+                        [bc-height]="height"
+                        [bc-display-value]="displayValue"
+                        [bc-font-options]="fontOptions"
+                        [bc-font]="font"
+                        [bc-text-align]="textAlign"
+                        [bc-text-position]="textPosition"
+                        [bc-text-margin]="textMargin"
+                        [bc-font-size]="fontSize"
+                        [bc-background]="background"
+                        [bc-margin]="margin"
+                        [bc-margin-top]="marginTop"
+                        [bc-margin-bottom]="marginBottom"
+                        [bc-margin-left]="marginLeft"
+                        [bc-margin-right]="marginRight">
+                    </ngx-barcode>
+                </td>
+                <th>단<br />조</th>
+                <td>
+                    <ngx-barcode
+                        [bc-element-type]="elementType"
+                        [bc-value]="forgingValue"
+                        [bc-format]="format"
+                        [bc-line-color]="lineColor"
+                        [bc-width]="width"
+                        [bc-height]="height"
+                        [bc-display-value]="displayValue"
+                        [bc-font-options]="fontOptions"
+                        [bc-font]="font"
+                        [bc-text-align]="textAlign"
+                        [bc-text-position]="textPosition"
+                        [bc-text-margin]="textMargin"
+                        [bc-font-size]="fontSize"
+                        [bc-background]="background"
+                        [bc-margin]="margin"
+                        [bc-margin-top]="marginTop"
+                        [bc-margin-bottom]="marginBottom"
+                        [bc-margin-left]="marginLeft"
+                        [bc-margin-right]="marginRight">
+                    </ngx-barcode>
+                </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <table class="approval" align="right">
+        <tr>
+            <td rowspan="2" class="td1">결재</td>
+            <td class="td2">담당</td>
+            <td class="td2">과장</td>
+            <td class="td2">공장장</td>
+        </tr>
+        <tr>
+            <td class="blank">&nbsp;</td>
+            <td class="blank">&nbsp;</td>
+            <td class="blank">&nbsp;</td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-6">
+        <table class="work-order">
+        <tr>
+            <th>작업지시서 번호 : </th>
+            <td>{{ data.poc_no }}</td>
+        </tr>
+        <tr>
+            <th>지시일자 : </th>
+            <td>{{ data.input_date }}</td>
+        </tr>
+        <tr>
+            <th>제품번호 : </th>
+            <td>{{ data.product_code }}</td>
+        </tr>
+        <tr>
+            <th>기종, 위도번 : </th>
+            <td>{{ data.product_type }}, {{ data.sub_drawing_no }}</td>
+        </tr>
+        <tr>
+            <th>도번 : </th>
+            <td>{{ data.drawing_no }}</td>
+        </tr>
+        <tr>
+            <th>지시수량 : </th>
+            <td>{{ data.cutting_qty }}</td>
+        </tr>
+        <tr>
+            <th>지시재질 : </th>
+            <td>{{ data.material }}</td>
+        </tr>
+        <tr>
+            <th>지시규격 : </th>
+            <td>{{ data.size }} * {{ data.cut_length }}</td>
+        </tr>
+        <tr>
+            <th>제강메이커 : </th>
+            <td>{{ data.steel_maker }}</td>
+        </tr>
+        <tr>
+            <th>지시제강번호 : </th>
+            <td>{{ data.steel_no }}</td>
+        </tr>
+        <tr>
+            <th>지시투입중량 : </th>
+            <td><span *ngIf="data.input_weight > 0">{{ data.input_weight }} Kg</span></td>
+        </tr>
+        <tr>
+            <th>작업라인 : </th>
+            <td>{{ data.production_line }}</td>
+        </tr>
+        <tr>
+            <th>지시작업일자 : </th>
+            <td>{{ data.working_stime }}</td>
+        </tr>
+        <tr>
+            <th>지시소요시간 : </th>
+            <td>{{ data.production_time }}</td>
+        </tr>
+        </table>
+    </div>
+    <div class="col-xs-6">
+        <table class="work-order">
+        <tr>
+            <th>거래처 : </th>
+            <td>{{ data.partner_name }}</td>
+        </tr>
+        <tr>
+            <th>제품명 : </th>
+            <td>{{ data.product_name }}</td>
+        </tr>
+        </table>
+
+        <table class="weight">
+        <tr>
+            <td width="80px" class="text-center" rowspan="2">원단위</td>
+            <td>투입중량</td>
+            <td>소품중량</td>
+            <td>제품중량</td>
+        </tr>
+        <tr>
+            <td><span *ngIf="data.input_weight > 0">{{ data.input_weight }} Kg</span></td>
+            <td>{{ data.material_weight }} Kg</td>
+            <td><span *ngIf="data.product_weight > 0">{{ data.product_weight }} Kg</span></td>
+        </tr>
+        </table>
+
+        <table class="work-order">
+        <tr>
+            <th>사용수량 : </th>
+            <td colspan="3"><span class="dotted_box box1"></span></td>
+        </tr>
+        <tr>
+            <th>사용재질 : </th>
+            <td colspan="3"><span class="dotted_box box1"></span></td>
+        </tr>
+        <tr>
+            <th>사용규격 : </th>
+            <td colspan="3"><span class="dotted_box box1"></span></td>
+        </tr>
+        <tr>
+            <th>사용제강번호 : </th>
+            <td colspan="3"><span class="dotted_box box1"></span></td>
+        </tr>
+        <tr>
+            <th>실투입중량 : </th>
+            <td colspan="3"><span class="dotted_box box1"></span></td>
+        </tr>
+        <tr>
+            <th>절단업체 : </th>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th>금형번호 : </th>
+            <td colspan="3">003-917</td>
+        </tr>
+        <tr>
+            <th>금형규격 : </th>
+            <td>400</td>
+            <th>금형위치 : </th>
+            <td>23-33</td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="table-responsive m-t-xs m-b">
+	<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+    <colgroup>
+        <col width="100" />
+        <col width="80" />
+        <col width="*" />
+        <col width="80" />
+        <col width="100" />
+        <col width="100" />
+        <col width="100" />
+    </colgroup>
+	<thead>
+	<tr>
+		<th class="text-center">공정명</th>
+		<th class="text-center">공정기호</th>
+        <th class="text-center">지시사항</th>
+        <th class="text-center">작업자</th>
+        <th class="text-center">작업일자</th>
+		<th class="text-center">생산수량</th>
+		<th class="text-center">BOX수량</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td class="text-center">절단</td>
+		<td class="text-center">BS</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">단조</td>
+		<td class="text-center">FG</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">열처리</td>
+		<td class="text-center">HF</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">그라인딩</td>
+		<td class="text-center">GR</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">쇼트</td>
+		<td class="text-center">SH</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">자탐</td>
+		<td class="text-center">MP</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">교정</td>
+		<td class="text-center">PS</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">포장</td>
+		<td class="text-center">PA</td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+        <td class="text-center"></td>
+		<td class="text-center"></td>
+		<td class="text-center"></td>
+	</tr>
+    <tr>
+		<td class="text-center">특이사항</td>
+		<td colspan="7"></td>
+	</tr>
+	</tbody>
+	</table>
+</div>
+
+<div class="row">
+    <div class="col-xs-5 b-b-dotted"></div>
+    <div class="col-xs-2 text-center">절취선</div>
+    <div class="col-xs-5 b-b-dotted"></div>
+</div>
+
+<div class="row">
+    <div class="col-xs-1">
+    </div>
+    <div class="col-xs-11 text-center">
+        <span class="title title2">자 재 출 고 전 표</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-1">
+    </div>
+    <div class="col-xs-11">
+        <div class="row">
+            <div class="col1">
+                <table class="work-order">
+                <tr>
+                    <th>작업지시서 번호 : </th>
+                    <td>{{ data.poc_no }}</td>
+                </tr>
+                <tr>
+                    <th>지시일자 : </th>
+                    <td>{{ data.input_date }}</td>
+                </tr>
+                <tr>
+                    <th>제품번호 : </th>
+                    <td>{{ data.product_code }}</td>
+                </tr>
+                <tr>
+                    <th>거래처 : </th>
+                    <td>{{ data.partner_name }}</td>
+                </tr>
+                <tr>
+                    <th>위도번 : </th>
+                    <td>{{ data.sub_drawing_no }}</td>
+                </tr>
+                <tr>
+                    <th>지시제강번호 : </th>
+                    <td>{{ data.steel_no }}</td>
+                </tr>
+                </table>
+            </div>
+            <div class="col2">
+                <table class="work-order">
+                <tr>
+                    <th>지시작업일자 : </th>
+                    <td>{{ data.input_date }}</td>
+                </tr>
+                <tr>
+                    <th>도번 : </th>
+                    <td>{{ data.drawing_no }}</td>
+                </tr>
+                <tr>
+                    <th>제품명 : </th>
+                    <td>{{ data.product_name }}</td>
+                </tr>
+                <tr>
+                    <th>사용재질 : </th>
+                    <td><span class="dotted_box box2"></span></td>
+                </tr>
+                <tr>
+                    <th>사용규격 : </th>
+                    <td><span class="dotted_box box2"></span></td>
+                </tr>
+                <tr>
+                    <th>제강메이커 : </th>
+                    <td><span class="dotted_box box2"></span></td>
+                </tr>
+                <tr>
+                    <th>사용제강번호 : </th>
+                    <td><span class="dotted_box box2"></span></td>
+                </tr>
+                </table>
+            </div>
+            <div class="col3">
+                <table class="work-order">
+                <tr>
+                    <th>인수자 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                <tr>
+                    <th>작업자 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                <tr>
+                    <th>지시수량 : </th>
+                    <td>{{ data.cutting_qty | numberFormat }}</td>
+                </tr>
+                <tr>
+                    <th>절단수량 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                <tr>
+                    <th>절단중량 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                <tr>
+                    <th>전산처리 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                <tr>
+                    <th>전산확인 : </th>
+                    <td><span class="dotted_box box3"></span></td>
+                </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

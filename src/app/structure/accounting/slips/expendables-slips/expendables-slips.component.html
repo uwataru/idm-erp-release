@@ -1,0 +1,398 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body input-form">
+        <div class="row">
+            <form [formGroup]="inputForm">
+            <input type="hidden" formControlName="tmp_slip_code" />
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <div class="row">
+                        <label for="input_date" class="col-lg-5 control-label inline">
+                            기표일자
+                        </label>
+                        <div class="col-lg-7">
+                            <input type="text" formControlName="input_date" bsDatepicker placement="bottom left" class="form-control input-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label for="slip_no" class="col-lg-5 control-label inline">
+                            전표번호
+                        </label>
+                        <div class="col-lg-7">
+                            <span class="text-sm inline m-t-xs">{{ SlipNo }}</span>
+                            <input type="hidden" formControlName="slip_no" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <div class="row">
+                        <label for="entry_no" class="col-lg-7 control-label inline text-right">
+                            분개번호
+                        </label>
+                        <div class="col-lg-5">
+                            <input type="text" formControlName="entry_no" id="entry_no" (keyup)="showRows($event)" (keyup.enter)="nextFocus('acct_name')" class="form-control input-sm" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="form-group">
+                    <div class="row">
+                        <label for="acct_name" class="col-lg-3 control-label inline">
+                            계정과목 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-8">
+                            <input formControlName="acct_name"
+                                id="acct_name"
+                                [typeahead]="listAccounts"
+                                typeaheadOptionField="AcctName"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectAccounts($event)"
+                                placeholder="계정과목"
+                                class="input-sm form-control w-sm inline v-middle" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label for="amount" class="col-lg-3 control-label inline">
+                            금액 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-8">
+                            <input type="text" formControlName="amount" id="amount" (keyup)="AddComma($event)" (keyup.enter)="nextFocus('mgmt_item1')" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label for="dr_cr" class="col-lg-3 control-label inline">
+                            차대구분 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-8">
+                            <label class="i-checks">
+                                <input type="radio" formControlName="dr_cr" value="DR" class="form-control input-xs">
+                                <i></i>
+                                차변
+                            </label>
+                            <label class="i-checks">
+                                <input type="radio" formControlName="dr_cr" value="CR" class="form-control input-xs">
+                                <i></i>
+                                대변
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label for="brief_summary" class="col-lg-3 control-label inline">
+                            적요 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-8">
+                            <input type="text" formControlName="brief_summary" id="brief_summary" (keyup.enter)="Save()" class="form-control input-sm" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div *ngIf="MgmtItem1Name != ''" class="form-group">
+                    <div class="row">
+                        <label for="mgmt_item1" class="col-lg-5 control-label inline">
+                            {{ MgmtItem1Name }} <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input *ngIf="MgmtItem1Values != ''"
+                                formControlName="mgmt_item1_name"
+                                id="mgmt_item1_name"
+                                [typeahead]="MgmtItem1Values"
+                                typeaheadOptionField="mgmt_item_value_name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectItemValues($event, 1)"
+                                placeholder="{{ MgmtItem1Name }}"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input *ngIf="MgmtItem1Values.length > 0" type="hidden" formControlName="mgmt_item1" id="mgmt_item1" />
+                            <input *ngIf="MgmtItem1Values.length == 0" type="text" formControlName="mgmt_item1" id="mgmt_item1" (keyup.enter)="nextFocus('mgmt_item2')" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="MgmtItem2Name != ''" class="form-group">
+                    <div class="row">
+                        <label for="mgmt_item2" class="col-lg-5 control-label inline">
+                            {{ MgmtItem2Name }} <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input *ngIf="MgmtItem2Values != ''"
+                                formControlName="mgmt_item2_name"
+                                id="mgmt_item2_name"
+                                [typeahead]="MgmtItem2Values"
+                                typeaheadOptionField="mgmt_item_value_name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectItemValues($event, 2)"
+                                placeholder="{{ MgmtItem2Name }}"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input *ngIf="MgmtItem2Values.length > 0" type="hidden" formControlName="mgmt_item2" id="mgmt_item2" />
+                            <input *ngIf="MgmtItem2Values.length == 0" type="text" formControlName="mgmt_item2" id="mgmt_item2" (keyup.enter)="nextFocus('mgmt_item3')" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="MgmtItem3Name != ''" class="form-group">
+                    <div class="row">
+                        <label for="mgmt_item3" class="col-lg-5 control-label inline">
+                            {{ MgmtItem3Name }} <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input *ngIf="MgmtItem3Values != ''"
+                                formControlName="mgmt_item3_name"
+                                id="mgmt_item3_name"
+                                [typeahead]="MgmtItem3Values"
+                                typeaheadOptionField="mgmt_item_value_name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectItemValues($event, 3)"
+                                placeholder="{{ MgmtItem3Name }}"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input *ngIf="MgmtItem3Values.length > 0" type="hidden" formControlName="mgmt_item3" id="mgmt_item3" />
+                            <input *ngIf="MgmtItem3Values.length == 0" type="text" formControlName="mgmt_item3" id="mgmt_item3" (keyup.enter)="nextFocus('mgmt_item4')" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="MgmtItem4Name != ''" class="form-group">
+                    <div class="row">
+                        <label for="mgmt_item4" class="col-lg-5 control-label inline">
+                            {{ MgmtItem4Name }} <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-7">
+                            <input *ngIf="MgmtItem4Values != ''"
+                                formControlName="mgmt_item4_name"
+                                id="mgmt_item4_name"
+                                [typeahead]="MgmtItem3Values"
+                                typeaheadOptionField="mgmt_item_value_name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectItemValues($event, 4)"
+                                placeholder="{{ MgmtItem4Name }}"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input *ngIf="MgmtItem4Values.length > 0" type="hidden" formControlName="mgmt_item4" id="mgmt_item4" />
+                            <input *ngIf="MgmtItem4Values.length == 0" type="text" formControlName="mgmt_item4" id="mgmt_item4" (keyup.enter)="nextFocus('brief_summary')" class="form-control input-sm w-sm" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap selection-cell"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="entry_no" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event);"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_acct_name" name="차변계정과목" [width]="200" [canAutoResize]="false" [resizeable]="false">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" id="dr_acct_name_{{ row.entry_no }}" (click)="Edit(row.dr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR', row.cr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no == 0" id="dr_acct_name_{{ row.entry_no }}" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_amount" name="차변금액" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" id="dr_amount_{{ row.entry_no }}" (click)="Edit(row.dr_id)" class="wrapper-xs active">{{ value | numberFormat }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR', row.cr_amount)" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_id" name="ID" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="brief_summary" name="적요"></ngx-datatable-column>
+            <ngx-datatable-column prop="cr_id" name="ID" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="cr_acct_name" name="대변계정과목" [width]="200" [canAutoResize]="false" [resizeable]="false">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" id="cr_acct_name_{{ row.entry_no }}" (click)="Edit(row.cr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="cr_amount" name="대변금액" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" id="cr_amount_{{ row.entry_no }}" (click)="Edit(row.cr_id)" class="wrapper-xs active">{{ value | numberFormat }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+        <div class="table-responsive" style="margin-bottom:0">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="230px"></td>
+                <td width="200px" class="text-right">
+                    <span>{{ drAmountSum | numberFormat }}</span>
+                </td>
+                <td class="text-center">차대변합계금액</td>
+                <td width="200px"></td>
+                <td width="216px" class="text-right">
+                    <span>{{ crAmountSum | numberFormat }}</span>
+                </td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <button (click)="Delete()" [disabled]="selected.length == 0" id="btn_delete_checked" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>분개삭제
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs pos-rlt">
+                <button (click)="Confirm()" [disabled]="rows.length == 0" class="btn btn-sm btn-dark btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>저장
+                </button>
+                <button (click)="ResetSlip()" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>신규
+                </button>
+                <button (click)="openModal('search')" class="btn btn-sm btn-info btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>검색
+                </button>
+                <button (click)="openModal('delete')" [disabled]="totalCount == 0" id="btn_delete_checked" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+                <!-- <button class="btn btn-sm btn-info btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>인쇄
+                </button> -->
+                <div *ngIf="isConfirm == true" id="confirm">
+
+                    <div class="conform-body">
+                        입력하신 전표를 저장하시겠습니까?
+                    </div>
+
+                    <div class="conform-footer">
+                        <button type="button" (click)="SaveSlip()" class="btn btn-dark btn-save">확인</button>
+                        <button type="button" (click)="Cancel()" class="btn btn-primary btn-cancel m-l-sm">취소</button>
+                    </div>
+
+                </div>
+    		</div>
+        </div>
+	</footer>
+
+</div>
+
+<div bsModal #SearchFormModal="bs-modal" id="search-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="SearchFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ searchFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="padder-v">
+
+                    <div class="row m-l-xs m-b-sm">
+                        <form [formGroup]="searchForm">
+                            <label for="input_date">일자</label>
+                            <input type="text"
+                                formControlName="input_date"
+                                id="input_date"
+                                bsDatepicker
+                                placement="bottom left"
+                                (keyup.enter)="SearchSlipByDate()"
+                                (bsValueChange)="onValueChange($event)"
+                                class="form-control inline input-sm w-sm" />
+                            <button (click)="SearchSlipByDate()" class="btn btn-sm btn-default">검색</button>
+                        </form>
+                    </div>
+
+                    <ngx-datatable
+                        [style.height.px] = "280"
+                        class="bootstrap"
+                        [rows]="schSlipRows"
+                        [columnMode]="'force'"
+                        [headerHeight]="30"
+                        [rowHeight]="30"
+                        [scrollbarV]="true"
+                        [scrollbarH]="false"
+                        [selected]="selected"
+                        [selectionType]="'single'"
+                        (select)="onSelectSlip($event)"
+                        [messages]="messages">
+                        <ngx-datatable-column prop="slip_no" name="전표번호" cellClass="text-center"></ngx-datatable-column>
+                        <ngx-datatable-column prop="createdAt" name="최초입력일" cellClass="text-center"></ngx-datatable-column>
+                        <ngx-datatable-column prop="updatedAt" name="최종수정일" cellClass="text-center"></ngx-datatable-column>
+                    </ngx-datatable>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="SearchFormModal.hide()" class="btn btn-primary btn-cancel">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #DeleteConfirmModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteConfirmModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    해당 전표({{ SlipNo }})를 삭제하시겠습니까?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="DeleteSlip()" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" (click)="DeleteConfirmModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

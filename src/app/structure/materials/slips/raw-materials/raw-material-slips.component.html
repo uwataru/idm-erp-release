@@ -1,0 +1,176 @@
+<div class="panel panel-default" id="print-main-list">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs">
+            <form [formGroup]="searchForm">
+                <label for="rcv_date" class="control-label text-sm">입고일자</label>
+                <input id="rcv_date" type="text" formControlName="rcv_date" id="rcv_date" (keyup.enter)="GetAll()" bsDatepicker (bsValueChange)="onValueChange($event)" placement="bottom left" class="input-sm form-control w-xs inline v-middle">
+                <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                <label for="slip_no" class="control-label text-sm m-l">전표번호</label>
+                <input id="slip_no" type="text" formControlName="slip_no" id="slip_no" class="input-sm form-control w-sm inline v-middle">
+            </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [virtualization]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll hidden-print" cellClass="text-center hidden-print">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="material" name="재질" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="abcdef rms-print-mat-width" cellClass="text-center rms-print-mat-width"></ngx-datatable-column>
+            <ngx-datatable-column prop="size" name="크기" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-size-width" cellClass="text-center rms-print-size-width">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처" headerClass="rms-print-par-width" cellClass="text-center rms-print-par-width"></ngx-datatable-column>
+            <ngx-datatable-column prop="rcv_weight" name="중량" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-wei-width" cellClass="text-right rms-print-wei-width">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="price_per_unit" name="단가" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-pri-width" cellClass="text-right rms-print-pri-width">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="order_amount" name="금액" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-ord-width" cellClass="text-right rms-print-ord-width">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+        <div class="table-responsive rms-print-sum">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="180px" class="text-center rms-print-width1">합계</td>
+                <td width="150px" class="text-right rms-print-width2"></td>
+                <td class="rms-print-width3"></td>
+                <td width="150px" class="text-right pd9 rms-print-width4">
+                    <span>{{ totalRcvWeight | numberFormat }}</span>
+                </td>
+                <td width="150px" class="text-right rms-print-width5"></td>
+                <td width="149px" class="text-right pd9 rms-print-width6">
+                    <span>{{ totalOrderAmount | numberFormat }}</span>
+                </td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <form [formGroup]="inputForm">
+                <input formControlName="dr_acct_name"
+                    id="dr_acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event,'dr')"
+                    placeholder="차변계정"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <input formControlName="cr_acct_name"
+                    id="cr_acct_name"
+                    [typeahead]="listAccounts"
+                    typeaheadOptionField="AcctName"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectAccounts($event, 'cr')"
+                    placeholder="대변계정"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <button (click)="Save()" [disabled]="!inputForm.valid || selected.length < 1" class="btn btn-sm btn-primary btn-addon"><i class="glyphicon glyphicon-save"></i>저장</button>
+                    <button type="button" class="btn btn-sm btn-info btn-addon"
+                            (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER)">
+                        <i class="glyphicon glyphicon-print"></i>인쇄
+                    </button>
+                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+                </form>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #PrintResultsModal="bs-modal" id="printSlip" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" id="print-target-rm-slips">
+		<div class="modal-content modal-content-print">
+			<div class="modal-header">
+				<button type="button" class="close hidden-print" aria-label="Close" (click)="PrintResultsModal.hide()"><span
+                        aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">원자재입고처리결과</h4>
+			</div>
+			<div class="modal-body">
+                <button type="button" class="btn btn-sm btn-info btn-addon btn-print hidden-print"
+                        (click)="elSrv.readyPrint('print-target-rm-slips')"><i
+                        class="glyphicon glyphicon-print"></i>인쇄</button>
+
+                <div class="m-b-sm">전표번호: {{ slipNo }}</div>
+
+                <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+        		<thead>
+        		<tr>
+                    <th style="padding: 10px;">차변계정</th>
+        			<th style="padding: 10px;">금액</th>
+        			<th style="padding: 10px;">적요</th>
+        			<th style="padding: 10px;">금액</th>
+        			<th style="padding: 10px;">대변계정</th>
+        		</tr>
+        		</thead>
+        		<tbody>
+                <tr *ngFor="let row of resultRows">
+                    <td class="text-center">{{ row.dr_acct_name }}</td>
+                    <td class="text-right">
+                        <span>{{ row.dr_amount | numberFormat }}</span>
+                    </td>
+        			<td class="text-center">{{ row.brief_summary }}</td>
+                    <td class="text-right">
+                        <span>{{ row.cr_amount | numberFormat }}</span>
+                    </td>
+                    <td class="text-center">{{ row.cr_acct_name }}</td>
+        		</tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

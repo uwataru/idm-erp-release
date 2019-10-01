@@ -1,0 +1,165 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+		<thead>
+		<tr>
+            <th width="10%">작업라인</th>
+			<th colspan="2" width="30%">1조</th>
+			<th colspan="2" width="30%">2조</th>
+			<th colspan="2" width="30%">3조</th>
+		</tr>
+		</thead>
+		<tbody>
+        <tr *ngFor="let row of rows">
+            <td class="text-center">{{ row.line_code }}</td>
+			<td class="text-center">
+                {{row.group1_code}}
+            </td>
+            <td class="text-center">
+                {{row.group1_leader}}
+            </td>
+            <td class="text-center">
+                {{row.group2_code}}
+            </td>
+            <td class="text-center">
+                {{row.group2_leader}}
+            </td>
+            <td class="text-center">
+                {{row.group3_code}}
+            </td>
+            <td class="text-center">
+                {{row.group3_leader}}
+            </td>
+        </tr>
+        <tr *ngFor="let row of rows"><tr *ngIf="!rows">
+            <td colspan="7" class="no-data">
+                검색된 데이터가 없습니다.
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <div class="panel-footer text-right">
+        <button (click)="openModal('edit')" class="btn btn-sm btn-dark btn-addon">
+            <i class="glyphicon glyphicon-plus"></i>수정
+        </button>
+	</div>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <table>
+                <tr>
+                    <th width="100px">
+                        <label for="input_date">등록일</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="input_date" id="input_date" required class="form-control input-sm w-xs" />
+                    </td>
+                </tr>
+				<tr>
+                    <th width="100px">
+                        <label for="start_date">적용기간</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="start_date" id="start_date" required class="form-control inline input-sm w-xs" /> -
+						<input type="text" formControlName="end_date" id="end_date" required class="form-control inline input-sm w-xs" />
+                    </td>
+                </tr>
+                </table>
+
+                <table>
+                <tr>
+                    <th width="10%">
+                        <label>작업라인</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <th width="30%" colspan="2" class="text-center">
+                        <label>1조</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <th width="30%" colspan="2" class="text-center">
+                        <label>2조</label>
+                    </th>
+                    <th width="30%" colspan="2" class="text-center">
+                        <label>3조</label>
+                    </th>
+                </tr>
+				<tr *ngFor="let code of lines">
+                    <td class='text-center'>
+                        <input type="text" formControlName="line_{{ code }}_code" id="line_{{ code }}_code" class="form-control input-sm w-xs" />
+                    </td>
+                    <td class='text-right'>
+                        <input type="text" formControlName="line_{{ code }}_group1_code" id="line_{{ code }}_group1_code" required class="form-control inline input-sm w-xs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="line_{{ code }}_group1_leader" id="line_{{ code }}_group1_leader" required class="form-control inline input-sm w-xs" />
+                    </td>
+                    <td class='text-right'>
+						<input type="text" formControlName="line_{{ code }}_group2_code" id="line_{{ code }}_group2_code" class="form-control inline input-sm w-xs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="line_{{ code }}_group2_leader" id="line_{{ code }}_group2_leader" class="form-control inline input-sm w-xs" />
+                    </td>
+                    <td class='text-right'>
+                        <input type="text" formControlName="line_{{ code }}_group3_code" id="line_{{ code }}_group3_code" class="form-control inline input-sm w-xs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="line_{{ code }}_group3_leader" id="line_{{ code }}_group3_leader" class="form-control inline input-sm w-xs" />
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ deleteConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

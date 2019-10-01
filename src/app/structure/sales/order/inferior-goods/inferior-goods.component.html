@@ -1,0 +1,109 @@
+<div class="panel panel-default" id="print-target-goods-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <form [formGroup]="searchForm">
+                <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+                <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
+                <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+                    <input formControlName="sch_partner_name"
+                        [typeahead]="listPartners"
+                        typeaheadOptionField="Alias"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectListPartner($event)"
+                        placeholder="거래처명"
+                        class="input-sm form-control w-sm inline v-middle" />
+                    <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarH]="false"
+            [scrollbarV]="true"
+            [virtualization]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="delivery_date" name="납품일자" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="sales_qty" name="불량수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_price" name="단가" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="sales_price" name="금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            <tbody>
+            <tr>
+                <td width="100px" class="text-center">합계</td>
+                <td width="150px" class="text-right"></td>
+                <td width="120px" class="text-right"></td>
+                <td width="120px" class="text-right"></td>
+                <td></td>
+                <td width="150px" class="text-right"></td>
+                <td width="70px" class="text-right"></td>
+                <td width="70px" class="text-right">
+                    <span>{{ totalQty | numberFormat }}</span>
+                </td>
+                <td width="90px" class="text-right"></td>
+                <td width="125px" class="text-right">
+                    <span>{{ totalSalesPrice | numberFormat }}</span>
+                </td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-goods-comp', '', electronService.PRINT_OPT.LANDSCAPE)"><i class="glyphicon glyphicon-print"></i>인쇄</button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
+</div>

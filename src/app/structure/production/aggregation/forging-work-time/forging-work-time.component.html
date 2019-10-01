@@ -1,0 +1,141 @@
+<div class="panel panel-default" id="print-target-wt-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="m-l-xs">
+            <form [formGroup]="searchForm">
+            <label for="sch_sdate" class="control-label text-sm">기간</label>
+            <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
+            <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+            <label for="production_line" class="control-label text-sm m-l">작업LINE</label>
+            <select formControlName="production_line" id="production_line" class="input-sm form-control w-sm inline v-middle">
+                <option value=""></option>
+                <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
+            </select>
+            <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table id="tblForgingWorkResults">
+                <thead>
+                    <tr>
+                        <th class="date print-date">작업일</th>
+                        <th class="workline print-workline">라인</th>
+                        <th class="prodCode print-prodCode">제품번호</th>
+                        <th class="drawingNo print-drawingNo">도번</th>
+                        <th class="prodName print-prodName">제품명</th>
+                        <th class="pocNo print-PocNo">POC NO</th>
+                        <th class="qty print-qty">생산수량</th>
+                        <th class="time print-time prin-font">총근무시간</th>
+                        <th class="time print-time">준비시간</th>
+                        <th class="time print-time">고장시간</th>
+                        <th class="time print-time">기타정지</th>
+                        <th class="time print-time prin-font">순작업시간</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody-scroll">
+                <div *ngFor="let daterows of rows">
+                    <div *ngFor="let linerow of daterows.dateData; let indexData = index">
+                        <tr *ngFor="let row of linerow.lineData; let indexRow = index">
+                            <td class="date print-date font-size"><span *ngIf="indexData == 0 && indexRow == 0">{{ daterows.dateKey }}</span></td>
+                            <td class="workline print-workline font-size"><span *ngIf="indexRow == 0">{{ linerow.lineKey }}</span></td>
+                            <td class="prodCode print-prodCode font-size"><span>{{ row.product_code }}</span></td>
+                            <td class="drawingNo print-drawingNo font-size"><span>{{ row.drawing_no }}</span></td>
+                            <td class="prodName print-prodName font-size"><span>{{ row.product_name }}</span></td>
+                            <td class="pocNo text-center print-PocNo font-size"><span>{{ row.poc_no }}</span></td>
+                            <td class="qty text-right print-qty font-size">
+                                <span *ngIf="row.production_qty > 0">{{ row.production_qty | numberFormat }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span *ngIf="row.working_time != 0">{{ row.working_time | numberFormat }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span *ngIf="row.preparation_time != 0">{{ row.preparation_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span *ngIf="row.failure_time != 0">{{ row.failure_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span *ngIf="row.stop_time != 0">{{ row.stop_time }}</span>
+                            </td>
+                            <td class="time text-right last-time print-time font-size">
+                                <span *ngIf="row.real_working_time != 0">{{ row.real_working_time | numberFormat }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="date print-date"></td>
+                            <td class="workline print-workline"></td>
+                            <td class="prodCode text-center print-prodCode">계</td>
+                            <td class="drawingNo print-drawingNo"></td>
+                            <td class="prodName print-prodName"></td>
+                            <td class="pocNo print-PocNo"></td>
+                            <td class="qty text-right print-qty font-size">
+                                <span>{{ linerow.lineSum.production_qty | numberFormat }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ linerow.lineSum.working_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ linerow.lineSum.preparation_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ linerow.lineSum.failure_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ linerow.lineSum.stop_time }}</span>
+                            </td>
+                            <td class="time text-right last-time print-time font-size">
+                                <span>{{ linerow.lineSum.real_working_time }}</span>
+                            </td>
+                        </tr>
+                    </div>
+                        <tr>
+                            <td class="date print-date"></td>
+                            <td class="workline text-center print-workline">계</td>
+                            <td class="prodCode print-prodCode">&nbsp;</td>
+                            <td class="drawingNo print-drawingNo">&nbsp;</td>
+                            <td class="prodName print-prodName">&nbsp;</td>
+                            <td class="pocNo print-PocNo">&nbsp;</td>
+                            <td class="qty text-right print-qty font-size">
+                                <span>{{ daterows.dateSum.production_qty | numberFormat }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ daterows.dateSum.working_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ daterows.dateSum.preparation_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ daterows.dateSum.failure_time }}</span>
+                            </td>
+                            <td class="time text-right print-time font-size">
+                                <span>{{ daterows.dateSum.stop_time }}</span>
+                            </td>
+                            <td class="time text-right last-time print-time font-size">
+                                <span>{{ daterows.dateSum.real_working_time }}</span>
+                            </td>
+                        </tr>
+                </div>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-wt-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>

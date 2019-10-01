@@ -1,0 +1,29 @@
+.btn-print {
+    position:absolute;
+    z-index: 10;
+    top: -42px;
+    right: 50px;
+}
+
+
+@media print {
+    .modal-content-print {
+        border: 1px solid rgba(0, 0, 0, .0);
+    }
+    .panel-body {
+        display: table !important;
+    }
+    .ngx-datatable {
+        height: unset !important;
+    }
+    .datatable-body {
+        height: unset !important;
+    }
+    .datatable-scroll {
+        display: table !important;
+    }
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+}

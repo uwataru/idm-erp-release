@@ -1,0 +1,131 @@
+<div class="panel panel-default" id="print-target-al-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+        </div>
+
+        <form [formGroup]="searchForm">
+            <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+            <input type="text"
+                formControlName="sch_sdate"
+                id="sch_sdate"
+                bsDatepicker
+                placement="bottom left"
+                class="form-control inline input-sm w-xs" /> ~
+            <input type="text"
+                formControlName="sch_edate"
+                id="sch_edate"
+                bsDatepicker
+                placement="bottom left"
+                class="form-control inline input-sm w-xs" />
+            <label for="acct_name" class="control-label text-sm m-l-lg">계정과목</label>
+            <input formControlName="acct_name"
+                id="acct_name"
+                [typeahead]="listAccounts"
+                typeaheadOptionField="AcctName"
+                [typeaheadOptionsLimit]="50"
+                [typeaheadScrollable]="true"
+                [typeaheadMinLength]="0"
+                (typeaheadOnSelect)="onSelectAccounts($event)"
+                placeholder="계정과목"
+                class="input-sm form-control w-sm inline v-middle" />
+            <button (click)="GetAll()" [disabled]="! searchForm.valid" class="btn btn-sm btn-default hidden-print">검색</button>
+        </form>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selectionType]="'checkbox'"
+            [virtualization]="false"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="slip_no" name="전표번호" [width]="110" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="brief_summary" name="적요" [width]="300" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="dr_amount" name="차변금액" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="cr_amount" name="대변금액" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="balance" name="잔액" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="rel_acct_name" name="상대계정" [width]="200" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="mgmt_item_name" name="관리내역"></ngx-datatable-column>
+        </ngx-datatable>
+
+        <div class="table-responsive">
+    		<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+    		<tbody>
+    		<tr>
+                <td width="111px"></td>
+                <td width="300px">기간합계</td>
+    			<td width="120px" class="text-right">{{ drAmountSum | numberFormat }}</td>
+    			<td width="120px" class="text-right">{{ crAmountSum | numberFormat }}</td>
+    			<td width="120px" class="text-right">{{ drAmountSum - crAmountSum | numberFormat }}</td>
+    			<td width="200px"></td>
+                <td width="*"></td>
+    		</tr>
+            <tr>
+                <td></td>
+                <td>총합계</td>
+    			<td class="text-right">{{ totalDrAmountSum | numberFormat }}</td>
+    			<td class="text-right">{{ totalCrAmountSum | numberFormat }}</td>
+    			<td class="text-right">{{ totalDrAmountSum - totalCrAmountSum | numberFormat }}</td>
+    			<td></td>
+                <td></td>
+    		</tr>
+    		</tbody>
+    		</table>
+    	</div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-al-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

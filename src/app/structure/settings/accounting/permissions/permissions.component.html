@@ -1,0 +1,208 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table">
+		<thead>
+		<tr>
+            <th class="grp_name">구분</th>
+			<th class="cfg_code">메뉴코드</th>
+			<th class="cfg_name">메뉴명</th>
+			<th class="accessible_users">조회</th>
+			<th class="executable_users">실행</th>
+            <th class="printable_users">인쇄</th>
+            <th class="approval_users">결재</th>
+		</tr>
+		</thead>
+		<tbody>
+        <tr *ngFor="let row of rows">
+            <td class="grp_name">{{ row.grp_name }}</td>
+			<td class="cfg_code">{{ row.cfg_code }}</td>
+			<td class="cfg_name">{{ row.cfg_name }}</td>
+			<td class="accessible_users" id="accessible_users_{{row.id}}">
+                <span>{{ row.access_users }}</span>
+                <button (click)="openModal('access', row.id, row.cfg_name)" class="btn btn-xs btn-success">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button>
+            </td>
+			<td class="executable_users" id="executable_users_{{row.id}}">
+                <span>{{ row.execution_users }}</span>
+                <button (click)="openModal('execution', row.id, row.cfg_name)" class="btn btn-xs btn-danger">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button>
+            </td>
+			<td class="printable_users" id="printable_users_{{row.id}}">
+                <span>{{ row.print_users }}</span>
+                <button (click)="openModal('print', row.id, row.cfg_name)" class="btn btn-xs btn-info">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button>
+            </td>
+            <td class="approval_users" id="approval_users_{{row.id}}">
+                <span>{{ row.approval_users }}</span>
+                <button (click)="openModal('approval', row.id, row.cfg_name)" class="btn btn-xs btn-primary">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button>
+            </td>
+		</tr>
+        <tr *ngIf="!rows">
+            <td colspan="8" class="no-data">
+                검색된 데이터가 없습니다.
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <!-- <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button> -->
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <!-- <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('write','')">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button> -->
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ selectedMenuName }} {{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <ul class="users row">
+                    <li *ngFor="let user of users">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" formControlName="id_{{ user.UserId }}" id="id_{{ user.UserId }}" />{{ user.UserName }}
+                        </label>
+                    </li>
+                </ul>
+
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-black btn-cancel">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div bsModal #ApprovalFormModal="bs-modal" id="approval-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+            <form [formGroup]="approvalForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="ApprovalFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ selectedMenuName }} {{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <th>결제자1</th>
+                    <th>결제자2</th>
+                    <th>결제자3</th>
+                    <th>결제자4</th>
+                    <th>결제자5</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <input formControlName="approval_user_name1"
+                            [typeahead]="users"
+                            typeaheadOptionField="UserName"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectApprovalUser($event,1)"
+                            placeholder=""
+                            class="input-sm form-control w-xs inline v-middle" />
+                        <input type="hidden" formControlName="approval_user_id1" id="approval_user_id1" />
+                    </td>
+                    <td>
+                        <input formControlName="approval_user_name2"
+                            [typeahead]="users"
+                            typeaheadOptionField="UserName"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectApprovalUser($event,2)"
+                            placeholder=""
+                            class="input-sm form-control w-xs inline v-middle" />
+                        <input type="hidden" formControlName="approval_user_id2" id="approval_user_id2" />
+                    </td>
+                    <td>
+                        <input formControlName="approval_user_name3"
+                            [typeahead]="users"
+                            typeaheadOptionField="UserName"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectApprovalUser($event,3)"
+                            placeholder=""
+                            class="input-sm form-control w-xs inline v-middle" />
+                        <input type="hidden" formControlName="approval_user_id3" id="approval_user_id3" />
+                    </td>
+                    <td>
+                        <input formControlName="approval_user_name4"
+                            [typeahead]="users"
+                            typeaheadOptionField="UserName"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectApprovalUser($event,4)"
+                            placeholder=""
+                            class="input-sm form-control w-xs inline v-middle" />
+                        <input type="hidden" formControlName="approval_user_id4" id="approval_user_id4" />
+                    </td>
+                    <td>
+                        <input formControlName="approval_user_name5"
+                            [typeahead]="users"
+                            typeaheadOptionField="UserName"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectApprovalUser($event,5)"
+                            placeholder=""
+                            class="input-sm form-control w-xs inline v-middle" />
+                        <input type="hidden" formControlName="approval_user_id5" id="approval_user_id5" />
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="SaveApprovalLine()" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="ApprovalFormModal.hide()" class="btn btn-black btn-cancel">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>

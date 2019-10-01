@@ -1,0 +1,156 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <form [formGroup]="inputForm">
+        <input type="hidden" formControlName="forging_id" id="forging_id" />
+
+        <div class="form-group">
+            <div class="row">
+				<label for="order_date" class="col-lg-2 control-label">
+                    발주일자
+                </label>
+				<div class="col-lg-4">
+					<input type="text" formControlName="order_date" id="order_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
+				</div>
+                <label for="rcv_req_date" class="col-lg-2 control-label">
+                    납품요구일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-4">
+                    <input type="text" formControlName="rcv_req_date" id="rcv_req_date" nextFocus="poc_no" bsDatepicker placement="bottom left" class="form-control input-sm w-sm" />
+                </div>
+            </div>
+		</div>
+
+        <div class="form-group">
+            <div class="row">
+				<label for="poc_no" class="col-lg-2 control-label">
+                    POC No <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+				<div class="col-lg-4">
+					<input type="text" formControlName="poc_no" id="poc_no" (keydown.enter)="loadInfo($event)" class="form-control w-sm" />
+				</div>
+                <label for="order_qty" class="col-lg-2 control-label">
+                    가공수량
+                </label>
+                <div class="col-lg-4">
+                    <input type="text" decimal [(ngModel)]="order_qty" formControlName="order_qty" id="order_qty" nextFocus="partner_name" class="form-control inline input-sm w-sm" />
+                </div>
+            </div>
+		</div>
+
+        <div class="form-group">
+            <div class="row">
+                <label for="partner_name" class="col-lg-2 control-label">
+                    가공업체 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-4">
+                    <input formControlName="partner_name" id="partner_name"
+                        [typeahead]="inputPartners"
+                        typeaheadOptionField="Name"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectInputPartner($event)"
+                        placeholder="거래처명"
+                        autocomplete="off"
+                        class="input-sm form-control w-sm inline v-middle" />
+                    <input type="hidden" formControlName="partner_code" id="partner_code" />
+                </div>
+                <label for="machining_process" class="col-lg-2 control-label">
+                    가공공정 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-4">
+                    <input type="text" formControlName="machining_process" id="machining_process" nextFocus="price_per_unit" class="form-control input-sm w-sm" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+				<label for="product_code" class="col-lg-2 control-label">
+                    제품번호
+                </label>
+				<div class="col-lg-4">
+					<input type="text" formControlName="product_code" id="product_code" class="form-control w-sm" />
+				</div>
+                <label for="price_per_unit" class="col-lg-2 control-label">
+                    단가 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+				<div class="col-lg-4">
+					<input type="text" decimal [(ngModel)]="price_per_unit" formControlName="price_per_unit" id="price_per_unit" (blur)="calculOutsCost()" nextFocus="outs_cost" class="form-control w-sm" />
+				</div>
+            </div>
+		</div>
+
+        <div class="form-group">
+            <div class="row">
+                <label for="drawing_no" class="col-lg-2 control-label">
+                    도번
+                </label>
+                <div class="col-lg-4">
+                    <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control input-sm w-sm" />
+                </div>
+                <label for="outs_cost" class="col-lg-2 control-label">
+                    금액 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+				<div class="col-lg-4">
+					<input type="text" formControlName="outs_cost" id="outs_cost" class="form-control w-sm" />
+				</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label for="product_name" class="col-lg-2 control-label">
+                    제품명
+                </label>
+                <div class="col-lg-10">
+                    <input type="text" formControlName="product_name" id="product_name" class="form-control input-sm w-sm" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label for="material" class="col-lg-2 control-label">
+                    재질
+                </label>
+                <div class="col-lg-10">
+                    <input type="text" formControlName="material" id="material" class="form-control input-sm w-sm" />
+                </div>
+            </div>
+        </div>
+
+        </form>
+    </div>
+
+    <div class="panel-footer text-center">
+        <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+        <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
+    </div>
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

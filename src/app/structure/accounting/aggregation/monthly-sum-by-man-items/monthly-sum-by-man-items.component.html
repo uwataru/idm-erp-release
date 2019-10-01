@@ -1,0 +1,133 @@
+<div class="panel panel-default" id="print-target-msbmi-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <form [formGroup]="searchForm">
+                    <label for="sch_year" class="control-label text-sm">회계연도</label>
+                    <input type="text" formControlName="sch_year" id="sch_year" class="input-sm form-control w-xs inline v-middle">
+                    <label for="sch_acct_name" class="control-label text-sm m-l">계정과목</label>
+                    <input formControlName="sch_acct_name"
+                        id="sch_acct_name"
+                        [typeahead]="listAccounts"
+                        typeaheadOptionField="AcctName"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectAccounts($event)"
+                        placeholder="계정과목"
+                        class="input-sm form-control w-sm inline v-middle" />
+                    <input type="text" formControlName="mgmt_item_name" id="mgmt_item_name" class="input-sm form-control w-xs inline v-middle print-input">
+                    <button (click)="getAll()" [disabled]="! searchForm.valid" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body print-v">
+        <div class="row">
+            <div class="col-sm-3 hidden-print">
+                <ngx-datatable
+                    style="height:420px;"
+                    class="bootstrap"
+                    [rows]="manItemsRows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    (activate)="onActivate($event)"
+                    [selected]="selected"
+                    [selectionType]="'single'"
+                    [messages]="messages"
+                    [selectAllRowsOnPage]="false">
+                    <ngx-datatable-column prop="mgmt_item_name" name="관리내역"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div class="col-sm-9">
+                <ngx-datatable
+                    class="bootstrap"
+                    [rows]="rows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [selected]="selected"
+                    [rowClass]="getRowClass"
+                    [selectionType]="'checkbox'"
+                    [virtualization]="false"
+                    [selectAllRowsOnPage]="false"
+                    [messages]="messages">
+                    <ngx-datatable-column prop="ym" name="년월" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="acct_name" name="계정명" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="debit" name="차변금액" cellClass="text-right">
+                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="credit" name="대변금액" cellClass="text-right">
+                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="debit_sum" name="차변소계" cellClass="text-right">
+                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="credit_sum" name="대변소계" cellClass="text-right">
+                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="balance" name="잔액" cellClass="text-right">
+                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-msbmi-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>
+
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

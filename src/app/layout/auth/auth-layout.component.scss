@@ -1,0 +1,15 @@
+div.loginContainer {
+    -webkit-app-region: drag;
+    height:100%;
+    background-color:#FFFFFF;
+
+    .wrapper-md {
+        padding-top: 20%;
+    }
+}
+
+.close_window {
+    position: absolute;
+    top:20px;
+    right:30px;
+}

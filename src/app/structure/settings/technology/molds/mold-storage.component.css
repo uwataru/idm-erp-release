@@ -1,0 +1,8 @@
+.modal-dialog.modal-xl {
+    width: 70%;
+}
+.modal-content.modal-xl {
+    min-height: 60%;
+}
+
+.table input {margin-left: 10px}

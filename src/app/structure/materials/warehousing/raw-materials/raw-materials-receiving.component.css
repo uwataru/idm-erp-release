@@ -1,0 +1,87 @@
+
+.panel {margin-bottom: 0}
+
+div.dnd-row.head {
+    border: 1px solid #ddd;
+    padding-right: 17px;
+}
+div.dnd-row.head .cell {
+    text-align: center;
+}
+div.dnd_body {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    width: 100%;
+    height: 590px;
+}
+div.dnd-group {
+    border: 1px solid #ddd;
+    margin-top: 2px;
+}
+div.dnd-row.data {
+    min-width: 1260px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+div.dnd-row.data:hover {
+    border: 1px solid #0099ff;
+}
+div.dnd-row.data.active {
+	background-color: #f5f5f9;
+	border: 1px solid #0099ff;
+}
+div.dnd-row.data.caution {
+	background-color: #fff5f5;
+}
+
+div.mat-sum {
+    border-bottom: 1px solid #eee;
+    background-color: #f5f5f5;
+}
+div.ptn-sum {
+    border-top: 1px solid #e5e5e5;
+    background-color: #eaeeef;
+}
+/*
+div.dnd_body .dnd-row:hover {
+    border: 1px solid #0099ff;
+}
+*/
+div.dnd-row::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+div.cell {
+    padding: 3px 0;
+    border-right: 1px solid #eee;
+    float: left;
+}
+/* HTML내에서 처리 */
+/* div.cell.material {min-width:150px; width: 9%;}
+div.cell.size {min-width:50px; width: 5%;}
+div.cell.material_maker {min-width:100px; width: 9%;}
+div.cell.partner_name {min-width:140px; width: 12%;}
+div.cell.price_per_unit {min-width:7px; width: 6%;}
+div.cell.order_weight {min-width:110px; width: 7%;}
+div.cell.order_amount {min-width:120px; width: 10%;}
+div.cell.order_date {min-width:110px; width: 9%;}
+div.cell.sum_rcv_weight {min-width:70px; width: 5%;}
+div.cell.residual_qty {min-width:70px; width: 5%;}
+div.cell.rcv_req_date {min-width:110px; width: 9%;}
+div.cell.rcv_location {min-width:170px; width: 12%;} */
+
+.row-color {
+    color:#000;
+    background-color:#e4e4e4 !important;
+}
+
+.all-row-color {
+    color:#fff;
+    background-color:#a5a5a5 !important;
+}
+
+/*전역에서 처리함*/
+/*.datatable-body-row.active {*/
+/*    background-color: #b7dbff !important;*/
+/*}*/

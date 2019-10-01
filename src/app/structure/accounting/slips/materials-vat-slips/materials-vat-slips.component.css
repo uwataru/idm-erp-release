@@ -1,0 +1,28 @@
+@media print {
+    .panel-body {
+        display: table !important;
+    }
+ 
+    .ngx-datatable {
+        height: unset !important;
+    }
+ 
+    .datatable-body {
+        height: unset !important;
+    }
+  
+    .datatable-scroll {
+        display: table !important;
+    }
+ 
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+    .print-h .ngx-datatable {
+        width: 700px !important;
+    }
+    .print-h .datatable-row-center {
+        width: 700px !important;
+    }
+}

@@ -1,0 +1,93 @@
+<div class="panel panel-default" id="print-target-vs-comp">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+
+    </div>
+
+    <div class="panel-body">
+        <div>{{ rcvDate | date:'yyyy년 MM월 dd일' }} 현재</div> 
+        <table id="tb-payment-plan">
+            <thead>
+                <tr>
+                    <th class="partner_name" rowspan="2">거&nbsp;래&nbsp;처</th>
+                    <th class="prev_amount" rowspan="2">전월미지급금</th>
+                    <th colspan="3">당&nbsp;월&nbsp;거&nbsp;래&nbsp;액</th>
+                    <th class="sum2" rowspan="2">합&nbsp;계</th>
+                    <th colspan="6">채&nbsp;권&nbsp;사&nbsp;항</th>
+                    <th colspan="2">지급구분</th>
+                    <th class="pay_amount" rowspan="2">지불금액</th>
+                </tr>
+                <tr>
+                    <th class="amount1" rowspan="2">공급가액</th>
+                    <th class="amount2">세&nbsp;액</th>
+                    <th class="sum1">합&nbsp;계</th>
+                    <th class="amount3">외상매출금</th>
+                    <th class="amount4">미수금</th>
+                    <th class="amount5">선급금</th>
+                    <th class="sum3">채권총액</th>
+                    <th class="sub_amount1">당월지급액</th>
+                    <th class="sub_amount2">당월대체액</th>
+                    <th class="pay_type1">전&nbsp;월</th>
+                    <th class="pay_type2">당&nbsp;월</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of rows">
+                <td class="partner_name">{{ data.partner_name }}</td>
+                <td class="prev_amount">{{ data.prev_amount }}</td>
+                <td class="amount1">{{ data.amount1 | numberFormat }}</td>
+                <td class="amount2">{{ data.amount2 | numberFormat }}</td>
+                <td class="sum1">{{ data.sum1 | numberFormat }}</td>
+                <td class="sum2">{{ data.sum2 | numberFormat }}</td>
+                <td class="amount3">{{ data.amount3 | numberFormat }}</td>
+                <td class="amount4">{{ data.amount4 | numberFormat }}</td>                           
+                <td class="amount5">{{ data.amount5 | numberFormat }}</td>       
+                <td class="sum3">{{ data.sum3 | numberFormat }}</td>
+                <td class="sub_amount1">{{ data.sub_amount1 | numberFormat }}</td>
+                <td class="sub_amount2">{{ data.sub_amount2 | numberFormat }}</td>
+                <td class="pay_type1">{{ data.pay_type }}</td>
+                <td class="pay_type2">{{ data.pay_type }}</td>
+                <td class="pay_amount">{{ data.pay_amount | numberFormat }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <footer class="panel-footer hidden-print">
+		<div class="row">
+            <div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-vs-comp', '', '')">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+    </footer>
+    
+</div>
+
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+</div>
+    

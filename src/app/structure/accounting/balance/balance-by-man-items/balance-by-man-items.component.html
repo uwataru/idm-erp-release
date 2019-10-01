@@ -1,0 +1,82 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <label for="passenger_phone" class="control-label text-sm">조회일자</label>
+                <input type="text" class="input-sm form-control w-xs inline v-middle" />
+                <button class="btn btn-sm btn-default">검색</button>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <ngx-datatable
+                    style="height:420px;"
+                    class="bootstrap"
+                    [rows]="manItemsRows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [scrollbarV]="true"
+                    [selected]="selected"
+                    [selectionType]="'checkbox'"
+                    [selectAllRowsOnPage]="false">
+                    <ngx-datatable-column prop="acc_code" name="계정코드"></ngx-datatable-column>
+                    <ngx-datatable-column prop="acc_name" name="계정과목"></ngx-datatable-column>
+                    <ngx-datatable-column prop="man_item" name="관리항목"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div class="col-sm-6">
+                <ngx-datatable
+                    style="height:392px;"
+                    class="bootstrap"
+                    [rows]="sumRows"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [scrollbarV]="true"
+                    [selected]="selected"
+                    [selectionType]="'checkbox'"
+                    [selectAllRowsOnPage]="false"
+                    [messages]="messages">
+                    <ngx-datatable-column prop="item_value" name="관리내역" [width]="200" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+                    <ngx-datatable-column prop="balance" name="잔액" cellClass="text-right"></ngx-datatable-column>
+                </ngx-datatable>
+                <div class="table-responsive">
+            		<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+            		<tbody>
+            		<tr>
+                        <td width="201px" class="text-center">합계</td>
+                        <td class="text-right" style="padding-right:26px;">1,073,501,001</td>
+            		</tr>
+            		</tbody>
+            		</table>
+            	</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</button>
+                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+    		</div>
+        </div>
+	</footer>
+</div>

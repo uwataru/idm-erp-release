@@ -1,0 +1,17 @@
+<div class="login-box">
+
+    <form [formGroup]="loginForm">
+	<input type="text" formControlName="login_id" id="login_id" required placeholder="아이디" />
+	<input type="password" formControlName="login_pw" id="login_pw" required placeholder="비밀번호" />
+    <div class="row text-center">
+        <button (click)="loginCheck()" class="loginButton m-t"><i class="glyphicon glyphicon-off"></i></button>
+    </div>
+    </form>
+
+</div>
+
+
+ <div class="view_version">  
+    <span class="pull-right">SEIL ERP : {{ version }}</span>
+</div>     
+

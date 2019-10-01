@@ -1,0 +1,393 @@
+.modal-dialog.modal-xl {
+    width: 70%;
+}
+.modal-content.modal-xl {
+    min-height: 60%;
+}
+
+.panel {margin-bottom: 0}
+
+div.dnd_head {
+    overflow-x: hidden;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+div.dnd_head .cell {
+    text-align: center;
+}
+div.dnd_body {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 100%;
+    min-height: 300px;
+    max-height: 608px;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+div.dnd-foot {
+    width: 100%;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+div.dnd-row {
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+div.dnd_head .dnd-row {width: 1747px;}
+div.dnd_body .dnd-row {width: 1730px;}
+div.dnd_body .dnd-row:hover {
+    border: 1px solid #0099ff;
+}
+div.dnd_body .dnd-row.active {
+    background-color: #f5f5f9;
+    border: 1px solid #0099ff;
+}
+div.dnd_body .dnd-row.caution {
+    background-color: #fff5f5;
+}
+div.dnd_body .dnd-row span.label {
+    position: absolute;
+    top: 5px;
+    right:5px;
+}
+
+div.dnd-row::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+div.cell {
+    padding: 3px 0; height:30px; overflow-y:hidden;
+    border-right: 1px solid #eee;
+    float: left;
+}
+div.cell.product_code {width: 100px;}
+div.cell.order_no {width: 120px;}
+div.cell.drawing_no {width:120px;}
+div.cell.product_name {width:130px;}
+div.cell.outs_no {width: 60px;}
+div.cell.order_qty {width:55px;}
+div.cell.production_time {width:60px;}
+div.cell.input_date {width:90px;}
+div.cell.promised_date {width:90px;}
+div.cell.work_date {width:90px;}
+div.cell.start_time {width:66px;}
+div.cell.material {width:100px;}
+div.cell.size {width:80px;}
+div.cell.input_weight {width:54px;}
+div.cell.product_weight {width:54px;}
+div.cell.mold_size {width:75px;}
+div.cell.mold_position {width:60px;}
+div.cell.cutting_order {width:30px;}
+div.cell.cutting_qty {width:30px;}
+div.cell.mold_ready {width:30px;}
+div.cell.poc_no {width:110px;}
+div.cell.paper {width:34px;}
+div.blank {width:17px;}
+
+div.dnd-foot div.dnd-row div {
+    float: left;
+    padding: 4px 10px;
+}
+div.dnd-foot div.item_cnt {
+    width: 19%;
+}
+div.dnd-foot div.input_weight {
+    width: 23%;
+}
+div.dnd-foot div.product_qty {
+    width: 19%;
+}
+div.dnd-foot div.product_weight {
+    width: 19%;
+    text-align: center;
+}
+div.dnd-foot div.product_price {
+    width: 20%;
+    text-align: right;
+}
+
+.modal-lg {
+    width:760px;
+}
+
+.btn-print {
+    position:absolute;
+    z-index: 10;
+    bottom: 20px;
+    right: 40px;
+}
+
+.print-area {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 740px;
+    height: 750px;
+    margin: 10px;
+    padding: 5px 10px 5px 5px;
+}
+
+table {
+    font-size:12px;
+}
+
+#update-confirm .changed-reason-header {
+    padding:5px;
+    background-color: #f0f0f0;
+}
+
+#update-confirm .changed-reason-body .before,
+#update-confirm .changed-reason-body .after {
+    padding: 0;
+    border: 1px solid #aaccee;
+    text-align: center;
+}
+
+#update-confirm .changed-reason-body .title {
+    padding:5px 0;
+    background-color: #aaccee;
+}
+
+#update-confirm .changed-reason-body .content {
+    padding:20px;
+}
+
+#cutting-work-allocation .title {
+    display: inline-block;
+    padding:18px 20px 12px 20px;
+    border-bottom:3px double #000;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+.title1 {
+    margin:10px 0 10px 0;
+}
+.title2 {
+    margin:30px 0 10px 0;
+}
+
+table.barcode {
+    width: 540px;
+    height: 50px;
+    margin: 10px 0 0 20px;
+}
+
+table.barcode th {
+    width:30px;
+    padding-top: 5px;
+    vertical-align: top;
+}
+
+table.barcode td {
+    width:240px;
+}
+
+table.work-order {
+    width: 100%;
+    margin: 20px 0 10px 0;
+}
+table.work-order th {
+    width:100px;
+    height:20px;
+    font-weight: normal;
+    text-align: right;
+}
+table.work-order td {
+    padding-left:5px;
+}
+table.work-order td span.dotted_box {
+    display: block;
+    height:20px;
+    border:1px dotted #000;
+}
+.box1 { width: 170px }
+.box2 { width: 150px }
+.box3 { width: 100px }
+.col1, .col2, .col3 { float: left; }
+.col1 { width: 250px; }
+.col2 { width: 250px; }
+.col3 { width: 200px; }
+
+table.weight {
+    width: 100%;
+    border-top:2px solid #000;
+    border-left:2px solid #000;
+}
+table.weight td{
+    border-right:2px solid #000;
+    border-bottom:2px solid #000;
+    text-align: center;
+}
+
+.b-b-dotted {
+    border-bottom:1px dotted #000;
+}
+
+
+.forging-work-allocation-title {
+    display: inline-block;
+    margin:0;
+    padding:0 5px 5px 5px;
+    _border-bottom:2px solid #333;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+table.work-line {
+    width: 100%;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+table.approval {
+    width:170px;
+    height:60px;
+    margin:10px 0px 0 0;
+    border-top:2px solid #333;
+    border-left:2px solid #333;
+    font-size: 12px;
+    font-weight: bold;
+}
+table.approval td{
+    border-right:2px solid #333;
+    border-bottom:2px solid #333;
+    text-align: center;
+}
+table.approval td.td1{
+    width:30px;
+    height:60px;
+    line-height: 300%;
+    letter-spacing: 2px;
+}
+table.approval td.td2{
+    width:90px;
+    height:10px;
+}
+
+@media print {
+    
+    div.dnd_head{
+        font-size: 11px;
+    }
+    div.dnd_body {
+        overflow-x: hidden;
+        overflow-y: visible;
+        width: 100%;
+        min-height: unset;
+        max-height: unset;
+        border-left: 1px solid #eee;
+        border-right: 1px solid #eee;
+        font-size: 10px;
+    }
+
+
+    .margin-left-m50px{
+        margin-left: -50px !important;
+    }
+    .print-target-cutting-title {
+        display: inline-block !important;
+        _border-bottom:2px solid #333 !important;
+        font-size: 17px !important;
+        font-weight: bold !important;
+        text-align: center !important;
+    }
+    .print-padding-2px {
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+    }
+    .print-padding-3px {
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+    }
+    .print-box-height-22px {
+        height:22px !important;
+    }
+
+
+    .ngx-datatable{
+        display: table !important;
+        height: unset !important;
+        padding-right: 16px;
+    }
+
+    .datatable-body {
+        height: unset !important;
+    }
+
+    .datatable-scroll{
+        display: table !important;
+    }
+
+    .datatable-row-wrapper {
+        page-break-inside: avoid;
+    }
+
+    .print-width-50px{
+        width: 50px;
+    }
+
+    #Head {display:none;}
+    div.manage{display:none;}
+    div.bottom{display:none;}
+    div.segmental{margin-top:300px;}
+    div.composition{margin-top:100px;}
+
+}
+
+
+
+/* 생산계획 인쇄 */
+.print-pp-div { padding:5px; }
+a.print-title { cursor:default; pointer-events: none; font-size:15pt; font-weight:bold; letter-spacing:13pt; border-bottom:2px solid #bdbdbd; padding-bottom:3px; }
+table tr.p-column td { border:1px solid #000; font-size:10pt; padding:3px; text-align:center; }
+table tr.p-data td { border:1px solid #000; font-size:10pt; padding:3px; }
+table tr td.is_diff_date { text-align:center; }
+table tr td.is_diff_date, table tr td.is_diff_date ~ td { border-top:2px solid !important; }
+
+.print-pp-tot { padding:5px; }
+.print-pp-tot table { width:100%; }
+.print-pp-tot table tr td { border-top:1px solid #000; border-bottom:1px solid #000; padding:5px; }
+.print-pp-tot table tr td:first-child { border-left: 1px solid #000; }
+.print-pp-tot table tr td:last-child { border-right: 1px solid #000; }
+
+body {
+    counter-reset: section;
+}
+span.page_count::before {
+    position: relative;
+    counter-increment: section;
+    content: counter(section);
+}
+
+/* 단조지시서 */
+#print-target-forging { 
+    overflow-x: hidden;
+    overflow-y: scroll;    
+    max-height: 920px;
+}
+
+.tb-forging-work { table-layout:fixed; width:100%; }
+.tb-forging-work thead tr th { border:1px solid #000; font-size:10pt; padding:3px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tb-forging-work tbody tr td { border:1px solid #000; font-size:10pt; padding:3px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+.tb-forging-work .drawing_no { width:12%; min-width: 100px; }
+.tb-forging-work .product_name { width:12%; min-width:100px; }
+.tb-forging-work .product_code { width:8%; min-width:90px; }
+.tb-forging-work .order_qty { width:5%; min-width:50px; }
+.tb-forging-work .production_time { width:5%; min-width:75px; }
+.tb-forging-work .working_stime { width:5%; min-width:50px; }
+.tb-forging-work .promised_date { width:7%; min-width:90px; }
+.tb-forging-work .material { width:8%; min-width:100px; }
+.tb-forging-work .size { width:7%; min-width:80px; }
+.tb-forging-work .input_weight { width:5%; min-width:60px; }
+.tb-forging-work .product_weight { width:5%; min-width:60px; }
+.tb-forging-work .mold_size { width:6%; min-width:80px; }
+.tb-forging-work .mold_position { width:6%; min-width:70px; }
+.tb-forging-work .poc_no { width:9%; min-width:100px; }
+
+.tb-forging-work .is_diff_material { color:#ff0033; font-weight:bold; }
+
+form div.material-out { margin-top:10px; padding-left:15px; }

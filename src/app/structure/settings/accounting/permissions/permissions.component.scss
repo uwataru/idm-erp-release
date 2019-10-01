@@ -1,0 +1,84 @@
+.panel-body {
+    margin-bottom: 0;
+}
+.table {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+
+    th.grp_name,
+    td.grp_name {
+        width: 100px;
+        text-align: center;
+    }
+    th.cfg_code,
+    td.cfg_code {
+        width: 80px;
+        text-align: center;
+    }
+    th.cfg_name,
+    td.cfg_name {
+        width: 160px;
+    }
+    th.cfg_name,
+    td.cfg_name {
+        width: 160px;
+    }
+    th.accessible_users,
+    td.accessible_users,
+    th.executable_users,
+    td.executable_users,
+    th.printable_users,
+    td.printable_users {
+        width: 20%;
+        span {
+            display: block;
+            margin-right: 30px;
+        }
+    }
+    th.approval_users,
+    td.approval_users {
+    }
+
+    th {
+        padding: 5px 0;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+    td {
+        position: relative;
+        padding: 5px 5px 5px 5px;
+        border-top: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+
+        button {
+            position: absolute;
+            right: 5px;
+            bottom: 4px;
+        }
+    }
+}
+
+#input-form {
+    ul.users {
+        list-style-type: none;
+        margin:0 10px;
+        padding:0;
+
+        li {
+            float:left;
+            margin: 0 10px;
+        }
+    }
+    ul.users::after {
+        clear: both;
+    }
+}
+
+#approval-form {
+    td {
+        text-align: center;
+    }
+}

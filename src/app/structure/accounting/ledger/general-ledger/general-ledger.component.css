@@ -1,0 +1,39 @@
+.row-color {
+  color:#fff;
+  background-color:#6d6d6d !important;
+}
+  
+.p_debit_carryover { width:180px; }
+.p_debit { width:180px; } 
+.p_account { width:200px; }
+.p_credit { width:180px; }
+.p_credit_carryover { width:180px; }
+
+@media print {
+  .panel-body {
+    display: table !important;
+    width: 700px !important;
+  }
+
+  .ngx-datatable {
+    height: unset !important;
+  }
+
+  .datatable-body {
+    height: unset !important;
+  }
+
+  .datatable-scroll {
+    display: table !important;
+  }
+
+  .datatable-row-wrapper {
+    page-break-inside: avoid;
+  }
+  .print-h .datatable-row-center {
+    width: 700px !important;
+  }
+  .print-h .ngx-datatable {
+    width: 700px !important;
+  }
+}

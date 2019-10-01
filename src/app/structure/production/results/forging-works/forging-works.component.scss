@@ -1,0 +1,22 @@
+.panel-body {
+    padding-bottom: 0;
+    
+    .wrapper {
+        .form-group {
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            input.day {
+                width: 98px;
+            }
+
+            input.hour,
+            input.min {
+                width: 44px;
+            }
+        }
+    }
+    .wrapper.qty {
+        border:1px solid #e5e5e5;
+    }
+}

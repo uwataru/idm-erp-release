@@ -1,0 +1,190 @@
+#tblForgingWorkResults {
+    width: 100%;
+    border-top:1px solid #eaeff0;
+    border-right: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    table {
+        width:100%;
+        margin:0;
+        padding:0;
+        border:0;
+    }
+    tr {
+        padding: 8px 0;
+    }
+    th {
+        text-align: center;
+    }
+    td {
+        padding: 0;
+        overflow-x: hidden;
+    }
+    td span {
+        margin:0 10px;
+    }
+    .date {
+        width: 110px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+        text-align: center;
+    }
+    .workline {
+        width:80px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+        text-align: center;
+    }
+    .partner {
+        width: 150px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .prodCode {
+        width: 120px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .drawingNo {
+        width: 210px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .prodName {
+        width: 270px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .pocNo {
+        width: 130px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .qty {
+        width: 80px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .weight {
+        width: 80px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .price1 {
+        width: 80px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+    .price2 {
+        width: 120px;
+        padding: 5px 0;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+    }
+}
+.tbody-scroll {
+    width: 100%;
+    //min-height: 300px;
+    max-height: 608px;
+    overflow-y: auto;
+    display: block !important;
+}
+
+thead {
+    display: block;
+}
+
+
+@media print {
+    .print-border-bottom{
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .print-margin-top{
+        margin-top: 15px;
+    }
+    .panel-body {
+        display: table !important;
+    }
+
+    .tbody-scroll{
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        max-height: none !important;
+    }
+    table, thead, tbody{
+        display: table;
+    }
+
+    tr {
+        padding: unset !important;
+        page-break-inside: avoid;
+    }
+
+    td span {
+        margin:0 4px !important;
+    }
+
+    .print-date{
+        width: 77px !important;
+        font-size: 9pt;
+    }
+
+    .print-workline{
+        width: 59px !important;
+        font-size: 9pt;
+    }
+
+    .print-partner{
+        width: 106px !important;
+        font-size: 9pt;
+    }
+
+    .print-prodCode{
+        width: 86px !important;
+        font-size: 9pt;
+    }
+
+    .print-drawingNo{
+        width: 147px !important;
+        font-size: 9pt;
+    }
+
+    .print-prodName{
+        width: 187px !important;
+        font-size: 9pt;
+    }
+
+    .print-pocNo{
+        width: 99px !important;
+        font-size: 9pt;
+    }
+
+    .print-qty{
+        width: 59px !important;
+        font-size: 9pt;
+    }
+
+    .print-weight{
+        width: 59px !important;
+        font-size: 9pt;
+    }
+
+    .print-price1{
+        width: 59px !important;
+        font-size: 9pt;
+    }
+
+    .print-price2{
+        width: 86px !important;
+        font-size: 9pt;
+    }
+}

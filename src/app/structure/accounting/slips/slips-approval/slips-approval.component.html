@@ -1,0 +1,147 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <span class="h4 block m-t-sm text-center">{{ panelTitle }}</span>
+    </div>
+
+    <div class="panel-body input-form">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="form-group">
+                    <form [formGroup]="searchForm">
+                        <label for="curr_total_cnt" class="control-label inline">
+                            총전표수
+                        </label>
+                        <input type="text" formControlName="curr_total_cnt" id="curr_total_cnt" class="form-control input-sm w-xxs inline text-center" />
+                        <label for="curr_order_no" class="control-label inline m-l-sm">
+                            현재전표
+                        </label>
+                        <input type="text" formControlName="curr_order_no" id="curr_order_no" class="form-control input-sm w-xxs inline text-center" />
+                        <label class="control-label inline m-l-sm">
+                            전표번호:
+                        </label>
+                        <span class="v_slip_no">{{ slipNo }}</span>
+                        <button (click)="GetPrevSlip()" [disabled]="skipCount == 1" class="btn btn-sm btn-default w-xxs m-l">이전</button>
+                        <button (click)="GetNextSlip()" [disabled]="skipCount == currTotalCnt" class="btn btn-sm btn-default w-xxs m-r">다음</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <div class="form-group">
+                    <button (click)="GetGroupSlip(-1)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == -1 ? 'btn-dark' : 'btn-default'">
+                        전체 <span class="badge up">{{ sTotalCnt }}</span>
+                    </button>
+                    <button (click)="GetGroupSlip(0)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == 0 ? 'btn-dark' : 'btn-default'">
+                        관리과 <span class="badge up">{{ s0Cnt }}</span>
+                    </button>
+                    <button (click)="GetGroupSlip(200)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == 200 ? 'btn-dark' : 'btn-default'">
+                        자재과 <span class="badge up">{{ s200Cnt }}</span>
+                    </button>
+                    <button (click)="GetGroupSlip(400)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == 400 ? 'btn-dark' : 'btn-default'">
+                        소모품 <span class="badge up">{{ s400Cnt }}</span>
+                    </button>
+                    <button (click)="GetGroupSlip(600)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == 600 ? 'btn-dark' : 'btn-default'">
+                        외주과 <span class="badge up">{{ s600Cnt }}</span>
+                    </button>
+                    <button (click)="GetGroupSlip(800)" class="btn btn-sm w-xxs" [ngClass]="currGrpNo == 800 ? 'btn-dark' : 'btn-default'">
+                        영업과 <span class="badge up">{{ s800Cnt }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
+            <ngx-datatable-column prop="dr_acct_name" name="차변계정과목" [width]="150" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" (click)="Edit(row.dr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" (click)="Add(row.entry_no, 'DR', row.cr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_item_value" name="관리내역" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="dr_amount" name="차변금액" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" (click)="Edit(row.dr_id)" class="wrapper-xs active">{{ value | numberFormat }} &nbsp; </div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" (click)="Add(row.entry_no, 'DR')" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_id" name="ID" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="brief_summary" name="적요"></ngx-datatable-column>
+            <ngx-datatable-column prop="cr_id" name="ID" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="cr_amount" name="대변금액" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" (click)="Edit(row.cr_id)" class="wrapper-xs active">{{ value | numberFormat }} &nbsp; </div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="dr_item_value" name="관리내역" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="cr_acct_name" name="대변계정과목" [width]="150" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" (click)="Edit(row.cr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+
+        <div class="table-responsive">
+    		<table class="table table-bordered table-condensed b-light">
+    		<tbody>
+    		<tr>
+                <td width="150px"></td>
+                <td width="150px"></td>
+                <td width="120px" class="text-right">{{ drAmountSum | numberFormat }}</td>
+    			<td class="text-center">차대변합계금액</td>
+    			<td width="120px" class="text-right">{{ crAmountSum | numberFormat }}</td>
+                <td width="150px"></td>
+    			<td width="150px"></td>
+    		</tr>
+    		</tbody>
+    		</table>
+    	</div>
+    </div>
+
+    <footer class="panel-footer">
+
+		<div class="row">
+            <div class="col-sm-8 col-lg-9 text-right">
+                <form [formGroup]="inputForm" class="m-t-xs">
+                <label class="i-checks">
+                    <input type="radio" formControlName="appr_type" value="2" class="form-control input-xs">
+                    <i></i>결재 &nbsp;
+                </label>
+                <label class="i-checks">
+                    <input type="radio" formControlName="appr_type" value="0" class="form-control input-xs">
+                    <i></i>미결 &nbsp;
+                </label>
+                <label class="i-checks">
+                    <input type="radio" formControlName="appr_type" value="1" class="form-control input-xs">
+                    <i></i>보류 &nbsp;
+                </label>
+                <label class="i-checks">
+                    <input type="radio" formControlName="appr_type" value="-1" class="form-control input-xs">
+                    <i></i>부결 &nbsp;
+                </label>
+                </form>
+            </div>
+            <div class="col-sm-4 col-lg-3 text-right">
+                <button (click)="Save()" class="btn btn-sm btn-primary btn-addon inline"><i class="glyphicon glyphicon-plus"></i>저장</button>
+                <button class="btn btn-sm btn-info btn-addon inline"><i class="glyphicon glyphicon-print"></i>인쇄</button>
+                <button class="btn btn-sm btn-success btn-addon inline" (click)="excelDown()"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+            </div>
+        </div>
+
+	</footer>
+</div>

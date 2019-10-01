@@ -1,0 +1,61 @@
+.no-data {border:none}
+
+/* thead고정,tbody스크롤 */
+table th, table td {
+  border: 1px solid #eaeff0;
+}
+table{
+  width:100%;
+}
+.panel-body{
+  border-collapse: collapse;
+  text-align: center;
+  padding-bottom: 0px;
+  width:100%;
+}
+
+.tbody-scroll {
+  width: 98%;
+  min-height: 300px;
+  max-height: 608px;
+  margin-left: 1%;
+  margin-right: 5%;
+  overflow-y: scroll;
+
+}
+
+
+@media print {
+//.print-border-bottom {
+//  border-bottom: 1px solid #f0f0f0;
+//}
+//.print-margin-top {
+  //  margin-top: 15px;
+  //}
+  .panel-body {
+    display: table !important;
+    width: 98%;
+    margin-left: 30px;
+  }
+
+  .tbody-scroll {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    max-height: none !important;
+    margin-left: 30px;
+  }
+
+  table, thead{
+    width: 96%;
+  }
+
+  tr {
+    padding: unset !important;
+    page-break-inside: avoid;
+  }
+
+  td span {
+    margin: 0 4px !important;
+  }
+}
+

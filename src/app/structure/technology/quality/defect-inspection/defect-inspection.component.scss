@@ -1,0 +1,25 @@
+.outs_inven_type {
+    max-width: 540px;
+    height: 60px;
+    margin: 5px 0 0 -11px;
+    padding: 16px 5px 10px 10px;
+    border:1px solid #000;
+    border-radius: 2px;
+
+    .left {
+        float:left;
+    }
+}
+.outs_inven_type::after {
+    clear:both;
+}
+
+.i-checks {
+    position: relative;
+    .badge.up {
+        position: absolute;
+        top: -16px;
+        left: 38px;
+        padding: 3px 6px;
+    }
+}

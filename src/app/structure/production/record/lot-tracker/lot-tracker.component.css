@@ -1,0 +1,17 @@
+.LOT-Table {
+    margin: 10px 0;
+    font-size: 13px;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+.LOT-Table th,
+.LOT-Table td {
+    padding: 3px 10px;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.LOT-Table th {
+    text-align: center;
+}

@@ -1,0 +1,241 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
+		<thead>
+		<tr>
+            <th rowspan="2" width="7%">패턴기호</th>
+            <th rowspan="2" width="7%">근무조</th>
+            <th rowspan="2" width="7%">근무시간</th>
+			<th colspan="3" width="24%">1조</th>
+			<th colspan="3" width="24%">2조</th>
+			<th colspan="3" width="24%">3조</th>
+            <th rowspan="2" width="7%">하루<br />작업시간합계</th>
+		</tr>
+        <tr>
+            <th>시작시간</th>
+            <th>종료시간</th>
+            <th>작업시간</th>
+            <th>시작시간</th>
+            <th>종료시간</th>
+            <th>작업시간</th>
+            <th>시작시간</th>
+            <th>종료시간</th>
+            <th>작업시간</th>
+		</tr>
+		</thead>
+		<tbody>
+        <tr *ngFor="let row of rows">
+            <td class="text-center">{{ row.pattern_code }}</td>
+            <td class="text-center">{{ row.working_group }}</td>
+            <td class="text-center">{{ row.working_hours }}</td>
+			<td class="text-center">
+                <span>{{row.group1_stime}}</span>
+            </td>
+            <td class="text-center">
+                <span>{{row.group1_etime_is_nextday=='Y' ? 'T' : ''}}{{row.group1_etime}}</span>
+            </td>
+            <td class="text-center">
+                <span>{{row.group1_working_time}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group2_stime != '0'">{{row.group2_stime}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group2_etime != '0'">{{row.group2_etime_is_nextday=='Y' ? 'T' : ''}}{{row.group2_etime}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group2_working_time != '0'">{{row.group2_working_time}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group3_stime != '0'">{{row.group3_stime}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group3_etime != '0'">{{row.group3_etime_is_nextday=='Y' ? 'T' : ''}}{{row.group3_etime}}</span>
+            </td>
+            <td class="text-center">
+                <span *ngIf="row.group3_working_time != '0'">{{row.group3_working_time}}</span>
+            </td>
+            <td class="text-center">{{ row.working_time_per_day }}</td>
+        </tr>
+        <tr *ngFor="let row of rows"><tr *ngIf="!rows">
+            <td colspan="17" class="no-data">
+                검색된 데이터가 없습니다.
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-3 hidden-xs">
+            </div>
+            <div class="col-sm-9 text-right text-center-xs">
+                <!-- <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('write')">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button> -->
+                <button (click)="openModal('edit')" class="btn btn-sm btn-dark btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>수정
+                </button>
+                <!-- <button class="btn btn-sm btn-danger btn-addon" (click)="openModal('delete')">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
+    		</div>
+        </div>
+	</footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-xl-center">
+		<div class="modal-content modal-xl">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <table class="table table-bordered table-condensed">
+                <tr>
+                    <th width="8%" rowspan="2">
+                        <label>패턴기호</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <th width="7%" rowspan="2">
+                        <label>근무조</label>
+                    </th>
+                    <th width="8%" rowspan="2">
+                        <label>근무시간</label>
+                    </th>
+                    <th width="23%" colspan="3" class="text-center">
+                        <label>1조</label>
+                    </th>
+                    <th width="23%" colspan="3" class="text-center">
+                        <label>2조</label>
+                    </th>
+                    <th width="23%" colspan="3" class="text-center">
+                        <label>3조</label>
+                    </th>
+                    <th width="8%" rowspan="2">
+                        <label>1일작업시간</label>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center">
+                        <label>시작시간</label>
+                    </th>
+                    <td class="text-center">
+                        <label>종료시간</label>
+                    </td>
+                    <th class="text-center">
+                        <label>작업시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>시작시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>종료시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>작업시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>시작시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>종료시간</label>
+                    </th>
+                    <th class="text-center">
+                        <label>작업시간</label>
+                    </th>
+                </tr>
+				<tr *ngFor="let row of patterns">
+                    <td class='text-center'>
+                        <input type="text" formControlName="id_{{ row.id }}_pattern_code" id="id_{{ row.id }}_pattern_code" class="form-control inline input-sm w-xxs" />
+                    </td>
+                    <td class='text-center'>
+                        <input type="text" formControlName="id_{{ row.id }}_working_group" id="id_{{ row.id }}_working_group" class="form-control inline input-sm w-xxs text-center" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_working_hours" id="id_{{ row.id }}_working_group" class="form-control inline input-sm w-xxs text-center" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group1_stime" id="id_{{ row.id }}_group1_stime" class="form-control inline input-sm w-xxs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group1_etime" id="id_{{ row.id }}_group1_etime" class="form-control inline input-sm w-xxs" />
+                        <input type="checkbox" formControlName="id_{{ row.id }}_group1_etime_is_nextday" id="id_{{ row.id }}_group1_etime_is_nextday" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group1_working_time" id="id_{{ row.id }}_group1_working_time" (blur)="calculTime(row.id)" class="form-control inline input-sm w-xxs text-right" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group2_stime" id="id_{{ row.id }}_group2_stime" class="form-control inline input-sm w-xxs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group2_etime" id="id_{{ row.id }}_group2_etime" class="form-control inline input-sm w-xxs" />
+                        <input type="checkbox" formControlName="id_{{ row.id }}_group2_etime_is_nextday" id="id_{{ row.id }}_group2_etime_is_nextday" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group2_working_time" id="id_{{ row.id }}_group2_working_time" (blur)="calculTime(row.id)" class="form-control inline input-sm w-xxs text-right" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group3_stime" id="id_{{ row.id }}_group3_stime" class="form-control inline input-sm w-xxs" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group3_etime" id="id_{{ row.id }}_group3_etime" class="form-control inline input-sm w-xxs" />
+                        <input type="checkbox" formControlName="id_{{ row.id }}_group3_etime_is_nextday" id="id_{{ row.id }}_group3_etime_is_nextday" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_group3_working_time" id="id_{{ row.id }}_group3_working_time" (blur)="calculTime(row.id)" class="form-control inline input-sm w-xxs text-right" />
+                    </td>
+                    <td class='text-center'>
+						<input type="text" formControlName="id_{{ row.id }}_working_time_per_day" id="id_{{ row.id }}_working_time_per_day" class="form-control inline input-sm w-xxs text-right" />
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+                </div>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ deleteConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
