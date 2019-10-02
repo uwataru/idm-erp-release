@@ -1,8 +1,8 @@
 {
-  "name": "SEIL-ERP",
+  "name": "IDM-ERP",
   "version": "0.9.14",
-  "description": "JOIN-ERP(PC)",
-  "homepage": "http://erp01.innest.co.kr",
+  "description": "IDM-ERP(PC)",
+  "homepage": "http://IDM.innest.co.kr",
   "author": {
     "name": "INNEST",
     "email": "xdinner@gmail.com"
@@ -98,12 +98,12 @@
     "zone.js": "0.8.26"
   },
   "build": {
-    "appId": "com.innest.seil-danjo-erp",
+    "appId": "com.innest.idm-erp",
     "publish": [
       {
         "provider": "github",
         "owner": "innest",
-        "repo": "seil-danjo-release"
+        "repo": "idm-erp-release"
       }
     ],
     "directories": {
