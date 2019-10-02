@@ -137,7 +137,7 @@ export class OrderNotDeliveredComponent implements OnInit {
             delivery_price: '',
             order_no: '',
             poc_no: '',
-            ms_no: '',
+            // ms_no: '',
             transport_vehicle: '',
             unload_place: ''
         });
@@ -327,7 +327,7 @@ export class OrderNotDeliveredComponent implements OnInit {
                                 product_price: this.utils.addComma(product_price),
                                 order_no: this.formData.order_no,
                                 poc_no: this.formData.poc_no,
-                                ms_no: this.formData.ms_no,
+                                // ms_no: this.formData.ms_no,
                                 transport_vehicle: this.formData.transport_vehicle,
                                 unload_place: this.formData.unload_place,
                                 delivery_price: this.utils.addComma(delivery_price)
