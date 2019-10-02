@@ -91,11 +91,6 @@ export class PartnersComponent implements OnInit {
             ptype2: '',
             ptype3: '',
             ptype4: '',
-            ptype41: '',
-            ptype42: '',
-            ptype43: '',
-            ptype44: '',
-            ptype45: '',
             ptype5: '',
             biz_no: ['', Validators.required],
             name: ['', Validators.required],
@@ -133,14 +128,14 @@ export class PartnersComponent implements OnInit {
         this.sch_st = st;
         this.getAll();
     }
-    
+
     onSelect({ selected }) {
         // console.log('Select Event', selected, this.selected);
-    
+
         this.selected.splice(0, this.selected.length);
         this.selected.push(...selected);
     }
-    
+
     getAll(): void {
         this.selected = [];
 
@@ -200,28 +195,6 @@ export class PartnersComponent implements OnInit {
                     if (this.formData.ptype4 == 'Y') {
                         ptype4 = true;
                         this.ptype4Checked = true;
-                    } else {
-                        this.ptype4Checked = false;
-                    }
-                    let ptype41 = false;
-                    if (this.formData.ptype41 == 'Y') {
-                        ptype41 = true;
-                    }
-                    let ptype42 = false;
-                    if (this.formData.ptype42 == 'Y') {
-                        ptype42 = true;
-                    }
-                    let ptype43 = false;
-                    if (this.formData.ptype43 == 'Y') {
-                        ptype43 = true;
-                    }
-                    let ptype44 = false;
-                    if (this.formData.ptype44 == 'Y') {
-                        ptype44 = true;
-                    }
-                    let ptype45 = false;
-                    if (this.formData.ptype45 == 'Y') {
-                        ptype45 = true;
                     }
                     let ptype5 = false;
                     if (this.formData.ptype5 == 'Y') {
@@ -233,11 +206,6 @@ export class PartnersComponent implements OnInit {
                         ptype2: ptype2,
                         ptype3: ptype3,
                         ptype4: ptype4,
-                        ptype41: ptype41,
-                        ptype42: ptype42,
-                        ptype43: ptype43,
-                        ptype44: ptype44,
-                        ptype45: ptype45,
                         ptype5: ptype5,
                         biz_no: this.formData.biz_no,
                         name: this.formData.name,
@@ -329,10 +297,6 @@ export class PartnersComponent implements OnInit {
                 },
                 error => this.errorMessage = <any>error
             );
-    }
-
-    toggleSubCate() {
-        this.ptype4Checked = this.ptype4Checked === true ? false : true;
     }
 
     openModal(method, id) {

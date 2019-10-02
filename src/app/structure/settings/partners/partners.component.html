@@ -191,36 +191,13 @@
                             <input type="checkbox" formControlName="ptype3" id="ptype3" value="1" />소모
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype4" id="ptype4" value="1" (click)="toggleSubCate()">외주
+                            <input type="checkbox" formControlName="ptype4" id="ptype4" value="1" />외주
                         </label>
                         <label class="checkbox-inline">
                             <input type="checkbox" formControlName="ptype5" id="ptype5" value="1" />영업
                         </label>
                     </td>
                 </tr>
-                <tr [ngClass]="{'hide': ptype4Checked == false}">
-                    <th>
-                        <label for="ptype41">외주 구분</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td colspan="3">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype41" id="ptype41" />단조
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype42" id="ptype42" />절단
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype43" id="ptype43" />열처리
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype44" id="ptype44" />가공
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="ptype45" id="ptype45" />기타
-                        </label>
-                    </td>
-				</tr>
 				<tr>
                     <th width="140px">
     					<label for="name">거래처명(정식)</label>
