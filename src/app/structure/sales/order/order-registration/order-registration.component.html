@@ -125,7 +125,7 @@
                                 </label>
             					<div class="col-lg-8">
                                     <label class="i-checks">
-                                        <input type="radio" formControlName="order_type1" value="Y" checked>
+                                        <input type="radio" formControlName="order_type1" value="Y">
                                         <i></i>
                                         정상
                                     </label>
@@ -135,7 +135,7 @@
                                         예상
                                     </label>
                                     <label class="i-checks">
-                                        <input type="radio" formControlName="order_type1" value="D">
+                                        <input type="radio" formControlName="order_type1" value="D" checked>
                                         <i></i>
                                         개발
                                     </label>
@@ -276,36 +276,26 @@
 
                         <div class="form-group">
                             <div class="row">
-            					<label for="product_type" class="col-lg-4 control-label">
-                                    기종
+                                <label for="product_name" class="col-lg-4 control-label">
+                                    제품명
                                 </label>
-            					<div class="col-lg-8">
-            						<input type="text" formControlName="product_type" id="product_type" nextFocus="sub_drawing_no" class="form-control w-sm" />
-            					</div>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="product_name" id="product_name" nextFocus="size" class="form-control inline w" />
+                                    <span *ngIf="isCombi == true" class="">({{ prodTypeStr }})</span>
+                                </div>
                             </div>
-        				</div>
-
-        				<div class="form-group">
-                            <div class="row">
-            					<label for="sub_drawing_no" class="col-lg-4 control-label">
-                                    위도번
-                                </label>
-            					<div class="col-lg-8">
-            						<input type="text" formControlName="sub_drawing_no" id="sub_drawing_no" nextFocus="drawing_no" class="form-control w-sm" />
-            					</div>
-                            </div>
-        				</div>
-
+                        </div>
+                        
                         <div class="form-group">
                             <div class="row">
-            					<label for="drawing_no" class="col-lg-4 control-label">
-                                    도번
+                                <label for="size" class="col-lg-4 control-label">
+                                    규격
                                 </label>
-            					<div class="col-lg-8">
-            						<input type="text" formControlName="drawing_no" id="drawing_no" nextFocus="production_line" class="form-control w-sm" />
-            					</div>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="size" id="size" nextFocus="production_line" class="form-control w-sm" />
+                                </div>
                             </div>
-        				</div>
+                        </div>
 
                         <div class="form-group">
                             <div class="row">
@@ -313,21 +303,9 @@
                                     작업라인
                                 </label>
                                 <div class="col-lg-8">
-                                    <select formControlName="production_line" id="production_line" nextFocus="product_name" class="input-sm form-control w-sm inline v-middle">
+                                    <select formControlName="production_line" id="production_line" nextFocus="modi_reason" class="input-sm form-control w-sm inline v-middle">
                                         <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_name" class="col-lg-4 control-label">
-                                    제품명
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="product_name" id="product_name" nextFocus="modi_reason" class="form-control inline w" />
-                                    <span *ngIf="isCombi == true" class="">({{ prodTypeStr }})</span>
                                 </div>
                             </div>
                         </div>

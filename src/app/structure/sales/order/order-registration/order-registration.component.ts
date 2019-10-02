@@ -106,11 +106,9 @@ export class OrderRegistrationComponent implements OnInit {
             order_qty: ['', Validators.required],
             delivery_date: ['', Validators.required],
             promised_date: ['', Validators.required],
-            product_type: '',
-            drawing_no: '',
-            sub_drawing_no: '',
             production_line: ['', Validators.required],
             product_name: '',
+            size: '',
             combi_product_name: '',
             product_price: '',
             combi_product_price: '',
@@ -297,6 +295,9 @@ export class OrderRegistrationComponent implements OnInit {
         // 입력폼 리셋
         this.inputForm.reset();
 
+        // 수주구분1 기본값
+        this.inputForm.controls['order_type1'].setValue("D");
+
         // 입력일
         this.inputForm.controls['input_date'].setValue(this.tDate);
 
@@ -348,10 +349,8 @@ export class OrderRegistrationComponent implements OnInit {
                         product_code: this.selectedId,
                         partner_code: this.formData.partner_code,
                         partner_name: this.formData.partner_name,
-                        product_type: this.formData.product_type,
-                        drawing_no: this.formData.drawing_no,
-                        sub_drawing_no: this.formData.sub_drawing_no,
                         product_name: this.formData.product_name,
+                        size: this.formData.size,
                         production_line: this.formData.production_line,
                         product_price: product_price,
                         is_combi: this.formData.is_combi,
