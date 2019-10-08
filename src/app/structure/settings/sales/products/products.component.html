@@ -162,7 +162,7 @@
                 <button class="btn btn-sm btn-info btn-addon">
                     <i class="glyphicon glyphicon-print"></i>인쇄
                 </button>
-                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown(false)">
                     <i class="glyphicon glyphicon-download-alt"></i>엑셀
                 </button>
     		</div>
@@ -549,7 +549,7 @@
                 <div class="text-center">
                     <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
                     <button type="button" (click)="UploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
-                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                    <button type="button" (click)="excelDown(true)" class="btn btn-success">다운로드</button>
                 </div>
             </div>
         </div>

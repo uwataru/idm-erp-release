@@ -661,12 +661,13 @@ export class ProductsComponent implements OnInit {
         return ret;
     }
 
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
+    excelDown(type): void {
+        this.dataService.GetExcelFile(type).subscribe(
             blob => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(blob, "제품마스터.xlsx");
+                if(type) importedSaveAs(blob, "제품마스터.xlsx");
+                else importedSaveAs(blob, "제품등록현황.xlsx");
 
                 let win = this.electronService.remote.getCurrentWindow();
 
@@ -684,7 +685,7 @@ export class ProductsComponent implements OnInit {
                                 console.log(`Received bytes: ${item.getReceivedBytes()}`)
                             }
                         }
-                    })
+                    });
                     item.once('done', (event, state) => {
                         if (state === 'completed') {
                             console.log(filename + ' 저장 완료');
@@ -693,7 +694,7 @@ export class ProductsComponent implements OnInit {
                             alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
                             console.log(`Download failed: ${state}`)
                         }
-                    })
+                    });
                 });
             },
             error => this.errorMessage = <any>error

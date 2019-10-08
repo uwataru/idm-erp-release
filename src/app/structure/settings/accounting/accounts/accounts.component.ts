@@ -291,12 +291,13 @@ export class AccountsComponent implements OnInit {
         }
     }
 
-    excelDown() {
-        this.dataService.GetExcelFile().subscribe(
+    excelDown(type): void {
+        this.dataService.GetExcelFile(type).subscribe(
             blob => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(blob, "계정과목.xlsx");
+                if (type) importedSaveAs(blob, "계정과목마스터.xlsx");
+                else importedSaveAs(blob, "계정과목조회.xlsx");
 
                 let win = this.electronService.remote.getCurrentWindow();
 

@@ -22,10 +22,13 @@ export class MaterialsService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
+    GetExcelFile (type): Observable<Blob> {
+        let myHeaders = new HttpHeaders();
+        let u = type == true ? '/setexceldown' : '/exceldown'
+        myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        return this.http.get(this.url + u, {headers: myHeaders, responseType: 'blob'}).pipe(
+          tap((data: Blob) => console.log(data)),
+          catchError(this.handleError<Blob>('Create'))
         );
     }
 
