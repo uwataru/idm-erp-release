@@ -11,7 +11,6 @@ export class Item {
         partner_name: string;
         price: number;
         price_date: string;
-        maker: string;
     };
     maxResultCount: number;
     result: string;
