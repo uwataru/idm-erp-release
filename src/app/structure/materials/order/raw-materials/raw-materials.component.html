@@ -277,10 +277,20 @@
                 <div class="row">
                     <div class="col-lg-4">
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <div class="row">
             					<label for="material_name" class="col-lg-4 control-label">
                                     재질
+                                </label>
+            					<div class="col-lg-8">
+            						<input type="text" formControlName="material_name" id="material_name" nextFocus="size" class="form-control w-sm" />
+            					</div>
+                            </div>
+        				</div> -->
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="material_name" class="col-lg-4 control-label">
+                                    자재명
                                 </label>
             					<div class="col-lg-8">
             						<input type="text" formControlName="material_name" id="material_name" nextFocus="size" class="form-control w-sm" />
@@ -299,7 +309,7 @@
                             </div>
         				</div>
 
-        				<div class="form-group">
+        				<!-- <div class="form-group">
                             <div class="row">
             					<label for="material_maker" class="col-lg-4 control-label">
                                     메이커
@@ -318,7 +328,7 @@
                                     <input type="hidden" formControlName="material_maker" id="material_maker" />
             					</div>
                             </div>
-        				</div>
+        				</div> -->
 
                         <div class="form-group">
                             <div class="row">
@@ -373,10 +383,26 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <div class="row">
             					<label for="order_weight" class="col-lg-2 control-label">
                                     주문중량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight1" id="order_weight1" (blur)="CalculOrderAmount($event)" nextFocus="order_amount1" class="form-control w-sm text-right" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight2" id="order_weight2" (blur)="CalculOrderAmount($event)" nextFocus="order_amount2" class="form-control w-sm text-right" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight3" id="order_weight3" (blur)="CalculOrderAmount($event)" nextFocus="order_amount3" class="form-control w-sm text-right" />
+                                </div>
+                            </div>
+        				</div> -->
+                        <div class="form-group">
+                            <div class="row">
+            					<label for="order_weight" class="col-lg-2 control-label">
+                                    주문수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                 </label>
                                 <div class="col-lg-3">
                                     <input type="text" formControlName="order_weight1" id="order_weight1" (blur)="CalculOrderAmount($event)" nextFocus="order_amount1" class="form-control w-sm text-right" />
