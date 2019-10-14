@@ -122,7 +122,7 @@ export class ForgingWorksComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '조립작업실적 입력';
+        this.panelTitle = '단조생산실적 입력';
         this.inputForm.controls['input_date'].setValue(this.tDate);
     }
 
@@ -409,7 +409,7 @@ export class ForgingWorksComponent implements OnInit {
             res => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(res, "조립재고현황.xlsx");
+                importedSaveAs(res, "절단재고현황.xlsx");
 
                 let win = this.electronService.remote.getCurrentWindow();
 

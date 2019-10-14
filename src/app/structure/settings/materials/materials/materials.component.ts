@@ -84,7 +84,7 @@ export class MaterialsComponent implements OnInit {
     ) {
         // 접근권한 체크
         if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
-            if (route.routeConfig.data.id in this.globals.userPermission) {
+            if (route.routeConfig.data.id in this.globals.userPermission) {                
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
                     this.isExecutable = true;
                 }
@@ -106,7 +106,8 @@ export class MaterialsComponent implements OnInit {
             partner_name: ['', Validators.required],
             partner_code: ['', Validators.required],
             price: ['', Validators.required],
-            price_date: ['', Validators.required]
+            price_date: ['', Validators.required],
+            maker: ['', Validators.required]
         });
     }
 
@@ -189,7 +190,7 @@ export class MaterialsComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-
+        
         if (event.item['Code'] == '') {
             this.listSltdPaCode = 0;
         } else {
@@ -197,8 +198,8 @@ export class MaterialsComponent implements OnInit {
         }
 
         let partner_code = this.listSltdPaCode;
-        let formData = this.searchForm.value;
-        let material = formData.sch_material;
+        let formData = this.searchForm.value;  
+        let material = formData.sch_material;      
 
         let rt = this.temp.filter(function(d){
             d.partner_code = String(d.partner_code);
@@ -212,7 +213,7 @@ export class MaterialsComponent implements OnInit {
 
         let material = event.target.value;
         let partner_code = this.listSltdPaCode;
-
+        
         let rt = this.temp.filter(function(d){
             return (d.material.indexOf(material) !== -1 && d.partner_code.indexOf(partner_code) !== -1) || !material && !partner_code;
         });
@@ -244,7 +245,8 @@ export class MaterialsComponent implements OnInit {
                         partner_name: this.formData.partner_name,
                         partner_code: this.formData.partner_code,
                         price: this.formData.price,
-                        price_date: this.formData.price_date
+                        price_date: this.formData.price_date,
+                        maker: this.formData.maker
                     });
                 }
             }
@@ -253,8 +255,8 @@ export class MaterialsComponent implements OnInit {
 
     Save () {
          let formData = this.inputForm.value;
-
-         formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
+         
+         formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');         
          formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
 
          if (this.isEditMode == true) {
@@ -375,13 +377,19 @@ export class MaterialsComponent implements OnInit {
         }
     }
 
-    excelDown(type): void {
-        this.dataService.GetExcelFile(type).subscribe(
+    excelDown() {
+        let path = this.electronService.path;
+        let app = this.electronService.remote.app;
+        //let dialog = this.electronService.remote.dialog;
+        //let toLocalPath = path.resolve(app.getPath("desktop"), "원자재마스터.xlsx");
+        //let userChosenPath = dialog.showSaveDialog({ defaultPath: toLocalPath });
+
+        //if (userChosenPath) {
+        this.dataService.GetExcelFile().subscribe(
             res => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                if (type) importedSaveAs(res, "원자재마스터.xlsx");
-                else importedSaveAs(res, "자재마스터현황.xlsx");
+                importedSaveAs(res, "원자재마스터.xlsx");
 
                 let win = this.electronService.remote.getCurrentWindow();
 
@@ -402,7 +410,7 @@ export class MaterialsComponent implements OnInit {
                                 console.log(`Received bytes: ${item.getReceivedBytes()}`)
                             }
                         }
-                    });
+                    })
                     item.once('done', (event, state) => {
                         if (state === 'completed') {
                             console.log(filename + ' 저장 완료');
@@ -411,7 +419,7 @@ export class MaterialsComponent implements OnInit {
                             alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
                             console.log(`Download failed: ${state}`)
                         }
-                    });
+                    })
                 });
             },
             error => this.errorMessage = <any>error

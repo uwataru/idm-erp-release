@@ -114,7 +114,7 @@
                     <button class="btn btn-sm btn-info btn-addon"  (click)="electronService.readyPrint('print-target-oa-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
                         <i class="glyphicon glyphicon-print"></i>인쇄
                     </button>
-                    <button class="btn btn-sm btn-success btn-addon" (click)="excelDown(false)">
+                    <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
                         <i class="glyphicon glyphicon-download-alt"></i>엑셀
                     </button>
                 </div>
@@ -318,7 +318,7 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <div class="row">
                                     <label for="product_type" class="col-lg-4 control-label">
                                         기종
@@ -349,29 +349,6 @@
                                         <input type="text" formControlName="drawing_no" id="drawing_no" nextFocus="production_line" class="form-control w-sm" />
                                     </div>
                                 </div>
-                            </div> -->
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <label for="product_name" class="col-lg-4 control-label">
-                                        제품명
-                                    </label>
-                                    <div class="col-lg-8">
-                                        <input type="text" formControlName="product_name" id="product_name" nextFocus="size" class="form-control inline w" />
-                                        <span *ngIf="isCombi == true" class="">({{ prodTypeStr }})</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <label for="size" class="col-lg-4 control-label">
-                                        규격
-                                    </label>
-                                    <div class="col-lg-8">
-                                        <input type="text" formControlName="size" id="size" nextFocus="production_line" class="form-control w-sm" />
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="form-group">
@@ -380,9 +357,21 @@
                                         작업라인
                                     </label>
                                     <div class="col-lg-8">
-                                        <select formControlName="production_line" id="production_line" nextFocus="modi_reason" class="input-sm form-control w-sm inline v-middle">
+                                        <select formControlName="production_line" id="production_line" nextFocus="product_name" class="input-sm form-control w-sm inline v-middle">
                                             <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="product_name" class="col-lg-4 control-label">
+                                        제품명
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input type="text" formControlName="product_name" id="product_name" nextFocus="modi_reason" class="form-control inline w" />
+                                        <span *ngIf="isCombi == true" class="">({{ prodTypeStr }})</span>
                                     </div>
                                 </div>
                             </div>
@@ -472,7 +461,7 @@
                     <div class="text-center">
                         <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
                         <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
-                        <button type="button" (click)="excelDown(true)" class="btn btn-success">다운로드</button>
+                        <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
                     </div>
                 </div>
             </div>

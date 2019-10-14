@@ -7,11 +7,16 @@ export class Item {
         ptype2: string;
         ptype3: string;
         ptype4: string;
+        ptype41: string;
+        ptype42: string;
+        ptype43: string;
+        ptype44: string;
+        ptype45: string;
         ptype5: string;
         biz_no: string;
         name: string;
         alias: string;
-        id: string;
+        code: string;
         ceo: string;
         addr: string;
         addr2: string;
