@@ -127,9 +127,9 @@ export class CuttingWorksComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '조립작업 지시 현황';
-        this.inputFormTitle = '조립작업입력';
-        this.uploadFormTitle = '조립재고 엑셀업로드';
+        this.panelTitle = '절단작업 지시 현황';
+        this.inputFormTitle = '절단작업입력';
+        this.uploadFormTitle = '절단재고 엑셀업로드';
 
         this.getAll();
 

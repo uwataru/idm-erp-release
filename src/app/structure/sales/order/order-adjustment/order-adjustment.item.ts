@@ -18,7 +18,6 @@ export class Item {
         product_price: number;
         is_tmp_price: string;
         production_line: string;
-        size: number;
         delivery_date: string;
         promised_date: string;
         modi_reason: string;

@@ -1,354 +1,576 @@
 <div class="panel panel-default">
 
-  <div class="panel-heading">
-    <div class="text-center">
-      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-    </div>
-    <div class="row">
-      <div class="col-sm-8 m-b-xs pos-rlt">
-        <form [formGroup]="searchForm">
-          <input formControlName="sch_partner_name"
-                 [typeahead]="listPartners"
-                 typeaheadOptionField="Alias"
-                 [typeaheadOptionsLimit]="50"
-                 [typeaheadScrollable]="true"
-                 [typeaheadMinLength]="0"
-                 (typeaheadOnSelect)="onSelectListPartner($event)"
-                 placeholder="거래처명"
-                 class="input-sm form-control w-sm inline v-middle"
-                 (keyup)="listSltdPaCode=0"/>
-          <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)"
-                 class="input-sm form-control w-sm inline v-middle" placeholder="제품번호/제품명"/>
-          <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
-
-          <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg"
-                  [ngClass]="{'btn-primary':sch_st === 1, 'btn-default':sch_st !== 1}">사용
-          </button>
-          <button (click)="changeSubMenu(0)" class="btn btn-sm m-l-xss"
-                  [ngClass]="{'btn-primary':sch_st === 0, 'btn-default':sch_st !== 0}">숨김
-          </button>
-          <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss"
-                  [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">단종
-          </button>
-          <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 99, 'btn-default':sch_st !== 99}">전체</button> -->
-        </form>
-      </div>
-      <div class="col-sm-4 text-right">
-        <button class="btn btn-sm btn-success btn-addon" (click)="openModal('upload','')">
-          <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="panel-body">
-    <ngx-datatable
-      [style.height.px]=gridHeight
-      class="bootstrap"
-      [rows]="rows"
-      [columnMode]="'force'"
-      [headerHeight]="30"
-      [rowHeight]="30"
-      [scrollbarV]="true"
-      [scrollbarH]="false"
-      [selected]="selected"
-      [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="false"
-      (select)="onSelect($event)"
-      [messages]="messages">
-      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-                            [resizeable]="false" headerClass="checkAll" cellClass="text-center">
-        <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                     let-selectFn="selectFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
-          </label>
-        </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                     let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-          </label>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" cellClass="text-right"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_price" name="단가" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <span
-            class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="production_line" name="작업라인" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100"
-                            [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-          <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-ban-circle"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===0" prop="id" name="수정&middot;단종&middot;사용" [width]="100"
-                            [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-          <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===-1" prop="id" name="수정&middot;숨김&middot;사용" [width]="100"
-                            [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-ban-circle"></i>
-          </button>
-          <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===99" prop="id" name="수정&middot;관리&middot;사용" [width]="100"
-                            [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button *ngIf="row.st !== -1" (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-          <button *ngIf="row.st !== 0" (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-ban-circle"></i>
-          </button>
-          <button *ngIf="row.st !== 1" (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-  </div>
-  <footer class="panel-footer">
-    <div class="row">
-      <div class="col-sm-6 hidden-xs">
-        <button class="btn btn-sm btn-danger btn-addon" [disabled]="selected.length < 1"
-                (click)="openModal('delete','selected')">
-          <i class="glyphicon glyphicon-trash"></i>단종
-        </button>
-        <button class="btn btn-sm btn-warning btn-addon" [disabled]="selected.length < 1"
-                (click)="openModal('hide','selected')">
-          <i class="glyphicon glyphicon-ban-circle"></i>숨김
-        </button>
-      </div>
-      <div class="col-sm-6 text-right text-center-xs">
-        <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('write','')">
-          <i class="glyphicon glyphicon-plus"></i>등록
-        </button>
-        <button class="btn btn-sm btn-info btn-addon">
-          <i class="glyphicon glyphicon-print"></i>인쇄
-        </button>
-        <button class="btn btn-sm btn-success btn-addon" (click)="excelDown(false)">
-          <i class="glyphicon glyphicon-download-alt"></i>엑셀
-        </button>
-      </div>
-    </div>
-  </footer>
-</div>
-
-<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-
-      <form [formGroup]="inputForm">
-        <div class="modal-header">
-          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">{{ inputFormTitle }}</h4>
-        </div>
-        <div class="modal-body">
-          <table>
-            <tr>
-              <th width="100px">
-                <label for="input_date">등록일자</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="input_date" id="input_date" nextFocus="partner_name"
-                       class="form-control input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="partner_code">거래처</label>
-              </th>
-              <td>
-                <input formControlName="partner_name" id="partner_name"
-                       [typeahead]="inputPartners"
-                       typeaheadOptionField="Alias"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectInputPartner($event)"
-                       placeholder="거래처명"
-                       class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="product_code">제품번호</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="product_code" id="product_code" (blur)="makeCombiCode($event)"
-                       nextFocus="product_type" class="form-control inline input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="product_name">제품명</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="product_name" id="product_name" (blur)="makeCombiName($event)"
-                       nextFocus="ann_qt" class="form-control inline input-sm w"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="size">규격</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="size" id="size" nextFocus="material_weight"
-                       class="form-control inline input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="product_price">제품단가</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" (keyup)="AddComma($event)" (blur)="copyCombiText($event)"
-                       formControlName="product_price" id="product_price" nextFocus="material"
-                       class="form-control inline input-sm w-xs text-right"/>
-                <label class="checkbox-inline">
-                  <input type="checkbox" formControlName="is_tmp_price" id="is_tmp_price"/>임시단가
-                </label>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <div class="text-center">
-            <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
-            </button>
-            <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
-          </div>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{ statusFormTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          {{ statusConfirmMsg }}
-        </div>
-      </div>
-      s
-      <div class="modal-footer">
+    <div class="panel-heading">
         <div class="text-center">
-          <button type="button" *ngIf="statusFormValue === 1" (click)="changeStatus(selectedId, 1)"
-                  class="btn btn-danger btn-save">사용
-          </button>
-          <button type="button" *ngIf="statusFormValue === 0" (click)="changeStatus(selectedId, 0)"
-                  class="btn btn-danger btn-save">숨김
-          </button>
-          <button type="button" *ngIf="statusFormValue === -1" (click)="changeStatus(selectedId, -1)"
-                  class="btn btn-danger btn-save">단종
-          </button>
-          <button type="button" (click)="StatusFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
         </div>
-      </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input formControlName="sch_partner_name"
+                    [typeahead]="listPartners"
+                    typeaheadOptionField="Alias"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectListPartner($event)"
+                    placeholder="거래처명"
+                    class="input-sm form-control w-sm inline v-middle"
+                    (keyup)="listSltdPaCode=0" />
+                <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle" placeholder="제품번호/제품명" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+
+                <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg" [ngClass]="{'btn-primary':sch_st === 1, 'btn-default':sch_st !== 1}">사용</button>
+                <button (click)="changeSubMenu(0)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 0, 'btn-default':sch_st !== 0}">숨김</button>
+                <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">단종</button>
+                <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 99, 'btn-default':sch_st !== 99}">전체</button> -->
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button class="btn btn-sm btn-success btn-addon" (click)="openModal('upload','')">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column>
+                <ng-template let-column="column" ngx-datatable-header-template>
+					규격&middot;길이
+				</ng-template>
+				<ng-template let-row="row" ngx-datatable-cell-template>
+					<span class="inline size text-center">{{ row.size }}</span>/
+                    <span class="inline cut-length text-center">{{ row.cut_length }}</span>
+				</ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="input_weight" name="투중" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_weight" name="제중" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_price" name="단가" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <span class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="production_line" name="작업라인" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                    <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
+                        <i class="glyphicon glyphicon-ban-circle"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===0" prop="id" name="수정&middot;단종&middot;사용" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                    <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
+                        <i class="glyphicon glyphicon-repeat"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===-1" prop="id" name="수정&middot;숨김&middot;사용" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
+                        <i class="glyphicon glyphicon-ban-circle"></i>
+                    </button>
+                    <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
+                        <i class="glyphicon glyphicon-repeat"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===99" prop="id" name="수정&middot;관리&middot;사용" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button *ngIf="row.st !== -1" (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                    <button *ngIf="row.st !== 0" (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
+                        <i class="glyphicon glyphicon-ban-circle"></i>
+                    </button>
+                    <button *ngIf="row.st !== 1" (click)="openModal('use',value)" class="btn btn-xs btn-success">
+                        <i class="glyphicon glyphicon-repeat"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <button class="btn btn-sm btn-danger btn-addon" [disabled]="selected.length < 1" (click)="openModal('delete','selected')">
+                    <i class="glyphicon glyphicon-trash"></i>단종
+                </button>
+                <button class="btn btn-sm btn-warning btn-addon" [disabled]="selected.length < 1" (click)="openModal('hide','selected')">
+                    <i class="glyphicon glyphicon-ban-circle"></i>숨김
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('write','')">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <button class="btn btn-sm btn-info btn-addon">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
 </div>
 
-<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{ uploadFormTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx"
-                 #UploadFileSrc/>
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-xl-center">
+		<div class="modal-content modal-xl">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-4">
+
+                        <table>
+                        <tr>
+                            <th width="100px">
+                                <label for="input_date">등록일자</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="input_date" id="input_date" nextFocus="partner_name" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="partner_code">거래처</label>
+                                <!-- <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <input formControlName="partner_name" id="partner_name"
+                                    [typeahead]="inputPartners"
+                                    typeaheadOptionField="Alias"
+                                    [typeaheadOptionsLimit]="50"
+                                    [typeaheadScrollable]="true"
+                                    [typeaheadMinLength]="0"
+                                    (typeaheadOnSelect)="onSelectInputPartner($event)"
+                                    placeholder="거래처명"
+                                    class="input-sm form-control w-sm inline v-middle" />
+                                <input type="hidden" formControlName="partner_code" id="partner_code" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="product_code">제품번호</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_code" id="product_code" (blur)="makeCombiCode($event)" nextFocus="product_type" class="form-control inline input-sm w-sm" />
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" formControlName="is_combi" id="is_combi" (click)="toggleCombiItem()" />콤비
+                                </label>
+                            </td>
+                        </tr>
+                        <tr *ngIf="combiChecked == true">
+                            <th>
+                                <!-- <label for="combi_product_code">제품번호</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <input type="text" formControlName="combi_product_code" id="combi_product_code" nextFocus="product_type" class="form-control inline input-sm w-sm" />
+                                <span class="">({{ combiTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="product_type">기종</label>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_type" id="product_type" nextFocus="sub_drawing_no" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="sub_drawing_no">위도번</label>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="sub_drawing_no" id="sub_drawing_no" nextFocus="drawing_no" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="drawing_no">도번</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="drawing_no" id="drawing_no" nextFocus="product_name" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="product_name">제품명</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_name" id="product_name" (blur)="makeCombiName($event)" nextFocus="ann_qt" class="form-control inline input-sm w" />
+                                <span *ngIf="combiChecked == true" class="">({{ prodTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="combiChecked == true">
+                            <th>
+                                <!-- <label for="product_name">제품명</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <input type="text" formControlName="combi_product_name" id="combi_product_name" nextFocus="ann_qt" class="form-control inline input-sm w" />
+                                <span class="">({{ combiTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="ann_qt">년간수량</label>
+                            </th>
+                            <td>
+                                <input type="text" decimal [(ngModel)]="ann_qt" formControlName="ann_qt" id="ann_qt" nextFocus="lot_qt" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="lot_qt">LOT수량</label>
+                            </th>
+                            <td>
+                                <input type="text" decimal [(ngModel)]="lot_qt" formControlName="lot_qt" id="lot_qt" nextFocus="product_price" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="product_price">제품단가</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" (keyup)="AddComma($event)" (blur)="copyCombiText($event)" formControlName="product_price" id="product_price" nextFocus="material" class="form-control inline input-sm w-xs text-right" />
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" formControlName="is_tmp_price" id="is_tmp_price" />임시단가
+                                </label>
+                            </td>
+                        </tr>
+                        <tr *ngIf="combiChecked == true">
+                            <th>
+                                <!-- <label for="product_price">제품단가</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <input type="text" (keyup)="AddComma($event)" formControlName="combi_product_price" id="combi_product_price" nextFocus="material" class="form-control inline input-sm w-xs text-right" />
+                                <span class="">({{ combiTypeStr }})</span>
+                            </td>
+                        </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <table>
+                        <tr>
+                            <th width="100px">
+                                <label for="material">재질</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="material" id="material" nextFocus="steel_maker" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="steel_maker">제강메이커</label>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="steel_maker" id="steel_maker" nextFocus="size" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="size">규격/길이</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="size" id="size" nextFocus="material_weight" class="form-control inline input-sm w-xxs" /> /
+                                <input type="text" formControlName="cut_length" id="cut_length" nextFocus="product_weight" class="form-control inline input-sm w-xxs" />
+                                <!-- <input type="text" formControlName="cut_length" id="cut_length" (blur)="calculWeight()" nextFocus="product_weight" class="form-control inline input-sm w-xxs" /> -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="material_weight">소중/투중</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="material_weight" id="material_weight" (blur)="calculCutLength()" nextFocus="product_weight" class="form-control inline input-sm w-xxs" /> /
+                                <input type="text" formControlName="input_weight" id="input_weight" nextFocus="sub_material" class="form-control inline input-sm w-xxs" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="input_weight">제중</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_weight" id="product_weight" (blur)="copyCombiText($event)" nextFocus="sub_material" class="form-control inline input-sm w-xs" />
+                                <span *ngIf="combiChecked == true" class="">({{ prodTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="combiChecked == true">
+                            <th>
+                                <!-- <label for="input_weight">제중</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <input type="text" formControlName="combi_product_weight" id="product_weight" nextFocus="sub_material" class="form-control inline input-sm w-xs" />
+                                <span class="">({{ combiTypeStr }})</span>
+                            </td>
+                        </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <table>
+                        <tr>
+                            <th width="120px">
+                                <label for="sub_material">대체재질</label>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="sub_material" id="sub_material" nextFocus="production_line" class="form-control input-sm w-sm" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="production_line">작업라인</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <select formControlName="production_line" id="production_line" nextFocus="preparation_time" class="input-sm form-control w-sm inline v-middle">
+                                    <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="preparation_time">작업준비시간</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="preparation_time" id="preparation_time" nextFocus="ct" class="form-control inline input-sm w-xs" /> 분
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="ct">CT (EA/m)</label>
+                                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="ct" id="ct" (blur)="calculEam()" nextFocus="cutting_method" class="form-control inline input-sm w-xs" /> |
+                                <input type="text" formControlName="ea_m" id="ea_m" nextFocus="cutting_method" class="form-control inline input-sm w-xs" /> EA
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="cutting_method">절단방식</label>
+                                <!-- <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
+                            </th>
+                            <td>
+                                <select formControlName="cutting_method" id="cutting_method" nextFocus="heating_process" class="input-sm form-control w-xs inline v-middle">
+                                    <option *ngFor="let method of cuttingMethods" value="{{ method.CfgCode }}">{{ method.CfgName }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="heating_process">열처리</label>
+                            </th>
+                            <td>
+                                <select formControlName="heating_process" id="heating_process" nextFocus="heating_spec" class="input-sm form-control w-xs inline v-middle">
+                                    <option *ngFor="let item of heatingProcess" value="{{ item.CfgCode }}">{{ item.CfgName }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="heating_spec">열처리스펙</label>
+                            </th>
+                            <td>
+                                <input type="text" formControlName="heating_spec" id="heating_spec" (blur)="copyCombiText($event)" nextFocus="special_process" class="form-control inline input-sm w" />
+                                <span *ngIf="combiChecked == true" class="">({{ prodTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="combiChecked == true">
+                            <th width="100px">
+                                <!-- <label for="heating_spec">열처리스펙</label> -->
+                            </th>
+                            <td>
+                                <input type="text" formControlName="combi_heating_spec" id="combi_heating_spec" nextFocus="special_process" class="form-control inline input-sm w" />
+                                <span class="">({{ combiTypeStr }})</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="special_process">특수공정</label>
+                            </th>
+                            <td>
+                                <select formControlName="special_process" id="special_process" nextFocus="inspection" class="input-sm form-control w-xs inline v-middle">
+                                    <option *ngFor="let item of specialProcess" value="{{ item.CfgCode }}">{{ item.CfgName }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="100px">
+                                <label for="sq">기타선택</label>
+                            </th>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" formControlName="sq" id="sq" />SQ
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" formControlName="inspection" id="inspection" />무검사
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" formControlName="selection" id="selection" />선별
+                                </label>
+                            </td>
+                        </tr>
+                        </table>
+
+                    </div>
+                </div>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ statusFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ statusConfirmMsg }}
+                </div>
+            </div>s
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" *ngIf="statusFormValue === 1" (click)="changeStatus(selectedId, 1)" class="btn btn-danger btn-save">사용</button>
+                    <button type="button" *ngIf="statusFormValue === 0" (click)="changeStatus(selectedId, 0)" class="btn btn-danger btn-save">숨김</button>
+                    <button type="button" *ngIf="statusFormValue === -1" (click)="changeStatus(selectedId, -1)" class="btn btn-danger btn-save">단종</button>
+                    <button type="button" (click)="StatusFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
-          <button type="button" (click)="UploadFileSrc.value=''; UploadFormModal.hide()"
-                  class="btn btn-default btn-cancel">취소
-          </button>
-          <button type="button" (click)="excelDown(true)" class="btn btn-success">다운로드</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ uploadFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" #UploadFileSrc />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="UploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
 
-  <div class="sk-fading-circle">
-    <div class="sk-circle1 sk-circle"></div>
-    <div class="sk-circle2 sk-circle"></div>
-    <div class="sk-circle3 sk-circle"></div>
-    <div class="sk-circle4 sk-circle"></div>
-    <div class="sk-circle5 sk-circle"></div>
-    <div class="sk-circle6 sk-circle"></div>
-    <div class="sk-circle7 sk-circle"></div>
-    <div class="sk-circle8 sk-circle"></div>
-    <div class="sk-circle9 sk-circle"></div>
-    <div class="sk-circle10 sk-circle"></div>
-    <div class="sk-circle11 sk-circle"></div>
-    <div class="sk-circle12 sk-circle"></div>
-  </div>
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
 
 </div>

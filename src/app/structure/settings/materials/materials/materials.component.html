@@ -1,311 +1,285 @@
 <div class="panel panel-default">
 
-  <div class="panel-heading">
-    <div class="text-center">
-      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-    </div>
-    <div class="row">
-      <div class="col-sm-8 m-b-xs pos-rlt">
-        <form [formGroup]="searchForm">
-          <input formControlName="sch_partner_name"
-                 [typeahead]="listPartners"
-                 typeaheadOptionField="Alias"
-                 [typeaheadOptionsLimit]="50"
-                 [typeaheadScrollable]="true"
-                 [typeaheadMinLength]="0"
-                 (typeaheadOnSelect)="onSelectListPartner($event)"
-                 placeholder="거래처명"
-                 class="input-sm form-control w-sm inline v-middle"/>
-          <input type="text" formControlName="sch_material" id="sch_material" (keyup)="updateFilter($event)"
-                 class="input-sm form-control w-sm inline v-middle" placeholder="재질"/>
-          <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
-
-          <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg"
-                  [ngClass]="{'btn-primary':sch_st === 1, 'btn-default':sch_st !== 1}">사용
-          </button>
-          <!-- <button (click)="changeSubMenu(0)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 0, 'btn-default':sch_st !== 0}">숨김</button> -->
-          <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss"
-                  [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">삭제
-          </button>
-          <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 99, 'btn-default':sch_st !== 99}">전체</button> -->
-        </form>
-      </div>
-      <div class="col-sm-4 text-right">
-        <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form"
-                (click)="openModal('upload','')">
-          <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="panel-body">
-    <ngx-datatable
-      [style.height.px]=gridHeight
-      class="bootstrap"
-      [rows]="rows"
-      [columnMode]="'force'"
-      [headerHeight]="30"
-      [rowHeight]="30"
-      [scrollbarV]="true"
-      [scrollbarH]="false"
-      [selected]="selected"
-      [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="false"
-      (select)="onSelect($event)"
-      [messages]="messages">
-      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-                            [resizeable]="false" headerClass="checkAll" cellClass="text-center">
-        <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                     let-selectFn="selectFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
-          </label>
-        </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                     let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-          </label>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="material_type" name="종류" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="material" name="재질"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="221" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="공급처(약칭)" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span>{{ value | numberFormat }}</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="110" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false"
-                            [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column *ngIf="sch_st===-1" prop="id" name="수정&middot;사용" [width]="100" [canAutoResize]="false"
-                            [resizeable]="false" cellClass="text-center">
-        <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-  </div>
-
-  <footer class="panel-footer">
-    <div class="row">
-      <div class="col-sm-6 hidden-xs">
-        <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1"
-                class="btn btn-sm btn-danger btn-addon">
-          <i class="glyphicon glyphicon-trash"></i>삭제
-        </button>
-      </div>
-      <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
-          <i class="glyphicon glyphicon-plus"></i>등록
-        </button>
-        <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
-        <button class="btn btn-sm btn-success btn-addon" (click)="excelDown(false)">
-          <i class="glyphicon glyphicon-download-alt"></i>엑셀
-        </button>
-      </div>
-    </div>
-  </footer>
-</div>
-
-<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <form [formGroup]="inputForm">
-        <div class="modal-header">
-          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">{{ inputFormTitle }}</h4>
-        </div>
-        <div class="modal-body">
-
-          <table>
-            <tr>
-              <th width="100px">
-                <label for="input_date">등록일자</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="input_date" id="input_date" bsDatepicker nextFocus="material"
-                       class="form-control input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="material">자재명</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="material" id="material" nextFocus="partner_name"
-                       class="form-control input-sm w-sm"/>
-              </td>
-              <th>
-                <label for="partner_code">공급처(약칭)</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input formControlName="partner_name" id="partner_name"
-                       [typeahead]="inputPartners"
-                       typeaheadOptionField="Name"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectInputPartner($event)"
-                       placeholder="거래처명"
-                       class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code" nextFocus="size"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="size">규격</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="size" id="size" nextFocus="price"
-                       class="form-control input-sm w-sm"/>
-              </td>
-              <th>
-                <label for="price">단가</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="price" id="price" nextFocus="material_type"
-                       class="form-control input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="material_type">항목</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="material_type" id="material_type" nextFocus="price_date"
-                       class="form-control input-sm w-sm"/>
-              </td>
-              <th>
-                <label for="price_date">단가적용일</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="price_date" id="price_date" bsDatepicker
-                       class="form-control input-sm w-sm"/>
-              </td>
-            </tr>
-          </table>
-
-        </div>
-
-        <div class="modal-footer">
-          <div class="text-center">
-            <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
-            </button>
-            <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
-          </div>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{ statusFormTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          {{ statusConfirmMsg }}
-        </div>
-      </div>
-      <div class="modal-footer">
+    <div class="panel-heading">
         <div class="text-center">
-          <button type="button" *ngIf="statusFormValue === 1" (click)="changeStatus(selectedId, 1)"
-                  class="btn btn-danger btn-save">사용
-          </button>
-          <!-- <button type="button" *ngIf="statusFormValue === 0" (click)="changeStatus(selectedId, 0)" class="btn btn-danger btn-save">숨김</button> -->
-          <button type="button" *ngIf="statusFormValue === -1" (click)="changeStatus(selectedId, -1)"
-                  class="btn btn-danger btn-save">삭제
-          </button>
-          <button type="button" class="btn btn-primary btn-cancel" (click)="StatusFormModal.hide()">취소</button>
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
         </div>
-      </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input formControlName="sch_partner_name"
+                    [typeahead]="listPartners"
+                    typeaheadOptionField="Alias"
+                    [typeaheadOptionsLimit]="50"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="onSelectListPartner($event)"
+                    placeholder="거래처명"
+                    class="input-sm form-control w-sm inline v-middle" />
+                <input type="text" formControlName="sch_material" id="sch_material" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle" placeholder="재질" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+
+                <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg" [ngClass]="{'btn-primary':sch_st === 1, 'btn-default':sch_st !== 1}">사용</button>
+                <!-- <button (click)="changeSubMenu(0)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 0, 'btn-default':sch_st !== 0}">숨김</button> -->
+                <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">삭제</button>
+                <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 99, 'btn-default':sch_st !== 99}">전체</button> -->
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form" (click)="openModal('upload','')">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="panel-body">
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            [selectAllRowsOnPage]="false"
+            (select)="onSelect($event)"
+            [messages]="messages">
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="material_type" name="종류" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="material" name="재질"></ngx-datatable-column>
+            <ngx-datatable-column prop="size" name="규격" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="maker" name="메이커" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="221" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="공급처(약칭)" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngIf="sch_st===-1" prop="id" name="수정&middot;사용" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+                <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
+                        <i class="glyphicon glyphicon-repeat"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <button (click)="openModal('delete','selected')" [disabled]="selected.length < 1" class="btn btn-sm btn-danger btn-addon">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button>
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>등록
+                </button>
+                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                </button>
+    		</div>
+        </div>
+	</footer>
 </div>
-<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{ uploadFormTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx"
-                 #uploadFileSrc/>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <table>
+                <tr>
+                    <th width="100px">
+                        <label for="input_date">등록일자</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="input_date" id="input_date" bsDatepicker nextFocus="maker" class="form-control input-sm w-sm" />
+                    </td>
+                    <th>
+                        <label for="maker">메이커</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="maker" id="maker" nextFocus="material_type" class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="material_type">종류</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="material_type" id="material_type" nextFocus="partner_name" class="form-control input-sm w-sm" />
+                    </td>
+                    <th>
+                        <label for="partner_code">공급처(약칭)</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input formControlName="partner_name" id="partner_name"
+                            [typeahead]="inputPartners"
+                            typeaheadOptionField="Name"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectInputPartner($event)"
+                            placeholder="거래처명"
+                            class="input-sm form-control w-sm inline v-middle" />
+                        <input type="hidden" formControlName="partner_code" id="partner_code" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="material">재질</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="material" id="material" nextFocus="price" class="form-control input-sm w-sm" />
+                    </td>
+                    <th>
+                        <label for="price">단가</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="price" id="price" nextFocus="size" class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="size">규격</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="size" id="size" nextFocus="price_date" class="form-control input-sm w-sm" />
+                    </td>
+                    <th>
+                        <label for="price_date">단가적용일</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="price_date" id="price_date" bsDatepicker class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                </table>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
+<div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ statusFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ statusConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" *ngIf="statusFormValue === 1" (click)="changeStatus(selectedId, 1)" class="btn btn-danger btn-save">사용</button>
+                    <!-- <button type="button" *ngIf="statusFormValue === 0" (click)="changeStatus(selectedId, 0)" class="btn btn-danger btn-save">숨김</button> -->
+                    <button type="button" *ngIf="statusFormValue === -1" (click)="changeStatus(selectedId, -1)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="StatusFormModal.hide()">취소</button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
-          <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
-                  class="btn btn-default btn-cancel">취소
-          </button>
-          <button type="button" (click)="excelDown(true)" class="btn btn-success">다운로드</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ uploadFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+                <div class="text-center padder-v">
+                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" #uploadFileSrc />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+                    <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel">취소</button>
+                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
 
-  <div class="sk-fading-circle">
-    <div class="sk-circle1 sk-circle"></div>
-    <div class="sk-circle2 sk-circle"></div>
-    <div class="sk-circle3 sk-circle"></div>
-    <div class="sk-circle4 sk-circle"></div>
-    <div class="sk-circle5 sk-circle"></div>
-    <div class="sk-circle6 sk-circle"></div>
-    <div class="sk-circle7 sk-circle"></div>
-    <div class="sk-circle8 sk-circle"></div>
-    <div class="sk-circle9 sk-circle"></div>
-    <div class="sk-circle10 sk-circle"></div>
-    <div class="sk-circle11 sk-circle"></div>
-    <div class="sk-circle12 sk-circle"></div>
-  </div>
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
 
 </div>
