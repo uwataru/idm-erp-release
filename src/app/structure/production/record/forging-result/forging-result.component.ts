@@ -65,7 +65,7 @@ export class ForgingResultComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '단조작업실적서';
+        this.panelTitle = '조립작업실적서';
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
@@ -103,7 +103,7 @@ export class ForgingResultComponent implements OnInit {
         );
     }
 
-    
+
     excelDown(): void {
         this.dataService.GetExcelFile().subscribe(
             blob => {
@@ -114,7 +114,7 @@ export class ForgingResultComponent implements OnInit {
                 let win = this.elSrv.remote.getCurrentWindow();
 
                 win.webContents.session.on('will-download', (event, item, webContents) => {
-                    
+
                     var filename
 
                     if(win.destroy){
@@ -134,7 +134,7 @@ export class ForgingResultComponent implements OnInit {
                             }
                         }
                     })
-                    
+
                     item.once('done', (event, state) => {
                         if (state === 'completed') {
                             console.log(filename + ' 저장 완료');
@@ -143,7 +143,7 @@ export class ForgingResultComponent implements OnInit {
                             console.log(`Download failed: ${state}`)
                         }
                     })
-                  
+
                 });
             },
             error => this.errorMessage = <any>error

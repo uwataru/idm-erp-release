@@ -42,27 +42,27 @@
             [virtualization]="false"
             [messages]="messages">
             <ngx-datatable-column prop="line_code" name="작업라인" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>
+<!--            <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>-->
             <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>
+<!--            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>-->
             <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-            <ngx-datatable-column prop="material" name="재질" [width]="80" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="size" name="규격" [width]="50" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+<!--            <ngx-datatable-column prop="material" name="재질" [width]="80" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>-->
+<!--            <ngx-datatable-column prop="size" name="규격" [width]="50" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
             <ngx-datatable-column prop="prev_cutting_qty" name="전기이월" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
+<!--            <ngx-datatable-column prop="cutting_qty" name="조립수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                    <span>{{ value | numberFormat }}</span>-->
+<!--                </ng-template>-->
+<!--            </ngx-datatable-column>-->
+<!--            <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                    <span>{{ value | numberFormat }}</span>-->
+<!--                </ng-template>-->
+<!--            </ngx-datatable-column>-->
             <ngx-datatable-column prop="forging_qty" name="생산수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
@@ -74,7 +74,7 @@
             </ngx-datatable-column>
             <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
             </ngx-datatable-column>
-            <ngx-datatable-column prop="inventory_qty" name="절단재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="inventory_qty" name="제품재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
@@ -90,18 +90,18 @@
             <tbody>
             <tr>
                 <td width="80px" class="text-center">계</td>
-                <td></td>
-                <td width="80px" class="text-right"></td>
-                <td width="50px" class="text-right"></td>
+<!--                <td></td>-->
+                <td width="423.5px" class="text-right">&nbsp;</td>
+                <td width="423.5px" class="text-right">&nbsp;</td>
                 <td width="70px" class="text-right">{{ sums_prev_cutting_qty | numberFormat }}</td>
-                <td width="80px" class="text-right">{{ sums_cutting_qty | numberFormat }}</td>
-                <td width="80px" class="text-right">{{ sums_forwarding_weight | numberFormat }}</td>
+<!--                <td width="80px" class="text-right">{{ sums_cutting_qty | numberFormat }}</td>-->
+<!--                <td width="80px" class="text-right">{{ sums_forwarding_weight | numberFormat }}</td>-->
                 <td width="80px" class="text-right">{{ sums_forging_qty | numberFormat }}</td>
                 <td width="60px" class="text-right">{{ sums_defective_qty }}</td>
                 <td width="60px" class="text-right">{{ sums_loss_qty }}</td>
                 <td width="60px" class="text-right">{{ sums_lucre_qty }}</td>
                 <td width="80px" class="text-right">{{ sums_inventory_qty | numberFormat }}</td>
-                <td width="67px" class="print-width-50px"></td>
+                <td width="50px" class="print-width-50px"></td>
             </tr>
             </tbody>
             </table>
@@ -142,8 +142,8 @@
                     <td width="120px"><span>{{ detail_product_code }}</span></td>
                     <th>제품명</th>
                     <td width="120px"><span>{{ detail_product_name }}</span></td>
-                    <th>도번</th>
-                    <td width="120px"><span>{{ detail_drawing_no }}</span></td>
+<!--                    <th>도번</th>-->
+<!--                    <td width="120px"><span>{{ detail_drawing_no }}</span></td>-->
                     <th>거래처</th>
                     <td><span>{{ detail_partner_name }}</span></td>
                     <th>조회기간</th>
@@ -160,17 +160,17 @@
                     [rowHeight]="30"
                     [messages]="messages">
                     <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-                    <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
-                    <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-                    <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
+<!--                    <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
                     <ngx-datatable-column prop="forging_qty" name="생산수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                             <span>{{ value | numberFormat }}</span>
@@ -192,9 +192,9 @@
             		<tbody>
             		<tr>
                         <td width="120px" class="text-center">계</td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>
-                        <td width="100px" class="text-right"></td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>
+<!--                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>-->
+<!--                        <td width="100px" class="text-right"></td>-->
+<!--                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>-->
                         <td width="100px" class="text-right"><span>{{ detailsums_forging_qty | numberFormat }}</span></td>
                         <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>
                         <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>

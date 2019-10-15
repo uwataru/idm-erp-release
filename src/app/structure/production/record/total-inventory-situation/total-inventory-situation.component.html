@@ -1,172 +1,177 @@
 <div class="panel panel-default">
 
-    <div class="panel-heading">
-        <div class="text-center">
-            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-        </div>
-        <div class="m-l-xs">
-            <form [formGroup]="searchForm">
-            <input formControlName="sch_partner_name"
-                [typeahead]="listPartners"
-                typeaheadOptionField="Alias"
-                [typeaheadOptionsLimit]="50"
-                [typeaheadScrollable]="true"
-                [typeaheadMinLength]="0"
-                (typeaheadOnSelect)="onSelectListPartner($event)"
-                placeholder="거래처명"
-                class="input-sm form-control w-sm inline v-middle" />
-            <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
-            <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
-            <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" />
-            <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
-            </form>
-        </div>
+  <div class="panel-heading">
+    <div class="text-center">
+      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
     </div>
-
-    <div class="panel-body">
-        <ngx-datatable
-            class="bootstrap"
-            [rows]="rows"
-            [columnMode]="'force'"
-            [headerHeight]="30"
-            [rowHeight]="30"
-            [messages]="messages">
-            <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>
-            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-            <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
-            <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>
-            <ngx-datatable-column prop="cutting_qty" name="수주수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column prop="forwarding_weight" name="납품중량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column prop="forging_qty" name="미납수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column prop="defective_qty" name="요구일" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-                    <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.poc_no)" class="btn btn-xs btn-primary">내역</button>
-                </ng-template>
-            </ngx-datatable-column>
-        </ngx-datatable>
+    <div class="m-l-xs">
+      <form [formGroup]="searchForm">
+        <input formControlName="sch_partner_name"
+               [typeahead]="listPartners"
+               typeaheadOptionField="Alias"
+               [typeaheadOptionsLimit]="50"
+               [typeaheadScrollable]="true"
+               [typeaheadMinLength]="0"
+               (typeaheadOnSelect)="onSelectListPartner($event)"
+               placeholder="거래처명"
+               class="input-sm form-control w-sm inline v-middle"/>
+        <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
+        <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/> ~
+        <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/>
+        <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+      </form>
     </div>
+  </div>
 
-    <footer class="panel-footer">
-		<div class="row">
-            <div class="col-sm-6 hidden-xs">
-            </div>
-            <div class="col-sm-6 text-right">
-                <button class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</button>
-                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
-    		</div>
-        </div>
-	</footer>
+  <div class="panel-body">
+    <ngx-datatable
+      class="bootstrap"
+      [rows]="rows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="30"
+      [messages]="messages">
+      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>
+      <ngx-datatable-column prop="cutting_qty" name="수주수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"><span>{{ value | numberFormat }}</span></ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="forwarding_weight" name="납품중량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"><span>{{ value | numberFormat }}</span></ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="forging_qty" name="미납수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"><span>{{ value | numberFormat }}</span></ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="defective_qty" name="요구일" [width]="60" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.poc_no)" class="btn btn-xs btn-primary">내역</button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+
+  <footer class="panel-footer">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+      </div>
+      <div class="col-sm-6 text-right">
+        <button class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</button>
+        <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-xl modal-xl-center">
-		<div class="modal-content modal-xl">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ detailsTitle }}</h4>
-			</div>
-			<div class="modal-body">
+  <div class="modal-dialog modal-xl modal-xl-center">
+    <div class="modal-content modal-xl">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{ detailsTitle }}</h4>
+      </div>
+      <div class="modal-body">
 
-				<!-- <input type="hidden" id="reservation_id" name="reservation_id" />
-				<input type="hidden" id="goods_name" name="goods_name" />
-				<input type="hidden" id="fare_per_person" name="fare_per_person" /> -->
+        <!-- <input type="hidden" id="reservation_id" name="reservation_id" />
+        <input type="hidden" id="goods_name" name="goods_name" />
+        <input type="hidden" id="fare_per_person" name="fare_per_person" /> -->
 
-                <table class="table table-bordered view">
-                <tr>
-                    <th>제품번호</th>
-                    <td width="120px"><span>{{ detail_product_code }}</span></td>
-                    <th>제품명</th>
-                    <td width="120px"><span>{{ detail_product_name }}</span></td>
-                    <th>도번</th>
-                    <td width="120px"><span>{{ detail_drawing_no }}</span></td>
-                    <th>거래처</th>
-                    <td><span>{{ detail_partner_name }}</span></td>
-                    <th>조회기간</th>
-                    <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
-                </tr>
-                </table>
+        <table class="table table-bordered view">
+          <tr>
+            <th>제품번호</th>
+            <td width="120px"><span>{{ detail_product_code }}</span></td>
+            <th>제품명</th>
+            <td width="120px"><span>{{ detail_product_name }}</span></td>
+            <th>도번</th>
+            <td width="120px"><span>{{ detail_drawing_no }}</span></td>
+            <th>거래처</th>
+            <td><span>{{ detail_partner_name }}</span></td>
+            <th>조회기간</th>
+            <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
+          </tr>
+        </table>
 
-                <ngx-datatable
-                    style="min-height:120px;max-height:420px;"
-                    class="bootstrap"
-                    [rows]="detailrows"
-                    [columnMode]="'force'"
-                    [headerHeight]="30"
-                    [rowHeight]="30"
-                    [messages]="messages">
-                    <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-                    <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
-                    <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-                    <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
-                    <ngx-datatable-column prop="forging_qty" name="생산수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
-                    <ngx-datatable-column prop="defective_qty" name="생산불량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-                    <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-                    <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-                    <ngx-datatable-column prop="inventory_qty" name="절단재고" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                            <span>{{ value | numberFormat }}</span>
-                        </ng-template>
-                    </ngx-datatable-column>
-                    <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
-                </ngx-datatable>
+        <ngx-datatable
+          style="min-height:120px;max-height:420px;"
+          class="bootstrap"
+          [rows]="detailrows"
+          [columnMode]="'force'"
+          [headerHeight]="30"
+          [rowHeight]="30"
+          [messages]="messages">
+          <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                                cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+          <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="forging_qty" name="생산수량" [width]="100" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defective_qty" name="생산불량" [width]="100" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+          <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false"
+                                cellClass="text-right"></ngx-datatable-column>
+          <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="80" [canAutoResize]="false" [resizeable]="false"
+                                cellClass="text-right"></ngx-datatable-column>
+          <ngx-datatable-column prop="inventory_qty" name="절단재고" [width]="120" [canAutoResize]="false"
+                                [resizeable]="false" cellClass="text-right">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
+        </ngx-datatable>
 
-                <div class="table-responsive">
-            		<table class="table table-bordered table-condensed b-light sums">
-            		<tbody>
-            		<tr>
-                        <td width="120px" class="text-center">계</td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>
-                        <td width="100px" class="text-right"></td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_forging_qty | numberFormat }}</span></td>
-                        <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>
-                        <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>
-                        <td width="80px" class="text-right"><span>{{ detailsums_lucre_qty }}</span></td>
-                        <td width="120px" class="text-right">
-                            <span>{{ detailsums_inventory_qty | numberFormat }}</span>
-                            <span>{{ detailsums_inventory_qty }}</span>
-                        </td>
-                        <td></td>
-            		</tr>
-            		</tbody>
-            		</table>
-            	</div>
-            </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed b-light sums">
+            <tbody>
+            <tr>
+              <td width="120px" class="text-center">계</td>
+              <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>
+              <td width="100px" class="text-right"></td>
+              <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>
+              <td width="100px" class="text-right"><span>{{ detailsums_forging_qty | numberFormat }}</span></td>
+              <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>
+              <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>
+              <td width="80px" class="text-right"><span>{{ detailsums_lucre_qty }}</span></td>
+              <td width="120px" class="text-right">
+                <span>{{ detailsums_inventory_qty | numberFormat }}</span>
+                <span>{{ detailsums_inventory_qty }}</span>
+              </td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-            <div class="modal-footer">
-				<div class="text-center">
-                    <button type="button" class="btn btn-info">인쇄</button>
-                    <button type="button" class="btn btn-success">엑셀</button>
-                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
-				</div>
-            </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <button type="button" class="btn btn-info">인쇄</button>
+          <button type="button" class="btn btn-success">엑셀</button>
+          <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
+        </div>
+      </div>
 
-		</div>
-	</div>
+    </div>
+  </div>
 </div>

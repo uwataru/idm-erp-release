@@ -6,36 +6,29 @@
 
 #tblProductAnalysis {
     .tbody-scroll {
-        width: 100%;
-        //min-height: 300px;
         max-height: 608px;
         overflow-y: auto;
-        display: block !important;
     }
-
-    thead {
-        display: block;
+    thead tr th {
+      padding: 4px 11px;
     }
-
-    .w50 {
-        width: 50px;
+    .w5p{
+      width: 5%;
     }
-
-    .w60 {
-        width: 65px;
+    .w6p{
+      width: 6%;
     }
-
-
-    .w70 {
-        width: 85px;
+    .w7p{
+      width: 7%;
     }
-
-    .w110 {
-        width: 115px;
+    .w8p{
+      width: 8%;
     }
-
-    .w120 {
-        width: 120px;
+    .w9p{
+      width: 9%;
+    }
+    .w10p{
+      width: 10%;
     }
 }
 
@@ -62,32 +55,6 @@
 
     td span {
         margin:0px !important;
-    }
-
-    #tblProductAnalysis {
-        .print-w50 {
-            width: 40px;
-        }
-
-        .print-w60 {
-            width: 45px;
-        }
-
-        .print-w70 {
-            width: 65px;
-        }
-
-        .print-w75 {
-            width: 68px;
-        }
-
-        .print-w110 {
-            width: 80px;
-        }
-
-        .print-w120 {
-            width: 69px;
-        }
     }
 
     #tblProductAnalysis * {

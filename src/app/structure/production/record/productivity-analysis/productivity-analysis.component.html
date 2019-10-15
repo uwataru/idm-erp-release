@@ -1,154 +1,118 @@
 <div class="panel panel-default" id="print-target-wt-comp">
-    <div class="panel-heading">
-        <div class="text-center">
-            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-        </div>
-        <div class="m-l-xs">
-            <form [formGroup]="searchForm">
-                <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
-                <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
-                <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" />
-                <label for="production_line" class="control-label text-sm m-l">작업LINE</label>
-                <select formControlName="production_line" id="production_line" class="input-sm form-control w-sm inline v-middle">
-                    <option value=""></option>
-                    <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
-                </select>
-                <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
-            </form>
-        </div>
+  <div class="panel-heading">
+    <div class="text-center">
+      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
     </div>
-
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table id="tblProductAnalysis" class="w60 print-w60 table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-            <thead>
-            <tr>
-                <th class="w60 print-w50">라인<br /><br /></th>
-                <th class="w50 print-w50">반<br /><br />별</th>
-                <th class="w60 print-w70">총가동<br /><br />시간</th>
-                <th class="w60 print-w60">순가동<br /><br />율(%)</th>
-                <th class="w60 print-w60">고장<br /><br />시간</th>
-                <th class="w60 print-w60">고장<br /><br />율(%)</th>
-                <th class="w60 print-w60">생산<br /><br />품목수</th>
-                <th class="w120 print-w120">생산수량<br /><br />(EA)</th>
-                <th class="w120 print-w120">생산중량<br /><br />(KG)</th>
-                <th class="w120 print-w120">생산금액<br /><br />(천원)</th>
-                <th class="w60 print-w60">KG당<br /><br />단가</th>
-                <th class="w60 print-w60">평균<br /><br />LOT</th>
-                <th class="w60 print-w60">평균<br /><br />중량</th>
-                <th class="w70 print-w75">총가동<br />시간당<br />생산수량</th>
-                <th class="w70 print-w75">총가동<br />시간당<br />생산중량</th>
-                <th class="w70 print-w75">총가동<br />시간당<br />생산금액</th>
-                <th class="w70 print-w75">순가동<br />시간당<br />생산금액</th>
-                <th class="w70 print-w75">순가동<br />시간당<br />생산수량</th>
-                <th class="w70 print-w75">순가동<br />1분당<br />생산수량</th>
-            </tr>
-            </thead>
-            <tbody class="tbody-scroll">
-            <ng-template ngFor let-linerows [ngForOf]="rows">
-            <tr *ngFor="let row of linerows.subData; let i = index">
-                <td *ngIf="i == 0" [attr.rowspan]="linerows.subData.length" class="w60 print-w50 text-center">{{ linerows.subKey }}</td>
-                <td class="w50 print-w50 text-center">{{ row.working_group_code }}</td>
-                <td class="w60 print-w70 text-right">{{ row.working_time | numberFormat }}</td>
-                <td class="w60 print-w60 text-right">{{ row.real_working_rate }}</td>
-                <td class="w60 print-w60 text-right">{{ row.failure_time }}</td>
-                <td class="w60 print-w60 text-right">{{ row.failure_rate }}</td>
-                <td class="w60 print-w60 text-right">{{ row.product_cnt }}</td>
-                <td class="w120 print-w120 text-right">{{ row.production_qty | numberFormat }}</td>
-                <td class="w120 print-w120 text-right">{{ row.production_weight | numberFormat }}</td>
-                <td class="w120 print-w120 text-right">{{ row.production_price | numberFormat }}</td>
-                <td class="w60 print-w60 text-right">{{ row.price_per_kg }}</td>
-                <td class="w60 print-w60 text-right">{{ row.avg_lot | numberFormat }}</td>
-                <td class="w60 print-w60 text-right">{{ row.avg_weight }}</td>
-                <td class="w70 print-w75 text-right">{{ row.qty_per_working_hour | numberFormat }}</td>
-                <td class="w70 print-w75 text-right">{{ row.weight_per_working_hour }}</td>
-                <td class="w70 print-w75 text-right">{{ row.price_per_working_hour | numberFormat }}</td>
-                <td class="w70 print-w75 text-right">{{ row.price_per_real_hour | numberFormat }}</td>
-                <td class="w70 print-w75 text-right">{{ row.qty_per_real_hour | numberFormat }}</td>
-                <td class="w70 print-w75 text-right">{{ row.qty_per_real_min }}</td>
-            </tr>
-            <tr class="bg bg-default">
-                <td colspan="2" class="text-center">계</td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.working_time | numberFormat }}</span>
-                </td>
-                <td></td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.failure_time }}</span>
-                </td>
-                <td></td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.product_cnt }}</span>
-                </td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.production_qty | numberFormat }}</span>
-                </td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.production_weight | numberFormat }}</span>
-                </td>
-                <td class="text-right">
-                    <span>{{ linerows.subTotal.production_price | numberFormat }}</span>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            </ng-template>
-            <tr class="bg bg-total">
-                <td colspan="2" class="w110 print-w110 text-center">총계</td>
-                <td class="w60 print-w70 text-right">
-                    <span>{{ sum_working_time | numberFormat }}</span>
-                </td>
-                <td class="w60 print-w60"></td>
-                <td class="w60 print-w60 text-right">
-                    <span>{{ sum_failure_time }}</span>
-                </td>
-                <td class="w60 print-w60"></td>
-                <td class="w60 print-w60 text-right">
-                    <span>{{ sum_product_cnt }}</span>
-                </td>
-                <td class="w120 print-w120 text-right">
-                    <span>{{ sum_production_qty | numberFormat }}</span>
-                </td>
-                <td class="w120 print-w120 text-right">
-                    <span>{{ sum_production_weight | numberFormat }}</span>
-                </td>
-                <td class="w120 print-w120 text-right">
-                    <span>{{ sum_production_price | numberFormat }}</span>
-                </td>
-                <td class="w60 print-w60"></td>
-                <td class="w60 print-w60"></td>
-                <td class="w60 print-w60"></td>
-                <td class="w70 print-w75"></td>
-                <td class="w70 print-w75"></td>
-                <td class="w70 print-w75"></td>
-                <td class="w70 print-w75"></td>
-                <td class="w70 print-w75"></td>
-                <td class="w70 print-w75"></td>
-            </tr>
-            <tr>
-                <td colspan="19">당월 총 가용시간 = 25일 × 24H = 800</td>
-            </tbody>
-            </table>
-        </div>
+    <div class="m-l-xs">
+      <form [formGroup]="searchForm">
+        <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
+        <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/> ~
+        <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/>
+        <label for="production_line" class="control-label text-sm m-l">작업LINE</label>
+        <select formControlName="production_line" id="production_line"
+                class="input-sm form-control w-sm inline v-middle">
+          <option value=""></option>
+          <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
+            -{{ line.EquipmentName }}</option>
+        </select>
+        <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+      </form>
     </div>
+  </div>
 
-    <footer class="panel-footer hidden-print">
-		<div class="row">
-            <div class="col-sm-6 hidden-xs">
-            </div>
-            <div class="col-sm-6 text-right">
-                <button class="btn btn-sm btn-info btn-addon" (click)="elSer.readyPrint('print-target-wt-comp', '', elSer.PRINT_OPT.LANDSCAPE)">
-                    <i class="glyphicon glyphicon-print"></i>인쇄
-                </button>
-                <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
-    		</div>
-        </div>
-	</footer>
+  <div class="panel-body">
+    <div class="table-responsive">
+      <table id="tblProductAnalysis" class="table table-bordered table-condensed b-light"
+             style="border-top:1px solid #eaeff0">
+        <thead>
+        <tr>
+          <th class="w7p">라인</th>
+          <th class="w7p">총가동시간</th>
+          <th class="w7p">순가동율(%)</th>
+          <th class="w7p">고장시간</th>
+          <th class="w7p">고장율(%)</th>
+          <th class="w7p">생산품목수량</th>
+          <th class="w8p">생산수량(EA)</th>
+          <th class="w8p">생산금액(천원)</th>
+          <th class="w7p">평균LOT</th>
+          <th class="w7p">총가동시간당생산수량</th>
+          <th class="w7p">총가동시간당생산금액</th>
+          <th class="w7p">순가동시간당생산수량</th>
+          <th class="w7p">순가동시간당생산금액</th>
+          <th class="w7p">순가동1분당생산수량</th>
+        </tr>
+        </thead>
+        <tbody class="tbody-scroll">
+        <ng-template ngFor let-linerows [ngForOf]="rows">
+          <tr *ngFor="let row of linerows.subData; let i = index">
+            <td class="w7p text-center" *ngIf="i == 0" [attr.rowspan]="linerows.subData.length">{{ linerows.subKey }}</td>
+            <td class="w7p text-right">{{ row.working_time | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.real_working_rate }}</td>
+            <td class="w7p text-right">{{ row.failure_time }}</td>
+            <td class="w7p text-right">{{ row.failure_rate }}</td>
+            <td class="w7p text-right">{{ row.product_cnt }}</td>
+            <td class="w8p text-right">{{ row.production_qty | numberFormat }}</td>
+            <td class="w8p text-right">{{ row.production_price | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.avg_lot | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.qty_per_working_hour | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.price_per_working_hour | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.qty_per_real_hour | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.price_per_real_hour | numberFormat }}</td>
+            <td class="w7p text-right">{{ row.qty_per_real_min }}</td>
+          </tr>
+          <tr class="bg bg-default">
+            <td class="text-center">계</td>
+            <td class="text-right"><span>{{ linerows.subTotal.working_time | numberFormat }}</span></td>
+            <td></td>
+            <td class="text-right"><span>{{ linerows.subTotal.failure_time }}</span></td>
+            <td></td>
+            <td class="text-right"><span>{{ linerows.subTotal.product_cnt }}</span></td>
+            <td class="text-right"><span>{{ linerows.subTotal.production_qty | numberFormat }}</span></td>
+            <td class="text-right"><span>{{ linerows.subTotal.production_price | numberFormat }}</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-template>
+        <tr class="bg bg-total">
+          <td class="w7p text-center">총계</td>
+          <td class="w7p text-right"><span>{{ sum_working_time | numberFormat }}</span></td>
+          <td class="w7p"></td>
+          <td class="w7p text-right"><span>{{ sum_failure_time }}</span></td>
+          <td class="w7p"></td>
+          <td class="w7p text-right"><span>{{ sum_product_cnt }}</span></td>
+          <td class="w8p text-right"><span>{{ sum_production_qty | numberFormat }}</span></td>
+          <td class="w8p text-right"><span>{{ sum_production_price | numberFormat }}</span></td>
+          <td class="w7p"></td>
+          <td class="w7p"></td>
+          <td class="w7p"></td>
+          <td class="w7p"></td>
+          <td class="w7p"></td>
+          <td class="w7p"></td>
+        </tr>
+        <tr>
+          <td colspan="14">당월 총 가용시간 = 25일 × 24H = 800</td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="panel-footer hidden-print">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+      </div>
+      <div class="col-sm-6 text-right">
+        <button class="btn btn-sm btn-info btn-addon"
+                (click)="elSer.readyPrint('print-target-wt-comp', '', elSer.PRINT_OPT.LANDSCAPE)">
+          <i class="glyphicon glyphicon-print"></i>인쇄
+        </button>
+        <button class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+      </div>
+    </div>
+  </footer>
 </div>

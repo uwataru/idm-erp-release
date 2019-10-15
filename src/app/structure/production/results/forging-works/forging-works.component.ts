@@ -90,7 +90,7 @@ export class ForgingWorksComponent implements OnInit {
             working_group: ['', Validators.required],
             product_code: ['', Validators.required],
             product_name: ['', Validators.required],
-            drawing_no: ['', Validators.required],
+            drawing_no: '',
             material: '',
             size: '',
             mold_no: ['', Validators.required],
@@ -122,7 +122,7 @@ export class ForgingWorksComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '단조생산실적 입력';
+        this.panelTitle = '조립작업실적 입력';
         this.inputForm.controls['input_date'].setValue(this.tDate);
     }
 

@@ -87,8 +87,8 @@ export class CuttingWorkComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '절단수불명세서';
-        this.detailsTitle = '절단수불내역서';
+        this.panelTitle = '조립수불명세서';
+        this.detailsTitle = '조립수불내역서';
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
