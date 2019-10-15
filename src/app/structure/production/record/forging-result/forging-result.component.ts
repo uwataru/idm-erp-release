@@ -109,7 +109,7 @@ export class ForgingResultComponent implements OnInit {
             blob => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(blob, "단조작업실적서.xlsx");
+                importedSaveAs(blob, "조립작업실적서.xlsx");
 
                 let win = this.elSrv.remote.getCurrentWindow();
 
