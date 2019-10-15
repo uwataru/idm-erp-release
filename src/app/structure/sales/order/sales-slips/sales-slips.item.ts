@@ -6,7 +6,7 @@ export class Item {
         product_code: string;
         partner_code: number;
         partner_name: string;
-        drawing_no: string;
+        // drawing_no: string;
         product_name: string;
         sales_qty: number;
         product_price: number;

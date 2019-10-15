@@ -307,6 +307,7 @@ export class CompletionWaitingComponent implements OnInit {
                         this.PrintResultsModal.show();
                         this.getAll();
                         this.messageService.add(this.addOkMsg);
+                        console.log(this.resultRows);
                     } else {
                         this.messageService.add(data['errorMessage']);
                     }

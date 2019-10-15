@@ -19,8 +19,9 @@
 .btn-print {
     position:absolute;
     z-index: 10;
-    top: -42px;
-    right: 50px;
+    top: -42px !important;
+    right: 50px !important;
+    bottom: unset !important;
 }
 
 .focus-color-change:focus {

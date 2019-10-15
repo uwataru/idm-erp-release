@@ -117,9 +117,10 @@ export class OrderAdjustmentComponent implements OnInit {
             order_qty: ['', Validators.required],
             delivery_date: ['', Validators.required],
             promised_date: ['', Validators.required],
-            product_type: '',
-            drawing_no: '',
-            sub_drawing_no: '',
+            // product_type: '',
+            // drawing_no: '',
+            // sub_drawing_no: '',
+            size: '',
             production_line: ['', Validators.required],
             product_name: '',
             combi_product_name: '',
@@ -206,9 +207,10 @@ export class OrderAdjustmentComponent implements OnInit {
                     this.inputForm.patchValue({
                         partner_code: this.formData.partner_code,
                         partner_name: this.formData.partner_name,
-                        product_type: this.formData.product_type,
-                        drawing_no: this.formData.drawing_no,
-                        sub_drawing_no: this.formData.sub_drawing_no,
+                        // product_type: this.formData.product_type,
+                        // drawing_no: this.formData.drawing_no,
+                        // sub_drawing_no: this.formData.sub_drawing_no,
+                        size: this.formData.size,
                         product_name: this.formData.product_name,
                         production_line: this.formData.production_line,
                         product_price: product_price,
@@ -273,9 +275,10 @@ export class OrderAdjustmentComponent implements OnInit {
                         order_type2: this.formData.order_type2,
                         order_no: this.formData.order_no,
                         product_code: this.formData.product_code,
-                        product_type: this.formData.product_type,
-                        drawing_no: this.formData.drawing_no,
-                        sub_drawing_no: this.formData.sub_drawing_no,
+                        // product_type: this.formData.product_type,
+                        // drawing_no: this.formData.drawing_no,
+                        // sub_drawing_no: this.formData.sub_drawing_no,
+                        size: this.formData.size,
                         product_name: this.formData.product_name,
                         order_qty: order_qty,
                         product_price: product_price,
@@ -481,16 +484,13 @@ export class OrderAdjustmentComponent implements OnInit {
             );
     }
 
-    excelDown() {
-        let path = this.electronService.path;
-        let app = this.electronService.remote.app;
-
-        //if (userChosenPath) {
-        this.dataService.GetExcelFile().subscribe(
+    excelDown(type): void {
+        this.dataService.GetExcelFile(type).subscribe(
             res => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(res, "수주잔액현황.xlsx");
+                if (type) importedSaveAs(res, "수주마스터.xlsx");
+                else importedSaveAs(res, "수주등록현황.xlsx");
 
                 let win = this.electronService.remote.getCurrentWindow();
 
@@ -508,7 +508,7 @@ export class OrderAdjustmentComponent implements OnInit {
                                 console.log(`Received bytes: ${item.getReceivedBytes()}`)
                             }
                         }
-                    })
+                    });
                     item.once('done', (event, state) => {
                         if (state === 'completed') {
                             console.log(filename + ' 저장 완료');
@@ -522,7 +522,6 @@ export class OrderAdjustmentComponent implements OnInit {
             },
             error => this.errorMessage = <any>error
         );
-
     }
 
     fileSelected (event) {

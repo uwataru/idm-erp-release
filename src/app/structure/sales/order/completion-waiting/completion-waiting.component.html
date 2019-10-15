@@ -335,35 +335,27 @@
                 <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
                     <thead>
                     <tr>
+                        <th>납품일자</th>
+                        <th>거래처</th>
                         <th>제품번호</th>
-                        <th>도번</th>
                         <th>제품명</th>
-                        <th>수주번호</th>
-                        <th>POC No</th>
-                        <th>거래처명</th>
-                        <th>납품일</th>
-                        <th>판매구분</th>
+                        <th>납품수량</th>
                         <th>판매수량</th>
                         <th>단가</th>
                         <th>금액</th>
+                        <th>판매구분</th>
+                        <th>수주번호</th>
+                        <th>POC No</th>
+                        <!-- <th>도번</th> -->
                     </tr>
                     </thead>
                     <tbody>
                     <tr *ngFor="let row of resultRows">
-                        <td class="text-center">{{ row.product_code }}</td>
-                        <td class="text-center">{{ row.drawing_no }}</td>
-                        <td class="text-center">{{ row.product_name }}</td>
-                        <td class="text-center">{{ row.order_no }}</td>
-                        <td class="text-center">{{ row.poc_no }}</td>
-                        <td class="text-center">{{ row.partner_name }}</td>
                         <td class="text-center">{{ row.delivery_date }}</td>
-                        <td class="text-center">
-                            <span *ngIf="row.sales_type == 'NORMAL'">정상</span>
-                            <span *ngIf="row.sales_type == 'RETURN'">반품</span>
-                            <span *ngIf="row.sales_type == 'BAD'">불량</span>
-                            <span *ngIf="row.sales_type == 'LOSS'">LOSS</span>
-                            <span *ngIf="row.sales_type == 'RETRO'">소급</span>
-                        </td>
+                        <td class="text-center">{{ row.partner_name }}</td>
+                        <td class="text-center">{{ row.product_code }}</td>
+                        <td class="text-center">{{ row.product_name }}</td>
+                        <td class="text-right">{{ row.delivery_qty | numberFormat }}</td>
                         <td class="text-right">
                             <span>{{ row.SalesQty | numberFormat }}</span>
                         </td>
@@ -373,6 +365,16 @@
                         <td class="text-right">
                             <span>{{ row.sales_price | numberFormat }}</span>
                         </td>
+                        <td class="text-center">
+                            <span *ngIf="row.sales_type == 'NORMAL'">정상</span>
+                            <span *ngIf="row.sales_type == 'RETURN'">반품</span>
+                            <span *ngIf="row.sales_type == 'BAD'">불량</span>
+                            <span *ngIf="row.sales_type == 'LOSS'">LOSS</span>
+                            <span *ngIf="row.sales_type == 'RETRO'">소급</span>
+                        </td>
+                        <td class="text-center">{{ row.order_no }}</td>
+                        <td class="text-center">{{ row.poc_no }}</td>
+                        <!-- <td class="text-center">{{ row.drawing_no }}</td> -->
                     </tr>
                 </table>
 
