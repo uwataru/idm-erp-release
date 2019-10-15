@@ -21,9 +21,6 @@ div.dnd_body {
     height: 590px;
 }
 div.dnd-row {
-    min-width: 1260px;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
     border-bottom: 1px solid #eee;
     cursor: pointer;
 }
@@ -45,7 +42,7 @@ div.cell {
     border-right: 1px solid #eee;
     float: left;
 }
-div.cell.production_line {min-width: 70px; width: 3%;}
+div.cell.production_line {min-width: 80px; width: 3%;}
 div.cell.material {min-width:100px; width: 9%;}
 div.cell.size {min-width:60px; width: 4%;}
 div.cell.steel_maker {min-width:30px; width: 7%;}

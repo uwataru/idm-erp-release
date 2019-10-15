@@ -34,7 +34,7 @@ div.dnd-row {
     border-bottom: 1px solid #eee;
     cursor: pointer;
 }
-div.dnd_head .dnd-row {width: 1747px;}
+div.dnd_head .dnd-row {width: 1730px;}
 div.dnd_body .dnd-row {width: 1730px;}
 div.dnd_body .dnd-row:hover {
     border: 1px solid #0099ff;
@@ -268,7 +268,7 @@ table.approval td.td2{
 }
 
 @media print {
-    
+
     div.dnd_head{
         font-size: 11px;
     }
@@ -363,9 +363,9 @@ span.page_count::before {
 }
 
 /* 단조지시서 */
-#print-target-forging { 
+#print-target-forging {
     overflow-x: hidden;
-    overflow-y: scroll;    
+    overflow-y: scroll;
     max-height: 920px;
 }
 

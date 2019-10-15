@@ -171,7 +171,7 @@ export class ProductionPlanningComponent implements OnInit {
     @ViewChild('CuttingOrderConfirmModal') cuttingOrderConfirmModal: ModalDirective;
     @ViewChild('CuttingWorkAllocationModal') cuttingWorkAllocationModal: ModalDirective;
     @ViewChild('ForgingWorkAllocationModal') forgingWorkAllocationModal: ModalDirective;
-    
+
     @ViewChild('PrintViewModal') printViewModal: ModalDirective;
     @ViewChild('ProductionPlanningPrintViewModal') productionPlanningPrintViewModal: ModalDirective;
 
@@ -321,7 +321,7 @@ export class ProductionPlanningComponent implements OnInit {
                 }
             );
         }, 100);
-        
+
     }
 
     scrollHandler(event) {
@@ -568,7 +568,7 @@ export class ProductionPlanningComponent implements OnInit {
                     break;
                 case 'print-view':
                     this.printViewModal.show();
-                    break;                    
+                    break;
                 case 'production-planning-print-view':
                     this.productionPlanningPrintViewModal.show();
                     break;
@@ -603,7 +603,7 @@ export class ProductionPlanningComponent implements OnInit {
                 break;
 
             case 'cutting':
-                this.orderConfirmTitle = '절단작업지시서 발행';
+                this.orderConfirmTitle = '조립작업지시서 발행';
 
                 this.dataService.GetPlanningInfo(this.selectedId).subscribe(
                     editData => {
@@ -618,7 +618,7 @@ export class ProductionPlanningComponent implements OnInit {
                 break;
 
             case 'cutting-work-allocation':
-                this.cuttingWorkAllocationTitle = '절 단 작 업 지 시 서';
+                this.cuttingWorkAllocationTitle = '조 립 작 업 지 시 서';
                 this.cuttingWorkAllocationToday = Date.now();
 
                 this.GetCuttingWorkAllocation(this.pocNo);
@@ -682,7 +682,7 @@ export class ProductionPlanningComponent implements OnInit {
                             this.fRows.sort(function (a, b) {
                                 return a.subKey > b.subKey ? 1 : -1;
                             });
-                        }                       
+                        }
 
                         for(let i in this.fRows) {
                             for(let ii in this.fRows[i].subData) {
@@ -760,16 +760,16 @@ export class ProductionPlanningComponent implements OnInit {
             sortby: ['seq_no'],
             order: ['asc']
         };
-        
+
         this.getAll();
 
         this.openModal('production-planning-print-view', '');
         this.printViewModal.hide();
 
-        
+
         this.printViewRows = [];
-        this.printPageTotCnt = Math.ceil(this.rows.length / 22);  
-        for(let i = 0, t = i + 22; i < this.printPageTotCnt; i++) {   
+        this.printPageTotCnt = Math.ceil(this.rows.length / 22);
+        for(let i = 0, t = i + 22; i < this.printPageTotCnt; i++) {
 
             let tmp = [];
             let start = t * i;
@@ -780,11 +780,11 @@ export class ProductionPlanningComponent implements OnInit {
 
             for(let q in this.rows) {
                 if(parseInt(q) >= start && parseInt(q) <= end) {
-                    
+
                     let is_diff_date = false;
                     if(sub_cnt != 0 && this.rows[q].working_date != tmp_working_date) {
-                        is_diff_date = true; 
-                    } 
+                        is_diff_date = true;
+                    }
 
                     tmp.push({
                         working_date : this.rows[q].working_date,
@@ -810,11 +810,11 @@ export class ProductionPlanningComponent implements OnInit {
                     tmp_working_date = this.rows[q].working_date;
                     sub_cnt++;
                 }
-            }       
+            }
             this.printViewRows.push(tmp)
-            
+
         }
-        
+
 
     }
 
@@ -860,7 +860,7 @@ export class ProductionPlanningComponent implements OnInit {
                 return;
             }
 
-            //formData.release_type = this.releaseType;     
+            //formData.release_type = this.releaseType;
             this.dataService.CreateCuttingOrder(id, matForm)
                 .subscribe(
                     data => {
@@ -941,7 +941,7 @@ export class ProductionPlanningComponent implements OnInit {
         this.forgingOrderConfirmModal.hide();
     }
 
-    
+
     excelDown(): void {
         this.dataService.GetExcelFile().subscribe(
             blob => {
@@ -981,7 +981,7 @@ export class ProductionPlanningComponent implements OnInit {
     }
 
 
-    
+
 
     orderSave() {
 
@@ -1017,7 +1017,7 @@ export class ProductionPlanningComponent implements OnInit {
 
 
 
-    
+
     outsForgingSave (id) {
         let formData = this.outsForgingForm.value;
         if ( ! formData.partner_name ) {
