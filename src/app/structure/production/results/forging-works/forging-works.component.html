@@ -1,410 +1,446 @@
 <div class="panel panel-default">
 
     <div class="panel-heading">
-        <div class="text-center">
-            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-        </div>
-        <div class="text-right">
-            <button (click)="openModal('upload')" class="btn btn-sm btn-success btn-addon">
-            <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-            </button>
-        </div>
+      <div class="text-center">
+        <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+      </div>
+      <div class="text-right">
+        <button (click)="openModal('upload')" class="btn btn-sm btn-success btn-addon">
+          <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+        </button>
+      </div>
     </div>
-
+  
     <div class="panel-body">
-        <form [formGroup]="inputForm">
-            <div class="row">
-                <div class="col-lg-4">
-
-                    <div class="wrapper">
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="input_date" class="col-lg-4 control-label">
-                                    작업일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="poc_no" class="col-lg-4 control-label">
-                                    POC No<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" (blur)="loadInfo($event)" formControlName="poc_no" id="poc_no" nextFocus="production_line" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="production_line" class="col-lg-4 control-label">
-                                    작업라인
-                                </label>
-                                <div class="col-lg-8">
-                                    <select formControlName="production_line" id="production_line" class="input-sm form-control w-sm inline v-middle">
-                                        <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}-{{ line.EquipmentName }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="working_group" class="col-lg-4 control-label">
-                                    작업조<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <label class="i-checks">
-                                        <input type="radio" (click)="GetWorkingTime(1)" formControlName="working_group" value="1" checked />
-                                        <i></i>
-                                        1근
-                                    </label>
-                                    <label class="i-checks">
-                                        <input type="radio" (click)="GetWorkingTime(2)" formControlName="working_group" value="2" />
-                                        <i></i>
-                                        2근
-                                    </label>
-                                    <label class="i-checks">
-                                        <input type="radio" (click)="GetWorkingTime(3)" formControlName="working_group" value="3" />
-                                        <i></i>
-                                        3근
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_code" class="col-lg-4 control-label">
-                                    제품번호
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="product_code" id="product_code" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="drawing_no" class="col-lg-4 control-label">
-                                    도번
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_name" class="col-lg-4 control-label">
-                                    제품명
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="mold_no" class="col-lg-4 control-label">
-                                    금형관리번호
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="mold_no" id="mold_no" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+      <form [formGroup]="inputForm">
+        <div class="row">
+          <div class="col-lg-4">
+  
+            <div class="wrapper">
+              <div class="form-group">
+                <div class="row">
+                  <label for="input_date" class="col-lg-4 control-label">
+                    작업일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left"
+                           class="form-control w-sm"/>
+                  </div>
                 </div>
-
-                <div class="col-lg-4">
-
-                    <div class="wrapper r-2x qty">
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="forging_qty" class="col-lg-3 control-label">
-                                    정상수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="forging_qty" formControlName="forging_qty" id="forging_qty" (blur)="CalculSum()" nextFocus="defective_qty" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="defective_qty" class="col-lg-3 control-label">
-                                    불량수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="defective_qty" formControlName="defective_qty" id="defective_qty" (blur)="CalculSum()" nextFocus="defective_classification" class="form-control inline w-xs text-right" />
-                                    <label for="defective_classification" class="control-label m-l">
-                                        불량내용
-                                    </label>
-                                    <select formControlName="defective_classification" id="defective_classification" class="m-l-sm input-sm form-control w-xs inline v-middle">
-                                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="loss_qty" class="col-lg-3 control-label">
-                                    LOSS<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="loss_qty" formControlName="loss_qty" id="loss_qty" (blur)="CalculSum()" nextFocus="lucre_qty" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="lucre_qty" class="col-lg-3 control-label">
-                                    LUCRE<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="lucre_qty" formControlName="lucre_qty" id="lucre_qty" (blur)="CalculSum()" nextFocus="working_shour" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrapper">
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="order_qty" class="col-lg-3 control-label">
-                                    지시수량
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="order_qty" formControlName="order_qty" id="order_qty" nextFocus="cutting_qty" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="cutting_qty" class="col-lg-3 control-label">
-                                    절단수량
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="cutting_qty" formControlName="cutting_qty" id="cutting_qty" nextFocus="forging_sum" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="forging_sum" class="col-lg-3 control-label">
-                                    생산누계
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="forging_sum" formControlName="forging_sum" id="forging_sum" nextFocus="defective_sum" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="defective_sum" class="col-lg-3 control-label">
-                                    불량누계
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="defective_sum" formControlName="defective_sum" id="defective_sum" nextFocus="loss_sum" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="loss_sum" class="col-lg-3 control-label">
-                                    LOSS
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="loss_sum" formControlName="loss_sum" id="loss_sum" nextFocus="lucre_sum" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="lucre_sum" class="col-lg-3 control-label">
-                                    LUCRE
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="lucre_sum" formControlName="lucre_sum" id="lucre_sum" nextFocus="more_less_qty" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="more_less_qty" class="col-lg-3 control-label">
-                                    과부족
-                                </label>
-                                <div class="col-lg-9">
-                                    <input type="text" decimal [(ngModel)]="more_less_qty" formControlName="more_less_qty" id="more_less_qty" nextFocus="working_stime" class="form-control w-xs text-right" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="poc_no" class="col-lg-4 control-label">
+                    POC No<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" (blur)="loadInfo($event)" formControlName="poc_no" id="poc_no"
+                           nextFocus="production_line" class="form-control w-sm"/>
+                  </div>
                 </div>
-
-                <div class="col-lg-4">
-
-                    <div class="wrapper">
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="working_stime" class="col-lg-4 control-label">
-                                    시작시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="working_sday" id="working_sday" bsDatepicker placement="bottom left" class="form-control inline day" />
-                                    <input type="text" formControlName="working_shour" id="working_shour" (blur)="CalculRealWorkingTime()" nextFocus="working_smin" class="form-control inline hour" />
-                                    <input type="text" formControlName="working_smin" id="working_smin" (blur)="CalculRealWorkingTime()" nextFocus="working_ehour" class="form-control inline min" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="working_etime" class="col-lg-4 control-label">
-                                    종료시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="working_eday" id="working_eday" bsDatepicker placement="bottom left" class="form-control inline day" />
-                                    <input type="text" formControlName="working_ehour" id="working_ehour" (blur)="CalculRealWorkingTime()" nextFocus="working_emin" class="form-control inline hour" />
-                                    <input type="text" formControlName="working_emin" id="working_emin" (blur)="CalculRealWorkingTime()" nextFocus="working_time" class="form-control inline min" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="working_time" class="col-lg-4 control-label">
-                                    총근무시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="working_time" id="working_time" (blur)="CalculRealWorkingTime()" nextFocus="preparation_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="preparation_time" class="col-lg-4 control-label">
-                                    준비시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="preparation_time" id="preparation_time" (blur)="CalculRealWorkingTime()" nextFocus="meal_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="meal_time" class="col-lg-4 control-label">
-                                    식사시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="meal_time" id="meal_time" (blur)="CalculRealWorkingTime()" nextFocus="failure_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="failure_time" class="col-lg-4 control-label">
-                                    고장시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="failure_time" id="failure_time" (blur)="CalculRealWorkingTime()" nextFocus="stop_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="stop_time" class="col-lg-4 control-label">
-                                    기타정지
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="stop_time" id="stop_time" (blur)="CalculRealWorkingTime()" nextFocus="real_working_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="real_working_time" class="col-lg-4 control-label">
-                                    순작업시간
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="real_working_time" id="real_working_time" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="production_line" class="col-lg-4 control-label">
+                    작업라인
+                  </label>
+                  <div class="col-lg-8">
+                    <select formControlName="production_line" id="production_line"
+                            class="input-sm form-control w-sm inline v-middle">
+                      <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
+                        -{{ line.EquipmentName }}</option>
+                    </select>
+                  </div>
                 </div>
-
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="working_group" class="col-lg-4 control-label">
+                    작업조<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <label class="i-checks">
+                      <input type="radio" (click)="GetWorkingTime(1)" formControlName="working_group" value="1" checked/>
+                      <i></i>
+                      1근
+                    </label>
+                    <label class="i-checks">
+                      <input type="radio" (click)="GetWorkingTime(2)" formControlName="working_group" value="2"/>
+                      <i></i>
+                      2근
+                    </label>
+                    <label class="i-checks">
+                      <input type="radio" (click)="GetWorkingTime(3)" formControlName="working_group" value="3"/>
+                      <i></i>
+                      3근
+                    </label>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="product_code" class="col-lg-4 control-label">
+                    제품번호
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="product_code" id="product_code" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="drawing_no" class="col-lg-4 control-label">-->
+  <!--                  도번-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-8">-->
+  <!--                  <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control w-sm"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="product_name" class="col-lg-4 control-label">
+                    제품명
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="mold_no" class="col-lg-4 control-label">-->
+  <!--                  금형관리번호-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-8">-->
+  <!--                  <input type="text" formControlName="mold_no" id="mold_no" class="form-control w-sm"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
             </div>
-        </form>
-    </div>
-
-    <div class="panel-footer text-center">
-        <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-        <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
-	</div>
-</div>
-
-<div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ uploadFormTitle }}</h4>
-			</div>
-			<div class="modal-body">
-                <div class="text-center padder-v">
-                    <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx" #uploadFileSrc />
+  
+          </div>
+  
+          <div class="col-lg-4">
+  
+            <div class="wrapper r-2x qty">
+              <div class="form-group">
+                <div class="row">
+                  <label for="forging_qty" class="col-lg-3 control-label">
+                    정상수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-9">
+                    <input type="text" decimal [(ngModel)]="forging_qty" formControlName="forging_qty" id="forging_qty"
+                           (blur)="CalculSum()" nextFocus="defective_qty" class="form-control w-xs text-right"/>
+                  </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
-                    <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()" class="btn btn-default btn-cancel" data-dismiss="modal" aria-label="Close" #uploadFormClose>취소</button>
-                    <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="defective_qty" class="col-lg-3 control-label">
+                    불량수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-9">
+                    <input type="text" decimal [(ngModel)]="defective_qty" formControlName="defective_qty"
+                           id="defective_qty" (blur)="CalculSum()" nextFocus="defective_classification"
+                           class="form-control inline w-xs text-right"/>
+                    <label for="defective_classification" class="control-label m-l">
+                      불량내용
+                    </label>
+                    <select formControlName="defective_classification" id="defective_classification"
+                            class="m-l-sm input-sm form-control w-xs inline v-middle">
+                      <option *ngFor="let dc of defectiveClassification"
+                              value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
+                    </select>
+                  </div>
                 </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="loss_qty" class="col-lg-3 control-label">
+                    LOSS<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-9">
+                    <input type="text" decimal [(ngModel)]="loss_qty" formControlName="loss_qty" id="loss_qty"
+                           (blur)="CalculSum()" nextFocus="lucre_qty" class="form-control w-xs text-right"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="lucre_qty" class="col-lg-3 control-label">
+                    LUCRE<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-9">
+                    <input type="text" decimal [(ngModel)]="lucre_qty" formControlName="lucre_qty" id="lucre_qty"
+                           (blur)="CalculSum()" nextFocus="working_shour" class="form-control w-xs text-right"/>
+                  </div>
+                </div>
+              </div>
             </div>
+  
+  <!--          <div class="wrapper">-->
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="order_qty" class="col-lg-3 control-label">-->
+  <!--                  지시수량-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="order_qty" formControlName="order_qty" id="order_qty"-->
+  <!--                         nextFocus="cutting_qty" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="cutting_qty" class="col-lg-3 control-label">-->
+  <!--                  절단수량-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="cutting_qty" formControlName="cutting_qty" id="cutting_qty"-->
+  <!--                         nextFocus="forging_sum" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="forging_sum" class="col-lg-3 control-label">-->
+  <!--                  생산누계-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="forging_sum" formControlName="forging_sum" id="forging_sum"-->
+  <!--                         nextFocus="defective_sum" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="defective_sum" class="col-lg-3 control-label">-->
+  <!--                  불량누계-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="defective_sum" formControlName="defective_sum"-->
+  <!--                         id="defective_sum" nextFocus="loss_sum" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="loss_sum" class="col-lg-3 control-label">-->
+  <!--                  LOSS-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="loss_sum" formControlName="loss_sum" id="loss_sum"-->
+  <!--                         nextFocus="lucre_sum" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="lucre_sum" class="col-lg-3 control-label">-->
+  <!--                  LUCRE-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="lucre_sum" formControlName="lucre_sum" id="lucre_sum"-->
+  <!--                         nextFocus="more_less_qty" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  
+  <!--            <div class="form-group">-->
+  <!--              <div class="row">-->
+  <!--                <label for="more_less_qty" class="col-lg-3 control-label">-->
+  <!--                  과부족-->
+  <!--                </label>-->
+  <!--                <div class="col-lg-9">-->
+  <!--                  <input type="text" decimal [(ngModel)]="more_less_qty" formControlName="more_less_qty"-->
+  <!--                         id="more_less_qty" nextFocus="working_stime" class="form-control w-xs text-right"/>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  
+          </div>
+  
+          <div class="col-lg-4">
+  
+            <div class="wrapper">
+              <div class="form-group">
+                <div class="row">
+                  <label for="working_stime" class="col-lg-4 control-label">
+                    시작시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="working_sday" id="working_sday" bsDatepicker
+                           placement="bottom left" class="form-control inline day"/>
+                    <input type="text" formControlName="working_shour" id="working_shour" (blur)="CalculRealWorkingTime()"
+                           nextFocus="working_smin" class="form-control inline hour"/>
+                    <input type="text" formControlName="working_smin" id="working_smin" (blur)="CalculRealWorkingTime()"
+                           nextFocus="working_ehour" class="form-control inline min"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="working_etime" class="col-lg-4 control-label">
+                    종료시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="working_eday" id="working_eday" bsDatepicker
+                           placement="bottom left" class="form-control inline day"/>
+                    <input type="text" formControlName="working_ehour" id="working_ehour" (blur)="CalculRealWorkingTime()"
+                           nextFocus="working_emin" class="form-control inline hour"/>
+                    <input type="text" formControlName="working_emin" id="working_emin" (blur)="CalculRealWorkingTime()"
+                           nextFocus="working_time" class="form-control inline min"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="working_time" class="col-lg-4 control-label">
+                    총근무시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="working_time" id="working_time" (blur)="CalculRealWorkingTime()"
+                           nextFocus="preparation_time" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="preparation_time" class="col-lg-4 control-label">
+                    준비시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="preparation_time" id="preparation_time"
+                           (blur)="CalculRealWorkingTime()" nextFocus="meal_time" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="meal_time" class="col-lg-4 control-label">
+                    식사시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="meal_time" id="meal_time" (blur)="CalculRealWorkingTime()"
+                           nextFocus="failure_time" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="failure_time" class="col-lg-4 control-label">
+                    고장시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="failure_time" id="failure_time" (blur)="CalculRealWorkingTime()"
+                           nextFocus="stop_time" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="stop_time" class="col-lg-4 control-label">
+                    기타정지
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="stop_time" id="stop_time" (blur)="CalculRealWorkingTime()"
+                           nextFocus="real_working_time" class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="real_working_time" class="col-lg-4 control-label">
+                    순작업시간
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="real_working_time" id="real_working_time"
+                           class="form-control w-sm"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+          </div>
+  
         </div>
+      </form>
     </div>
-</div>
-
-<div *ngIf="isLoadingProgress" class="loading-progress">
-
+  
+    <div class="panel-footer text-center">
+      <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+      <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
+    </div>
+  </div>
+  
+  <div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ uploadFormTitle }}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="text-center padder-v">
+            <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx"
+                   #uploadFileSrc/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+            <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
+                    class="btn btn-default btn-cancel" data-dismiss="modal" aria-label="Close" #uploadFormClose>취소
+            </button>
+            <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoadingProgress" class="loading-progress">
+  
     <div class="sk-fading-circle">
-        <div class="sk-circle1 sk-circle"></div>
-        <div class="sk-circle2 sk-circle"></div>
-        <div class="sk-circle3 sk-circle"></div>
-        <div class="sk-circle4 sk-circle"></div>
-        <div class="sk-circle5 sk-circle"></div>
-        <div class="sk-circle6 sk-circle"></div>
-        <div class="sk-circle7 sk-circle"></div>
-        <div class="sk-circle8 sk-circle"></div>
-        <div class="sk-circle9 sk-circle"></div>
-        <div class="sk-circle10 sk-circle"></div>
-        <div class="sk-circle11 sk-circle"></div>
-        <div class="sk-circle12 sk-circle"></div>
+      <div class="sk-circle1 sk-circle"></div>
+      <div class="sk-circle2 sk-circle"></div>
+      <div class="sk-circle3 sk-circle"></div>
+      <div class="sk-circle4 sk-circle"></div>
+      <div class="sk-circle5 sk-circle"></div>
+      <div class="sk-circle6 sk-circle"></div>
+      <div class="sk-circle7 sk-circle"></div>
+      <div class="sk-circle8 sk-circle"></div>
+      <div class="sk-circle9 sk-circle"></div>
+      <div class="sk-circle10 sk-circle"></div>
+      <div class="sk-circle11 sk-circle"></div>
+      <div class="sk-circle12 sk-circle"></div>
     </div>
-
-</div>
+  
+  </div>
+  

@@ -25,9 +25,9 @@
                 <thead>
                     <tr>
                         <th class="date print-date">작업일</th>
-                        <th class="workline print-workline">라인</th>
+                        <th class="workline print-workline">작업라인</th>
                         <th class="prodCode print-prodCode">제품번호</th>
-                        <th class="drawingNo print-drawingNo">도번</th>
+<!--                        <th class="drawingNo print-drawingNo">도번</th>-->
                         <th class="prodName print-prodName">제품명</th>
                         <th class="pocNo print-PocNo">POC NO</th>
                         <th class="qty print-qty">생산수량</th>
@@ -45,7 +45,7 @@
                             <td class="date print-date font-size"><span *ngIf="indexData == 0 && indexRow == 0">{{ daterows.dateKey }}</span></td>
                             <td class="workline print-workline font-size"><span *ngIf="indexRow == 0">{{ linerow.lineKey }}</span></td>
                             <td class="prodCode print-prodCode font-size"><span>{{ row.product_code }}</span></td>
-                            <td class="drawingNo print-drawingNo font-size"><span>{{ row.drawing_no }}</span></td>
+<!--                            <td class="drawingNo print-drawingNo font-size"><span>{{ row.drawing_no }}</span></td>-->
                             <td class="prodName print-prodName font-size"><span>{{ row.product_name }}</span></td>
                             <td class="pocNo text-center print-PocNo font-size"><span>{{ row.poc_no }}</span></td>
                             <td class="qty text-right print-qty font-size">
@@ -71,7 +71,7 @@
                             <td class="date print-date"></td>
                             <td class="workline print-workline"></td>
                             <td class="prodCode text-center print-prodCode">계</td>
-                            <td class="drawingNo print-drawingNo"></td>
+<!--                            <td class="drawingNo print-drawingNo"></td>-->
                             <td class="prodName print-prodName"></td>
                             <td class="pocNo print-PocNo"></td>
                             <td class="qty text-right print-qty font-size">
@@ -98,7 +98,7 @@
                             <td class="date print-date"></td>
                             <td class="workline text-center print-workline">계</td>
                             <td class="prodCode print-prodCode">&nbsp;</td>
-                            <td class="drawingNo print-drawingNo">&nbsp;</td>
+<!--                            <td class="drawingNo print-drawingNo">&nbsp;</td>-->
                             <td class="prodName print-prodName">&nbsp;</td>
                             <td class="pocNo print-PocNo">&nbsp;</td>
                             <td class="qty text-right print-qty font-size">

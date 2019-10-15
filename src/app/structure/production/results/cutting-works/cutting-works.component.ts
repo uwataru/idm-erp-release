@@ -127,9 +127,9 @@ export class CuttingWorksComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '절단작업 지시 현황';
-        this.inputFormTitle = '절단작업입력';
-        this.uploadFormTitle = '절단재고 엑셀업로드';
+        this.panelTitle = '조립작업 지시 현황';
+        this.inputFormTitle = '조립작업입력';
+        this.uploadFormTitle = '조립재고 엑셀업로드';
 
         this.getAll();
 
@@ -199,13 +199,13 @@ export class CuttingWorksComponent implements OnInit {
     loadMaterial(event) {
 
         this.selectedRcvItems = [];
-        
-        let formData = this.inputForm.value;        
+
+        let formData = this.inputForm.value;
         this.inputForm.patchValue({ is_all_checked : false });
 
         let order_material = formData.order_material;
         let order_size = formData.order_size;
-        
+
         if(order_material == '' || order_size == '') {
             this.messageService.add('지시재질 또는 규격을 입력하세요.');
             return false;
@@ -244,10 +244,10 @@ export class CuttingWorksComponent implements OnInit {
 
 
     openModal(method) {
-            
+
         (<HTMLInputElement>document.getElementById('order_material')).style.border = '';
         (<HTMLInputElement>document.getElementById('order_size')).style.border = '';
-        
+
         // 실행권한
         if (this.isExecutable == true) {
             if (method == 'write') {
@@ -267,7 +267,7 @@ export class CuttingWorksComponent implements OnInit {
             this.inputForm.reset();
 
             this.selectedRcvItems = [];
-            
+
 
             // 절단작업지시 내용
             this.dataService.GetById(this.selectedId).subscribe(
@@ -306,7 +306,7 @@ export class CuttingWorksComponent implements OnInit {
                             st: true
                         });
 
-                        
+
                         // 원자재 재고현황
                         this.usedDetailArr = [];
                         let params = {
@@ -331,7 +331,7 @@ export class CuttingWorksComponent implements OnInit {
                                 }
                             );
                         }, 100);
-                        
+
                     }
                 }
             );
@@ -368,7 +368,7 @@ export class CuttingWorksComponent implements OnInit {
     }
 
     onSelectRcvItems({ selected }) {
-        
+
         this.selectedRcvItems.splice(0, this.selectedRcvItems.length);
         this.selectedRcvItems.push(...selected);
 
@@ -540,7 +540,7 @@ export class CuttingWorksComponent implements OnInit {
     chkAll(isChecked) {
         let formData = this.inputForm.value;
         let params = {}
-        if(!isChecked) {    
+        if(!isChecked) {
             params = {
                 material: formData.order_material,
                 size: formData.order_size,
@@ -554,7 +554,7 @@ export class CuttingWorksComponent implements OnInit {
         this.isLoadingProgress = true;
         this.dataService.GetMaterialsReceiving(params).subscribe(
         listData =>
-        {                
+        {
             this.materialRows = listData['data'];
             this.isLoadingProgress = false;
         });

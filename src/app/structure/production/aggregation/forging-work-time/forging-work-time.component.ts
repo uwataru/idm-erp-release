@@ -64,7 +64,7 @@ export class ForgingWorkTimeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '단조작업시간집계표';
+        this.panelTitle = '조립작업시간집계표';
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
