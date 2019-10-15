@@ -34,7 +34,6 @@
         <div class="cell steel_maker">지정메이커</div>
         <div class="cell work_date">작업일자</div>
         <div class="cell product_code">제품번호</div>
-        <div class="cell drawing_no">도번</div>
         <div class="cell product_name">품명</div>
         <div class="cell order_qty">수량(EA)</div>
       </div>
@@ -48,7 +47,6 @@
           <div class="cell steel_maker text-center">&nbsp; {{ row.steel_maker }} &nbsp;</div>
           <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>
           <div class="cell product_code text-center">&nbsp; {{ row.product_code }} &nbsp;</div>
-          <div class="cell drawing_no">&nbsp; {{ row.drawing_no }} &nbsp;</div>
           <div class="cell product_name">&nbsp; {{ row.product_name }} &nbsp;</div>
           <div class="cell order_qty text-right">&nbsp; {{ row.order_qty > 0 ? (row.order_qty | numberFormat) : '' }}
             &nbsp;
