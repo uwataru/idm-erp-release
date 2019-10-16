@@ -350,7 +350,7 @@ export class OrderNotDeliveredComponent implements OnInit {
                             this.orderNo = data.order_no;
                             this.pocNo = data.poc_no;
                             this.productType = data.product_type;
-                            this.drawingNo = data.drawing_no;
+                            // this.drawingNo = data.drawing_no;
                             this.productName = data.product_name;
                             this.deliveryPrice = data.delivery_price;
                             this.deliveryQty = data.delivery_qty;
