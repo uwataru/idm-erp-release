@@ -50,14 +50,14 @@
                     </label>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="material" name="재질" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="abcdef rms-print-mat-width" cellClass="text-center rms-print-mat-width"></ngx-datatable-column>
-            <ngx-datatable-column prop="size" name="크기" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-size-width" cellClass="text-center rms-print-size-width">
+            <ngx-datatable-column prop="material" name="자재명" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="abcdef rms-print-mat-width" cellClass="text-center rms-print-mat-width"></ngx-datatable-column>
+            <ngx-datatable-column prop="size" name="규격" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-size-width" cellClass="text-center rms-print-size-width">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="partner_name" name="거래처" headerClass="rms-print-par-width" cellClass="text-center rms-print-par-width"></ngx-datatable-column>
-            <ngx-datatable-column prop="rcv_weight" name="중량" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-wei-width" cellClass="text-right rms-print-wei-width">
+            <ngx-datatable-column prop="rcv_weight" name="수량" [width]="150" [canAutoResize]="false" [resizeable]="false" headerClass="rms-print-wei-width" cellClass="text-right rms-print-wei-width">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>

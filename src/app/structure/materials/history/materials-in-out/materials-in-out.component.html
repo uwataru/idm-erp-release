@@ -59,7 +59,7 @@
             [virtualization]="false"
             [rowHeight]="30"
             [messages]="messages">
-            <ngx-datatable-column prop="material" name="재질" [canAutoResize]="true" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+            <ngx-datatable-column prop="material" name="자재명" [canAutoResize]="true" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
             <ngx-datatable-column prop="size" name="규격" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
             <ngx-datatable-column prop="balance" name="전기이월" [width]="150" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
@@ -71,7 +71,7 @@
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="rcv_weight" name="입고중량" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="rcv_weight" name="입고수량" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
@@ -81,7 +81,7 @@
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="used_weight" name="투입(절단)중량" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="used_weight" name="투입수량" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
@@ -101,7 +101,7 @@
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="remaining_weight" name="재고중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="remaining_weight" name="재고수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>

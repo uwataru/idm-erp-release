@@ -11,8 +11,8 @@ export class Item {
         material_maker_name: string;
         material_maker: string;
         steel_maker: string;
-        is_report: string;
-        is_mealsheet: string;
+        // is_report: string;
+        // is_mealsheet: string;
         materials: string;
         material_code: number;
         material_name: string;
