@@ -158,22 +158,12 @@ export class ProductionLinePlanningComponent implements OnInit {
       (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = '';
       (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = '';
       (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('group1_code_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('group2_code_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('group3_code_' + id)).textContent = '';
     } else {
       let t = this.get_time_from_pattern_code(val);
 
       (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = t.Group1Stime;
       (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = t.Group1Etime;
       (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = t.WorkingTimePerDay;
-
-      let formData = this.searchForm.value;
-      let c = this.get_groupcode_from_lineworkers(formData.sch_prdline);
-      let g = c.GroupCode.split('-');
-      (<HTMLTableDataCellElement>document.getElementById('group1_code_' + id)).textContent = g[0];
-      (<HTMLTableDataCellElement>document.getElementById('group2_code_' + id)).textContent = g[1];
-      (<HTMLTableDataCellElement>document.getElementById('group3_code_' + id)).textContent = g[2];
     }
   }
 
@@ -196,17 +186,11 @@ export class ProductionLinePlanningComponent implements OnInit {
     let batchInsertFormData = this.batchInsertForm.value;
     this.rows.forEach((e: any) => {
       let t = this.get_time_from_pattern_code(batchInsertFormData.pattern_code);
-
+      console.log(e.id);
       (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value = batchInsertFormData.pattern_code;
       (<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent = t.Group1Stime;
       (<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent = t.Group1Etime;
       (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent = t.WorkingTimePerDay;
-
-      let c = this.get_groupcode_from_lineworkers(searchFormData.sch_prdline);
-      let g = c.GroupCode.split('-');
-      (<HTMLTableDataCellElement>document.getElementById('group1_code_' + e.id)).textContent = g[0];
-      (<HTMLTableDataCellElement>document.getElementById('group2_code_' + e.id)).textContent = g[1];
-      (<HTMLTableDataCellElement>document.getElementById('group3_code_' + e.id)).textContent = g[2];
     });
     this.batchInsertFormModal.hide();
   }
@@ -273,10 +257,6 @@ export class ProductionLinePlanningComponent implements OnInit {
           dayData.push((<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent);
           dayData.push((<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent);
           dayData.push((<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('group1_code_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('group2_code_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('group3_code_' + e.id)).textContent);
-
           planDada.push(dayData.join(':#:'));
         }
       }
