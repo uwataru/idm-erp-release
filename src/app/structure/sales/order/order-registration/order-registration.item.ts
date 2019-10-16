@@ -11,7 +11,7 @@ export class Item {
         order_no: string;
         product_code: string;
         product_type: string;
-        drawing_no: string;
+        // drawing_no: string;
         sub_drawing_no: string;
         product_name: string;
         order_qty: number;
