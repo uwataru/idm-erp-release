@@ -56,7 +56,7 @@
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="material_type" name="종류" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="material" name="재질"></ngx-datatable-column>
+            <ngx-datatable-column prop="material" name="자재명"></ngx-datatable-column>
             <ngx-datatable-column prop="size" name="규격" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="maker" name="메이커" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
@@ -68,7 +68,7 @@
             </ngx-datatable-column>
             <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
             <!-- 재고수량 추가 -->
-            <ngx-datatable-column prop="remaining_weight" name="재고중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+            <ngx-datatable-column prop="remaining_weight" name="재고수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
               <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                   <span>{{ value | numberFormat }}</span>
               </ng-template>
@@ -169,7 +169,7 @@
                         <div class="form-group">
                             <div class="row">
             					<label for="weight_used" class="col-lg-4 control-label font-bold">
-                                    중량
+                                    수량
                                 </label>
             					<div class="col-lg-8">
             						<input type="text" formControlName="weight_used" id="weight_used" nextFocus="input_date" class="form-control w-sm" />
@@ -280,7 +280,7 @@
                         <div class="form-group">
                             <div class="row">
             					<label for="material_name" class="col-lg-4 control-label">
-                                    재질
+                                    자재명
                                 </label>
             					<div class="col-lg-8">
             						<input type="text" formControlName="material_name" id="material_name" nextFocus="size" class="form-control w-sm" />
@@ -299,7 +299,7 @@
                             </div>
         				</div>
 
-        				<div class="form-group">
+        				<!-- <div class="form-group">
                             <div class="row">
             					<label for="material_maker" class="col-lg-4 control-label">
                                     메이커
@@ -318,7 +318,7 @@
                                     <input type="hidden" formControlName="material_maker" id="material_maker" />
             					</div>
                             </div>
-        				</div>
+        				</div> -->
 
                         <div class="form-group">
                             <div class="row">
@@ -376,7 +376,7 @@
                         <div class="form-group">
                             <div class="row">
             					<label for="order_weight" class="col-lg-2 control-label">
-                                    주문중량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                    주문수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                 </label>
                                 <div class="col-lg-3">
                                     <input type="text" formControlName="order_weight1" id="order_weight1" (blur)="CalculOrderAmount($event)" nextFocus="order_amount1" class="form-control w-sm text-right" />
@@ -389,6 +389,22 @@
                                 </div>
                             </div>
         				</div>
+                        <!-- <div class="form-group">
+                            <div class="row">
+            					<label for="order_weight" class="col-lg-2 control-label">
+                                    주문중량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight1" id="order_weight1" (blur)="CalculOrderAmount($event)" nextFocus="order_amount1" class="form-control w-sm text-right" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight2" id="order_weight2" (blur)="CalculOrderAmount($event)" nextFocus="order_amount2" class="form-control w-sm text-right" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" formControlName="order_weight3" id="order_weight3" (blur)="CalculOrderAmount($event)" nextFocus="order_amount3" class="form-control w-sm text-right" />
+                                </div>
+                            </div>
+        				</div> -->
 
                         <div class="form-group">
                             <div class="row">

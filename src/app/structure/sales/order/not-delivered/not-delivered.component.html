@@ -49,7 +49,7 @@
             [messages]="messages">
             <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="poc_no" name="POC NO" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column>
+            <!-- <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column> -->
             <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="1" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
             <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
             <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
@@ -80,11 +80,11 @@
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="production_qty" name="단조재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <!-- <ngx-datatable-column prop="production_qty" name="단조재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
-            </ngx-datatable-column>
+            </ngx-datatable-column> -->
             <ngx-datatable-column prop="ms_no" name="M.S No" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="invoice_id" name="송장" [width]="30" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">

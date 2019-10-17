@@ -10,7 +10,7 @@ export class Item {
         product_name: string;
         order_qty: number;
         delivery_qty: number;
-        production_qty: number;
+        // production_qty: number;
         normal_qty: number;
         product_price: number;
         delivery_price: string;
