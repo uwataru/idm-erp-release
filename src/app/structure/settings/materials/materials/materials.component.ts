@@ -84,7 +84,7 @@ export class MaterialsComponent implements OnInit {
     ) {
         // 접근권한 체크
         if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
-            if (route.routeConfig.data.id in this.globals.userPermission) {                
+            if (route.routeConfig.data.id in this.globals.userPermission) {
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
                     this.isExecutable = true;
                 }
@@ -107,12 +107,12 @@ export class MaterialsComponent implements OnInit {
             partner_code: ['', Validators.required],
             price: ['', Validators.required],
             price_date: ['', Validators.required],
-            maker: ['', Validators.required]
+            maker: ''
         });
     }
 
     ngOnInit() {
-        this.panelTitle = '자재 마스터 현황';
+        this.panelTitle = '원자재물품 현황';
         this.inputFormTitle = '자재 등록';
         this.uploadFormTitle = '자재 엑셀업로드';
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
@@ -190,7 +190,7 @@ export class MaterialsComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        
+
         if (event.item['Code'] == '') {
             this.listSltdPaCode = 0;
         } else {
@@ -198,8 +198,8 @@ export class MaterialsComponent implements OnInit {
         }
 
         let partner_code = this.listSltdPaCode;
-        let formData = this.searchForm.value;  
-        let material = formData.sch_material;      
+        let formData = this.searchForm.value;
+        let material = formData.sch_material;
 
         let rt = this.temp.filter(function(d){
             d.partner_code = String(d.partner_code);
@@ -213,7 +213,7 @@ export class MaterialsComponent implements OnInit {
 
         let material = event.target.value;
         let partner_code = this.listSltdPaCode;
-        
+
         let rt = this.temp.filter(function(d){
             return (d.material.indexOf(material) !== -1 && d.partner_code.indexOf(partner_code) !== -1) || !material && !partner_code;
         });
@@ -255,8 +255,8 @@ export class MaterialsComponent implements OnInit {
 
     Save () {
          let formData = this.inputForm.value;
-         
-         formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');         
+
+         formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
          formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
 
          if (this.isEditMode == true) {

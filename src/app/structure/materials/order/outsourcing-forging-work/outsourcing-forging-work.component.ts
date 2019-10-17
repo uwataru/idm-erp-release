@@ -127,7 +127,7 @@ export class OutsourcingForgingWorkComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '외주단조품';
+        this.panelTitle = '외주물품';
         this.inputFormTitle = '외주단조발주';
 
         this.getAll();
@@ -146,7 +146,7 @@ export class OutsourcingForgingWorkComponent implements OnInit {
         this.selectedCnt = 0;
         this.selectedId = '';
         this.selected = [];
-        
+
         let formData = this.searchForm.value;
         let params = {
             partner_name: formData.sch_partner_name,

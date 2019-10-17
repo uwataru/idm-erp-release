@@ -10,86 +10,40 @@
       </button>
     </div>
   </div>
-
   <div class="panel-body">
-    <div class="head">
-      <div class="cell product_code">제품번호</div>
-      <div class="cell product_name">제품명</div>
-      <div class="cell material">재질</div>
-      <div class="cell size">규격</div>
-      <div class="cell steel_maker">제강메이커</div>
-      <div class="cell release_type">출고구분</div>
-      <div class="cell poc_no">POC No</div>
-      <div class="cell order_qty">투입수량</div>
-      <div class="cell cutting_qty">조립수량</div>
-      <div class="blank"></div>
-    </div>
-    <div class="body">
-      <div *ngFor="let row of rows" id="row_{{ row.id }}" (click)="onSelect(row.poc_no)" class="dnd-row"
-           [class.active]="selectedId === row.poc_no">
-        <div class="cell product_code">&nbsp; {{ row.product_code }} &nbsp;</div>
-        <div class="cell product_name">&nbsp; {{ row.product_name }} &nbsp;</div>
-        <div class="cell material">&nbsp; {{ row.material }} &nbsp;</div>
-        <div class="cell size text-center">&nbsp; <span *ngIf="row.size > 0">{{ row.size }}</span> &nbsp;</div>
-        <div class="cell steel_maker">&nbsp; {{ row.steel_maker }} &nbsp;</div>
-        <div class="cell release_type text-center">
-          <span *ngIf="row.release_type == 1">자가</span>
-          <span *ngIf="row.release_type == 2">외주</span>
-        </div>
-        <div class="cell poc_no text-center">&nbsp; {{ row.poc_no }} &nbsp;</div>
-        <div class="cell order_qty text-right">&nbsp; <span
-          *ngIf="row.order_qty > 0">{{ row.order_qty | numberFormat }}</span> &nbsp;
-        </div>
-        <div class="cell cutting_qty text-right">
-          <span>&nbsp; {{ row.cutting_qty | numberFormat }} &nbsp;</span>
-        </div>
-      </div>
-    </div>
-    <!-- <ngx-datatable
-        [style.height.px] = gridHeight
-        class="bootstrap"
-        [rows]="rows"
-        [columnMode]="'force'"
-        [headerHeight]="30"
-        [rowHeight]="30"
-        [scrollbarV]="true"
-        [scrollbarH]="false"
-        [selected]="selected"
-        [selectionType]="'single'"
-        (select)='onSelect($event)'
-        [messages]="messages"
-        [class.active]="selectedId === row.poc_no">
-        <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="steel_maker" name="제강메이커"></ngx-datatable-column>
-        <ngx-datatable-column prop="release_type" name="출고구분" cellClass="text-center">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                <span *ngIf='value == 1'>자가</span>
-                <span *ngIf='value == 2'>외주</span>
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="order_qty" name="투입수량" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="input_weight" name="단위중량" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                <span *ngIf='value > 0'>{{ value }} Kg</span>
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="forwarding_weight" name="출고중량" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                <span *ngIf='value > 0'>{{ value | numberFormat }} Kg</span>
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="cutting_qty" name="절단수량" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
-            </ng-template>
-        </ngx-datatable-column>
-    </ngx-datatable> -->
+    <ngx-datatable
+      [style.height.px] = gridHeight
+      class="bootstrap"
+      [rows]="rows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="30"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [selected]="selected"
+      [selectionType]="'single'"
+      (select)='onSelect($event)'
+      [messages]="messages">
+      <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="release_type" name="출고구분" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span *ngIf='value == 1'>자가</span>
+          <span *ngIf='value == 2'>외주</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_qty" name="투입수량" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="cutting_qty" name="조립수량" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
 
   <div class="panel-footer hidden-print">
@@ -250,72 +204,6 @@
                   </div>
                 </div>
               </div>
-
-              <!--              <div class="form-group">-->
-              <!--                <div class="row">-->
-              <!--                  <label for="steel_maker" class="col-lg-4 control-label">-->
-              <!--                    지시 제강메이커-->
-              <!--                  </label>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="order_steel_maker" id="order_steel_maker"-->
-              <!--                           class="form-control input-sm w-sm"/>-->
-              <!--                  </div>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="steel_maker" id="steel_maker" nextFocus="ms_no"-->
-              <!--                           class="form-control input-sm w-sm"/>-->
-              <!--                  </div>-->
-              <!--                </div>-->
-              <!--              </div>-->
-
-              <!--              <div class="form-group">-->
-              <!--                <div class="row">-->
-              <!--                  <label for="ms_no" class="col-lg-4 control-label">-->
-              <!--                    지시 M.S.NO-->
-              <!--                  </label>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="order_ms_no" id="order_ms_no"-->
-              <!--                           class="form-control input-sm w-sm"/>-->
-              <!--                  </div>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="ms_no" id="ms_no" nextFocus="input_weight"-->
-              <!--                           class="form-control input-sm w-sm"/>-->
-              <!--                  </div>-->
-              <!--                </div>-->
-              <!--              </div>-->
-
-              <!--              <div class="form-group">-->
-              <!--                <div class="row">-->
-              <!--                  <label for="input_weight" class="col-lg-4 control-label">-->
-              <!--                    단위중량-->
-              <!--                  </label>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="order_input_weight" id="order_input_weight"-->
-              <!--                           class="form-control input-sm w-sm text-right"/>-->
-              <!--                  </div>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" decimal [(ngModel)]="input_weight" formControlName="input_weight"-->
-              <!--                           id="input_weight" (blur)="calculInputWeightTotal()" nextFocus="remaining_qty"-->
-              <!--                           class="form-control input-sm w-sm text-right"/>-->
-              <!--                  </div>-->
-              <!--                </div>-->
-              <!--              </div>-->
-
-              <!--              <div class="form-group">-->
-              <!--                <div class="row">-->
-              <!--                  <label for="input_weight_total" class="col-lg-4 control-label">-->
-              <!--                    지시 투입중량-->
-              <!--                  </label>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" formControlName="order_input_weight_total" id="order_input_weight_total"-->
-              <!--                           class="form-control input-sm w-sm text-right"/>-->
-              <!--                  </div>-->
-              <!--                  <div class="col-lg-4">-->
-              <!--                    <input type="text" decimal [(ngModel)]="input_weight_total" formControlName="input_weight_total"-->
-              <!--                           id="input_weight_total" (blur)="checkInputWeightTotal($event)"-->
-              <!--                           class="form-control input-sm w-sm text-right"/>-->
-              <!--                  </div>-->
-              <!--                </div>-->
-              <!--              </div>-->
 
               <div class="form-group">
                 <div class="row">
