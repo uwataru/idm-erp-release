@@ -152,7 +152,7 @@ onValueChange(value: Date): void {
                   name: this.formData.name,
                   input_process: this.formData.input_process,
                   work_skill: this.formData.work_skill,
-                  working_time: this.formData.working_time,
+                  working_time: this.formData.working_time
                 });
             } else {
                 this.messageService.add(editData['errorMessage']);
@@ -163,16 +163,16 @@ onValueChange(value: Date): void {
 
   Save () {
      //disabled="!inputForm.valid"
-     let formData
+    //  let formData
 
      if (this.isEditMode == true) {
          this.formData = this.editForm.value;
-         this.Update(this.selectedId, formData);
+         this.Update(this.selectedId, this.formData);
      } else {
         this.formData = this.inputForm.value;
         
         console.log(this.formData.input_date);
-        this.Create(formData);
+        this.Create(this.formData);
      }
   }
 
