@@ -53,7 +53,7 @@ export class PartnerForgingProductComponent implements OnInit {
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
-    inputForgingPartners: any[] = this.globals.configs['type41Partners'];
+    inputForgingPartners: any[] = this.globals.configs['type4Partners'];
     inputPartners: any[] = this.globals.configs['type5Partners'];
     productionLines: any[] = this.globals.configs['productionLine'];
     material_cost: number;
@@ -96,7 +96,7 @@ export class PartnerForgingProductComponent implements OnInit {
                 }
             }
         }
-        
+
         this.searchForm = fb.group({
             sch_partner_name: '',
             sch_product_name: ''
@@ -108,8 +108,8 @@ export class PartnerForgingProductComponent implements OnInit {
             forging_partner_code: '',
             forging_partner_name: '',
             material_supply_type: ['', Validators.required],
-            material_cost: ['', Validators.required],
-            forging_cost: ['', Validators.required],
+            material_cost: '',
+            forging_cost: '',
             outsourcing_cost: ['', Validators.required],
             partner_code: '',
             partner_name: '',
@@ -129,8 +129,8 @@ export class PartnerForgingProductComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '외주단조품 등록 현황';
-        this.inputFormTitle = '외주단조품 등록';
+        this.panelTitle = '외주물품 등록 현황';
+        this.inputFormTitle = '외주물품 등록';
         this.uploadFormTitle = '외주단조품 엑셀업로드';
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         this.hideConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';

@@ -122,21 +122,21 @@ export class ProductsComponent implements OnInit {
             product_price: ['', Validators.required],
             combi_product_price: '',
             is_tmp_price: '',
-            drawing_no: ['', Validators.required],
+            drawing_no: '',
             sub_drawing_no: '',
-            material: ['', Validators.required],
+            material: '',
             sub_material: '',
             steel_maker: '',
             size: ['', Validators.required],
-            cut_length: ['', Validators.required],
-            material_weight: ['', Validators.required],
-            product_weight: ['', Validators.required],
+            cut_length: '',
+            material_weight: '',
+            product_weight: '',
             combi_product_weight: '',
-            input_weight: ['', Validators.required],
-            production_line: ['', Validators.required],
-            preparation_time: ['', Validators.required],
-            ct: ['', Validators.required],
-            ea_m: ['', Validators.required],
+            input_weight: '',
+            production_line: '',
+            preparation_time: '',
+            ct: '',
+            ea_m: '',
             cutting_method: '',
             heating_process: '',
             heating_spec: '',
@@ -174,7 +174,7 @@ export class ProductsComponent implements OnInit {
 
     onSelect({ selected }) {
         // console.log('Select Event', selected, this.selected);
-    
+
         this.selected.splice(0, this.selected.length);
         this.selected.push(...selected);
     }
@@ -183,7 +183,7 @@ export class ProductsComponent implements OnInit {
         this.selected = [];
 
         let formData = this.searchForm.value;
-        
+
         let params = {
             //partner_name: formData.sch_partner_name,
             product_name: formData.sch_product_name,
@@ -240,23 +240,23 @@ export class ProductsComponent implements OnInit {
         } else {
             this.listSltdPaCode = event.item['Code'];
         }
-        
+
          let partner_code = this.listSltdPaCode;
-         let formData = this.searchForm.value;   
+         let formData = this.searchForm.value;
          let product_val = formData.sch_product_name;
 
          const temp = this.temp.filter(function(d){
              d.partner_code = String(d.partner_code);
              return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(product_val) !== -1 || d.product_name.indexOf(product_val) !== -1) || !partner_code && !product_val;
          });
- 
+
          this.rows = temp;
-                  
+
     }
 
 
     updateFilter(event) {
-        
+
         let partner_code = this.listSltdPaCode;
         const val = event.target.value;
 
@@ -280,7 +280,7 @@ export class ProductsComponent implements OnInit {
     makeCombiCode(event) {
 
         let code = event.target.value;
-        
+
         if(code) {
             //product code 중복체크
             this.dataService.GetByCode(code).subscribe(

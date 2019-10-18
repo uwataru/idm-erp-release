@@ -38,7 +38,7 @@
           <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="cutting_qty" name="조립수량" cellClass="text-right">
+      <ngx-datatable-column prop="assembly_qty" name="조립수량" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
         </ng-template>
@@ -143,8 +143,8 @@
                   </div>
                   <label class="col-lg-2 control-label">조립수량</label>
                   <div class="col-lg-2 text-right">
-                    <label *ngIf="cutting_total != 0" class="control-label">{{ cutting_total | numberFormat }}</label>
-                    <label *ngIf="cutting_total == 0">0</label>&nbsp;
+                    <label *ngIf="assembly_total != 0" class="control-label">{{ assembly_total | numberFormat }}</label>
+                    <label *ngIf="assembly_total == 0">0</label>&nbsp;
                   </div>
                 </div>
               </div>
@@ -167,15 +167,15 @@
 
               <div class="form-group">
                 <div class="row">
-                  <label for="cutting_qty" class="col-lg-4 control-label">
+                  <label for="assembly_qty" class="col-lg-4 control-label">
                     지시 수량
                   </label>
                   <div class="col-lg-4">
-                    <input type="text" formControlName="order_cutting_qty" id="order_cutting_qty"
+                    <input type="text" formControlName="order_assembly_qty" id="order_assembly_qty"
                            class="form-control input-sm w-sm text-right"/>
                   </div>
                   <div class="col-lg-4">
-                    <input type="text" decimal [(ngModel)]="cutting_qty" formControlName="cutting_qty" id="cutting_qty"
+                    <input type="text" decimal [(ngModel)]="assembly_qty" formControlName="assembly_qty" id="assembly_qty"
                            (blur)="calculInputWeightTotal()" nextFocus="material"
                            class="form-control input-sm w-sm text-right"/>
                   </div>
@@ -265,14 +265,14 @@
                                let-selectFn="selectFn">
                     <label class="i-checks i-checks-sm m-b-none">
                       <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"
-                             [disabled]="!cutting_qty || inputForm.value.is_all_checked"/><i></i>
+                             [disabled]="!assembly_qty || inputForm.value.is_all_checked"/><i></i>
                     </label>
                   </ng-template>
                   <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected"
                                let-onCheckboxChangeFn="onCheckboxChangeFn">
                     <label class="i-checks i-checks-sm m-b-none">
                       <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"
-                             [disabled]="!cutting_qty || (row.material != inputForm.value.order_material || row.size != inputForm.value.order_size)"/><i></i>
+                             [disabled]="!assembly_qty || (row.material != inputForm.value.order_material || row.size != inputForm.value.order_size)"/><i></i>
                     </label>
                   </ng-template>
                 </ngx-datatable-column>
