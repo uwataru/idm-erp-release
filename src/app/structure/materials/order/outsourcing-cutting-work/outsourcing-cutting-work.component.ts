@@ -162,7 +162,7 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '외주절단발주';
+        this.panelTitle = '외주발주';
 
         // 입력일
         this.inputForm.controls['order_date'].setValue(this.tDate);
