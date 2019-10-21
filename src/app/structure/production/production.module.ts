@@ -24,6 +24,7 @@ import {ForgingWorksComponent} from './results/forging-works/forging-works.compo
 import {ForgingResultComponent} from './record/forging-result/forging-result.component';
 import {ForgingWorkTimeComponent} from './aggregation/forging-work-time/forging-work-time.component';
 import {CuttingWorkComponent} from './record/cutting-work/cutting-work.component';
+import {AssemblyWorkComponent} from './record/assembly-work/assembly-work.component';
 import {ProductivityAnalysisComponent} from './record/productivity-analysis/productivity-analysis.component';
 import {ProductionPerformanceChartComponent} from './chart/production-performance-chart/production-performance-chart.component';
 import {ForgingWorkComponent} from './record/forging-work/forging-work.component';
@@ -40,7 +41,7 @@ export const routes: Routes = [
   {path: 'results/forging-works', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 119}, canActivate: [AuthGuard]},
   {path: 'record/forging-result', component: ForgingResultComponent, data: {title: '생산 > 조립작업실적서', id: 120}, canActivate: [AuthGuard]},
   {path: 'aggregation/forging-work-time', component: ForgingWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 121}, canActivate: [AuthGuard]},
-  {path: 'record/cutting-work', component: CuttingWorkComponent, data: {title: '생산 > 조립수불명세서', id: 122}, canActivate: [AuthGuard]},
+  {path: 'record/assembly-work', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 122}, canActivate: [AuthGuard]},
   {path: 'record/productivity-analysis', component: ProductivityAnalysisComponent, data: {title: '생산 > 생산성분석서', id: 123}, canActivate: [AuthGuard]},
   {path: 'chart/production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 124}, canActivate: [AuthGuard]},
   {path: 'record/forging-work', component: ForgingWorkComponent, data: {title: '생산 > 단조작업명세서', id: 125}, canActivate: [AuthGuard]},
@@ -86,6 +87,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ForgingResultComponent,
     ForgingWorkTimeComponent,
     CuttingWorkComponent,
+    AssemblyWorkComponent,
     ProductivityAnalysisComponent,
     ProductionPerformanceChartComponent,
     ForgingWorkComponent,
