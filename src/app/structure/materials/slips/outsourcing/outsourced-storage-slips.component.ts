@@ -104,7 +104,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
     ngOnInit() {
         this.panelTitle = '외주입고전표처리';
         this.searchForm.controls['rcv_date'].setValue(this.rcvDate);
-        this.searchForm.controls['order_type'].setValue('H');
+        this.searchForm.controls['order_type'].setValue('C');
         this.getAll('');
 
         $(document).ready(function(){
@@ -131,7 +131,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
             rcv_date: this.rcvDate,
             order_type: orderType
         }
-        
+
         let tmpEL = document.getElementById("order_type_text") as HTMLInputElement;
         switch (orderType) {
            case 'F': tmpEL.value ="단조"; break;
