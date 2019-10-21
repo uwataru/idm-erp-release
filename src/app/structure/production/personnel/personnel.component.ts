@@ -135,9 +135,9 @@ export class PersonnelComponent implements OnInit {
     );
 }
 
-onValueChange(value: Date): void {
-    this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');
-}
+// onValueChange(value: Date): void {
+//     this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');
+// }
 
 
   Edit (id) {
@@ -240,7 +240,7 @@ onValueChange(value: Date): void {
             this.deleteFormModal.show();
         } else if (method == 'write') {
             this.inputFormModal.show();
-            // this.inputForm.reset();
+            this.inputForm.controls['input_date'].setValue(this.InputDate);
             this.isEditMode = false;
         } else if (method == 'edit') {
             this.editFormModal.show();
