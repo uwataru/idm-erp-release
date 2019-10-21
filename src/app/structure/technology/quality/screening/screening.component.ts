@@ -51,10 +51,12 @@ export class ScreeningComponent implements OnInit {
     defectiveClassification: any[] = this.globals.configs['defectiveClassification'];
     totalWeight: number;
     cutting_total: number;
+  assembly_total: number;
     product_price: number;
     isTmpPrice: boolean;
     order_qty: number;
     cutting_qty: number;
+    assembly_qty: number;
     input_weight: number;
     input_weight_total: number;
     editData: Item;

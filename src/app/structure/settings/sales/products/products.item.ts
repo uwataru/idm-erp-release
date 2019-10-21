@@ -19,6 +19,7 @@ export class Item {
         steel_maker: string;
         size: number;
         cut_length: number;
+      assembly_length: number;
         material_weight: number;
         product_weight: number;
         input_weight: number;
@@ -27,6 +28,7 @@ export class Item {
         ct: number;
         ea_m: number;
         cutting_method: string;
+        assembly_method: string;
         heating_process: string;
         heating_spec: string;
         special_process: string;

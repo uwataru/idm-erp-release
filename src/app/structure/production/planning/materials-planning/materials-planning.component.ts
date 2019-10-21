@@ -92,9 +92,7 @@ export class MaterialsPlanningComponent implements OnInit {
                     this.rows[i].subData.sort(function (a, b) {
                         return a.working_date.localeCompare(b.working_date)
                             || b.product_code.localeCompare(a.product_code)
-                            || a.input_weight - b.input_weight
-                            || a.production_line.localeCompare(b.production_line)
-                            || a.drawing_no.localeCompare(b.drawing_no);
+                            || a.production_line.localeCompare(b.production_line);
                     });
                 }
 
@@ -108,11 +106,11 @@ export class MaterialsPlanningComponent implements OnInit {
             }
         );
     }
-        
-    
-    
 
- 
+
+
+
+
     excelDown(): void {
         this.dataService.GetExcelFile().subscribe(
             blob => {

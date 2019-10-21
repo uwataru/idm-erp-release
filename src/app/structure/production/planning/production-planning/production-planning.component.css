@@ -84,6 +84,7 @@ div.cell.mold_size {width:75px;}
 div.cell.mold_position {width:60px;}
 div.cell.cutting_order {width:30px;}
 div.cell.cutting_qty {width:30px;}
+div.cell.assembly_qty {width:30px;}
 div.cell.mold_ready {width:30px;}
 div.cell.poc_no {width:110px;}
 div.cell.paper {width:34px;}

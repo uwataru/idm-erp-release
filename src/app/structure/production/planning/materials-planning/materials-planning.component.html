@@ -48,9 +48,7 @@
           <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>
           <div class="cell product_code text-center">&nbsp; {{ row.product_code }} &nbsp;</div>
           <div class="cell product_name">&nbsp; {{ row.product_name }} &nbsp;</div>
-          <div class="cell order_qty text-right">&nbsp; {{ row.order_qty > 0 ? (row.order_qty | numberFormat) : '' }}
-            &nbsp;
-          </div>
+          <div class="cell order_qty text-right">&nbsp; {{ row.order_qty > 0 ? (row.order_qty | numberFormat) : '' }} &nbsp;</div>
         </div>
         <div *ngIf="subrows.subTotal" class="sum dnd-row">
           <div class="cell production_line text-center">&nbsp; 계 &nbsp;</div>
@@ -59,9 +57,8 @@
           <div class="cell steel_maker text-right">&nbsp; &nbsp;</div>
           <div class="cell work_date text-center">&nbsp; &nbsp;</div>
           <div class="cell product_code text-center">&nbsp; &nbsp;</div>
-          <div class="cell drawing_no">&nbsp; &nbsp;</div>
           <div class="cell product_name">&nbsp; &nbsp;</div>
-          <div class="cell order_qty text-right">&nbsp; &nbsp;</div>
+          <div class="cell order_qty text-right">&nbsp;&nbsp; {{ subrows.subTotal.order_qty | numberFormat }} &nbsp;</div>
         </div>
       </div>
     </div>

@@ -76,11 +76,13 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
     v_product_type: string;
     v_drawing_no: string;
     v_cutting_qty: number;
+    v_assembly_qty: number;
     v_sub_drawing_no: string;
     v_order_qty: number;
     v_material: string;
     v_size: string;
     v_cut_length: number;
+  v_assembly_length: number;
     v_steel_maker: string;
     v_ms_no: string;
     v_material_weight: number;
@@ -92,6 +94,8 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
     v_production_time: number;
     v_cutting_partner_code: number;
     v_cutting_partner_name: string;
+  v_assembly_partner_code: number;
+  v_assembly_partner_name: string;
     v_mold_no: string;
     v_mold_size: number;
     v_mold_storage: string;
@@ -150,11 +154,11 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
             forwarding_weight: ['', Validators.required],
             used_rcv_items: ''
         });
-        
+
         if( this.inputPartners.filter(v => v.Code == 0).length < 1 ) {
             this.inputPartners.unshift({Code:0, Name:'자가', Alias:'자가'});
         }
-        
+
     }
 
     ngOnInit() {
@@ -276,6 +280,7 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
                     this.v_material = data.material;
                     this.v_size = data.size;
                     this.v_cut_length = data.cut_length;
+                    this.v_assembly_length = data.cut_length;
                     this.v_steel_maker = data.steel_maker;
                     this.v_ms_no = data.ms_no;
                     this.v_material_weight = data.material_weight;
@@ -287,6 +292,8 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
                     this.v_production_time = data.production_time;
                     this.v_cutting_partner_code = data.cutting_partner_code;
                     this.v_cutting_partner_name = data.cutting_partner_name;
+                    this.v_assembly_partner_code = data.assembly_partner_code;
+                    this.v_assembly_partner_name = data.assembly_partner_name;
                     this.v_mold_no = data.mold_no;
                     this.v_mold_size = data.mold_size;
                     this.v_mold_storage = data.mold_storage;
@@ -374,14 +381,14 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
     }
 
 
-    
 
-    loadMaterial(event) {                   
+
+    loadMaterial(event) {
         let formData = this.inputForm.value;
         let partner_name = formData.outs_partner_name;
         let material = formData.material;
         let size = formData.size;
-        
+
         if(!partner_name || !material || !size) {
             this.messageService.add('지시재질 또는 규격을 입력하세요.');
             return false;
@@ -390,7 +397,7 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
             return false;
         }
 
-        this.getMaterialsReceiving(material, size, partner_name);        
+        this.getMaterialsReceiving(material, size, partner_name);
     }
 
 

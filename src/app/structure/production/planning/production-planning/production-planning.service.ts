@@ -45,10 +45,10 @@ export class ProductionPlanningService {
         return this.http.post(this.url + '/order-save', data).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
-        );  
+        );
     }
 
-    
+
     outsForgingCreate (id, data:Item): Observable<Item> {
         return this.http.post<Item>(this.globals.serverUrl+ '/outsourcing/orders/outs-forging-products/'+id, data).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
@@ -79,7 +79,7 @@ export class ProductionPlanningService {
 
     GetCuttingWorkAllocation (pocNo:string) {
         let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/cutting-works/' + pocNo + '?t=' + currTime);
+        return this.http.get(this.globals.serverUrl + '/production/assembly-works/' + pocNo + '?t=' + currTime);
     }
 
     GetForgingWorkAllocation (fwoNo:string): Observable<Item[]> {

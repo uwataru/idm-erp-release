@@ -130,6 +130,7 @@ export class ProductionPlanningComponent implements OnInit {
   v_product_type: string;
   v_drawing_no: string;
   v_cutting_qty: number;
+  v_assembly_qty: number;
   v_sub_drawing_no: string;
   v_order_qty: number;
   v_material: string;
@@ -472,15 +473,9 @@ export class ProductionPlanningComponent implements OnInit {
       );
   }
 
-  onSelect(event) {
-    var id = event.selected[0].id;
-    var orderNo = event.selected[0].order_no;
-    var isCwo = event.selected[0].cutting_order;
-    var material = event.selected[0].material;
-    var size = event.selected[0].size;
-
-    this.selectedId = id;
-    this.selectedOrderNo = orderNo;
+    onSelect(id, orderNo, isCwo, material, size) {
+        this.selectedId = id;
+        this.selectedOrderNo = orderNo;
 
     this.materialForm.patchValue({
       material: material,
@@ -808,7 +803,9 @@ export class ProductionPlanningComponent implements OnInit {
             mold_size: this.rows[q].mold_size,
             mold_position: this.rows[q].mold_position,
             cutting_order: this.rows[q].cutting_order,
+            assembly_order: this.rows[q].assembly_order,
             cutting_yn: this.rows[q].cutting_yn,
+            assembly_yn: this.rows[q].assembly_yn,
             poc_no: this.rows[q].poc_no
           });
 
@@ -884,8 +881,8 @@ export class ProductionPlanningComponent implements OnInit {
     }
   }
 
-  GetCuttingWorkAllocation(event): void {
-    var pocNo = event.selected[0].poc_no;
+  GetCuttingWorkAllocation(pocNo): void {
+
     this.dataService.GetCuttingWorkAllocation(pocNo).subscribe(
       editData => {
         if (editData['result'] == 'success') {
@@ -925,10 +922,9 @@ export class ProductionPlanningComponent implements OnInit {
             let combiData = editData['combiData'];
             this.v_product_code = this.v_product_code + ', ' + combiData.product_code;
             this.v_product_name = this.v_product_name + ', ' + combiData.product_name;
-            this.v_product_weight = this.v_product_weight + ', ' + combiData.product_weight + 'Kg';
           }
 
-          this.cuttingWorkAllocationTitle = '절 단 작 업 지 시 서';
+          this.cuttingWorkAllocationTitle = '조 립 작 업 지 시 서';
         }
       }
     );

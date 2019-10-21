@@ -10,6 +10,8 @@ export class Item {
         outs_partner_name: string;
         cutting_partner_code: number;
         cutting_partner_name: string;
+      assembly_partner_code: number;
+      assembly_partner_name: string;
         material: string;
         size: number;
         cut_length: number;

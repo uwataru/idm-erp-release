@@ -24,7 +24,7 @@
         </form>
       </div>
     </div>
-  
+
     <div class="panel-body">
       <ngx-datatable
         class="bootstrap"
@@ -37,7 +37,7 @@
         <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
         <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
         <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>
-        <ngx-datatable-column prop="cutting_qty" name="수주수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+        <ngx-datatable-column prop="assembly_qty" name="수주수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"><span>{{ value | numberFormat }}</span></ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="forwarding_weight" name="납품중량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
@@ -54,7 +54,7 @@
         </ngx-datatable-column>
       </ngx-datatable>
     </div>
-  
+
     <footer class="panel-footer">
       <div class="row">
         <div class="col-sm-6 hidden-xs">
@@ -66,7 +66,7 @@
       </div>
     </footer>
   </div>
-  
+
   <div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-xl-center">
       <div class="modal-content modal-xl">
@@ -76,11 +76,11 @@
           <h4 class="modal-title">{{ detailsTitle }}</h4>
         </div>
         <div class="modal-body">
-  
+
           <!-- <input type="hidden" id="reservation_id" name="reservation_id" />
           <input type="hidden" id="goods_name" name="goods_name" />
           <input type="hidden" id="fare_per_person" name="fare_per_person" /> -->
-  
+
           <table class="table table-bordered view">
             <tr>
               <th>제품번호</th>
@@ -95,7 +95,7 @@
               <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
             </tr>
           </table>
-  
+
           <ngx-datatable
             style="min-height:120px;max-height:420px;"
             class="bootstrap"
@@ -106,7 +106,7 @@
             [messages]="messages">
             <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
                                   cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false"
+            <ngx-datatable-column prop="assembly_qty" name="조립수량" [width]="100" [canAutoResize]="false"
                                   [resizeable]="false" cellClass="text-right">
               <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                 <span>{{ value | numberFormat }}</span>
@@ -140,13 +140,13 @@
             </ngx-datatable-column>
             <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
           </ngx-datatable>
-  
+
           <div class="table-responsive">
             <table class="table table-bordered table-condensed b-light sums">
               <tbody>
               <tr>
                 <td width="120px" class="text-center">계</td>
-                <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>
+                <td width="100px" class="text-right"><span>{{ detailsums_assembly_qty | numberFormat }}</span></td>
                 <td width="100px" class="text-right"></td>
                 <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>
                 <td width="100px" class="text-right"><span>{{ detailsums_forging_qty | numberFormat }}</span></td>
@@ -163,7 +163,7 @@
             </table>
           </div>
         </div>
-  
+
         <div class="modal-footer">
           <div class="text-center">
             <button type="button" class="btn btn-info">인쇄</button>
@@ -171,8 +171,7 @@
             <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
           </div>
         </div>
-  
+
       </div>
     </div>
   </div>
-  

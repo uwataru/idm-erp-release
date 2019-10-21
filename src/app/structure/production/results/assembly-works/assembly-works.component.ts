@@ -332,8 +332,8 @@ export class AssemblyWorksComponent implements OnInit {
     }
   }
 
-  onSelect(pocNo) {
-    this.selectedId = pocNo;
+  onSelect(event) {
+    this.selectedId = event.selected[0].poc_no;
   }
 
   calculInputWeightTotal() {

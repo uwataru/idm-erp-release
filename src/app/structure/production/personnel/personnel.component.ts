@@ -53,8 +53,8 @@ export class PersonnelComponent implements OnInit {
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
     @ViewChild('EditFormModal') editFormModal: ModalDirective;
-    @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;  
-   
+    @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
+
     constructor(
       @Inject(FormBuilder) fb: FormBuilder,
       private datePipe: DatePipe,
@@ -76,7 +76,7 @@ export class PersonnelComponent implements OnInit {
     //         }
     //     }
     //   }
-  
+
       this.inputForm = fb.group({
         group: ['', [Validators.required]],
         name: ['', [Validators.required]],
@@ -100,9 +100,9 @@ export class PersonnelComponent implements OnInit {
     this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
     this.getAll();
-    
+
     this.inputForm.controls['input_date'].setValue(this.InputDate);
-    
+
     $(document).ready(function(){
         let modalContent: any = $('.modal-content');
         let modalHeader = $('.modal-header');
@@ -116,7 +116,7 @@ export class PersonnelComponent implements OnInit {
   getAll(): void {
     this.selectedId = '';
     this.selected = [];
-    
+
     let params = {
         sortby: ['id'],
         order: ['asc'],
@@ -166,13 +166,14 @@ onValueChange(value: Date): void {
     //  let formData
 
      if (this.isEditMode == true) {
-         this.formData = this.editForm.value;
-         this.Update(this.selectedId, this.formData);
+         let formData = this.editForm.value;
+         console.log(formData.working_time)
+         this.Update(this.selectedId, formData);
      } else {
-        this.formData = this.inputForm.value;
-        
-        console.log(this.formData.input_date);
-        this.Create(this.formData);
+        let formData = this.inputForm.value;
+
+        console.log(formData.input_date);
+        this.Create(formData);
      }
   }
 

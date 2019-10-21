@@ -1,176 +1,120 @@
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <div class="text-center">
-      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-    </div>
-    <div class="row">
-      <div class="col-sm-8 m-b-xs">
-        <form [formGroup]="searchForm">
-          <!-- <label for="start_date" class="control-label text-sm">계획시작일</label>
-          <input type="text" formControlName="start_date" bsDatepicker placement="bottom left" (bsValueChange)="changePlanningDate(1, $event)" class="input-sm form-control w-xs inline v-middle" /> -->
-          <label for="end_date" class="control-label text-sm m-l">계획종료일</label>
-          <input id="end_date" type="text" formControlName="end_date" bsDatepicker placement="bottom left"
-                 (bsValueChange)="changePlanningDate(2, $event)" class="input-sm form-control w-xs inline v-middle"/>
-          <label for="sch_prdline" class="m-l">작업라인</label>
-          <select formControlName="sch_prdline" id="sch_prdline" (change)="getAll()"
-                  class="input-sm form-control w-sm inline v-middle">
-            <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
-              -{{ line.EquipmentName }}</option>
-            <option value="outs">외주라인</option>
-          </select>
-          <!-- <label for="sch_sdate" class="control-label text-sm m-l">조회기간</label>
-          <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
-          <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> -->
-          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
-          <button (click)="resetSeqNo()" class="btn btn-sm btn-dark hidden-print">미반영수주</button>
-        </form>
+    <div class="panel-heading">
+      <div class="text-center">
+        <span class="h4 block m-b-sm">{{ panelTitle }}</span>
       </div>
-      <div class="col-sm-4 text-right">
-        <!--
-        <button class="btn btn-sm btn-success btn-addon">
-        <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button>
-        -->
-      </div>
-    </div>
-  </div>
-  <div class="panel-body">
-    <ngx-datatable
-      [style.height.px]=gridHeight
-      class="bootstrap"
-      [rows]="rows"
-      [columnMode]="'force'"
-      [headerHeight]="30"
-      [rowHeight]="30"
-      [scrollbarV]="true"
-      [scrollbarH]="false"
-      [selected]="selected"
-      [selectionType]="'single'"
-      (select)='onSelect($event)'
-      [messages]="messages">
-      <ngx-datatable-column prop="product_code" name="제품번호" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center hidden-print"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="수량" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="production_time" name="소요시간" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="input_date" name="등록일" cellClass="text-center hidden-print"></ngx-datatable-column>
-      <ngx-datatable-column prop="promised_date" name="등록일" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="work_date" name="작업일" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="start_time" name="시작시간" cellClass="text-center hidden-print"></ngx-datatable-column>
-      <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="cutting_order" name="A" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf="value == 'Y'">★</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="cutting_qty" name="J" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf="value == 'Y'">★</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="mold_ready" name="M" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf="value > 0">★</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="poc_no" name="POC NO" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="cutting_order" name="" cellClass="text-center hidden-print cell">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-        <i *ngIf="value == 'Y'" data-toggle="modal"
-          data-target="#cutting-work-allocation"
-          (click)="GetCuttingWorkAllocation($event)"
-          class="glyphicon glyphicon-paperclip"></i>
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-<!--  </div>-->
-
-<!--  <div class="panel-body">-->
-<!--    <div id="dnd_head" class="dnd_head">-->
-<!--      <div class="dnd-row">-->
-<!--        <div class="cell product_code">제품번호</div>-->
-<!--        <div class="cell order_no hidden-print">수주번호</div>-->
-<!--        &lt;!&ndash;        <div class="cell drawing_no">도번</div>&ndash;&gt;-->
-<!--        <div class="cell product_name">제품명</div>-->
-<!--        &lt;!&ndash;        <div class="cell outs_no hidden-print">외주</div>&ndash;&gt;-->
-<!--        <div class="cell order_qty">수량</div>-->
-<!--        <div class="cell production_time">소요시간</div>-->
-<!--        <div class="cell input_date hidden-print">등록일</div>-->
-<!--        <div class="cell promised_date">약속일</div>-->
-<!--        <div class="cell work_date">작업일</div>-->
-<!--        <div class="cell start_time hidden-print">시작시간</div>-->
-<!--        <div class="cell material">재질</div>-->
-<!--        <div class="cell size">규격</div>-->
-<!--        &lt;!&ndash;        <div class="cell size">규격/길이</div>&ndash;&gt;-->
-<!--        &lt;!&ndash;        <div class="cell input_weight">투중</div>&ndash;&gt;-->
-<!--        &lt;!&ndash;        <div class="cell product_weight">제중</div>&ndash;&gt;-->
-<!--        &lt;!&ndash;        <div class="cell mold_size">금형규격</div>&ndash;&gt;-->
-<!--        &lt;!&ndash;        <div class="cell mold_position">위치</div>&ndash;&gt;-->
-<!--        <div class="cell cutting_order">A</div>-->
-<!--        <div class="cell cutting_qty">J</div>-->
-<!--        <div class="cell mold_ready">M</div>-->
-<!--        <div class="cell poc_no">POC No</div>-->
-<!--        <div class="cell paper hidden-print"></div>-->
-<!--        <div class="blank"></div>-->
-<!--      </div>-->
-<!--    </div>-->
-    <!--      <div [dragula]='"bag-one"' [dragulaModel]='rows' (scroll)="scrollHandler($event)" class="dnd_body">-->
-    <!--        <div *ngFor="let row of rows" id="row_{{ row.id }}_{{ row.seq_no }}"-->
-    <!--             (click)="onSelect(row.id, row.order_no, row.cutting_order, row.material, row.size)" class="dnd-row"-->
-    <!--             [class.active]="selectedId === row.id" [class.caution]="row.st != 0">-->
-    <!--          <div class="cell product_code">&nbsp; {{ row.product_code }} &nbsp;</div>-->
-    <!--          <div class="cell order_no text-center hidden-print">&nbsp; {{ row.order_no }} &nbsp;</div>-->
-    <!--  &lt;!&ndash;        <div class="cell drawing_no">&nbsp; {{ row.drawing_no }} &nbsp;</div>&ndash;&gt;-->
-    <!--          <div class="cell product_name item">-->
-    <!--            &nbsp; {{ row.product_name }} &nbsp;-->
-    <!--            <span *ngIf="row.st == 1" class="label label-warning" (click)="openModal('update', row.id)">수주조정</span>-->
-    <!--            <span *ngIf="row.st == 2" class="label label-warning" data-toggle="modal"-->
-    <!--                  (click)="openModal('line-change', row.id)">라인변경</span>-->
-    <!--            <span *ngIf="row.st == -1" class="label label-danger" data-toggle="modal"-->
-    <!--                  (click)="openModal('delete', row.id)">수주취소</span>-->
-    <!--          </div>-->
-    <!--          &lt;!&ndash;<div class="cell outs_no text-center hidden-print">&nbsp; &nbsp;</div>&ndash;&gt;-->
-    <!--          <div class="cell order_qty text-right">&nbsp; <span-->
-    <!--            *ngIf="row.order_qty > 0">{{ row.order_qty | numberFormat }}</span> &nbsp;-->
-    <!--          </div>-->
-    <!--          <div class="cell production_time text-right">&nbsp; {{ row.production_time }} &nbsp;</div>-->
-    <!--          <div class="cell input_date text-center hidden-print">&nbsp; {{ row.input_date }} &nbsp;</div>-->
-    <!--          <div class="cell promised_date text-center">&nbsp; {{ row.promised_date }} &nbsp;</div>-->
-    <!--          <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>-->
-    <!--          <div class="cell start_time text-center hidden-print">&nbsp; {{ row.working_time }} &nbsp;</div>-->
-    <!--          <div class="cell material">&nbsp; {{ row.material }} &nbsp;</div>-->
-    <!--          <div class="cell size">&nbsp; {{ row.size }} &nbsp;</div>-->
-    <!--  &lt;!&ndash;        <div class="cell size text-center">&nbsp; <span *ngIf="row.size > 0">{{ row.size }}</span> / {{ row.cut_length }} &nbsp; </div>&ndash;&gt;-->
-    <!--  &lt;!&ndash;        <div class="cell input_weight text-right">&nbsp; <span *ngIf="row.input_weight > 0">{{ row.input_weight }}</span> &nbsp;</div>&ndash;&gt;-->
-    <!--  &lt;!&ndash;        <div class="cell product_weight text-right">&nbsp; <span *ngIf="row.product_weight > 0">{{ row.product_weight }}</span> &nbsp;</div>&ndash;&gt;-->
-    <!--  &lt;!&ndash;        <div class="cell mold_size">&nbsp; {{ row.mold_size }} &nbsp;</div>&ndash;&gt;-->
-    <!--  &lt;!&ndash;        <div class="cell mold_position">&nbsp; {{ row.mold_position }} &nbsp;</div>&ndash;&gt;-->
-    <!--          <div class="cell cutting_order text-center">&nbsp; <span *ngIf="row.cutting_order == 'Y'">★</span> &nbsp;</div>-->
-    <!--          &lt;!&ndash; <div class="cell cutting_qty text-center">&nbsp; <span *ngIf="row.cutting_qty > 0">{{ row.cutting_qty | numberFormat }}</span> &nbsp;</div> &ndash;&gt;-->
-    <!--          <div class="cell cutting_qty text-center">&nbsp; <span *ngIf="row.cutting_yn == 'Y'">★</span> &nbsp;</div>-->
-    <!--          <div class="cell mold_ready text-center">&nbsp; <span *ngIf="row.mold_ready == 'Y'" class="text-danger">★</span>-->
-    <!--            &nbsp;-->
-    <!--          </div>-->
-    <!--          <div class="cell poc_no">&nbsp; {{ row.poc_no }} &nbsp;</div>-->
-    <!--          <div class="cell paper text-center hidden-print"><i *ngIf="row.cutting_order == 'Y'" data-toggle="modal"-->
-    <!--                                                              data-target="#cutting-work-allocation"-->
-    <!--                                                              (click)="GetCuttingWorkAllocation(row.poc_no)"-->
-    <!--                                                              class="glyphicon glyphicon-paperclip"></i></div>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <div class="dnd-foot">
-      <div class="dnd-row">
-        <div class="item_cnt"> 총Item수 : {{ totalItemCnt | numberFormat }} </div>
-        <div class="product_qty"> 생산수량합계 : {{ totalProductQty | numberFormat }} </div>
-        <div class="product_price"> 생산금액 : {{ totalSalesPrice | numberFormat }} </div>
+      <div class="row">
+        <div class="col-sm-8 m-b-xs">
+          <form [formGroup]="searchForm">
+            <!-- <label for="start_date" class="control-label text-sm">계획시작일</label>
+            <input type="text" formControlName="start_date" bsDatepicker placement="bottom left" (bsValueChange)="changePlanningDate(1, $event)" class="input-sm form-control w-xs inline v-middle" /> -->
+            <label for="end_date" class="control-label text-sm m-l">계획종료일</label>
+            <input id="end_date" type="text" formControlName="end_date" bsDatepicker placement="bottom left"
+                   (bsValueChange)="changePlanningDate(2, $event)" class="input-sm form-control w-xs inline v-middle"/>
+            <label for="sch_prdline" class="m-l">작업라인</label>
+            <select formControlName="sch_prdline" id="sch_prdline" (change)="getAll()"
+                    class="input-sm form-control w-sm inline v-middle">
+              <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
+                -{{ line.EquipmentName }}</option>
+              <option value="outs">외주라인</option>
+            </select>
+            <!-- <label for="sch_sdate" class="control-label text-sm m-l">조회기간</label>
+            <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
+            <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> -->
+            <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+            <button (click)="resetSeqNo()" class="btn btn-sm btn-dark hidden-print">미반영수주</button>
+          </form>
+        </div>
+        <div class="col-sm-4 text-right">
+          <!--
+          <button class="btn btn-sm btn-success btn-addon">
+          <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+          </button>
+          -->
+        </div>
       </div>
     </div>
-  </div>
+    <div class="panel-body">
+      <div id="dnd_head" class="dnd_head">
+        <div class="dnd-row">
+          <div class="cell product_code">제품번호</div>
+          <div class="cell order_no hidden-print">수주번호</div>
+          <!--        <div class="cell drawing_no">도번</div>-->
+          <div class="cell product_name">제품명</div>
+          <!--        <div class="cell outs_no hidden-print">외주</div>-->
+          <div class="cell order_qty">수량</div>
+          <div class="cell production_time">소요시간</div>
+          <div class="cell input_date hidden-print">등록일</div>
+          <div class="cell promised_date">약속일</div>
+          <div class="cell work_date">작업일</div>
+          <div class="cell start_time hidden-print">시작시간</div>
+          <div class="cell material">재질</div>
+          <div class="cell size">규격</div>
+  <!--        <div class="cell size">규격/길이</div>-->
+  <!--        <div class="cell input_weight">투중</div>-->
+  <!--        <div class="cell product_weight">제중</div>-->
+  <!--        <div class="cell mold_size">금형규격</div>-->
+  <!--        <div class="cell mold_position">위치</div>-->
+          <div class="cell cutting_order">A</div>
+          <div class="cell cutting_qty">J</div>
+          <div class="cell mold_ready">M</div>
+          <div class="cell poc_no">POC No</div>
+          <div class="cell paper hidden-print"></div>
+          <div class="blank"></div>
+        </div>
+      </div>
+      <div [dragula]='"bag-one"' [dragulaModel]='rows' (scroll)="scrollHandler($event)" class="dnd_body">
+        <div *ngFor="let row of rows" id="row_{{ row.id }}_{{ row.seq_no }}"
+             (click)="onSelect(row.id, row.order_no, row.cutting_order, row.material, row.size)" class="dnd-row"
+             [class.active]="selectedId === row.id" [class.caution]="row.st != 0">
+          <div class="cell product_code">&nbsp; {{ row.product_code }} &nbsp;</div>
+          <div class="cell order_no text-center hidden-print">&nbsp; {{ row.order_no }} &nbsp;</div>
+  <!--        <div class="cell drawing_no">&nbsp; {{ row.drawing_no }} &nbsp;</div>-->
+          <div class="cell product_name item">
+            &nbsp; {{ row.product_name }} &nbsp;
+            <span *ngIf="row.st == 1" class="label label-warning" (click)="openModal('update', row.id)">수주조정</span>
+            <span *ngIf="row.st == 2" class="label label-warning" data-toggle="modal"
+                  (click)="openModal('line-change', row.id)">라인변경</span>
+            <span *ngIf="row.st == -1" class="label label-danger" data-toggle="modal"
+                  (click)="openModal('delete', row.id)">수주취소</span>
+          </div>
+          <!--<div class="cell outs_no text-center hidden-print">&nbsp; &nbsp;</div>-->
+          <div class="cell order_qty text-right">&nbsp; <span
+            *ngIf="row.order_qty > 0">{{ row.order_qty | numberFormat }}</span> &nbsp;
+          </div>
+          <div class="cell production_time text-right">&nbsp; {{ row.production_time }} &nbsp;</div>
+          <div class="cell input_date text-center hidden-print">&nbsp; {{ row.input_date }} &nbsp;</div>
+          <div class="cell promised_date text-center">&nbsp; {{ row.promised_date }} &nbsp;</div>
+          <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>
+          <div class="cell start_time text-center hidden-print">&nbsp; {{ row.working_time }} &nbsp;</div>
+          <div class="cell material">&nbsp; {{ row.material }} &nbsp;</div>
+          <div class="cell size">&nbsp; {{ row.size }} &nbsp;</div>
+  <!--        <div class="cell size text-center">&nbsp; <span *ngIf="row.size > 0">{{ row.size }}</span> / {{ row.cut_length }} &nbsp; </div>-->
+  <!--        <div class="cell input_weight text-right">&nbsp; <span *ngIf="row.input_weight > 0">{{ row.input_weight }}</span> &nbsp;</div>-->
+  <!--        <div class="cell product_weight text-right">&nbsp; <span *ngIf="row.product_weight > 0">{{ row.product_weight }}</span> &nbsp;</div>-->
+  <!--        <div class="cell mold_size">&nbsp; {{ row.mold_size }} &nbsp;</div>-->
+  <!--        <div class="cell mold_position">&nbsp; {{ row.mold_position }} &nbsp;</div>-->
+          <div class="cell cutting_order text-center">&nbsp; <span *ngIf="row.cutting_order == 'Y'">★</span> &nbsp;</div>
+          <!-- <div class="cell cutting_qty text-center">&nbsp; <span *ngIf="row.cutting_qty > 0">{{ row.cutting_qty | numberFormat }}</span> &nbsp;</div> -->
+          <div class="cell cutting_qty text-center">&nbsp; <span *ngIf="row.cutting_yn == 'Y'">★</span> &nbsp;</div>
+          <div class="cell mold_ready text-center">&nbsp; <span *ngIf="row.mold_ready == 'Y'" class="text-danger">★</span>
+            &nbsp;
+          </div>
+          <div class="cell poc_no">&nbsp; {{ row.poc_no }} &nbsp;</div>
+          <div class="cell paper text-center hidden-print"><i *ngIf="row.cutting_order == 'Y'" data-toggle="modal"
+                                                              data-target="#cutting-work-allocation"
+                                                              (click)="GetCuttingWorkAllocation(row.poc_no)"
+                                                              class="glyphicon glyphicon-paperclip"></i></div>
+        </div>
+      </div>
+      <div class="dnd-foot">
+        <div class="dnd-row">
+          <div class="item_cnt"> 총Item수 : {{ totalItemCnt | numberFormat }} </div>
+          <div class="product_qty"> 생산수량합계 : {{ totalProductQty | numberFormat }} </div>
+          <div class="product_price"> 생산금액 : {{ totalSalesPrice | numberFormat }} </div>
+        </div>
+      </div>
+    </div>
 
   <footer class="panel-footer hidden-print">
     <div class="row">
@@ -663,14 +607,14 @@
                            let-selectFn="selectFn">
                 <label class="i-checks i-checks-sm m-b-none">
                   <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"
-                         [disabled]="!cutting_qty"/><i></i>
+                         [disabled]="!assembly_qty"/><i></i>
                 </label>
               </ng-template>
               <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
                            let-onCheckboxChangeFn="onCheckboxChangeFn">
                 <label class="i-checks i-checks-sm m-b-none">
                   <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"
-                         [disabled]="!cutting_qty"/><i></i>
+                         [disabled]="!assembly_qty"/><i></i>
                 </label>
               </ng-template>
             </ngx-datatable-column>
@@ -757,7 +701,7 @@
 
       <div class="print-area" [style.height.px]="viewModalHeight" id="print-target-cutting">
         <div class="row b-b">
-          <div class="col-xs-3 text-xs">세일단조</div>
+          <div class="col-xs-3 text-xs">IDM</div>
           <div class="col-xs-6 text-xs text-center">"사람평생 건강관리 &nbsp; 기업평생 품질관리"</div>
           <div class="col-xs-3 text-xs text-right">{{ v_input_date }}</div>
         </div>
@@ -778,30 +722,6 @@
                     <ngx-barcode
                       [bc-element-type]="elementType"
                       [bc-value]="cuttingValue"
-                      [bc-format]="format"
-                      [bc-line-color]="lineColor"
-                      [bc-width]="width"
-                      [bc-height]="height"
-                      [bc-display-value]="displayValue"
-                      [bc-font-options]="fontOptions"
-                      [bc-font]="font"
-                      [bc-text-align]="textAlign"
-                      [bc-text-position]="textPosition"
-                      [bc-text-margin]="textMargin"
-                      [bc-font-size]="fontSize"
-                      [bc-background]="background"
-                      [bc-margin]="margin"
-                      [bc-margin-top]="marginTop"
-                      [bc-margin-bottom]="marginBottom"
-                      [bc-margin-left]="marginLeft"
-                      [bc-margin-right]="marginRight">
-                    </ngx-barcode>
-                  </td>
-                  <th>단<br/>조</th>
-                  <td>
-                    <ngx-barcode
-                      [bc-element-type]="elementType"
-                      [bc-value]="forgingValue"
                       [bc-format]="format"
                       [bc-line-color]="lineColor"
                       [bc-width]="width"
@@ -872,14 +792,6 @@
                 <td>{{ v_size }}</td>
               </tr>
               <tr>
-                <th class="print-padding-2px">제강메이커 :</th>
-                <td>{{ v_steel_maker }}</td>
-              </tr>
-              <tr>
-                <th class="print-padding-2px">지시제강번호 :</th>
-                <td>{{ v_ms_no }}</td>
-              </tr>
-              <tr>
                 <th class="print-padding-2px">작업라인 :</th>
                 <td>{{ v_production_line }}</td>
               </tr>
@@ -915,30 +827,12 @@
                 <td colspan="3"><span class="dotted_box box1 print-box-height-22px"></span></td>
               </tr>
               <tr>
-                <th>사용재질 :</th>
-                <td colspan="3"><span class="dotted_box box1 print-box-height-22px"></span></td>
-              </tr>
-              <tr>
                 <th>사용규격 :</th>
-                <td colspan="3"><span class="dotted_box box1 print-box-height-22px"></span></td>
-              </tr>
-              <tr>
-                <th>사용제강번호 :</th>
                 <td colspan="3"><span class="dotted_box box1 print-box-height-22px"></span></td>
               </tr>
               <tr>
                 <th>조립장소 :</th>
                 <td colspan="3">{{ v_outs_partner_name }}</td>
-              </tr>
-              <tr>
-                <th>금형번호 :</th>
-                <td colspan="3"></td>
-              </tr>
-              <tr>
-                <th>금형규격 :</th>
-                <td></td>
-                <th>금형위치 :</th>
-                <td></td>
               </tr>
             </table>
           </div>
@@ -1066,10 +960,6 @@
                     <th class="print-padding-2px">거래처 :</th>
                     <td>{{ v_partner_name }}</td>
                   </tr>
-                  <tr>
-                    <th class="print-padding-2px">지시제강번호 :</th>
-                    <td>{{ v_ms_no }}</td>
-                  </tr>
                 </table>
               </div>
               <div class="col2">
@@ -1090,14 +980,6 @@
                     <th>사용규격 :</th>
                     <td><span class="dotted_box box2 print-box-height-22px"></span></td>
                   </tr>
-                  <tr>
-                    <th>제강메이커 :</th>
-                    <td><span class="dotted_box box2 print-box-height-22px"></span></td>
-                  </tr>
-                  <tr>
-                    <th>사용제강번호 :</th>
-                    <td><span class="dotted_box box2 print-box-height-22px"></span></td>
-                  </tr>
                 </table>
               </div>
               <div class="col3">
@@ -1112,7 +994,7 @@
                   </tr>
                   <tr>
                     <th class="print-padding-2px">지시수량 :</th>
-                    <td>{{ v_cutting_qty | numberFormat }}</td>
+                    <td>{{ v_assembly_qty | numberFormat }}</td>
                   </tr>
                   <tr>
                     <th>조립수량 :</th>
@@ -1220,16 +1102,10 @@
                 <td>작업일</td>
                 <td>시간</td>
                 <td>제품번호</td>
-                <td>도번</td>
                 <td>제품명</td>
                 <td>수량</td>
                 <td>약속일</td>
-                <td>재질</td>
-                <td>규격/길이</td>
-                <td>소재단중</td>
-                <td>제품단중</td>
-                <td>금형</td>
-                <td>위치</td>
+                <td>규격</td>
                 <td>W</td>
                 <td>J</td>
                 <td>PocNo</td>
@@ -1239,16 +1115,10 @@
                 <td class="text-center" *ngIf="!data.is_diff_date">{{ data.working_date }}</td>
                 <td class="text-center">{{ data.production_time }}</td>
                 <td class="text-center">{{ data.product_code }}</td>
-                <td>{{ data.drawing_no }}</td>
                 <td>{{ data.product_name }}</td>
                 <td class="text-right">{{ data.order_qty | numberFormat }}</td>
                 <td class="text-center">{{ data.promised_date }}</td>
-                <td>{{ data.material }}</td>
-                <td class="text-center">{{ data.size }} / {{ data.cut_length }}</td>
-                <td class="text-right">{{ data.input_weight }}</td>
-                <td class="text-right">{{ data.product_weight }}</td>
-                <td>{{ data.mold_size }}</td>
-                <td>{{ data.mold_position }}</td>
+                <td class="text-center">{{ data.size }}</td>
                 <td class="text-center"><span *ngIf="data.cutting_order == 'Y'">★</span></td>
                 <td class="text-center"><span *ngIf="data.cutting_yn == 'Y'">★</span></td>
                 <td>{{ data.poc_no }}</td>
@@ -1264,9 +1134,7 @@
             <tbody>
             <tr>
               <td width="200px">총Item수 : {{ totalItemCnt | numberFormat }}</td>
-              <td width="240px">투입중량합계 : {{ totalInputWeight | numberFormat }}</td>
               <td width="240px">생산수량합계 : {{ totalProductQty | numberFormat }}</td>
-              <td width="240px">제품중량합계 : {{ totalProductWeight | numberFormat }}</td>
               <td class="text-right">생산금액 : {{ totalSalesPrice | numberFormat }}</td>
             </tr>
             </tbody>
@@ -1286,99 +1154,6 @@
         </div>
 
       </div> <!-- end of print view -->
-
-    </div>
-  </div>
-</div>
-
-
-<!-- 단조작업지시서 -->
-<div bsModal #ForgingWorkAllocationModal="bs-modal" id="forging-work-allocation" class="modal modal-xl-center fade"
-     tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-xl-center">
-    <div class="modal-content modal-xl" style="height:950px;">
-
-      <button type="button" class="btn btn-sm btn-info btn-addon btn-print"
-              (click)="elSrv.readyPrint('print-target-forging', 'elSrv.PRINT_MODE.WORKER', elSrv.PRINT_OPT.LANDSCAPE)">
-        <i class="glyphicon glyphicon-print"></i>인쇄
-      </button>
-
-      <div id="print-target-forging">
-
-
-        <div *ngFor="let subrows of fRows; let idx = index">
-          <div *ngIf="idx != 0" style='page-break-before:always'></div>
-
-          <table style="width:98%; margin:20px 10px 5px 10px;">
-            <tr style="height:30px;">
-              <td colspan="2" style="text-align:center;"><span
-                class="forging-work-allocation-title">{{ forgingWorkAllocationTitle }}</span></td>
-            </tr>
-            <tr style="height:25px;">
-              <td colspan="2" style="text-align:right;">작업지시일시 : {{ orderTime }}</td>
-            </tr>
-            <tr style="height:25px;">
-              <td> 작업LINE : {{ subrows.subKey }}</td>
-              <td style="text-align:right;">
-                <div *ngIf="subrows.lineWorkers.group1_leader">1근 작업반장 : {{ subrows.lineWorkers.group1_leader }}</div>
-                <div *ngIf="subrows.lineWorkers.group2_leader">2근 작업반장 : {{ subrows.lineWorkers.group2_leader }}</div>
-                <div *ngIf="subrows.lineWorkers.group3_leader">2근 작업반장 : {{ subrows.lineWorkers.group3_leader }}</div>
-              </td>
-            </tr>
-          </table>
-
-          <div class="div-foging-work" style="margin:20px 10px 5px 10px;"
-               *ngFor="let daterow of subrows.subData | keys">
-            <div class="row m-l-xs">
-              {{ daterow.key }}
-            </div>
-
-            <table class="tb-forging-work">
-              <thead>
-              <tr>
-                <th class="drawing_no">도번</th>
-                <th class="product_name">제품명</th>
-                <th class="product_code">제품번호</th>
-                <th class="order_qty">수량</th>
-                <th class="production_time">소요시간</th>
-                <th class="working_stime">작업일</th>
-                <th class="promised_date">약속일</th>
-                <th class="material">재질</th>
-                <th class="size">규격/길이</th>
-                <th class="input_weight">투중</th>
-                <th class="product_weight">제중</th>
-                <th class="mold_size">금형규격</th>
-                <th class="mold_position">위치</th>
-                <th class="poc_no">POC NO</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let row of daterow.value">
-                <td class="cell drawing_no">{{ row.drawing_no }}</td>
-                <td class="cell product_name">{{ row.product_name }}</td>
-                <td class="product_code text-center">{{ row.product_code }}</td>
-                <td class="order_qty text-right">{{ row.order_qty | numberFormat }}</td>
-                <td class="production_time text-center">{{ row.production_time }}</td>
-                <td class="working_stime text-center">{{ row.working_stime }}</td>
-                <td class="promised_date text-center">{{ row.promised_date }}</td>
-                <td class="material is_diff_material" *ngIf="row.is_diff_material">{{ row.material }}</td>
-                <td class="material" *ngIf="!row.is_diff_material">{{ row.material }}</td>
-                <td class="size text-center" *ngIf="row.is_diff_material"><span
-                  class="is_diff_material">{{ row.size }}</span> / {{ row.cut_length }}</td>
-                <td class="size text-center" *ngIf="!row.is_diff_material">{{ row.size }} / {{ row.cut_length }}</td>
-                <td class="input_weight text-right">{{ row.input_weight }}</td>
-                <td class="product_weight text-right">{{ row.product_weight }}</td>
-                <td class="mold_size text-center">{{ row.mold_size }}</td>
-                <td class="mold_position text-center">{{ row.mold_position }}</td>
-                <td class="poc_no text-center">{{ row.poc_no }}</td>
-              </tr>
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-
-      </div>
 
     </div>
   </div>
