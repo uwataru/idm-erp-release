@@ -27,11 +27,11 @@ export class OutsourcingInOutComponent implements OnInit {
     inputFormTitle: string;
     isEditMode: boolean = false;
     listData : Item[ ];
-    
+
     searchForm: FormGroup;
 
     formData: Item[];
-    
+
     rcvDate = this.globals.tDate;
     rows: Item['rowData'][];
     sch_partner_name: string;
@@ -73,7 +73,7 @@ export class OutsourcingInOutComponent implements OnInit {
                 sch_edate: '',
                 order_type: '',
                 sch_partner_name: '',
-                outs_partner_code: '' 
+                outs_partner_code: ''
             });
         }
 
@@ -83,7 +83,7 @@ export class OutsourcingInOutComponent implements OnInit {
 
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
-        this.searchForm.controls['order_type'].setValue('H');
+        this.searchForm.controls['order_type'].setValue('C');
         this.getAll('');
 
         $(document).ready(function(){
@@ -97,8 +97,8 @@ export class OutsourcingInOutComponent implements OnInit {
     }
 
     loadSearchPartners(code):void {
-        
-        
+
+
         switch (code) {
             case 'C': this.listPartners = this.globals.configs['type42Partners']; break;
             case 'F': this.listPartners = this.globals.configs['type41Partners']; break;
@@ -114,7 +114,7 @@ export class OutsourcingInOutComponent implements OnInit {
             this.searchForm.controls['outs_partner_code'].setValue(event.item.Code);
         }
     }
-    
+
 
     getAll(orderType): void {
         let formData = this.searchForm.value;
@@ -158,8 +158,8 @@ export class OutsourcingInOutComponent implements OnInit {
                 this.isLoadingProgress = false;
             }
         );
-        
-        
+
+
     }
 
     excelDown() {
@@ -213,17 +213,17 @@ export class OutsourcingInOutComponent implements OnInit {
 
     openModal(id) {
         let formData = this.searchForm.value;
-        
+
         let findRow: Item['rowData'];
         for (var i = 0; i<this.rows.length; i++ ){
             if(this.rows[i].id == id){
-              findRow = this.rows[i]; 
-            } 
+              findRow = this.rows[i];
+            }
         }
-        
-        
+
+
         let params = {
-            
+
             id: id,
             //sch_prdline: formData.production_line,
             order_type: formData.order_type,
@@ -235,23 +235,23 @@ export class OutsourcingInOutComponent implements OnInit {
             maxResultCount: 10000
         }
         this.isLoadingProgress = true;
-        
+
         this.dataService.GetDetails(params).subscribe(
             data =>
             {
                 this.detailrows = data['data'];
-                
+
                 this.detailsums_total_order_qty= data['totalOrderQty'];
                 this.detailsums_total_rcv_qty = data['totalRcvQty'];
                 this.detailsums_total_count = data['totalCount'];
-                
+
                 this.isLoadingProgress = false;
                 setTimeout(() => {
                     window.dispatchEvent(new Event('resize'));
                 }, 250);
             }
             );
-            
+
             this.detail_order_type = this.searchForm.controls['order_type'].value;
             this.detail_partner_name = findRow.partner_name;
             this.detail_sch_sdate = this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd');

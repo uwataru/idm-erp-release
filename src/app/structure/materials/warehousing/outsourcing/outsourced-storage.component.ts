@@ -129,7 +129,7 @@ export class OutsourcedStorageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panelTitle = '외주발주현황';
+    this.panelTitle = '외주입고현황';
     this.inputFormTitle = '외주입고처리';
 
     this.getAll(this.orderType);
