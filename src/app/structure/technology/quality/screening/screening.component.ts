@@ -107,10 +107,10 @@ export class ScreeningComponent implements OnInit {
             forging_id: ['', Validators.required],
             input_date: ['', Validators.required],
             worker_name: ['', Validators.required],
-            working_time: '',
+            // working_time: '',
             working_stime: '',
             working_etime: '',
-            poc_no: ['', Validators.required],
+            // poc_no: ['', Validators.required],
             product_code: ['', Validators.required],
             product_name: ['', Validators.required],
             screening_qty: ['', Validators.required],
@@ -270,7 +270,7 @@ export class ScreeningComponent implements OnInit {
                             this.inputForm.patchValue({
                                 forging_id: this.formData.id,
                                 input_date: this.tDate,
-                                poc_no: this.formData.poc_no,
+                                // poc_no: this.formData.poc_no,
                                 product_code: this.formData.product_code,
                                 product_name: this.formData.product_name,
                                 screening_qty: this.utils.addComma(this.productionQty - this.screeningQty)

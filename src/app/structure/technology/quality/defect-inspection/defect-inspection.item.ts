@@ -4,8 +4,8 @@ export class Item {
     data: {
         product_code: number;
         product_name: string;
-        drawing_no: string;
-        poc_no: string;
+        // drawing_no: string;
+        // poc_no: string;
         production_date: string;
         production_qty: number;
         inspection_classification: number;

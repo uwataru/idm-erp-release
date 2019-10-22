@@ -97,26 +97,26 @@ export class DefectInspectionComponent implements OnInit {
     this.inputForm = fb.group({
       product_code: ['', Validators.required],
       product_name: ['', Validators.required],
-      drawing_no: ['', Validators.required],
-      poc_no: ['', Validators.required],
+      // drawing_no: ['', Validators.required],
+      // poc_no: ['', Validators.required],
       production_date: ['', Validators.required],
       production_qty: ['', Validators.required],
-      inventory_classification: ['', Validators.required],
-      outs_inven_type: '',
-      outs_partner_name: '',
-      outs_partner_code: '',
+      // inventory_classification: ['', Validators.required],
+      // outs_inven_type: '',
+      // outs_partner_name: '',
+      // outs_partner_code: '',
       defective_qty: '',
       defective_classification: ['', Validators.required],
       refer_etc: '',
-      inspector: '',
-      inspection_date: '',
-      input_date: ''
+      // inspector: '',
+      // inspection_date: '',
+      // input_date: ''
     });
   }
 
   ngOnInit() {
     this.panelTitle = '검사불량입력';
-    this.inputForm.controls['input_date'].setValue(this.tDate);
+    // this.inputForm.controls['input_date'].setValue(this.tDate);
     //this.getAll();
   }
 
@@ -133,31 +133,31 @@ export class DefectInspectionComponent implements OnInit {
   //         }
   //     );
   // }
-  loadInputPartners(code): void {
-    switch (code) {
-      case 'C':
-        this.inputPartners = this.globals.configs['type42Partners'];
-        break;
-      case 'F':
-        this.inputPartners = this.globals.configs['type41Partners'];
-        break;
-      case 'H':
-        this.inputPartners = this.globals.configs['type43Partners'];
-        break;
-      case 'M':
-        this.inputPartners = this.globals.configs['type44Partners'];
-        break;
-    }
-    //this.sltdOutsInvenClass = 'C';
-  }
+  // loadInputPartners(code): void {
+  //   switch (code) {
+  //     case 'C':
+  //       this.inputPartners = this.globals.configs['type42Partners'];
+  //       break;
+  //     case 'F':
+  //       this.inputPartners = this.globals.configs['type41Partners'];
+  //       break;
+  //     case 'H':
+  //       this.inputPartners = this.globals.configs['type43Partners'];
+  //       break;
+  //     case 'M':
+  //       this.inputPartners = this.globals.configs['type44Partners'];
+  //       break;
+  //   }
+  //   //this.sltdOutsInvenClass = 'C';
+  // }
 
-  onSelectInputPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['outs_partner_code'].setValue(0);
-    } else {
-      this.inputForm.controls['outs_partner_code'].setValue(event.item.Code);
-    }
-  }
+  // onSelectInputPartner(event: TypeaheadMatch): void {
+  //   if (event.item == '') {
+  //     this.inputForm.controls['outs_partner_code'].setValue(0);
+  //   } else {
+  //     this.inputForm.controls['outs_partner_code'].setValue(event.item.Code);
+  //   }
+  // }
 
   Save() {
     // 실행권한
@@ -167,17 +167,17 @@ export class DefectInspectionComponent implements OnInit {
     }
 
     let formData = this.inputForm.value;
-    if (formData.inventory_classification == 3 && !formData.outs_partner_code) {
-      alert('거래처를 선택해주세요!');
-      return false;
-    }
+    // if (formData.inventory_classification == 3 && !formData.outs_partner_code) {
+    //   alert('거래처를 선택해주세요!');
+    //   return false;
+    // }
 
-    formData.inventory_classification = formData.inventory_classification * 1;
+    // formData.inventory_classification = formData.inventory_classification * 1;
     formData.defective_classification = formData.defective_classification * 1;
     formData.screening_qty = this.utils.removeComma(formData.screening_qty) * 1;
     formData.defective_qty = this.utils.removeComma(formData.defective_qty) * 1;
-    formData.inspection_date = this.datePipe.transform(formData.inspection_date, 'yyyy-MM-dd');
-    formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
+    // formData.inspection_date = this.datePipe.transform(formData.inspection_date, 'yyyy-MM-dd');
+    // formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
 
     this.Create(formData);
   }
@@ -192,7 +192,7 @@ export class DefectInspectionComponent implements OnInit {
     this.outsForgingInvenQty = 0;
     this.outsHeatingInvenQty = 0;
     this.outsMachiningInvenQty = 0;
-    this.inputForm.controls['input_date'].setValue(this.tDate);
+    // this.inputForm.controls['input_date'].setValue(this.tDate);
   }
 
   Create(data): void {
@@ -214,24 +214,24 @@ export class DefectInspectionComponent implements OnInit {
   loadInfo() {
     let formData = this.inputForm.value;
     let ProductCode = formData.product_code;
-    let PocNo = formData.poc_no;
+    // let PocNo = formData.poc_no;
 
     if (!ProductCode) {
       this.messageService.add('제품코드를 입력해주세요');
       return false;
     }
-    if (!PocNo) {
-      this.messageService.add('POC NO를 입력해주세요');
-      return false;
-    }
+    // if (!PocNo) {
+    //   this.messageService.add('POC NO를 입력해주세요');
+    //   return false;
+    // }
 
     // 입력폼 리셋
     this.inputForm.reset();
     this.sltdInvenClass = 0;
-    this.inputForm.controls['input_date'].setValue(this.tDate);
+    // this.inputForm.controls['input_date'].setValue(this.tDate);
 
     // 내용
-    this.dataService.GetById(PocNo, ProductCode).subscribe(
+    this.dataService.GetById(ProductCode).subscribe(
       editData => {
         if (editData['result'] == 'success') {
           this.editData = editData;
@@ -239,7 +239,7 @@ export class DefectInspectionComponent implements OnInit {
 
           this.screeningQty = editData['screeningQty'] * 1;
 
-          this.sltdInvenClass = editData['inventory_classification'];
+          // this.sltdInvenClass = editData['inventory_classification'];
           this.cuttingInvenQty = editData['cutting_inven_qty'];
           this.assemblyInvenQty = editData['assembly_inven_qty'];
           this.forgingInvenQty = editData['forging_inven_qty'];
@@ -267,18 +267,18 @@ export class DefectInspectionComponent implements OnInit {
           if (this.outsHeatingInvenQty > 0) {
             this.sltdOutsInvenClass = 'H';
           }
-          this.loadInputPartners(this.sltdOutsInvenClass);
+          // this.loadInputPartners(this.sltdOutsInvenClass);
 
           // let order_cutting_qty = this.formData.order_qty * 1;
           // let order_input_weight = this.formData.input_weight * 1;
           // let order_input_weight_total = Math.round(order_cutting_qty * order_input_weight * 10) * 0.1;
           this.inputForm.patchValue({
             product_code: ProductCode,
-            poc_no: PocNo,
-            inventory_classification: editData['inventory_classification'],
-            outs_inven_type: this.sltdOutsInvenClass,
+            // poc_no: PocNo,
+            // inventory_classification: editData['inventory_classification'],
+            // outs_inven_type: this.sltdOutsInvenClass,
             product_name: this.formData.product_name,
-            drawing_no: this.formData.drawing_no,
+            // drawing_no: this.formData.drawing_no,
             production_date: this.formData.production_date,
             production_qty: this.formData.production_qty
           });

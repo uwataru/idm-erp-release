@@ -10,11 +10,28 @@
     <div class="panel-body">
         <div class="form-group">
             <div class="row">
+                <label for="production_date" class="col-lg-2 control-label">
+                    생산일자
+                </label>
+                <div class="col-lg-3">
+                    <input type="text" formControlName="production_date" id="production_date" class="form-control w-sm" />
+                </div>
+                <label for="order_no" class="col-lg-2 control-label">
+                    수주번호
+                </label>
+                <div class="col-lg-3">
+                    <input type="text" formControlName="order_no" id="order_no" class="form-control w-sm" />
+                </div>
+            </div>
+        </div> 
+
+        <div class="form-group">
+            <div class="row">
                 <label for="product_code" class="col-lg-2 control-label">
                     제품번호 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
-                <div class="col-lg-5">
-                    <input type="text" formControlName="product_code" id="product_code" nextFocus="poc_no" class="form-control w-sm" />
+                <div class="col-lg-3">
+                    <input type="text" formControlName="product_code" id="product_code" (blur)="loadInfo()" nextFocus="poc_no" class="form-control w-sm" />
                 </div>
                 <label for="product_name" class="col-lg-2 control-label">
                     제품명
@@ -25,7 +42,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <div class="row">
                 <label for="poc_no" class="col-lg-2 control-label">
                     POC No <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
@@ -40,9 +57,9 @@
                     <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control w-sm" />
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <div class="row">
                 <label for="inventory_classification" class="col-lg-2 control-label">
                     불량구분 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
@@ -131,31 +148,36 @@
                     <input type="text" formControlName="production_date" id="production_date" class="form-control w-sm" />
                 </div>
             </div>
-        </div>
+        </div> -->
 
+        <div class="form-group">
+            <div class="row">
+                <label for="production_qty" class="col-lg-2 control-label">
+                    총생산수량
+                </label>
+                <div class="col-lg-3">
+                    <input type="text" formControlName="production_qty" id="production_qty" class="form-control w-sm" />
+                </div>
+                <label for="nomal_qty" class="col-lg-2 control-label">
+                    양품수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-5">
+                    <input type="text" formControlName="nomal_qty" id="nomal_qty" nextFocus="nomal_classification" class="form-control w-sm" />
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <div class="row">
                 <label for="defective_qty" class="col-lg-2 control-label">
                     불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
-                <div class="col-lg-5">
+                <div class="col-lg-3">
                     <input type="text" formControlName="defective_qty" id="defective_qty" nextFocus="defective_classification" class="form-control w-sm" />
                 </div>
-                <label for="production_qty" class="col-lg-2 control-label">
-                    생산수량
+                <label for="defective_classification" class="col-lg-2 control-label">
+                    불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
                 <div class="col-lg-3">
-                    <input type="text" formControlName="production_qty" id="production_qty" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <label for="defective_classification" class="col-lg-2 control-label">
-                    불량코드 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-10">
                     <select formControlName="defective_classification" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
                         <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
                     </select>
@@ -163,29 +185,42 @@
             </div>
         </div>
 
+        <!-- <div class="form-group">
+            <div class="row">
+                <label for="defective_classification" class="col-lg-2 control-label">
+                    불량코드 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-3">
+                    <select formControlName="defective_classification" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
+                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
+                    </select>
+                </div>
+            </div>
+        </div> -->
+
         <div class="form-group">
             <div class="row">
                 <label for="refer_etc" class="col-lg-2 control-label">
-                    증빙/기타
+                    기타내용
                 </label>
                 <div class="col-lg-10">
-                    <input type="text" formControlName="refer_etc" id="refer_etc" nextFocus="inspector" class="form-control" />
+                    <input type="text" formControlName="refer_etc" id="refer_etc" nextFocus="quantity" class="form-control" />
                 </div>
             </div>
         </div>
 
         <div class="form-group">
             <div class="row">
-                <label for="inspector" class="col-lg-2 control-label">
-                    검사원/작업자
+                <label for="quantity" class="col-lg-2 control-label">
+                    항목
                 </label>
                 <div class="col-lg-10">
-                    <input type="text" formControlName="inspector" id="inspector" nextFocus="inspection_date" class="form-control w-sm" />
+                    <input type="text" formControlName="quantity" id="quantity" nextFocus="inspection_date" class="form-control w-sm" />
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
+<!--     <div class="form-group">
             <div class="row">
                 <label for="inspection_date" class="col-lg-2 control-label">
                     검사/작업일
@@ -205,7 +240,7 @@
                     <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
                 </div>
             </div>
-        </div>
+        </div> -->
 
     </div>
     <div class="panel-footer text-right">
