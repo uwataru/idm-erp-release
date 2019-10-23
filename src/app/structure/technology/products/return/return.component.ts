@@ -40,6 +40,8 @@ export class ReturnComponent implements OnInit {
       return_date: ['', Validators.required],
       partner_code: ['', Validators.required],
       partner_name: ['', Validators.required],
+      product_code: ['', Validators.required],
+      product_name: ['', Validators.required],
       return_reason: ['', Validators.required],
       other_reason: ['', Validators.required],
       return_qty: '',

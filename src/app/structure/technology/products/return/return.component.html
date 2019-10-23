@@ -16,10 +16,10 @@
                 <div class="col-lg-3">
                     <input type="text" formControlName="return_date" id="return_date" class="form-control w-sm" />
                 </div>
-                <div class="left m-l-lg">
-                  <label for="partner_name" class="col-lg-2 control-label">
-                      거래처
-                  </label>
+                <label for="partner_name" class="col-lg-2 control-label">
+                    거래처
+                </label>
+                <div class="col-lg-3">
                   <input formControlName="partner_name" id="partner_name"
                       [typeahead]="inputPartners"
                       typeaheadOptionField="Alias"

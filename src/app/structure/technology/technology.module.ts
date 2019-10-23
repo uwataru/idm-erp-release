@@ -36,7 +36,6 @@ export const routes: Routes = [
     { path: 'products/shipping-packaging', component: ShippingPackagingComponent, data: { title: '기술/품질 > 출하/포장관리' } },
     // { path: 'quality/quality-status', component: QualityStatusComponent, data: { title: '기술/품질 > 품질현황' }},
     { path: 'mold/mold-history', component: MoldHistoryComponent, data: { title: '기술/품질 > 금형명세서', id:145 }, canActivate: [AuthGuard] }
-    // { path: 'mold/mold-history', component: ReturnComponent, data: { title: '기술/품질 > 반품관리', id:145 }, canActivate: [AuthGuard] }
 ];
 
 // Datepicker Config
