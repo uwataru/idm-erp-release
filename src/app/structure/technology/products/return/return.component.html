@@ -1,0 +1,127 @@
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="text-center">
+            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+        </div>
+    </div>
+
+    <form [formGroup]="inputForm">
+    <div class="panel-body">
+        <div class="form-group">
+            <div class="row">
+                <label for="return_date" class="col-lg-2 control-label">
+                    반품일자
+                </label>
+                <div class="col-lg-3">
+                    <input type="text" formControlName="return_date" id="return_date" class="form-control w-sm" />
+                </div>
+                <div class="left m-l-lg">
+                  <label for="partner_name" class="col-lg-2 control-label">
+                      거래처
+                  </label>
+                  <input formControlName="partner_name" id="partner_name"
+                      [typeahead]="inputPartners"
+                      typeaheadOptionField="Alias"
+                      [typeaheadOptionsLimit]="50"
+                      [typeaheadScrollable]="true"
+                      [typeaheadMinLength]="0"
+                      (typeaheadOnSelect)="onSelectInputPartner($event)"
+                      placeholder="거래처명"
+                      class="input-sm form-control w-sm inline v-middle" />
+                  <input type="hidden" formControlName="partner_code" id="partner_code" />
+                </div>
+            </div>
+        </div> 
+
+        <div class="form-group">
+            <div class="row">
+              <label for="product_name" class="col-lg-2 control-label">
+                  제품명
+              </label>
+              <div class="col-lg-5">
+                  <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
+              </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label for="return_reason" class="col-lg-2 control-label">
+                    반품사유
+                </label>
+                <!-- <div class="col-lg-3">
+                    <select formControlName="product_price" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
+                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
+                    </select>
+                </div> -->
+                <div class="col-lg-3">
+                    <select formControlName="return_reason" id="return_reason" class="input-sm form-control w-sm inline v-middle">
+                        <option value=""></option>
+                        <option value="">불량</option>
+                        <option value="">교환</option>
+                        <option value="">기타</option>
+                    </select>
+                    <!-- <input type="text" formControlName="return_reason" id="return_reason" class="form-control w-sm" /> -->
+                </div>
+                <label for="other_reason" class="col-lg-2 control-label">
+                    기타사유
+                </label>
+                <div class="col-lg-3">
+                    <input type="text"  id="other_reason" formControlName="other_reason" class="form-control w-sm" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+              <label for="return_qty" class="col-lg-2 control-label">
+                  수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </label>
+              <div class="col-lg-3">
+                  <input type="text" formControlName="return_qty" id="return_qty" class="form-control w-sm" />
+              </div>
+              <label for="product_price" class="col-lg-2 control-label">
+                  단가 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </label>
+              <div class="col-lg-3">
+                  <input type="text" formControlName="product_price" id="product_price" class="form-control w-sm" />
+              </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label for="price" class="col-lg-2 control-label">
+                    금액
+                </label>
+                <div class="col-lg-3">
+                    <input type="text" formControlName="price" id="price" class="form-control" class="form-control w-sm"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer text-right">
+        <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+        <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
+	</div>
+    </form>
+
+</div>
+
+<div *ngIf="isLoadingProgress" class="loading-progress">
+
+    <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+
+</div>

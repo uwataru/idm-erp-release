@@ -18,6 +18,10 @@ import { ChangeToReadyStateComponent } from './mold/change-to-ready-state/change
 import { ScreeningComponent } from './quality/screening/screening.component';
 import { DefectInspectionComponent } from './quality/defect-inspection/defect-inspection.component';
 import { MoldHistoryComponent } from './mold/mold-history/mold-history.component';
+// import { InspectionItemComponent } from './quality/inspection-item/inspection-item.component';
+// import { QualityStatusComponent } from './quality/quality-status/quality-status.component';
+import { ReturnComponent } from './products/return/return.component';
+import { ShippingPackagingComponent } from './products/shipping-packaging/shipping-packaging.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'mold/mold-manage', pathMatch: 'full', canActivate: [AuthGuard] },
@@ -27,7 +31,12 @@ export const routes: Routes = [
     { path: 'mold/change-to-ready-state', component: ChangeToReadyStateComponent, data: { title: '기술/품질 > 금형준비완료입력', id:142 }, canActivate: [AuthGuard] },
     { path: 'quality/screening', component: ScreeningComponent, data: { title: '기술/품질 > 선별작업실적입력', id:143 }, canActivate: [AuthGuard] },
     { path: 'quality/defect-inspection', component: DefectInspectionComponent, data: { title: '기술/품질 > 검사불량입력', id:144 }, canActivate: [AuthGuard] },
+    // { path: 'quality/inspection-item', component: InspectionItemComponent, data: { title: '기술/품질 > 검사항목' } },
+    { path: 'products/return', component: ReturnComponent, data: { title: '기술/품질 > 반품관리' } },
+    { path: 'products/shipping-packaging', component: ShippingPackagingComponent, data: { title: '기술/품질 > 출하/포장관리' } },
+    // { path: 'quality/quality-status', component: QualityStatusComponent, data: { title: '기술/품질 > 품질현황' }},
     { path: 'mold/mold-history', component: MoldHistoryComponent, data: { title: '기술/품질 > 금형명세서', id:145 }, canActivate: [AuthGuard] }
+    // { path: 'mold/mold-history', component: ReturnComponent, data: { title: '기술/품질 > 반품관리', id:145 }, canActivate: [AuthGuard] }
 ];
 
 // Datepicker Config
@@ -56,6 +65,10 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     declarations: [
         MoldManageComponent,
         MoldMakingComponent,
+        // InspectionItemComponent,
+        ReturnComponent,
+        ShippingPackagingComponent,
+        // QualityStatusComponent,
         ChangeToReadyStateComponent,
         ScreeningComponent,
         DefectInspectionComponent,
