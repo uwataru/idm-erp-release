@@ -17,22 +17,22 @@
                     <input type="text" formControlName="production_date" id="production_date" class="form-control w-sm" />
                 </div>
                 <label for="order_no" class="col-lg-2 control-label">
-                    수주번호
+                    수주번호<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
                 <div class="col-lg-3">
                         <!-- formControlName="order_no" -->
-                    <input type="text"  id="order_no" class="form-control w-sm" />
+                    <input type="text"  id="order_no" (blur)="loadInfo($event)" class="form-control w-sm" />
                 </div>
             </div>
-        </div> 
+        </div>
 
         <div class="form-group">
             <div class="row">
                 <label for="product_code" class="col-lg-2 control-label">
-                    제품번호 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    제품번호
                 </label>
                 <div class="col-lg-3">
-                    <input type="text" formControlName="product_code" id="product_code" (blur)="loadInfo()" nextFocus="poc_no" class="form-control w-sm" />
+                    <input type="text" formControlName="product_code" id="product_code" nextFocus="poc_no" class="form-control w-sm" />
                 </div>
                 <label for="product_name" class="col-lg-2 control-label">
                     제품명
@@ -159,12 +159,12 @@
                 <div class="col-lg-3">
                     <input type="text" formControlName="production_qty" id="production_qty" class="form-control w-sm" />
                 </div>
-                <label for="nomal_qty" class="col-lg-2 control-label">
+                <label for="normal_qty" class="col-lg-2 control-label">
                     양품수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
                 <div class="col-lg-5">
                         <!-- formControlName="nomal_qty" -->
-                    <input type="text"  id="nomal_qty" nextFocus="nomal_classification" class="form-control w-sm" />
+                    <input type="text" formControlName="normal_qty"  id="normal_qty" nextFocus="normal_classification" class="form-control w-sm" />
                 </div>
             </div>
         </div>

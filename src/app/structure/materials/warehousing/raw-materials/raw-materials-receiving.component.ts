@@ -39,7 +39,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
     formData: Item['data'];
     sch_partner_name: string;
     //listPartners = [];
-    listPartners: any[] = this.globals.configs['type41Partners'];
+    listPartners: any[] = this.globals.configs['type4Partners'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
@@ -52,8 +52,8 @@ export class RawMaterialsReceivingComponent implements OnInit {
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type41Partners'];
-    storagePartners: any[] = this.globals.configs['type42Partners'];
+    inputPartners: any[] = this.globals.configs['type4Partners'];
+    storagePartners: any[] = this.globals.configs['type4Partners'];
     inputMakers: any[] = this.globals.configs['maker'];
     rcv_weight: number;
     editData: Item;
@@ -106,8 +106,8 @@ export class RawMaterialsReceivingComponent implements OnInit {
             partner_name: ['', Validators.required],
             partner_code: ['', Validators.required],
             result_type: ['', Validators.required],
-            steel_maker_name: ['', Validators.required],
-            steel_maker: ['', Validators.required],
+            steel_maker_name: '',
+            steel_maker: '',
             // is_report: '',
             // is_mealsheet: '',
             materials: ['', Validators.required],
@@ -238,13 +238,13 @@ export class RawMaterialsReceivingComponent implements OnInit {
         } else if(row.is_all_sum_row == 'Y') {
             rt = 'all-row-color';
         }
-        return rt; 
+        return rt;
      }
 
 
     deleteOrder(id) {
         const formData: FormData = new FormData();
-        this.dataService.Delete(id, formData) 
+        this.dataService.Delete(id, formData)
         .subscribe(
             data => {
                 if (data['result'] == "success") {
@@ -275,14 +275,14 @@ export class RawMaterialsReceivingComponent implements OnInit {
                     {
                         if(inventoryData['data'] && Object.keys(inventoryData['data']).length > 0) {
                             this.messageService.add('입고처리된 데이터가 존재하여 삭제할수 없습니다.');
-                            return false;   
+                            return false;
                         } else {
                             this.isLoadingProgress = false;
                             this.statusFormModal.show();
                         }
                     }
                 );
-                
+
             }
         } else {
             alert(this.globals.isNotExecutable);
@@ -341,10 +341,10 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     onSelect({ selected }) {
         if(selected.length > 0) {
-            this.selectedId = selected[0].id;       
+            this.selectedId = selected[0].id;
         } else {
             this.selectedId = "";
-        }        
+        }
     }
 
     checkSelect(event) {

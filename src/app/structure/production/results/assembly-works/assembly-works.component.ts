@@ -113,10 +113,10 @@ export class AssemblyWorksComponent implements OnInit {
       assembly_qty: ['', Validators.required],
       material: ['', Validators.required],
       size: ['', Validators.required],
-      steel_maker: ['', Validators.required],
-      ms_no: ['', Validators.required],
-      input_weight: ['', Validators.required],
-      input_weight_total: ['', Validators.required],
+      steel_maker: '',
+      ms_no: '',
+      input_weight: '',
+      input_weight_total: '',
       remaining_qty: '',
       used_rcv_items: '',
       st: '',
@@ -381,22 +381,23 @@ export class AssemblyWorksComponent implements OnInit {
     let inputWeightTotal: number;
 
     // 투입중량을 입력안한 경우 단위중량을 복사한 후 수량을 곱하여 계산한다.
-    if (!formData.input_weight_total || formData.input_weight_total == '') {
-      if (!formData.order_input_weight) {
-        alert('투입중량을 입력해주세요');
-        return false;
-      }
-      let inputWeight = this.utils.addComma(formData.order_input_weight);
-      let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
-      let assemblyQty = this.utils.removeComma(formData.assembly_qty) * 1;
-      inputWeightTotal = orderInputWeight * assemblyQty;
-      this.inputForm.patchValue({
-        input_weight: this.utils.addComma(inputWeight),
-        input_weight_total: this.utils.addComma(inputWeightTotal)
-      });
-    } else {
-      inputWeightTotal = this.utils.removeComma(formData.input_weight_total) * 1;
-    }
+    // if (!formData.input_weight_total || formData.input_weight_total == '') {
+    //   if (!formData.order_input_weight) {
+    //     alert('투입중량을 입력해주세요');
+    //     return false;
+    //   }
+    //   let inputWeight = this.utils.addComma(formData.order_input_weight);
+    //   let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
+    //   let assemblyQty = this.utils.removeComma(formData.assembly_qty) * 1;
+    //   inputWeightTotal = orderInputWeight * assemblyQty;
+    //   this.inputForm.patchValue({
+    //     input_weight: this.utils.addComma(inputWeight),
+    //     input_weight_total: this.utils.addComma(inputWeightTotal)
+    //   });
+    // } else {
+    //   inputWeightTotal = this.utils.removeComma(formData.input_weight_total) * 1;
+    // }
+    inputWeightTotal = this.utils.removeComma(formData.assembly_qty) * 1;
 
     this.usedDetailArr = [];    // 초기화
     let usedItemArr = [];

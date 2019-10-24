@@ -52,7 +52,7 @@ export class RawMaterialsComponent implements OnInit {
     inputForm: FormGroup;
     lossForm: FormGroup;
     inputPartners: any[] = this.globals.configs['type2Partners'];
-    locationPartners: any[] = this.globals.configs['type42Partners'];
+    locationPartners: any[] = this.globals.configs['type4Partners'];
 
     inputMakers: any[] = this.globals.configs['maker'];
     product_price: number;
@@ -102,8 +102,8 @@ export class RawMaterialsComponent implements OnInit {
             material_code: '',
             material_name: ['', Validators.required],
             material_size: ['', Validators.required],
-            material_maker_name: ['', Validators.required],
-            material_maker: ['', Validators.required],
+            material_maker_name: '',
+            material_maker: '',
             partner_name: ['', Validators.required],
             partner_code: '',
             price_per_unit: ['', Validators.required],
@@ -124,7 +124,7 @@ export class RawMaterialsComponent implements OnInit {
             rcv_location3: '',
             remaining_weight:''
         });
-        
+
         this.lossForm = fb.group({
             material_code: '',
             material_name: '',
@@ -133,7 +133,7 @@ export class RawMaterialsComponent implements OnInit {
             material_maker: '',
             partner_name: '',
             partner_code: '',
-            price_per_unit: '',            
+            price_per_unit: '',
             weight_used: ['', Validators.required],
             input_date: ['', Validators.required]
         });
@@ -165,7 +165,7 @@ export class RawMaterialsComponent implements OnInit {
         this.selectedCnt = 0;
         this.selectedId = '';
         this.selected = [];
-        
+
         let formData = this.searchForm.value;
         let params = {
             //partner_name: formData.sch_partner_name,
@@ -248,7 +248,7 @@ export class RawMaterialsComponent implements OnInit {
 
 
     loadMaterial() {
-        let formData = this.lossForm.value;        
+        let formData = this.lossForm.value;
         let params = {
             material: formData.material_name,
             size: formData.material_size,
@@ -269,7 +269,7 @@ export class RawMaterialsComponent implements OnInit {
 
 
 
-    lossSave () {     
+    lossSave () {
         let formData = this.lossForm.value;
         let params = {
             material_code: formData.material_code,
@@ -407,7 +407,7 @@ export class RawMaterialsComponent implements OnInit {
         }
     }
 
-    
+
     onSelectLocationPartner(event: TypeaheadMatch, type: string): void {
         if (event.item == '') {
             this.inputForm.controls['rcv_location'+type].setValue("");

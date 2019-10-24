@@ -387,22 +387,22 @@ export class CuttingWorksComponent implements OnInit {
         let inputWeightTotal: number;
 
         // 투입중량을 입력안한 경우 단위중량을 복사한 후 수량을 곱하여 계산한다.
-        if ( ! formData.input_weight_total || formData.input_weight_total == '') {
-            if ( ! formData.order_input_weight ) {
-                alert('투입중량을 입력해주세요');
-                return false;
-            }
-            let inputWeight = this.utils.addComma(formData.order_input_weight);
-            let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
-            let cuttingQty = this.utils.removeComma(formData.cutting_qty) * 1;
-            inputWeightTotal = orderInputWeight * cuttingQty;
-            this.inputForm.patchValue({
-                input_weight: this.utils.addComma(inputWeight),
-                input_weight_total: this.utils.addComma(inputWeightTotal)
-            });
-        } else {
-            inputWeightTotal = this.utils.removeComma(formData.input_weight_total)*1;
-        }
+        // if ( ! formData.input_weight_total || formData.input_weight_total == '') {
+        //     if ( ! formData.order_input_weight ) {
+        //         alert('투입중량을 입력해주세요');
+        //         return false;
+        //     }
+        //     let inputWeight = this.utils.addComma(formData.order_input_weight);
+        //     let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
+        //     let cuttingQty = this.utils.removeComma(formData.cutting_qty) * 1;
+        //     inputWeightTotal = orderInputWeight * cuttingQty;
+        //     this.inputForm.patchValue({
+        //         input_weight: this.utils.addComma(inputWeight),
+        //         input_weight_total: this.utils.addComma(inputWeightTotal)
+        //     });
+        // } else {
+        //     inputWeightTotal = this.utils.removeComma(formData.input_weight_total)*1;
+        // }
 
         this.usedDetailArr = [];    // 초기화
         let usedItemArr = [];

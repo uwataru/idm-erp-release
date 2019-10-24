@@ -37,6 +37,7 @@ export class DefectInspectionComponent implements OnInit {
 
   inputForm: FormGroup;
   screeningQty: number;
+  normalQty: number;
   inputPartners: any[];
   defectiveClassification: any[] = this.globals.configs['defectiveClassification'];
   sltdInvenClass: number;
@@ -95,22 +96,24 @@ export class DefectInspectionComponent implements OnInit {
     }
 
     this.inputForm = fb.group({
+      order_no: ['', Validators.required],
       product_code: ['', Validators.required],
       product_name: ['', Validators.required],
-      // drawing_no: ['', Validators.required],
-      // poc_no: ['', Validators.required],
-      production_date: ['', Validators.required],
-      production_qty: ['', Validators.required],
-      // inventory_classification: ['', Validators.required],
-      // outs_inven_type: '',
-      // outs_partner_name: '',
-      // outs_partner_code: '',
+      drawing_no: '',
+      poc_no: '',
+      production_date: '',
+      production_qty: '',
+      inventory_classification: '',
+      outs_inven_type: '',
+      outs_partner_name: '',
+      outs_partner_code: '',
       defective_qty: '',
       defective_classification: ['', Validators.required],
       refer_etc: '',
-      // inspector: '',
-      // inspection_date: '',
-      // input_date: ''
+      inspector: '',
+      inspection_date: '',
+      input_date: '',
+      normal_qty: ''
     });
   }
 
@@ -211,76 +214,30 @@ export class DefectInspectionComponent implements OnInit {
       );
   }
 
-  loadInfo() {
-    let formData = this.inputForm.value;
-    let ProductCode = formData.product_code;
-    // let PocNo = formData.poc_no;
-
-    if (!ProductCode) {
-      this.messageService.add('제품코드를 입력해주세요');
+  loadInfo(event) {
+    let OrderNo = event.target.value;
+    if (!OrderNo) {
       return false;
     }
-    // if (!PocNo) {
-    //   this.messageService.add('POC NO를 입력해주세요');
-    //   return false;
-    // }
-
-    // 입력폼 리셋
-    this.inputForm.reset();
-    this.sltdInvenClass = 0;
-    // this.inputForm.controls['input_date'].setValue(this.tDate);
 
     // 내용
-    this.dataService.GetById(ProductCode).subscribe(
+    this.dataService.GetById(OrderNo).subscribe(
       editData => {
         if (editData['result'] == 'success') {
           this.editData = editData;
           this.formData = editData['data'];
 
           this.screeningQty = editData['screeningQty'] * 1;
-
-          // this.sltdInvenClass = editData['inventory_classification'];
-          this.cuttingInvenQty = editData['cutting_inven_qty'];
-          this.assemblyInvenQty = editData['assembly_inven_qty'];
-          this.forgingInvenQty = editData['forging_inven_qty'];
-          this.outsInvenQty = editData['outs_inven_qty'];
-          this.outsCuttingInvenQty = editData['outs_cutting_inven_qty'];
-          this.outsAssemblyInvenQty = editData['outs_assembly_inven_qty'];
-          this.outsForgingInvenQty = editData['outs_forging_inven_qty'];
-          this.outsHeatingInvenQty = editData['outs_heating_inven_qty'];
-          this.outsMachiningInvenQty = editData['outs_machining_inven_qty'];
-          this.prodInvenQty = editData['product_inven_qty'];
-          this.unsoldInvenQty = editData['unsold_inven_qty'];
-
-          if (this.outsCuttingInvenQty > 0) {
-            this.sltdOutsInvenClass = 'C';
-          }
-          if (this.outsAssemblyInvenQty > 0) {
-            this.sltdOutsInvenClass = 'C';
-          }
-          if (this.outsForgingInvenQty > 0) {
-            this.sltdOutsInvenClass = 'F';
-          }
-          if (this.outsMachiningInvenQty > 0) {
-            this.sltdOutsInvenClass = 'M';
-          }
-          if (this.outsHeatingInvenQty > 0) {
-            this.sltdOutsInvenClass = 'H';
-          }
-          // this.loadInputPartners(this.sltdOutsInvenClass);
-
-          // let order_cutting_qty = this.formData.order_qty * 1;
-          // let order_input_weight = this.formData.input_weight * 1;
-          // let order_input_weight_total = Math.round(order_cutting_qty * order_input_weight * 10) * 0.1;
+          console.log(this.formData.normal_qty);
           this.inputForm.patchValue({
-            product_code: ProductCode,
-            // poc_no: PocNo,
-            // inventory_classification: editData['inventory_classification'],
-            // outs_inven_type: this.sltdOutsInvenClass,
+            order_no: OrderNo,
+            production_date: this.formData.input_date,
             product_name: this.formData.product_name,
-            // drawing_no: this.formData.drawing_no,
-            production_date: this.formData.production_date,
-            production_qty: this.formData.production_qty
+            product_code: this.formData.product_code,
+            production_qty: this.formData.screening_qty,
+            normal_qty: this.formData.normal_qty,
+            defective_qty: this.formData.defective_qty,
+            defective_classification: this.formData.defective_classification
           });
         }
       }

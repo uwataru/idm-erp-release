@@ -20,8 +20,8 @@ export class DefectInspectionService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetById (productCode:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+productCode);
+    GetById (orderNo:string): Observable<Item> {
+        return this.http.get<Item>(this.url+'/search/'+orderNo);
     }
 
     //======= 저장 =======//

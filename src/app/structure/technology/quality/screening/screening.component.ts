@@ -107,10 +107,10 @@ export class ScreeningComponent implements OnInit {
             forging_id: ['', Validators.required],
             input_date: ['', Validators.required],
             worker_name: ['', Validators.required],
-            // working_time: '',
+            working_time: '',
             working_stime: '',
             working_etime: '',
-            // poc_no: ['', Validators.required],
+            poc_no: '',
             product_code: ['', Validators.required],
             product_name: ['', Validators.required],
             screening_qty: ['', Validators.required],
@@ -123,7 +123,7 @@ export class ScreeningComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '단조(선별전)재고 현황';
+        this.panelTitle = '선별작업현황';
         this.inputFormTitle = '선별작업입력';
 
         this.getAll();

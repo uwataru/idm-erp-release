@@ -86,7 +86,7 @@ export class ProductionPlanningComponent implements OnInit {
 
   // 절단작업지시서 발행
   cuttingOrderForm: FormGroup;
-  inputPartners: any[] = this.globals.configs['type42Partners'];
+  inputPartners: any[] = this.globals.configs['type4Partners'];
   releaseType: number;
 
   // 절단작업지시서
