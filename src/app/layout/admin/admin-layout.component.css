@@ -1,5 +1,7 @@
  tabset {float:left; width:77%; margin:12px 0 0 25px; padding:0; font-size:9pt; border:0; }
  
+::ng-deep .navbar-header { background-color: white; }
+::ng-deep .navbar-brand img { max-height: 50px; }
 ::ng-deep .ngxTab.tabSub a { float:left; margin:0; width:125px; }
 ::ng-deep .ngxTab.tabSub a.active { float:left; font-weight:bold; }
 ::ng-deep .ngxTab.tabSub span:first-child { float:left; width:70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
