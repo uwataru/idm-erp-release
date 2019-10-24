@@ -120,7 +120,7 @@ export class ProductionPlanningService {
     }
 
     CreateCuttingOrder (id, data) {
-        return this.http.post(this.url + '/cutting/' + id, data).pipe(
+        return this.http.post(this.url + '/assembly/' + id, data).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
