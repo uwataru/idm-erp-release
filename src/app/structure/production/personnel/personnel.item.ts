@@ -4,7 +4,10 @@ export class Item {
         id: number;
         group: string;
         name: string;
-        phone: number;
+        employee_num: string;
+        phone: string;
+        addr: string;
+        spacialnote: string;
         working_time: number;
         work_skill: string;
         input_process: string;

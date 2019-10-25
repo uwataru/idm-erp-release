@@ -80,14 +80,18 @@ export class PersonnelComponent implements OnInit {
       this.inputForm = fb.group({
         group: ['', [Validators.required]],
         name: ['', [Validators.required]],
+        employee_num: ['', [Validators.required]],
         phone: ['', [Validators.required]],
-        input_date: ['', [Validators.required]]
+        addr: ['', [Validators.required]],
+        specialnote: ''
+        
       });
       this.editForm = fb.group({
           group: ['', [Validators.required]],
           name: ['', [Validators.required]],
           input_process: ['', Validators.required],
           work_skill: ['', Validators.required],
+          input_date: ['', [Validators.required]],
           working_time: ['', Validators.required]
       })
   }
@@ -152,6 +156,7 @@ export class PersonnelComponent implements OnInit {
                   name: this.formData.name,
                   input_process: this.formData.input_process,
                   work_skill: this.formData.work_skill,
+                  input_date: this.formData.input_date,
                   working_time: this.formData.working_time
                 });
             } else {
@@ -172,7 +177,6 @@ export class PersonnelComponent implements OnInit {
      } else {
         let formData = this.inputForm.value;
 
-        console.log(formData.input_date);
         this.Create(formData);
      }
   }
@@ -240,11 +244,11 @@ export class PersonnelComponent implements OnInit {
             this.deleteFormModal.show();
         } else if (method == 'write') {
             this.inputFormModal.show();
-            this.inputForm.controls['input_date'].setValue(this.InputDate);
             this.isEditMode = false;
         } else if (method == 'edit') {
             this.editFormModal.show();
             this.Edit(id);
+            this.editForm.controls['input_date'].setValue(this.InputDate);
             this.isEditMode = true;
         }
     // } else {

@@ -104,6 +104,19 @@
                 </tr>
                 <tr>
                     <th width="100px">
+                        <label for="input_date">투입일</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <input type="text"
+                            formControlName="input_date"
+                            id="input_date"
+                            placement="bottom left"
+                            class="form-control inline input-sm w-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th width="100px">
                         <label for="working_time">작업시간</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
@@ -157,6 +170,15 @@
                 </tr>
                 <tr>
                   <th width="100px">
+                      <label for="employee_num">사원번호</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="employee_num" id="employee_num" required class="form-control input-sm w-xs" />
+                  </td>
+                </tr>
+                <tr>
+                  <th width="100px">
                       <label for="phone">연락처</label>
                       <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                   </th>
@@ -165,16 +187,20 @@
                   </td>
                 </tr>
                 <tr>
+                  <th width="100px">
+                      <label for="addr">주소</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="addr" id="addr" required class="form-control input-sm w-xs" />
+                  </td>
+                </tr>
+                <tr>
                     <th width="100px">
-                        <label for="input_date">등록일자</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        <label for="specialnote">특이사항</label>
                     </th>
                     <td>
-                        <input type="text"
-                            formControlName="input_date"
-                            id="input_date"
-                            placement="bottom left"
-                            class="form-control inline input-sm w-sm" />
+                        <input type="text" formControlName="specialnote" id="specialnote" class="form-control input-sm w-xs" />
                     </td>
                 </tr>
                 </table>
