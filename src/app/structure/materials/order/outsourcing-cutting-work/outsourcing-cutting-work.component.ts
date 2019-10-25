@@ -25,7 +25,7 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
     formData: Item['data'];
     ppId: number;
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type42Partners'];
+    inputPartners: any[] = this.globals.configs['type4Partners'];
     inputMakers: any[] = this.globals.configs['maker'];
     totalWeight: number;
     product_price: number;
@@ -151,7 +151,7 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
             input_weight: '',
             order_qty: ['', Validators.required],
             rcv_req_date: ['', Validators.required],
-            forwarding_weight: ['', Validators.required],
+            forwarding_weight: '',
             used_rcv_items: ''
         });
 
@@ -431,16 +431,11 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
             return false;
         }
         let formData = this.inputForm.value;
-        if ( ! formData.forwarding_weight || formData.forwarding_weight == '') {
-            alert('수량을 입력하여 출고중량을 계산해주세요');
-            return false;
-        }
 
         let usedItemArr = [];
         let usedQuantity: number;
         let forwardingWeight: number;
 
-        forwardingWeight = this.utils.removeComma(formData.forwarding_weight);
         usedQuantity = 0;
         this.selectedRcvItems.forEach((e:any) => {
 
@@ -461,8 +456,9 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
                 }
 
                 usedQuantity = usedQuantity + usedQty;
-                usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
+
             }
+          usedItemArr.push(e.id + ':' + e.size);
         });
         this.usedRcvItems = usedItemArr.join(',');
         console.log(this.usedRcvItems);
