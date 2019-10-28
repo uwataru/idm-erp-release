@@ -15,7 +15,6 @@ export class Item {
         material: string;
         size: number;
         cut_length: number;
-        input_weight: number;
         forwarding_weight: number;
         order_date: string;
         steel_maker: string;

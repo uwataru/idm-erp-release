@@ -143,15 +143,10 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
             partner_name: ['', Validators.required],
             product_code: '',
             product_name: ['', Validators.required],
-            drawing_no: '',
-            steel_maker: '',
             material: '',
             size: '',
-            cut_length: '',
-            input_weight: '',
             order_qty: ['', Validators.required],
             rcv_req_date: ['', Validators.required],
-            forwarding_weight: '',
             used_rcv_items: ''
         });
 
@@ -345,8 +340,6 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
                         size: this.formData.size,
                         cut_length: this.formData.cut_length,
                         order_qty: this.utils.addComma(this.formData.order_qty),
-                        input_weight: this.formData.input_weight,
-                        forwarding_weight: this.utils.addComma(this.formData.order_qty * this.formData.input_weight)
                     });
                     this.calculForwardingWeight();
 
@@ -456,9 +449,11 @@ export class OutsourcingCuttingWorkComponent implements OnInit {
                 }
 
                 usedQuantity = usedQuantity + usedQty;
-
+              usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
             }
-          usedItemArr.push(e.id + ':' + e.size);
+          let usedQty: number;
+          usedQty = e.remaining_weight;
+          usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
         });
         this.usedRcvItems = usedItemArr.join(',');
         console.log(this.usedRcvItems);

@@ -93,7 +93,7 @@ export class ForgingWorksComponent implements OnInit {
       drawing_no: '',
       material: '',
       size: '',
-      mold_no: ['', Validators.required],
+      mold_no: '',
       forging_qty: ['', Validators.required],
       defective_qty: ['', Validators.required],
       defective_classification: '',
