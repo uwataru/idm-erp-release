@@ -238,7 +238,7 @@ export class RawMaterialsComponent implements OnInit {
         let f = event.target.id.replace('order_weight', 'order_amount');
         let q = this.utils.removeComma(event.target.value) * 1;
         let p = this.utils.removeComma(formData.price_per_unit) * 1;
-        let dp = this.utils.addComma(q * p)
+        let dp = this.utils.addComma(q * p);
         this.inputForm.controls[f].setValue(dp);
     }
 

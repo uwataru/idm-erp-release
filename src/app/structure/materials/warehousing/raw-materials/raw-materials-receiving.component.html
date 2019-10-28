@@ -196,7 +196,7 @@
 
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
 
       <form [formGroup]="inputForm">
@@ -320,21 +320,6 @@
                 <input type="text" formControlName="size" id="size" nextFocus="price_per_unit"
                        class="form-control input-sm w-sm text-right"/>
               </div>
-              <label for="storage" class="col-lg-2 control-label">
-                보관장소
-              </label>
-              <div class="col-lg-4">
-                <input formControlName="storage" id="storage"
-                       [typeahead]="storagePartners"
-                       typeaheadOptionField="Name"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectStoragePartner($event)"
-                       placeholder="거래처명"
-                       autocomplete="off"
-                       class="input-sm form-control inline v-middle" style="width:200px"/>
-              </div>
             </div>
           </div>
 
@@ -374,7 +359,25 @@
               </div>
             </div>
           </div>
-
+          <div class="form-group">
+            <div class="row">
+              <label for="storage" class="col-lg-2 control-label">
+                보관장소
+              </label>
+              <div class="col-lg-4">
+                <input formControlName="storage" id="storage"
+                       [typeahead]="storagePartners"
+                       typeaheadOptionField="Name"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="onSelectStoragePartner($event)"
+                       placeholder="거래처명"
+                       autocomplete="off"
+                       class="input-sm form-control w-sm inline v-middle"/>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="text-center">
