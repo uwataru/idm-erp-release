@@ -7,11 +7,11 @@ export class Item {
         employee_num: string;
         phone: string;
         addr: string;
-        spacialnote: string;
-        working_time: number;
-        work_skill: string;
-        input_process: string;
-        input_date: string;
+        specialnote: string;
+        // working_time: number;
+        // work_skill: string;
+        // input_process: string;
+        // input_date: string;
     };
     maxResultCount: number;
     result: string;

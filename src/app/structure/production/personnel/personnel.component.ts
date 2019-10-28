@@ -20,7 +20,7 @@ declare var $: any;
 })
 export class PersonnelComponent implements OnInit {
 
-    InputDate = this.globals.tDate;
+    // InputDate = this.globals.tDate;
     panelTitle: string;
     inputFormTitle: string;
     editFormTitle: string;
@@ -52,7 +52,6 @@ export class PersonnelComponent implements OnInit {
     delOkMsg = '삭제되었습니다.';
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-    @ViewChild('EditFormModal') editFormModal: ModalDirective;
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
 
     constructor(
@@ -86,18 +85,11 @@ export class PersonnelComponent implements OnInit {
         specialnote: ''
         
       });
-      this.editForm = fb.group({
-          group: ['', [Validators.required]],
-          name: ['', [Validators.required]],
-          input_process: ['', Validators.required],
-          work_skill: ['', Validators.required],
-          input_date: ['', [Validators.required]],
-          working_time: ['', Validators.required]
-      })
+
   }
 
   ngOnInit() {
-    this.panelTitle = '생산인력관리';
+    this.panelTitle = '생산인력현황';
     this.inputFormTitle = '생산인력 등록';
     this.editFormTitle = '생산인력 수정';
     this.deleteFormTitle = '생산인력 삭제';
@@ -105,7 +97,7 @@ export class PersonnelComponent implements OnInit {
 
     this.getAll();
 
-    this.inputForm.controls['input_date'].setValue(this.InputDate);
+    // this.inputForm.controls['input_date'].setValue(this.InputDate);
 
     $(document).ready(function(){
         let modalContent: any = $('.modal-content');
@@ -117,7 +109,22 @@ export class PersonnelComponent implements OnInit {
     });
   }
 
-  getAll(): void {
+  onSelect({ selected }) {
+    // console.log('Select Event', selected, this.selected);
+
+    this.selected.splice(0, this.selected.length);
+    this.selected.push(...selected);
+}
+
+getAll(): void {
+    // this.dataService.GetAll().subscribe(
+    //     listData =>
+    //     {
+    //         this.listData = listData;
+    //         this.rows = listData['data'];
+    //     }
+    // );
+
     this.selectedId = '';
     this.selected = [];
 
@@ -139,94 +146,78 @@ export class PersonnelComponent implements OnInit {
     );
 }
 
-// onValueChange(value: Date): void {
-//     this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');
-// }
-
-
-  Edit (id) {
+Edit (id) {
     this.dataService.GetById(id).subscribe(
         editData =>
         {
             if (editData['result'] == "success") {
                 this.editData = editData;
                 this.formData = editData['data'];
-                this.editForm.patchValue({
-                  group: this.formData.group,
-                  name: this.formData.name,
-                  input_process: this.formData.input_process,
-                  work_skill: this.formData.work_skill,
-                  input_date: this.formData.input_date,
-                  working_time: this.formData.working_time
+                this.inputForm.patchValue({
+                    group: this.formData.group,
+                    name: this.formData.name,
+                    employee_num: this.formData.employee_num,
+                    phone: this.formData.phone,
+                    addr: this.formData.addr,
+                    specialnote: this.formData.specialnote,
                 });
             } else {
                 this.messageService.add(editData['errorMessage']);
             }
         }
     );
-  }
+}
 
-  Save () {
-     //disabled="!inputForm.valid"
-    //  let formData
+Save () {
+     let formData = this.inputForm.value;
 
      if (this.isEditMode == true) {
-         let formData = this.editForm.value;
-         console.log(formData.working_time)
          this.Update(this.selectedId, formData);
      } else {
-        let formData = this.inputForm.value;
-
-        this.Create(formData);
+         this.Create(formData);
      }
-  }
+}
 
-  Create (data): void {
+Create (data): void {
     this.dataService.Create(data)
         .subscribe(
             data => {
                 if (data['result'] == "success") {
                     this.inputForm.reset();
                     this.getAll();
-                    // this.configService.load();
                     this.messageService.add(this.addOkMsg);
                 } else {
                     this.messageService.add(data['errorMessage']);
                 }
                 this.inputFormModal.hide();
-                console.log(this.formData);
             },
             error => this.errorMessage = <any>error
-            );
-  }
+        );
+}
 
-  Update (id, data): void {
-      console.log(data);
+Update (id, data): void {
     this.dataService.Update(id, data)
         .subscribe(
             data => {
-                if (data.result == "success") {
-                    // this.inputForm.reset();
+                if (data['result'] == "success") {
+                    this.inputForm.reset();
                     this.getAll();
-                    // this.configService.load();
                     this.messageService.add(this.editOkMsg);
                 } else {
                     this.messageService.add(data['errorMessage']);
                 }
-                this.editFormModal.hide();
-                // console.log(this.formData);
+                this.inputFormModal.hide();
             },
             error => this.errorMessage = <any>error
         );
-  }
+}
 
-  Delete (id): void {
+Delete (id): void {
     this.dataService.Delete(id)
         .subscribe(
             data => {
-                if (data.result == "success") {
+                if (data['result'] == "success") {
                     this.getAll();
-                    // this.configService.load();
                     this.messageService.add(this.delOkMsg);
                 } else {
                     this.messageService.add(data['errorMessage']);
@@ -235,25 +226,19 @@ export class PersonnelComponent implements OnInit {
             },
             error => this.errorMessage = <any>error
         );
-  }
+}
 
-  openModal(method, id) {
+openModal(method, id) {
     // 실행권한
     // if (this.isExecutable == true) {
         if (method == 'delete') {
             this.deleteFormModal.show();
         } else if (method == 'write') {
             this.inputFormModal.show();
-            this.isEditMode = false;
-        } else if (method == 'edit') {
-            this.editFormModal.show();
-            this.Edit(id);
-            this.editForm.controls['input_date'].setValue(this.InputDate);
-            this.isEditMode = true;
         }
     // } else {
-    //     alert(this.globals.isNotExecutable);
-    //     return false;
+        // alert(this.globals.isNotExecutable);
+        // return false;
     // }
 
     if (id) {
@@ -267,7 +252,169 @@ export class PersonnelComponent implements OnInit {
             this.selectedId = id;
         }
     }
+    if (method == 'write') {
+        if (id) {
+            this.isEditMode = true;
+            this.Edit(id);
+        } else {
+            this.inputForm.reset();
+            this.isEditMode = false;
+        }
+    }
+}
 
-  }
+
+//   getAll(): void {
+//     this.selectedId = '';
+//     this.selected = [];
+
+//     let params = {
+//         sortby: ['id'],
+//         order: ['asc'],
+//         maxResultCount: 10000
+//     }
+//     this.isLoadingProgress = true;
+//     this.dataService.GetAll(params).subscribe(
+//         listData =>
+//         {
+//             this.listData = listData;
+//             this.rows = listData['data'];
+
+
+//             this.isLoadingProgress = false;
+//         }
+//     );
+// }
+
+// // onValueChange(value: Date): void {
+// //     this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');
+// // }
+
+
+//   Edit (id) {
+//     this.dataService.GetById(id).subscribe(
+//         editData =>
+//         {
+//             if (editData['result'] == "success") {
+//                 this.editData = editData;
+//                 this.formData = editData['data'];
+//                 this.editForm.patchValue({
+//                   group: this.formData.group,
+//                   name: this.formData.name,
+//                   employee_num: this.formData.employee_num,
+//                   phone: this.formData.phone,
+//                   addr: this.formData.addr,
+//                   specialnote: this.formData.specialnote
+//                 });
+//             } else {
+//                 this.messageService.add(editData['errorMessage']);
+//             }
+//         }
+//     );
+//   }
+
+//   Save () {
+//      //disabled="!inputForm.valid"
+//     //  let formData
+
+//      if (this.isEditMode == true) {
+//          let formData = this.editForm.value;
+//          console.log(formData.working_time)
+//          this.Update(this.selectedId, formData);
+//      } else {
+//         let formData = this.inputForm.value;
+
+//         this.Create(formData);
+//      }
+//   }
+
+//   Create (data): void {
+//     this.dataService.Create(data)
+//         .subscribe(
+//             data => {
+//                 if (data['result'] == "success") {
+//                     this.inputForm.reset();
+//                     this.getAll();
+//                     // this.configService.load();
+//                     this.messageService.add(this.addOkMsg);
+//                 } else {
+//                     this.messageService.add(data['errorMessage']);
+//                 }
+//                 this.inputFormModal.hide();
+//                 console.log(this.formData);
+//             },
+//             error => this.errorMessage = <any>error
+//             );
+//   }
+
+//   Update (id, data): void {
+//       console.log(data);
+//     this.dataService.Update(id, data)
+//         .subscribe(
+//             data => {
+//                 if (data.result == "success") {
+//                     // this.inputForm.reset();
+//                     this.getAll();
+//                     // this.configService.load();
+//                     this.messageService.add(this.editOkMsg);
+//                 } else {
+//                     this.messageService.add(data['errorMessage']);
+//                 }
+//                 this.inputFormModal.hide();
+//                 // console.log(this.formData);
+//             },
+//             error => this.errorMessage = <any>error
+//         );
+//   }
+
+//   Delete (id): void {
+//     this.dataService.Delete(id)
+//         .subscribe(
+//             data => {
+//                 if (data.result == "success") {
+//                     this.getAll();
+//                     // this.configService.load();
+//                     this.messageService.add(this.delOkMsg);
+//                 } else {
+//                     this.messageService.add(data['errorMessage']);
+//                 }
+//                 this.deleteFormModal.hide();
+//             },
+//             error => this.errorMessage = <any>error
+//         );
+//   }
+
+//   openModal(method, id) {
+//     // 실행권한
+//     // if (this.isExecutable == true) {
+//         if (method == 'delete') {
+//             this.deleteFormModal.show();
+//         } else if (method == 'write') {
+//             this.inputFormModal.show();
+//             this.isEditMode = false;
+//         } else if (method == 'edit') {
+//             this.inputFormModal.show();
+//             this.Edit(id);
+//             // this.editForm.controls['input_date'].setValue(this.InputDate);
+//             this.isEditMode = true;
+//         }
+//     // } else {
+//     //     alert(this.globals.isNotExecutable);
+//     //     return false;
+//     // }
+
+//     if (id) {
+//         if (id == 'selected') {
+//             let idArr = [];
+//             this.selected.forEach((e:any) => {
+//                 idArr.push(e.id);
+//             });
+//             this.selectedId = idArr.join(',');
+//         } else {
+//             this.selectedId = id;
+//         }
+//     }
+
+//   }
 
 }
