@@ -551,7 +551,7 @@
       <div class="modal-header">
         <button type="button" class="close" (click)="CuttingOrderConfirmModal.hide()"><span
           aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">조작업지시서 발행</h4>
+        <h4 class="modal-title">조립작업지시서 발행</h4>
       </div>
 
       <div class="modal-body">
@@ -624,12 +624,12 @@
                                   [resizeable]="false"></ngx-datatable-column>
             <ngx-datatable-column prop="size" name="규격" [width]="60" [canAutoResize]="false" [resizeable]="false"
                                   cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="steel_maker" name="제강메이커" [width]="150" [canAutoResize]="false"
-                                  [resizeable]="false"></ngx-datatable-column>
+<!--            <ngx-datatable-column prop="steel_maker" name="제강메이커" [width]="150" [canAutoResize]="false"-->
+<!--                                  [resizeable]="false"></ngx-datatable-column>-->
             <ngx-datatable-column prop="rcv_date" name="입고일" [width]="100" [canAutoResize]="false" [resizeable]="false"
                                   cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="ms_no" name="M.S.NO" [width]="170" [canAutoResize]="false"
-                                  [resizeable]="false"></ngx-datatable-column>
+<!--            <ngx-datatable-column prop="ms_no" name="M.S.NO" [width]="170" [canAutoResize]="false"-->
+<!--                                  [resizeable]="false"></ngx-datatable-column>-->
             <ngx-datatable-column prop="remaining_weight" name="재고" [width]="70" [canAutoResize]="false"
                                   [resizeable]="false" cellClass="text-right">
               <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
