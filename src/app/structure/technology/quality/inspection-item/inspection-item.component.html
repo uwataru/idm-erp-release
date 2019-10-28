@@ -1,0 +1,144 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+      <div class="text-center">
+          <span class="h4 block">{{ panelTitle }}</span>
+      </div>
+      <div class="row">
+          <div class="col-sm-6 text-right" style="float: right;">
+              <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                  <i class="glyphicon glyphicon-plus"></i>입력
+              </button>
+          </div>
+      </div>
+  </div>
+  <div class="panel-body">
+      <ngx-datatable
+          [style.height.px] = gridHeight
+          class="bootstrap"
+          [rows]="rows"
+          [columnMode]="'force'"
+          [headerHeight]="30"
+          [rowHeight]="30"
+          [scrollbarV]="true"
+          [scrollbarH]="false"
+          [selected]="selected"
+          [selectAllRowsOnPage]="false">
+          <ngx-datatable-column prop="production_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="taken" name="찍힘" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="crack" name="크랙" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="printfaulty" name="인쇄불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="colorfaulty" name="색상불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="cosmeticfaulty" name="성형불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="etc" name="기타" cellClass="text-center"></ngx-datatable-column>
+      </ngx-datatable>
+  </div>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form [formGroup]="inputForm">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ inputFormTitle }}</h4>
+            </div>
+            <div class="modal-body">
+
+                <table>
+                <tr>
+                  <th width="100px">
+                      <label for="production_date">생산일자</label>
+                  </th>
+                  <td>
+                    <div class="col-lg-3">
+                      <input type="text" formControlName="production_date" id="production_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
+                    </div>
+                  </td>
+
+                </tr>
+                <tr>
+                  <th width="100px">
+                      <label for="taken">찍힘</label>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="taken" id="taken" required onReturn class="form-control input-sm w-sm" />
+                  </td>
+                </tr>
+                <tr>
+                  <th width="100px">
+                      <label for="crack">크랙</label>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="crack" id="crack" required class="form-control input-sm w-xs" />
+                  </td>
+                </tr>
+                <tr>
+                  <th width="100px">
+                      <label for="printfaulty">인쇄불량</label>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="printfaulty" id="printfaulty" required class="form-control input-sm w-xs" />
+                  </td>
+                </tr>
+                <tr>
+                  <th width="100px">
+                      <label for="colorfaulty">색상불량</label>
+                  </th>
+                  <td>
+                      <input type="text" formControlName="colorfaulty" id="colorfaulty" required class="form-control input-sm w-xs" />
+                  </td>
+                </tr>
+                <tr>
+                    <th width="100px">
+                        <label for="cosmeticfaulty">성형불량</label>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="cosmeticfaulty" id="cosmeticfaulty" class="form-control input-sm w-xs" />
+                    </td>
+                </tr>
+                <tr>
+                    <th width="100px">
+                        <label for="etc">기타</label>
+                    </th>
+                    <td>
+                        <input type="text" formControlName="etc" id="etc" class="form-control input-sm w-xs" />
+                    </td>
+                </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ deleteFormTitle }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center padder-v">
+                    {{ deleteConfirmMsg }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
