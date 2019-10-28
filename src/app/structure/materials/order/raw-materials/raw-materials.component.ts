@@ -145,7 +145,7 @@ export class RawMaterialsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '자재마스터';
+        this.panelTitle = '원자재발주';
         this.inputFormTitle = '원자재발주';
         this.lossFormTitle = 'LOSS처리';
 

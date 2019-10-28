@@ -118,12 +118,11 @@ export class OutsourcedStorageComponent implements OnInit {
       partner_name: ['', Validators.required],
       partner_code: ['', Validators.required],
       product_code: ['', Validators.required],
-      drawing_no: ['', Validators.required],
+      drawing_no: '',
       product_name: ['', Validators.required],
       poc_no: ['', Validators.required],
       price_per_unit: '',
       outs_cost: '',
-      ms_no: '',
       memo: ''
     });
   }

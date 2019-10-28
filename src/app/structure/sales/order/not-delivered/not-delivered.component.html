@@ -85,7 +85,6 @@
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column> -->
-            <ngx-datatable-column prop="ms_no" name="M.S No" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="invoice_id" name="송장" [width]="30" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <i *ngIf="value > 0" data-toggle="modal" data-target="#invoice" (click)="openModal('view',value)" class="glyphicon glyphicon-paperclip"></i>

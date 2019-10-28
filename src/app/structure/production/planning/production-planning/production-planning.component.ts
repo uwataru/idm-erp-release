@@ -32,10 +32,8 @@ export class ProductionPlanningComponent implements OnInit {
   deleteConfirmTitle: string;
   deleteConfirmMsg: string;
   orderConfirmTitle: string;
-  orderConfirmMsg: string;
   orderType: string;
   printViewTitle: string;
-  printViewMsg: string;
 
   isLoadingProgress: boolean = false;
 
@@ -473,9 +471,9 @@ export class ProductionPlanningComponent implements OnInit {
       );
   }
 
-    onSelect(id, orderNo, isCwo, material, size) {
-        this.selectedId = id;
-        this.selectedOrderNo = orderNo;
+  onSelect(id, orderNo, isCwo, material, size) {
+    this.selectedId = id;
+    this.selectedOrderNo = orderNo;
 
     this.materialForm.patchValue({
       material: material,

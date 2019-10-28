@@ -31,7 +31,7 @@ export class OutsourcingCuttingWorkService {
 
     GetCuttingWorkAllocation (pocNo:string) {
         let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/cutting-works/' + pocNo + '?t=' + currTime);
+        return this.http.get(this.globals.serverUrl + '/production/assembly-works/' + pocNo + '?t=' + currTime);
     }
 
     //======= 저장 =======//
