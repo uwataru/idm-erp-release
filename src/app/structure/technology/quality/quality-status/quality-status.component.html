@@ -1,0 +1,46 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+      <div class="text-center">
+          <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+      </div>
+      <div class="row">
+          <div class="col-sm-6 m-b-xs">
+            <form [formGroup]="searchForm">
+              <label for="sch_date" class="control-label text-sm">조회일자</label>
+              <input type="text" formControlName="sch_name" class="input-sm form-control w-xs inline v-middle" />
+              <button class="btn btn-sm btn-default">검색</button>
+            </form>
+          </div>
+          <div class="col-sm-6 text-right">
+              <!--
+              <button class="btn btn-sm btn-success btn-addon">
+              <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+              </button>
+              -->
+          </div>
+      </div>
+  </div>
+  <div class="panel-body">
+    <ngx-datatable
+        [style.height.px] = gridHeight
+        class="bootstrap"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="30"
+        [rowHeight]="30"
+        [scrollbarV]="true"
+        [scrollbarH]="false"
+        [messages]="messages">
+        <ngx-datatable-column prop="" name="생산일자" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="제품명" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="규격" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="총생산수량" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="양품수량" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="불량수량" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="불량율(%)" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="" name="불량내용" cellClass="text-center"></ngx-datatable-column>
+    </ngx-datatable>
+</div>
+
+</div>

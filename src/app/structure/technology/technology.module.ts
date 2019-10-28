@@ -21,19 +21,20 @@ import { MoldHistoryComponent } from './mold/mold-history/mold-history.component
 import { ReturnComponent } from './products/return/return.component';
 import { ShippingPackagingComponent } from './products/shipping-packaging/shipping-packaging.component';
 import { InspectionItemComponent } from './quality/inspection-item/inspection-item.component';
+import { QualityStatusComponent } from './quality/quality-status/quality-status.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'mold/mold-manage', pathMatch: 'full', canActivate: [AuthGuard] },
-    { path: 'mold', redirectTo: 'mold/mold-manage', pathMatch: 'full', canActivate: [AuthGuard] },
-    { path: 'mold/mold-manage', component: MoldManageComponent, data: { title: '품질 > 금형입고처리', id:140 }, canActivate: [AuthGuard] },
-    { path: 'mold/mold-making', component: MoldMakingComponent, data: { title: '품질 > 금형이력관리', id:141 }, canActivate: [AuthGuard] },
-    { path: 'mold/change-to-ready-state', component: ChangeToReadyStateComponent, data: { title: '품질 > 품질현황', id:142 }, canActivate: [AuthGuard] },
-    { path: 'quality/screening', component: ScreeningComponent, data: { title: '품질 > 선별작업실적', id:143 }, canActivate: [AuthGuard] },
-    { path: 'quality/defect-inspection', component: DefectInspectionComponent, data: { title: '품질 > 불량관리', id:144 }, canActivate: [AuthGuard] },
+    { path: '', redirectTo: 'quality/inspection-item', pathMatch: 'full', canActivate: [AuthGuard] },
+    // { path: 'mold', redirectTo: 'mold/mold-manage', pathMatch: 'full', canActivate: [AuthGuard] },
+    // { path: 'mold/mold-manage', component: MoldManageComponent, data: { title: '품질 > 금형입고처리', id:140 }, canActivate: [AuthGuard] },
+    // { path: 'mold/mold-making', component: MoldMakingComponent, data: { title: '품질 > 금형이력관리', id:141 }, canActivate: [AuthGuard] },
     { path: 'quality/inspection-item', component: InspectionItemComponent, data: { title: '기술/품질 > 검사항목' } },
-    { path: 'products/return', component: ReturnComponent, data: { title: '품질 > 반품관리' } },
+    { path: 'quality/screening', component: ScreeningComponent, data: { title: '품질 > 선별작업실적', id:143 }, canActivate: [AuthGuard] },
+    { path: 'quality/quality-status', component: QualityStatusComponent, data: { title: '품질 > 품질현황', id:142 }, canActivate: [AuthGuard] },
     { path: 'products/shipping-packaging', component: ShippingPackagingComponent, data: { title: '품질 > 출하/포장관리' } },
-    { path: 'mold/mold-history', component: MoldHistoryComponent, data: { title: '품질 > 금형명세서', id:145 }, canActivate: [AuthGuard] }
+    { path: 'quality/defect-inspection', component: DefectInspectionComponent, data: { title: '품질 > 불량관리', id:144 }, canActivate: [AuthGuard] },
+    { path: 'products/return', component: ReturnComponent, data: { title: '품질 > 반품관리' } },
+    // { path: 'mold/mold-history', component: MoldHistoryComponent, data: { title: '품질 > 금형명세서', id:145 }, canActivate: [AuthGuard] }
 ];
 
 // Datepicker Config
@@ -65,6 +66,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
         InspectionItemComponent,
         ReturnComponent,
         ShippingPackagingComponent,
+        QualityStatusComponent,
         ChangeToReadyStateComponent,
         ScreeningComponent,
         DefectInspectionComponent,
