@@ -37,7 +37,7 @@ import { PersonnelManagementComponent } from './personnel-management/personnel-m
 export const routes: Routes = [
   {path: '', redirectTo: 'planning/production-planning', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'planning/production-line-planning', component: ProductionLinePlanningComponent, data: {title: '생산 > 라인별가동계획', id: 115}, canActivate: [AuthGuard]},
-  {path: 'planning/production-planning', component: ProductionPlanningComponent, data: {title: '생산 > 생산계획조정', id: 116}, canActivate: [AuthGuard]},
+  {path: 'planning/production-planning', component: ProductionPlanningComponent, data: {title: '생산 > 생산계획관리', id: 116}, canActivate: [AuthGuard]},
   {path: 'planning/materials-planning', component: MaterialsPlanningComponent, data: {title: '생산 > 자재계획', id: 117}, canActivate: [AuthGuard]},
   {path: 'results/assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 118}, canActivate: [AuthGuard]},
   {path: 'results/forging-works', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 119}, canActivate: [AuthGuard]},

@@ -26,7 +26,7 @@ declare var $: any;
 export class ProductionPlanningComponent implements OnInit {
   tDate = this.globals.tDate;
   nativeWindow: any;
-  panelTitle: string = '생산계획조정';
+  panelTitle: string = '생산계획관리';
   updateConfirmTitle: string;
   updateConfirmMsg: string;
   deleteConfirmTitle: string;
