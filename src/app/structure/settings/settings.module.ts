@@ -41,7 +41,7 @@ export const routes: Routes = [
   {path: 'materials/partner-forging-product', component: PartnerForgingProductComponent, data: {title: '환경설정 > 자재 > 외주물품등록', id: 98}, canActivate: [AuthGuard]},
   {path: 'production', redirectTo: 'production/production-line', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'production/production-line', component: ProductionLineComponent, data: {title: '환경설정 > 생산 > 작업LINE등록', id: 91}, canActivate: [AuthGuard]},
-  {path: 'production/cutting-method', component: CuttingMethodComponent, data: {title: '환경설정 > 생산 > 절단방식', id: 92}, canActivate: [AuthGuard]},
+  {path: 'production/cutting-method', component: CuttingMethodComponent, data: {title: '환경설정 > 생산 > 조립공정등록', id: 92}, canActivate: [AuthGuard]},
   {path: 'accounting', redirectTo: 'accounting/accounts', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'accounting/accounts', component: AccountsComponent, data: {title: '환경설정 > 계정관리 > 계정과목등록', id: 99}, canActivate: [AuthGuard]},
   {path: 'accounting/acct-mgmt-items', component: AcctMgmtItemsComponent, data: {title: '환경설정 > 계정관리 > 관리항목등록', id: 100}, canActivate: [AuthGuard]},
