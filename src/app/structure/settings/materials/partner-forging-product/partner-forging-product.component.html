@@ -68,20 +68,21 @@
           </label>
         </ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
       <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_reg_no" name="등록번호" cellClass="text-center"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="product_reg_no" name="등록번호" cellClass="text-center"></ngx-datatable-column> -->
       <ngx-datatable-column prop="forging_partner_name" name="외주업체"></ngx-datatable-column>
+      <ngx-datatable-column prop="outsourcing_cost" name="외주단가" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
+          <span *ngIf='value == 0'>0</span>
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column prop="material_supply_type" name="소재지급" cellClass="text-center">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <span *ngIf='value == 1'>유상</span>
           <span *ngIf='value == 2'>무상</span>
           <span *ngIf='value == 3'>도급</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="outsourcing_cost" name="외주단가" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
-          <span *ngIf='value == 0'>0</span>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false"
@@ -155,6 +156,18 @@
                   </label>
                   <div class="col-lg-8">
                     <input type="text" formControlName="input_date" id="input_date" nextFocus="product_code"
+                           class="form-control input-sm w-sm"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <label for="product_name" class="col-lg-4 control-label">
+                    제품명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="product_name" id="product_name" nextFocus="production_line"
                            class="form-control input-sm w-sm"/>
                   </div>
                 </div>
@@ -245,9 +258,9 @@
 
             </div>
 
-            <div class="col-lg-6">
+            <!-- <div class="col-lg-6"> -->
 
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <div class="row">
                   <label for="partner_name" class="col-lg-4 control-label">
                     거래처
@@ -303,17 +316,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_name" class="col-lg-4 control-label">
-                    제품명
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="product_name" id="product_name" nextFocus="production_line"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
+
 
               <div class="form-group">
                 <div class="row">
@@ -328,8 +331,8 @@
                     </select>
                   </div>
                 </div>
-              </div>
-            </div>
+              </div> -->
+            <!-- </div> -->
           </div>
         </div>
 
