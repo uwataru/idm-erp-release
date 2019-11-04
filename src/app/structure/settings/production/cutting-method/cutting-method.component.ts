@@ -66,15 +66,16 @@ export class CuttingMethodComponent implements OnInit {
         }
 
         this.inputForm = fb.group({
-            cfg_code: ['', [Validators.required]],
-            cfg_name: ['', [Validators.required]]
+            code: ['', [Validators.required]],
+            assembly_method: ['', [Validators.required]],
+            working_group: ['', [Validators.required]]
         });
     }
 
     ngOnInit() {
-        this.panelTitle = '절단방식';
-        this.inputFormTitle = '절단방식 등록';
-        this.deleteFormTitle = '절단방식 삭제';
+        this.panelTitle = '조립공정';
+        this.inputFormTitle = '조립공정 등록';
+        this.deleteFormTitle = '조립공정 삭제';
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
         this.GetAll();
@@ -107,8 +108,9 @@ export class CuttingMethodComponent implements OnInit {
                     this.editData = editData;
                     this.formData = editData['data'];
                     this.inputForm.patchValue({
-                        cfg_code: this.formData.cfg_code,
-                        cfg_name: this.formData.cfg_name
+                        code: this.formData.code,
+                        assembly_method: this.formData.assembly_method,
+                        working_group: this.formData.working_group,
                     });
                 } else {
                     this.messageService.add(editData['errorMessage']);

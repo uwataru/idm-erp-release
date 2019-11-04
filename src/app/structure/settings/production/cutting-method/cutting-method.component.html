@@ -16,8 +16,9 @@
             [scrollbarH]="false"
             [selected]="selected"
             [selectAllRowsOnPage]="false">
-            <ngx-datatable-column prop="cfg_code" name="CODE" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="cfg_name" name="항목명" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="code" name="코드" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="assembly_method" name="조립방법" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="working_group" name="작업조" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="cfg_id" name="수정&middot삭제" cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
@@ -63,7 +64,7 @@
                 <table>
                 <tr>
                     <th width="100px">
-                        <label for="cfg_code">코드</label>
+                        <label for="code">코드</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
@@ -72,11 +73,32 @@
                 </tr>
                 <tr>
                     <th width="100px">
-                        <label for="cfg_name">항목명</label>
+                        <label for="assembly_method">조립방법</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="cfg_name" id="cfg_name" required class="form-control input-sm w-sm" />
+                        <input type="text" formControlName="assembly_method" id="assembly_method" required class="form-control input-sm w-sm" />
+                    </td>
+                </tr>
+                <tr>
+                    <th width="100px">
+                        <label for="working_group">작업조</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
+                    <td>
+                        <!-- <input type="text" formControlName="working_group" id="working_group" required class="form-control input-sm w-sm" /> -->
+                        <label class="i-checks">
+                            <input type="radio" formControlName="working_group" value="1조">
+                            <i></i>1조 &nbsp;
+                        </label>
+                        <label class="i-checks">
+                            <input type="radio" formControlName="working_group" value="2조">
+                            <i></i>2조 &nbsp;
+                        </label>
+                        <label class="i-checks">
+                            <input type="radio" formControlName="working_group" value="3조">
+                            <i></i>3조 &nbsp;
+                        </label>
                     </td>
                 </tr>
                 </table>

@@ -18,12 +18,11 @@
             [scrollbarH]="false"
             [selected]="selected"
             [selectAllRowsOnPage]="false">
-            <ngx-datatable-column prop="line_code" name="기호" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="equipment_name" name="설비" cellClass="text-center"></ngx-datatable-column>
-			<ngx-datatable-column prop="efficiency" name="효율" cellClass="text-center"></ngx-datatable-column>
-			<ngx-datatable-column prop="equipment_maker" name="메이커"></ngx-datatable-column>
-			<ngx-datatable-column prop="worker_cnt" name="T/O" cellClass="text-center"></ngx-datatable-column>
-			<ngx-datatable-column prop="electric_furnace_capacity" name="전기로용량" cellClass="text-right"></ngx-datatable-column>
+            <ngx-datatable-column prop="line_code" name="LINE NO" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="main_process" name="주공정" cellClass="text-center"></ngx-datatable-column>
+			<ngx-datatable-column prop="run_time" name="RUN TIME" cellClass="text-center"></ngx-datatable-column>
+			<ngx-datatable-column prop="worker_cnt" name="투입인원" cellClass="text-center"></ngx-datatable-column>
+			<ngx-datatable-column prop="is_outs" name="외주" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="id" name="수정&middot삭제" cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
@@ -69,7 +68,7 @@
                 <table>
                 <tr>
                     <th width="100px">
-                        <label for="line_code">기호</label>
+                        <label for="line_code">LINE NO.</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
@@ -78,23 +77,23 @@
                 </tr>
 				<tr>
                     <th width="100px">
-                        <label for="equipment_name">설비</label>
+                        <label for="main_process">주공정</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="equipment_name" id="equipment_name" required onReturn class="form-control input-sm w-sm" />
+                        <input type="text" formControlName="main_process" id="main_process" required onReturn class="form-control input-sm w-sm" />
                     </td>
                 </tr>
                 <tr>
                     <th width="100px">
-                        <label for="efficiency">효율</label>
+                        <label for="run_time">RUN TIME</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="efficiency" id="efficiency" required class="form-control input-sm w-xs" />
+                        <input type="text" formControlName="run_time" id="run_time" required class="form-control input-sm w-xs" />
                     </td>
                 </tr>
-				<tr>
+				<!-- <tr>
                     <th width="100px">
                         <label for="equipment_maker">메이커</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
@@ -102,10 +101,10 @@
                     <td>
                         <input type="text" formControlName="equipment_maker" id="equipment_maker" required class="form-control input-sm w-lg" />
                     </td>
-                </tr>
+                </tr> -->
 				<tr>
                     <th width="100px">
-                        <label for="worker_cnt">T/O</label>
+                        <label for="worker_cnt">투입인원</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
@@ -114,10 +113,16 @@
                 </tr>
 				<tr>
                     <th width="100px">
-                        <label for="electric_furnace_capacity">전기로용량</label>
+                        <label for="is_outs">외주</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="electric_furnace_capacity" id="electric_furnace_capacity" class="form-control input-sm w-sm" />
+                        <!-- <input type="text" formControlName="is_out" id="is_out" class="form-control input-sm w-sm" /> -->
+                        <select formControlName="is_outs" id="is_outs" class="input-sm form-control w-sm inline v-middle">
+                            <option value=""></option>
+                            <option value="Y">사용</option>
+                            <option value="N">사용안함</option>
+                        </select>
                     </td>
                 </tr>
                 </table>

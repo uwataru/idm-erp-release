@@ -3,11 +3,10 @@ export class Item {
     data: {
         id: number;
         line_code: string;
-        equipment_name: string;
-        efficiency: number;
-        equipment_maker: string;
+        main_process: string;
+        run_time: number;
         worker_cnt: number;
-        electric_furnace_capacity: string;
+        is_outs: string;
     };
     maxResultCount: number;
     result: string;
