@@ -59,12 +59,12 @@ export class InspectionItemComponent implements OnInit {
     private messageService: MessageService
   ) { 
     this.inputForm = fb.group({
-      production_date: ['', [Validators.required]],
+      input_date: ['', [Validators.required]],
       taken: '',
       crack: '',
-      printfaulty: '',
-      colorfaulty: '',
-      cosmeticfaulty: '',
+      print_faulty: '',
+      color_faulty: '',
+      cosmetic_faulty: '',
       etc: ''
       
     });
@@ -135,12 +135,12 @@ Edit (id) {
                 this.editData = editData;
                 this.formData = editData['data'];
                 this.inputForm.patchValue({
-                    production_date: this.formData.production_date,
+                    input_date: this.formData.input_date,
                     taken: this.formData.taken,
                     crack: this.formData.crack,
-                    printfaulty: this.formData.printfaulty,
-                    colorfaulty: this.formData.colorfaulty,
-                    cosmeticfaulty: this.formData.cosmeticfaulty,
+                    print_faulty: this.formData.print_faulty,
+                    color_faulty: this.formData.color_faulty,
+                    cosmetic_faulty: this.formData.cosmetic_faulty,
                     etc: this.formData.etc,
                 });
             } else {

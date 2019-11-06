@@ -9,11 +9,13 @@ import { DatePipe } from '@angular/common';
 import { MessageService } from '../../../../message.service';
 
 import { Item } from './quality-status.item';
+import { QualityStatusService } from './quality-status.service';
 
 @Component({
   selector: 'app-quality-status',
   templateUrl: './quality-status.component.html',
-  styleUrls: ['./quality-status.component.scss']
+  styleUrls: ['./quality-status.component.scss'],
+  providers: [QualityStatusService]
 })
 export class QualityStatusComponent implements OnInit {
   
@@ -45,6 +47,7 @@ export class QualityStatusComponent implements OnInit {
     @Inject(FormBuilder) fb: FormBuilder,
     private datePipe: DatePipe,
     private globals: AppGlobals,
+    private dataService: QualityStatusService,
     private utils: UtilsService,
     private messageService: MessageService
   ) { 
@@ -57,6 +60,37 @@ export class QualityStatusComponent implements OnInit {
     this.panelTitle = "품질현황";
 
     this.searchForm.controls['sch_date'].setValue(this.tDate);
+
+    this.getAll();
   }
+
+  getAll(): void {
+    // this.dataService.GetAll().subscribe(
+    //     listData =>
+    //     {
+    //         this.listData = listData;
+    //         this.rows = listData['data'];
+    //     }
+    // );
+    let formData = this.searchForm.value;
+
+    let params = {
+        sch_date: this.datePipe.transform(formData.sch_date, 'yyyy-MM-dd'),
+        sortby: ['id'],
+        order: ['asc'],
+        maxResultCount: 10000
+    }
+    this.isLoadingProgress = true;
+    this.dataService.GetAll(params).subscribe(
+        listData =>
+        {
+            this.listData = listData;
+            this.rows = listData['data'];
+
+
+            this.isLoadingProgress = false;
+        }
+    );
+}
 
 }

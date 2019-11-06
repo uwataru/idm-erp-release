@@ -28,7 +28,7 @@ export const routes: Routes = [
     // { path: 'mold', redirectTo: 'mold/mold-manage', pathMatch: 'full', canActivate: [AuthGuard] },
     // { path: 'mold/mold-manage', component: MoldManageComponent, data: { title: '품질 > 금형입고처리', id:140 }, canActivate: [AuthGuard] },
     // { path: 'mold/mold-making', component: MoldMakingComponent, data: { title: '품질 > 금형이력관리', id:141 }, canActivate: [AuthGuard] },
-    { path: 'quality/inspection-item', component: InspectionItemComponent, data: { title: '기술/품질 > 검사항목' } },
+    { path: 'quality/inspection-item', component: InspectionItemComponent, data: { title: '품질 > 검사항목' } },
     { path: 'quality/screening', component: ScreeningComponent, data: { title: '품질 > 선별작업실적', id:143 }, canActivate: [AuthGuard] },
     { path: 'quality/quality-status', component: QualityStatusComponent, data: { title: '품질 > 품질현황', id:142 }, canActivate: [AuthGuard] },
     { path: 'products/shipping-packaging', component: ShippingPackagingComponent, data: { title: '품질 > 출하/포장관리' } },

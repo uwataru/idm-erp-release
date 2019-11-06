@@ -2,12 +2,12 @@ export class Item {
     totalCount: number;
     data: {
         id: number;
-        production_date: string;
+        input_date: string;
         taken: number;
         crack: number;
-        printfaulty: number;
-        colorfaulty: number;
-        cosmeticfaulty: number;
+        print_faulty: number;
+        color_faulty: number;
+        cosmetic_faulty: number;
         etc: number;
     };
     maxResultCount: number;

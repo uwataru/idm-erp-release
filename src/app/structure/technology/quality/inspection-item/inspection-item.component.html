@@ -25,12 +25,12 @@
           [selected]="selected"
           [selectAllRowsOnPage]="false"
           [messages]="messages">
-          <ngx-datatable-column prop="production_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="input_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
           <ngx-datatable-column prop="taken" name="찍힘" cellClass="text-center"></ngx-datatable-column>
           <ngx-datatable-column prop="crack" name="크랙" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="printfaulty" name="인쇄불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="colorfaulty" name="색상불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="cosmeticfaulty" name="성형불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="print_faulty" name="인쇄불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="color_faulty" name="색상불량" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="cosmetic_faulty" name="성형불량" cellClass="text-center"></ngx-datatable-column>
           <ngx-datatable-column prop="etc" name="기타" cellClass="text-center"></ngx-datatable-column>
       </ngx-datatable>
   </div>
@@ -50,11 +50,11 @@
                 <table>
                 <tr>
                   <th width="100px">
-                      <label for="production_date">생산일자</label>
+                      <label for="input_date">생산일자</label>
                   </th>
                   <td>
                     <div class="col-lg-3">
-                      <input type="text" formControlName="production_date" id="production_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
+                      <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
                     </div>
                   </td>
 
@@ -77,26 +77,26 @@
                 </tr>
                 <tr>
                   <th width="100px">
-                      <label for="printfaulty">인쇄불량</label>
+                      <label for="print_faulty">인쇄불량</label>
                   </th>
                   <td>
-                      <input type="text" formControlName="printfaulty" id="printfaulty" required class="form-control input-sm w-xs" />
+                      <input type="text" formControlName="print_faulty" id="print_faulty" required class="form-control input-sm w-xs" />
                   </td>
                 </tr>
                 <tr>
                   <th width="100px">
-                      <label for="colorfaulty">색상불량</label>
+                      <label for="color_faulty">색상불량</label>
                   </th>
                   <td>
-                      <input type="text" formControlName="colorfaulty" id="colorfaulty" required class="form-control input-sm w-xs" />
+                      <input type="text" formControlName="color_faulty" id="color_faulty" required class="form-control input-sm w-xs" />
                   </td>
                 </tr>
                 <tr>
                     <th width="100px">
-                        <label for="cosmeticfaulty">성형불량</label>
+                        <label for="cosmetic_faulty">성형불량</label>
                     </th>
                     <td>
-                        <input type="text" formControlName="cosmeticfaulty" id="cosmeticfaulty" class="form-control input-sm w-xs" />
+                        <input type="text" formControlName="cosmetic_faulty" id="cosmetic_faulty" class="form-control input-sm w-xs" />
                     </td>
                 </tr>
                 <tr>
