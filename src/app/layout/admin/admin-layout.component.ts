@@ -236,6 +236,6 @@ export class AdminLayoutComponent implements OnInit {
 
     closeWindow() {
         this.dataService.logout();
-        this.electronService.remote.getCurrentWindow().close();
+        this.electronService.exitApp();
     }
 }

@@ -138,6 +138,15 @@ export class ElectronService {
          // alert(navigator.userAgent);
     }
 
+    public exitApp(): void {
+        if (this.isMobile == false) {
+            this.remote.getCurrentWindow().close();
+        } else {
+            // @ts-ignore
+            WebviewChannel.postMessage('exitApp');
+        }
+    }
+
 }
 
 

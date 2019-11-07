@@ -14,7 +14,7 @@ export class AuthLayoutComponent implements OnInit {
     ngOnInit() {}
 
     closeWindow() {
-        this.electronService.remote.getCurrentWindow().close();
+        this.electronService.exitApp();
     }
 
 }

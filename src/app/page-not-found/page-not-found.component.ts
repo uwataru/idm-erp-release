@@ -16,6 +16,6 @@ export class PageNotFoundComponent implements OnInit {
     location.reload();
   }
   closeWindow() {
-    this.electronService.remote.getCurrentWindow().close();
+    this.electronService.exitApp();
 }
 }
