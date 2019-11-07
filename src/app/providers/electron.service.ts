@@ -50,6 +50,7 @@ export class ElectronService {
                 console.log("from ipcMain ==>>", result);
             });
         }
+        this.mobileCheck();
     }
 
     isElectron = () => {
@@ -61,8 +62,6 @@ export class ElectronService {
             alert(this.globals.isNotPrintable);
         }
         else {
-            this.pcCheck();
-
             if(this.isMobile==true){
                 alert("pc에서 지원되는 기능입니다.")
             }else{
@@ -132,14 +131,11 @@ export class ElectronService {
         }
     }
 
-    pcCheck(): void {
-        if(navigator.userAgent.indexOf('Mobi') > -1){
-            // alert('mobile 접속');
-            this.isMobile = true;
-         }else{
-             this.isMobile = false;
-         }
-         alert(navigator.userAgent);
+    mobileCheck(): void {
+        let UserAgent = navigator.userAgent;
+        this.isMobile = UserAgent.match(/iPhone|iPod|iPad|Android|lgtelecom|nokia|SonyEricsson/i) != null
+            || UserAgent.match(/LG|SAMSUNG|Samsung/) != null;
+         // alert(navigator.userAgent);
     }
 
 }
