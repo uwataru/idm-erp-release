@@ -22,6 +22,7 @@ export enum PRINT_OPT{
 export class ElectronService {
     public readonly PRINT_MODE = PRINT_MODE;
     public readonly PRINT_OPT = PRINT_OPT;
+    public isMobile: boolean = false;
 
     ipcRenderer: typeof ipcRenderer;
     webFrame: typeof webFrame;
@@ -60,38 +61,44 @@ export class ElectronService {
             alert(this.globals.isNotPrintable);
         }
         else {
-            let etc = {
-                setPageSize: undefined,
-                setPageMargin: undefined,
-                isSilent: true,
-                backupData: undefined,
-            };
-    
-            if (opt == PRINT_OPT.LANDSCAPE) {
-                etc.setPageSize = 'A4 landscape';
-                etc.setPageMargin = '0.3cm';
-                etc.isSilent = false;
-                alert("인쇄 방향(레이아웃)을 '가로'로 변경 후 인쇄 해주세요.");
-            }
-    
-            if (printMode == PRINT_MODE.MAIN) {   //메인윈도우에서 인쇄(엘리멘트 복사 없음!)
-                this.startPrint(printMode, '', '', etc);
-            } else {   //워커윈도우에서 인쇄(엘리멘트 복사)
-                let headContent = document.getElementsByTagName('head')[0].innerHTML;
-                if (AppConfig.production) {
-                    headContent = headContent.replace('<link rel="stylesheet" href="', '<link rel="stylesheet" href="../../dist/');
+            this.pcCheck();
+
+            if(this.isMobile==true){
+                alert("pc에서 지원되는 기능입니다.")
+            }else{
+                let etc = {
+                    setPageSize: undefined,
+                    setPageMargin: undefined,
+                    isSilent: true,
+                    backupData: undefined,
+                };
+        
+                if (opt == PRINT_OPT.LANDSCAPE) {
+                    etc.setPageSize = 'A4 landscape';
+                    etc.setPageMargin = '0.3cm';
+                    etc.isSilent = false;
+                    alert("인쇄 방향(레이아웃)을 '가로'로 변경 후 인쇄 해주세요.");
                 }
-                let cloneEl = document.getElementById(target).innerHTML;
-    
-                //target의 input, select 태그 value 저장
-                let backupValues = {};
-                let selectEls = document.querySelectorAll('#' + target + ' input, #' + target + ' select') as any as Array<HTMLElement>;
-                selectEls.forEach(function (el) {
-                    backupValues[el.id] = (el as HTMLInputElement).value;
-                });
-                etc.backupData = backupValues;
-    
-                this.startPrint(printMode, headContent, cloneEl, etc);
+        
+                if (printMode == PRINT_MODE.MAIN) {   //메인윈도우에서 인쇄(엘리멘트 복사 없음!)
+                    this.startPrint(printMode, '', '', etc);
+                } else {   //워커윈도우에서 인쇄(엘리멘트 복사)
+                    let headContent = document.getElementsByTagName('head')[0].innerHTML;
+                    if (AppConfig.production) {
+                        headContent = headContent.replace('<link rel="stylesheet" href="', '<link rel="stylesheet" href="../../dist/');
+                    }
+                    let cloneEl = document.getElementById(target).innerHTML;
+        
+                    //target의 input, select 태그 value 저장
+                    let backupValues = {};
+                    let selectEls = document.querySelectorAll('#' + target + ' input, #' + target + ' select') as any as Array<HTMLElement>;
+                    selectEls.forEach(function (el) {
+                        backupValues[el.id] = (el as HTMLInputElement).value;
+                    });
+                    etc.backupData = backupValues;
+        
+                    this.startPrint(printMode, headContent, cloneEl, etc);
+                }
             }
         }
     }
@@ -125,4 +132,17 @@ export class ElectronService {
         }
     }
 
+    pcCheck(): void {
+        if(navigator.userAgent.indexOf('Mobi') > -1){
+            // alert('mobile 접속');
+            this.isMobile = true;
+         }else{
+             this.isMobile = false;
+         }
+         alert(navigator.userAgent);
+    }
+
 }
+
+
+
