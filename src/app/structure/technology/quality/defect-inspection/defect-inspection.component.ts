@@ -99,7 +99,6 @@ export class DefectInspectionComponent implements OnInit {
       order_no: ['', Validators.required],
       product_code: ['', Validators.required],
       product_name: ['', Validators.required],
-      drawing_no: '',
       poc_no: '',
       production_date: '',
       production_qty: '',

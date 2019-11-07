@@ -94,9 +94,6 @@
           <td width="423.5px" class="text-right">&nbsp;</td>
           <td width="423.5px" class="text-right">&nbsp;</td>
           <td width="70px" class="text-right">{{ sums_prev_assembly_qty | numberFormat }}</td>
-          <!--                <td width="80px" class="text-right">{{ sums_cutting_qty | numberFormat }}</td>-->
-          <!--                <td width="80px" class="text-right">{{ sums_forwarding_weight | numberFormat }}</td>-->
-          <td width="80px" class="text-right">{{ sums_forging_qty | numberFormat }}</td>
           <td width="60px" class="text-right">{{ sums_defective_qty }}</td>
           <td width="60px" class="text-right">{{ sums_loss_qty }}</td>
           <td width="60px" class="text-right">{{ sums_lucre_qty }}</td>
@@ -145,8 +142,6 @@
             <td width="120px"><span>{{ detail_product_code }}</span></td>
             <th>제품명</th>
             <td width="120px"><span>{{ detail_product_name }}</span></td>
-            <!--                    <th>도번</th>-->
-            <!--                    <td width="120px"><span>{{ detail_drawing_no }}</span></td>-->
             <th>거래처</th>
             <td><span>{{ detail_partner_name }}</span></td>
             <th>조회기간</th>
@@ -175,12 +170,6 @@
           <!--                            <span>{{ value | numberFormat }}</span>-->
           <!--                        </ng-template>-->
           <!--                    </ngx-datatable-column>-->
-          <ngx-datatable-column prop="forging_qty" name="생산수량" [width]="100" [canAutoResize]="false"
-                                [resizeable]="false" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-              <span>{{ value | numberFormat }}</span>
-            </ng-template>
-          </ngx-datatable-column>
           <ngx-datatable-column prop="defective_qty" name="생산불량" [width]="100" [canAutoResize]="false"
                                 [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
           <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false"
@@ -204,7 +193,7 @@
               <!--                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>-->
               <!--                        <td width="100px" class="text-right"></td>-->
               <!--                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>-->
-              <td width="100px" class="text-right"><span>{{ detailsums_forging_qty | numberFormat }}</span></td>
+
               <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>
               <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>
               <td width="80px" class="text-right"><span>{{ detailsums_lucre_qty }}</span></td>

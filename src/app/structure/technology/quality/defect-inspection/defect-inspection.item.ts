@@ -5,8 +5,6 @@ export class Item {
     order_no: string;
     product_code: number;
     product_name: string;
-    // drawing_no: string;
-    // poc_no: string;
     production_date: string;
     production_qty: number;
     normal_qty: number;

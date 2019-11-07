@@ -39,7 +39,6 @@ export class ForgingWorkComponent implements OnInit {
     sums_prev_production_qty: number;
     sums_production_qty: number;
     sums_forwarding_weight: number;
-    sums_forging_qty: number;
     sums_defective_qty: number;
     sums_loss_qty: number;
     sums_lucre_qty: number;
@@ -49,7 +48,6 @@ export class ForgingWorkComponent implements OnInit {
 
     detail_product_code: string;
     detail_product_name: string;
-    detail_drawing_no: string;
     detail_partner_name: string;
     detail_sch_sdate: string;
     detail_sch_edate: string;
@@ -70,7 +68,7 @@ export class ForgingWorkComponent implements OnInit {
     messages = this.globals.datatableMessages;
 
     errorMessage: string;
-    
+
     constructor(
         public elSrv: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
@@ -125,7 +123,6 @@ export class ForgingWorkComponent implements OnInit {
                 this.sums_prev_production_qty = data['sumData']['prev_production_qty'];
                 this.sums_production_qty = data['sumData']['production_qty'];
                 this.sums_forwarding_weight = data['sumData']['forwarding_weight'];
-                this.sums_forging_qty = data['sumData']['forging_qty'];
                 this.sums_defective_qty = data['sumData']['defective_qty'];
                 this.sums_loss_qty = data['sumData']['loss_qty'];
                 this.sums_lucre_qty = data['sumData']['lucre_qty'];
@@ -217,7 +214,6 @@ export class ForgingWorkComponent implements OnInit {
             {
                 this.detail_product_code = data['viewData']['product_code'];
                 this.detail_product_name = data['viewData']['product_name'];
-                this.detail_drawing_no = data['viewData']['drawing_no'];
                 this.detail_partner_name = data['viewData']['partner_name'];
                 this.detail_sch_sdate = data['viewData']['sch_sdate'];
                 this.detail_sch_edate = data['viewData']['sch_edate'];

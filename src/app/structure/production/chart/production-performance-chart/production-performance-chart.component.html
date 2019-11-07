@@ -26,11 +26,11 @@
         목표:
         <span *ngIf="targetProductionQty > 0">{{ targetProductionQty | numberFormat }}개</span>
         <span *ngIf="targetProductionAmount > 0">{{ targetProductionAmount | numberFormat }}원</span>
-        <button *ngIf="targetProductionQty > 0 || targetProductionWeight > 0 || targetProductionAmount > 0"
+        <button *ngIf="targetProductionQty > 0 || targetProductionAmount > 0"
                 data-toggle="modal" data-target="#input-form" (click)="openModal('edit')"
                 class="btn btn-sm btn-default">수정
         </button>
-        <button *ngIf="targetProductionQty == 0 && targetProductionWeight == 0 && targetProductionAmount == 0"
+        <button *ngIf="targetProductionQty == 0 && targetProductionAmount == 0"
                 data-toggle="modal" data-target="#input-form" (click)="openModal('write')"
                 class="btn btn-sm btn-default">등록
         </button>

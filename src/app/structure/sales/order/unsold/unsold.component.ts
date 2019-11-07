@@ -48,7 +48,6 @@ export class UnsoldComponent implements OnInit {
 
     detail_product_code: string;
     detail_product_name: string;
-    detail_drawing_no: string;
     detail_partner_name: string;
     detail_sch_sdate: string;
     detail_sch_edate: string;
@@ -187,7 +186,6 @@ export class UnsoldComponent implements OnInit {
             {
                 this.detail_product_code = listData['data'][0]['product_code'];
                 this.detail_product_name = listData['data'][0]['product_name'];
-                this.detail_drawing_no = listData['data'][0]['drawing_no'];
                 this.detail_partner_name = listData['data'][0]['partner_name'];
                 this.detail_sch_sdate = this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd');
                 this.detail_sch_edate = this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd');

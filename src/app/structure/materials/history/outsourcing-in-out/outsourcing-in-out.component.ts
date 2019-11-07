@@ -41,7 +41,6 @@ export class OutsourcingInOutComponent implements OnInit {
   detail_sch_sdate: string;
   detail_sch_edate: string;
   detail_product_code: string;
-  detail_drawing_no: string;
   detail_product_name: string;
   errorMessage: string;
 
