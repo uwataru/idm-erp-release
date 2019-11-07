@@ -40,7 +40,6 @@ export class AssemblyWorkComponent implements OnInit {
     sums_prev_assembly_qty: number;
     sums_assembly_qty: number;
     sums_forwarding_weight: number;
-    sums_forging_qty: number;
     sums_defective_qty: number;
     sums_loss_qty: number;
     sums_lucre_qty: number;
@@ -50,7 +49,6 @@ export class AssemblyWorkComponent implements OnInit {
 
     detail_product_code: string;
     detail_product_name: string;
-    detail_drawing_no: string;
     detail_partner_name: string;
     detail_sch_sdate: string;
     detail_sch_edate: string;
@@ -59,7 +57,6 @@ export class AssemblyWorkComponent implements OnInit {
 
     detailsums_assembly_qty: number;
     detailsums_forwarding_weight: number;
-    detailsums_forging_qty: number;
     detailsums_defective_qty: number;
     detailsums_loss_qty: number;
     detailsums_lucre_qty: number;
@@ -123,7 +120,6 @@ export class AssemblyWorkComponent implements OnInit {
                 this.sums_prev_assembly_qty = data['sumData']['prev_assembly_qty'];
                 this.sums_assembly_qty = data['sumData']['assembly_qty'];
                 this.sums_forwarding_weight = data['sumData']['forwarding_weight'];
-                this.sums_forging_qty = data['sumData']['forging_qty'];
                 this.sums_defective_qty = data['sumData']['defective_qty'];
                 this.sums_loss_qty = data['sumData']['loss_qty'];
                 this.sums_lucre_qty = data['sumData']['lucre_qty'];
@@ -215,7 +211,6 @@ export class AssemblyWorkComponent implements OnInit {
             {
                 this.detail_product_code = data['viewData']['product_code'];
                 this.detail_product_name = data['viewData']['product_name'];
-                this.detail_drawing_no = data['viewData']['drawing_no'];
                 this.detail_partner_name = data['viewData']['partner_name'];
                 this.detail_sch_sdate = data['viewData']['sch_sdate'];
                 this.detail_sch_edate = data['viewData']['sch_edate'];
@@ -224,7 +219,6 @@ export class AssemblyWorkComponent implements OnInit {
 
                 this.detailsums_assembly_qty = data['sumData']['assembly_qty'];
                 this.detailsums_forwarding_weight = data['sumData']['forwarding_weight'];
-                this.detailsums_forging_qty = data['sumData']['forging_qty'];
                 this.detailsums_defective_qty = data['sumData']['defective_qty'];
                 this.detailsums_loss_qty = data['sumData']['loss_qty'];
                 this.detailsums_lucre_qty = data['sumData']['lucre_qty'];

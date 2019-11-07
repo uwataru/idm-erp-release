@@ -39,23 +39,23 @@
                     </label>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="poc_no" name="POC No" [width]="140" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="line_code" name="작업LINE" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="product_code" name="제품번호" [width]="140" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="product_name" name="제품명" [width]="200" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="screening" name="선별여부" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+            <ngx-datatable-column prop="poc_no" name="POC No"  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="line_code" name="작업LINE"  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_code" name="제품번호"  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명" ></ngx-datatable-column>
+            <ngx-datatable-column prop="screening" name="선별여부"  cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span *ngIf="value == 'Y'">O</span>
                     <span *ngIf="value == 'N'"></span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="input_date" name="생산일자" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="production_qty" name="생산수량" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="input_date" name="생산일자"  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_qty" name="생산수량"  cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="screening_qty" name="선별대기수량" [width]="130" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="screening_qty" name="선별대기수량"  cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
@@ -88,7 +88,7 @@
 		<div class="modal-content">
 
             <form [formGroup]="inputForm">
-            <input type="hidden" formControlName="forging_id" id="forging_id" />
+            <input type="hidden" formControlName="assembly_id" id="assembly_id" />
 
 			<div class="modal-header">
 				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>

@@ -22,7 +22,7 @@ import {SpecialProcessComponent} from './production/special-process/special-proc
 import {WorkingGroupLeaderComponent} from './production/working-group-leader/working-group-leader.component';
 import {WorkingPatternComponent} from './production/working-pattern/working-pattern.component';
 import {MaterialsComponent} from './materials/materials/materials.component';
-import {PartnerForgingProductComponent} from './materials/partner-forging-product/partner-forging-product.component';
+import {PartnerAssemblyProductComponent} from './materials/partner-assembly-product/partner-assembly-product.component';
 import {AccountsComponent} from './accounting/accounts/accounts.component';
 import {AcctMgmtItemsComponent} from './accounting/acct-mgmt-items/acct-mgmt-items.component';
 import {AcctMgmtItemValuesComponent} from './accounting/acct-mgmt-item-values/acct-mgmt-item-values.component';
@@ -38,7 +38,7 @@ export const routes: Routes = [
   {path: 'materials', redirectTo: 'materials/product-management', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'materials/product-management', component: ProductsComponent, data: {title: '환경설정 > 자재 > 제품등록', id: 89}, canActivate: [AuthGuard]},
   {path: 'materials/materials-management', component: MaterialsComponent, data: {title: '환경설정 > 자재 > 원자재물품등록', id: 97}, canActivate: [AuthGuard]},
-  {path: 'materials/partner-forging-product', component: PartnerForgingProductComponent, data: {title: '환경설정 > 자재 > 외주물품등록', id: 98}, canActivate: [AuthGuard]},
+  {path: 'materials/partner-assembly-product', component: PartnerAssemblyProductComponent, data: {title: '환경설정 > 자재 > 외주물품등록', id: 98}, canActivate: [AuthGuard]},
   {path: 'production', redirectTo: 'production/production-line', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'production/production-line', component: ProductionLineComponent, data: {title: '환경설정 > 생산 > 작업LINE등록', id: 91}, canActivate: [AuthGuard]},
   {path: 'production/cutting-method', component: CuttingMethodComponent, data: {title: '환경설정 > 생산 > 조립공정등록', id: 92}, canActivate: [AuthGuard]},
@@ -86,7 +86,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     WorkingGroupLeaderComponent,
     WorkingPatternComponent,
     MaterialsComponent,
-    PartnerForgingProductComponent,
+    PartnerAssemblyProductComponent,
     AccountsComponent,
     AcctMgmtItemsComponent,
     AcctMgmtItemValuesComponent,

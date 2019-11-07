@@ -1,10 +1,10 @@
 <div class="panel panel-default">
 
-    <div class="panel-heading">
-        <div class="text-center">
-            <span class="h4 block">{{ panelTitle }}</span>
-        </div>
+  <div class="panel-heading">
+    <div class="text-center">
+      <span class="h4 block">{{ panelTitle }}</span>
     </div>
+  </div>
 
     <div class="panel-body">
         <ngx-datatable
@@ -58,12 +58,13 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 
-            <form [formGroup]="inputForm">
-			<div class="modal-header">
-				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ inputFormTitle }}</h4>
-			</div>
-			<div class="modal-body">
+      <form [formGroup]="inputForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ inputFormTitle }}</h4>
+        </div>
+        <div class="modal-body">
 
                 <table>
                 <tr>

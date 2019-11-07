@@ -14,8 +14,8 @@ export class OutsourcingInOutService {
     private url = this.globals.serverUrl +  '/materials/history/outsourcing-in-out';
 
     /** GET data from the server */
-    GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url , {params: params});
+    GetAll (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url);
     }
     GetExcelFile (): Observable<Blob> {
         return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(

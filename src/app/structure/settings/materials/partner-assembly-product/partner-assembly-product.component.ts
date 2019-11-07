@@ -2,24 +2,25 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {ElectronService} from '../../../../providers/electron.service';
-import {saveAs as importedSaveAs} from 'file-saver';
-import {ProductsService} from './products.service';
+import {PartnerAssemblyProductService} from './partner-assembly-product.service';
 import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
-import {Item} from './products.item';
+import {Item} from './partner-assembly-product.item';
+import {saveAs as importedSaveAs} from 'file-saver';
+import {ElectronService} from '../../../../providers/electron.service';
 
 declare var $: any;
 
 @Component({
   selector: 'app-page',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
-  providers: [ProductsService]
+  templateUrl: './partner-assembly-product.component.html',
+  styleUrls: ['./partner-assembly-product.component.css'],
+  providers: [PartnerAssemblyProductService]
 })
-export class ProductsComponent implements OnInit {
+export class PartnerAssemblyProductComponent implements OnInit {
+  tDate = this.globals.tDate;
   panelTitle: string;
   inputFormTitle: string;
   statusFormTitle: string;
@@ -28,41 +29,40 @@ export class ProductsComponent implements OnInit {
   statusFormValue: number;
   uploadFormTitle: string;
   isLoadingProgress: boolean = false;
-
   deleteConfirmMsg: string;
   hideConfirmMsg: string;
   isEditMode: boolean = false;
+
+  searchForm: FormGroup;
+
   selectedId: string;
   listData: Item[];
-  editData: Item;
-
+  formData: Item['data'];
   sch_partner_name: string;
   //listPartners = [];
-  listPartners: any[] = this.globals.configs['type5Partners'];
+  listPartners: any[] = this.globals.configs['type41Partners'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
   sch_product_name: string;
   sch_st: number;
   st: number;
-  formData: Item['data'];
   rows = [];
   temp = [];
   delId = [];
   selected = [];
-  searchForm: FormGroup;
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  prodTypeStr: string;
-
-  tDate = this.globals.tDate;
+  inputAssemblyPartners: any[] = this.globals.configs['type4Partners'];
   inputPartners: any[] = this.globals.configs['type5Partners'];
   productionLines: any[] = this.globals.configs['productionLine'];
+  material_cost: number;
+  assembly_cost: number;
+  outsourcing_cost: number;
   product_price: number;
-  ann_qt: number;
-  lot_qt: number;
+  editData: Item;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -70,7 +70,7 @@ export class ProductsComponent implements OnInit {
   errorMessage: string;
   addOkMsg = '등록이 완료되었습니다.';
   editOkMsg = '수정이 완료되었습니다.';
-  delOkMsg = '단종처리되었습니다.';
+  delOkMsg = '삭제되었습니다.';
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
@@ -78,9 +78,9 @@ export class ProductsComponent implements OnInit {
   @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
+    public electronService: ElectronService,
     @Inject(FormBuilder) fb: FormBuilder,
-    private electronService: ElectronService,
-    private dataService: ProductsService,
+    private dataService: PartnerAssemblyProductService,
     private globals: AppGlobals,
     private route: ActivatedRoute,
     private utils: UtilsService,
@@ -105,31 +105,29 @@ export class ProductsComponent implements OnInit {
     });
     this.inputForm = fb.group({
       input_date: ['', Validators.required],
+      product_code: ['', Validators.required],
+      product_reg_no: ['', Validators.required],
+      assembly_partner_code: '',
+      assembly_partner_name: '',
+      material_supply_type: ['', Validators.required],
+      material_cost: '',
+      assembly_cost: '',
+      outsourcing_cost: ['', Validators.required],
       partner_code: '',
-      partner_name: '',
-      product_code: ['', [Validators.required, Validators.minLength(4)]],
-      product_type: '',
       product_name: '',
-      product_price: ['', Validators.required],
+      product_price: '',
       is_tmp_price: '',
       material: '',
-      size: ['', Validators.required],
-      production_line: '',
-      preparation_time: '',
-      assembly_method: '',
-      special_process: '',
-      sq: '',
-      inspection: '',
-      selection: '',
-      ann_qt: '',
-      lot_qt: ''
+      size: '',
     });
   }
 
   ngOnInit() {
-    this.panelTitle = '제품 등록 현황';
-    this.inputFormTitle = '제품 등록';
-    this.uploadFormTitle = '제품 엑셀업로드';
+    this.panelTitle = '외주물품 등록 현황';
+    this.inputFormTitle = '외주물품 등록';
+    this.uploadFormTitle = '외주단조품 엑셀업로드';
+    this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+    this.hideConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
 
     this.changeSubMenu(1);
 
@@ -159,23 +157,17 @@ export class ProductsComponent implements OnInit {
     this.selected = [];
 
     let formData = this.searchForm.value;
-
     let params = {
-      //partner_name: formData.sch_partner_name,
+      partner_name: formData.sch_partner_name,
       product_name: formData.sch_product_name,
       st: this.sch_st,
-      sortby: ['sort_no'],
+      sortby: ['product_reg_no', 'product_code'],
       order: ['asc'],
       maxResultCount: 10000
     };
     if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
       params['partner_code'] = this.listSltdPaCode;
     }
-    if (formData.sch_partner_name != '' && !this.listSltdPaCode) {
-      this.messageService.add('거래처 코드를 거래처목록에서 선택하세요.');
-      return;
-    }
-
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
       listData => {
@@ -203,10 +195,6 @@ export class ProductsComponent implements OnInit {
         // }
 
         this.isLoadingProgress = false;
-
-        setTimeout(() => {
-          document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
-        }, 0);
       }
     );
   }
@@ -218,34 +206,24 @@ export class ProductsComponent implements OnInit {
       this.listSltdPaCode = event.item['Code'];
     }
 
-    let partner_code = this.listSltdPaCode;
-    let formData = this.searchForm.value;
-    let product_val = formData.sch_product_name;
-
-    const temp = this.temp.filter(function (d) {
-      d.partner_code = String(d.partner_code);
-      return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(product_val) !== -1 || d.product_name.indexOf(product_val) !== -1) || !partner_code && !product_val;
-    });
-
-    this.rows = temp;
-
-  }
-
-
-  updateFilter(event) {
-
-    let partner_code = this.listSltdPaCode;
-    const val = event.target.value;
+    const val = this.listSltdPaCode;
 
     // filter data
-    const temp = this.temp.filter(function (d) {
-      return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(val) !== -1 || d.product_name.indexOf(val) !== -1) || !val && !partner_code;
-    });
-
-    // update the rows
-    this.rows = temp;
+    // const temp = this.temp.filter(function(d){
+    //     return d.partner_code.indexOf(val) !== -1 || !val;
+    // })
+    //
+    // // update the rows
+    // this.rows = temp;
   }
 
+  onSelectInputAssemblyPartner(event: TypeaheadMatch): void {
+    if (event.item == '') {
+      this.inputForm.controls['assembly_partner_code'].setValue(0);
+    } else {
+      this.inputForm.controls['assembly_partner_code'].setValue(event.item.Code);
+    }
+  }
 
   onSelectInputPartner(event: TypeaheadMatch): void {
     if (event.item == '') {
@@ -255,105 +233,106 @@ export class ProductsComponent implements OnInit {
     }
   }
 
+  updateFilter(event) {
+    const val = event.target.value;
+
+    // filter data
+    const temp = this.temp.filter(function (d) {
+      return d.product_code.indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.rows = temp;
+    // 필터 변경될때마다 항상 첫 페이지로 이동.
+    //this.table.offset = 0;
+  }
+
   Edit(id) {
     this.dataService.GetById(id).subscribe(
       editData => {
         if (editData['result'] == 'success') {
           this.editData = editData;
           this.formData = editData['data'];
+          if (this.formData.material_supply_type == 1) {
+
+          }
+          let material_cost = this.utils.addComma(this.formData.material_cost);
+          let assembly_cost = this.utils.addComma(this.formData.assembly_cost);
+          let outsourcing_cost = this.utils.addComma(this.formData.outsourcing_cost);
           let product_price = this.utils.addComma(this.formData.product_price);
-          let ann_qt = this.utils.addComma(this.formData.ann_qt);
-          let lot_qt = this.utils.addComma(this.formData.lot_qt);
-
-          let is_tmp_price = false;
-          if (this.formData.is_tmp_price == 'Y') {
-            is_tmp_price = true;
-          }
-          let sq = false;
-          if (this.formData.sq == 'Y') {
-            sq = true;
-          }
-          let inspection = false;
-          if (this.formData.inspection == 'Y') {
-            inspection = true;
-          }
-          let selection = false;
-          if (this.formData.selection == 'Y') {
-            selection = true;
-          }
-
           this.inputForm.patchValue({
             input_date: this.formData.input_date,
-            partner_code: this.formData.partner_code,
-            partner_name: this.formData.partner_name,
             product_code: this.formData.product_code,
-            product_type: this.formData.product_type,
+            product_reg_no: this.formData.product_reg_no,
+            assembly_partner_code: this.formData.assembly_partner_code,
+            assembly_partner_name: this.formData.assembly_partner_name,
+            material_supply_type: this.formData.material_supply_type.toString(),
+            material_cost: material_cost,
+            assembly_cost: assembly_cost,
+            outsourcing_cost: outsourcing_cost,
+            // partner_code: this.formData.partner_code,
+            // partner_name: this.formData.partner_name,
+            // product_type: this.formData.product_type,
             product_name: this.formData.product_name,
+            // production_line: this.formData.production_line,
             product_price: product_price,
-            is_tmp_price: is_tmp_price,
+            is_tmp_price: this.formData.is_tmp_price,
             material: this.formData.material,
-            size: this.formData.size,
-            production_line: this.formData.production_line,
-            preparation_time: this.formData.preparation_time,
-            assembly_method: this.formData.assembly_method,
-            sq: sq,
-            inspection: inspection,
-            selection: selection,
-            ann_qt: ann_qt,
-            lot_qt: lot_qt,
+            size: this.formData.size
           });
         }
       }
     );
   }
 
-  AddComma(event) {
-    var valArray = event.target.value.split('.');
-    for (var i = 0; i < valArray.length; ++i) {
-      valArray[i] = valArray[i].replace(/\D/g, '');
-    }
-
-    var newVal: string;
-
-    if (valArray.length === 0) {
-      newVal = '0';
-    } else {
-      let matches = valArray[0].match(/[0-9]{3}/mig);
-
-      if (matches !== null && valArray[0].length > 3) {
-        let commaGroups = Array.from(Array.from(valArray[0]).reverse().join('').match(/[0-9]{3}/mig).join()).reverse().join('');
-        let replacement = valArray[0].replace(commaGroups.replace(/\D/g, ''), '');
-
-        newVal = (replacement.length > 0 ? replacement + ',' : '') + commaGroups;
-      } else {
-        newVal = valArray[0];
+  loadProductInfo(event) {
+    let productCode = event.target.value;
+    this.dataService.GetProductInfo(productCode).subscribe(
+      editData => {
+        if (editData['result'] == 'success') {
+          this.editData = editData;
+          this.formData = editData['data'];
+          let is_tmp_price = false;
+          if (this.formData.is_tmp_price == 'Y') {
+            is_tmp_price = true;
+          }
+          let product_price = this.utils.addComma(this.formData.product_price);
+          this.inputForm.patchValue({
+            partner_code: this.formData.partner_code,
+            // partner_name: this.formData.partner_name,
+            // product_type: this.formData.product_type,
+            // drawing_no: this.formData.drawing_no,
+            // sub_drawing_no: this.formData.sub_drawing_no,
+            product_name: this.formData.product_name,
+            // production_line: this.formData.production_line,
+            product_price: product_price,
+            is_tmp_price: is_tmp_price,
+            // material: this.formData.material,
+            // size: this.formData.size,
+            // cut_length: this.formData.cut_length,
+            // material_weight: this.formData.material_weight,
+            // input_weight: this.formData.input_weight
+          });
+        }
       }
-
-      if (valArray.length > 1) {
-        newVal += '.' + valArray[1].substring(0, 2);
-      }
-    }
-    this.inputForm.controls[event.target.id].setValue(this.utils.addComma(newVal));
-    //this.inputForm.patchValue({'combi_product_price' : this.utils.addComma(newVal)});
+    );
   }
 
   Save() {
     let formData = this.inputForm.value;
 
-    // 숫자필드 체크
-    formData.material_weight = formData.material_weight * 1;
-    formData.product_weight = formData.product_weight * 1;
+    // 숫자필드
+    formData.material_supply_type = formData.material_supply_type * 1;
+    formData.material_cost = this.utils.removeComma(formData.material_cost) * 1;
+    formData.assembly_cost = this.utils.removeComma(formData.assembly_cost) * 1;
+    formData.outsourcing_cost = this.utils.removeComma(formData.outsourcing_cost) * 1;
     formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-    formData.ann_qt = this.utils.removeComma(formData.ann_qt) * 1;
-    formData.lot_qt = this.utils.removeComma(formData.lot_qt) * 1;
     formData.size = formData.size * 1;
-    formData.ct = formData.ct * 1;
-    formData.ea_m = formData.ea_m * 1;
-    formData.preparation_time = formData.preparation_time * 1;
 
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);
     } else {
+      formData.is_tmp_price = false;
       formData.st = 1;
       this.Create(formData);
     }
@@ -377,6 +356,7 @@ export class ProductsComponent implements OnInit {
   }
 
   Update(id, data): void {
+    console.log(data);
     this.dataService.Update(id, data)
       .subscribe(
         data => {
@@ -430,19 +410,19 @@ export class ProductsComponent implements OnInit {
 
     switch (method) {
       case 'delete':
-        this.statusFormTitle = '제품 단종';
+        this.statusFormTitle = '거래처 삭제';
         this.statusFormValue = -1;
-        this.statusConfirmMsg = '선택하신 제품을 단종처리하시겠습니까?';
+        this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         break;
       case 'hide':
-        this.statusFormTitle = '제품 숨김';
+        this.statusFormTitle = '거래처 숨김';
         this.statusFormValue = 0;
-        this.statusConfirmMsg = '선택하신 제품을 숨김처리하시겠습니까?';
+        this.statusConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
         break;
       case 'use':
-        this.statusFormTitle = '제품 사용';
+        this.statusFormTitle = '거래처 사용';
         this.statusFormValue = 1;
-        this.statusConfirmMsg = '선택하신 제품을 사용처리하시겠습니까?';
+        this.statusConfirmMsg = '선택하신 데이터를 사용처리하시겠습니까?';
         break;
     }
     if (id) {
@@ -474,7 +454,7 @@ export class ProductsComponent implements OnInit {
       blob => {
         // Filesaver.js 1.3.8
         // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-        importedSaveAs(blob, '제품마스터.xlsx');
+        importedSaveAs(blob, '외주단조품.xlsx');
 
         let win = this.electronService.remote.getCurrentWindow();
 

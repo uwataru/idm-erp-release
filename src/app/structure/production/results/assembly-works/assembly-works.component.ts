@@ -95,7 +95,6 @@ export class AssemblyWorksComponent implements OnInit {
 
     this.inputForm = fb.group({
       input_date: ['', Validators.required],
-      is_combi: false,
       order_no: ['', Validators.required],
       poc_no: ['', Validators.required],
       release_type: ['', Validators.required],
@@ -106,15 +105,11 @@ export class AssemblyWorksComponent implements OnInit {
       order_assembly_qty: '',
       order_material: '',
       order_size: '',
-      order_steel_maker: '',
-      order_ms_no: '',
       order_input_weight: '',
       order_input_weight_total: '',
       assembly_qty: ['', Validators.required],
       material: ['', Validators.required],
       size: ['', Validators.required],
-      steel_maker: '',
-      ms_no: '',
       input_weight: '',
       input_weight_total: '',
       remaining_qty: '',
@@ -282,20 +277,16 @@ export class AssemblyWorksComponent implements OnInit {
             let order_input_weight_total = Math.round(order_assembly_qty * order_input_weight * 10) * 0.1;
             this.inputForm.patchValue({
               input_date: this.tDate,
-              is_combi: this.formData.is_combi,
               order_no: this.formData.order_no,
               poc_no: this.formData.poc_no,
               release_type: this.formData.release_type,
               product_code: this.formData.product_code,
               product_name: this.formData.product_name,
               production_line: this.formData.production_line,
-              drawing_no: this.formData.drawing_no,
               order_assembly_qty: this.utils.addComma(order_assembly_qty),
               assembly_qty: this.utils.addComma(order_assembly_qty - this.assembly_total),
               order_material: this.formData.material,
               order_size: this.formData.size,
-              order_steel_maker: this.formData.steel_maker,
-              order_ms_no: this.formData.ms_no,
               order_input_weight: this.utils.addComma(order_input_weight),
               order_input_weight_total: this.utils.addComma(order_input_weight_total),
               st: true
@@ -407,8 +398,6 @@ export class AssemblyWorksComponent implements OnInit {
     usedQty = 0;
     let material = '';
     let size = '';
-    let maker = '';
-    let msno = '';
     this.selectedRcvItems.forEach((e: any) => {
       if (inputWeightTotal > 0) {
 
@@ -434,10 +423,6 @@ export class AssemblyWorksComponent implements OnInit {
 
         material = e.material;
         size = e.size;
-        maker = e.steel_maker;
-        msno = e.ms_no;
-        console.log(e.material);
-        console.log(e.size);
       }
     });
     this.usedRcvItems = usedItemArr.join(',');
@@ -448,9 +433,7 @@ export class AssemblyWorksComponent implements OnInit {
     this.inputForm.patchValue({
       material: material,
       size: size,
-      remaining_qty: remainingQty,
-      steel_maker: maker,
-      ms_no: msno
+      remaining_qty: remainingQty
     });
   }
 

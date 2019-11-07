@@ -110,12 +110,6 @@ export class ProductivityAnalysisComponent implements OnInit {
         );
     }
 
-    convertYearMonth(ym) {
-        let yy = ym.substring(0,4);
-        let mm = ym.substring(4,6);
-        return yy + '-' + mm;
-    }
-
     excelDown(): void {
         this.dataService.GetExcelFile().subscribe(
             blob => {

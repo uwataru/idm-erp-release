@@ -126,28 +126,16 @@ export class ProductionPlanningComponent implements OnInit {
   v_partner_code: number;
   v_partner_name: string;
   v_product_type: string;
-  v_drawing_no: string;
-  v_cutting_qty: number;
   v_assembly_qty: number;
-  v_sub_drawing_no: string;
   v_order_qty: number;
   v_material: string;
   v_size: string;
-  v_cut_length: number;
-  v_steel_maker: string;
-  v_ms_no: string;
-  v_material_weight: number;
-  v_input_weight: number;
-  v_product_weight: string;
   v_product_price: number;
   v_production_line: string;
   v_working_stime: string;
   v_production_time: number;
   v_outs_partner_code: number;
   v_outs_partner_name: string;
-  v_mold_no: string;
-  v_mold_size: number;
-  v_mold_storage: string;
   v_release_type: number;
 
   // 단조작업지시서
@@ -223,26 +211,22 @@ export class ProductionPlanningComponent implements OnInit {
     this.outsForgingForm = fb.group({
       product_code: '',
       product_name: '',
-      drawing_no: '',
       product_reg_no: '',
       outs_partner_code: '',
       outs_partner_name: '',
       ref_matl_supl_type: '',
       matl_cost: '',
-      forging_cost: '',
+      assembly_cost: '',
       outs_cost: '',
       material: '',
       size: '',
-      input_weight: '',
       order_date: ['', Validators.required],
       partner_code: '',
       partner_name: ['', Validators.required],
       matl_supl_type: ['', Validators.required],
       order_qty: ['', Validators.required],
       rcv_req_date: ['', Validators.required],
-      steel_maker: '',
       storage: '',
-      ms_no: '',
       estimated_weight: '',
       used_rcv_items: ''
     });
@@ -495,10 +479,10 @@ export class ProductionPlanningComponent implements OnInit {
     let size = formData.size;
 
     if (!material || !size) {
-      this.messageService.add('지시재질 또는 규격을 입력하세요.');
+      this.messageService.add('규격을 입력하세요.');
       return false;
     } else if (isNaN(size)) {
-      this.messageService.add('지시규격은 숫자로 입력하세요.');
+      this.messageService.add('규격은 숫자로 입력하세요.');
       return false;
     }
 
@@ -517,21 +501,12 @@ export class ProductionPlanningComponent implements OnInit {
         this.isLoadingProgress = false;
         this.sum_remaining_weight = 0;
         for (var i in this.materialRows) {
-          this.sum_remaining_weight = this.sum_remaining_weight + this.materialRows[i].remaining_weight;
-        }
-
-      }
-    );
-
-    this.standby_weight = 0;
-    this.dataService.GetStandbyWeight({material: material, size: size}).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.standby_weight = editData['data'];
+          if (Number(i) + 1 != this.materialRows.length) {
+            this.sum_remaining_weight = this.sum_remaining_weight + this.materialRows[i].remaining_weight;
+          }
         }
       }
     );
-
   }
 
 
@@ -789,20 +764,12 @@ export class ProductionPlanningComponent implements OnInit {
             is_diff_date: is_diff_date,
             production_time: this.rows[q].production_time,
             product_code: this.rows[q].product_code,
-            drawing_no: this.rows[q].drawing_no,
             product_name: this.rows[q].product_name,
             order_qty: this.rows[q].order_qty,
             promised_date: this.rows[q].promised_date,
             material: this.rows[q].material,
             size: this.rows[q].size,
-            cut_length: this.rows[q].cut_length,
-            input_weight: this.rows[q].input_weight,
-            product_weight: this.rows[q].product_weight,
-            mold_size: this.rows[q].mold_size,
-            mold_position: this.rows[q].mold_position,
-            cutting_order: this.rows[q].cutting_order,
             assembly_order: this.rows[q].assembly_order,
-            cutting_yn: this.rows[q].cutting_yn,
             assembly_yn: this.rows[q].assembly_yn,
             poc_no: this.rows[q].poc_no
           });
@@ -843,7 +810,7 @@ export class ProductionPlanningComponent implements OnInit {
     if (this.releaseType == 2) {
       // 외주절단입력화면으로 이동
       this.router.navigate([
-        '/materials/order/outsourcing-cutting-work',
+        '/materials/order/outsourcing-assembly-work',
         {
           id: this.selectedId,
           outs_name: formData.outs_partner_name,
@@ -893,34 +860,16 @@ export class ProductionPlanningComponent implements OnInit {
           this.v_partner_code = data.partner_code;
           this.v_partner_name = data.partner_name;
           this.v_product_type = data.product_type;
-          this.v_drawing_no = data.drawing_no;
-          this.v_sub_drawing_no = data.sub_drawing_no;
           this.v_order_qty = data.order_qty;
           this.v_material = data.material;
           this.v_size = data.size;
-          this.v_cut_length = data.cut_length;
-          this.v_steel_maker = data.steel_maker;
-          this.v_ms_no = data.ms_no;
-          this.v_material_weight = data.material_weight;
-          this.v_input_weight = data.input_weight;
-          this.v_product_weight = data.product_weight + 'Kg';
           this.v_product_price = data.product_price;
           this.v_production_line = data.production_line;
           this.v_working_stime = data.working_stime;
           this.v_production_time = data.production_time;
           this.v_outs_partner_code = data.outs_partner_code;
           this.v_outs_partner_name = (data.release_type == 2) ? data.outs_partner_name : '자가';
-          this.v_mold_no = data.mold_no;
-          this.v_mold_size = data.mold_size;
-          this.v_mold_storage = data.mold_storage;
           this.v_release_type = data.release_type;
-
-          // 콤비 제품인 경우
-          if (editData['combiData'] != '') {
-            let combiData = editData['combiData'];
-            this.v_product_code = this.v_product_code + ', ' + combiData.product_code;
-            this.v_product_name = this.v_product_name + ', ' + combiData.product_name;
-          }
 
           this.cuttingWorkAllocationTitle = '조 립 작 업 지 시 서';
         }

@@ -12,7 +12,7 @@
   </div>
   <div class="panel-body">
     <ngx-datatable
-      [style.height.px] = gridHeight
+      [style.height.px]=gridHeight
       class="bootstrap"
       [rows]="rows"
       [columnMode]="'force'"
@@ -68,9 +68,7 @@
     <div class="modal-content modal-xl">
 
       <form [formGroup]="inputForm">
-        <input type="hidden" formControlName="is_combi"/>
         <input type="hidden" formControlName="order_no"/>
-        <input type="hidden" formControlName="drawing_no"/>
         <input type="hidden" formControlName="production_line"/>
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
@@ -175,7 +173,8 @@
                            class="form-control input-sm w-sm text-right"/>
                   </div>
                   <div class="col-lg-4">
-                    <input type="text" decimal [(ngModel)]="assembly_qty" formControlName="assembly_qty" id="assembly_qty"
+                    <input type="text" decimal [(ngModel)]="assembly_qty" formControlName="assembly_qty"
+                           id="assembly_qty"
                            (blur)="calculInputWeightTotal()" nextFocus="material"
                            class="form-control input-sm w-sm text-right"/>
                   </div>
@@ -282,12 +281,8 @@
                                       [resizeable]="false"></ngx-datatable-column>
                 <ngx-datatable-column prop="size" name="규격" [width]="60" [canAutoResize]="false" [resizeable]="false"
                                       cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="steel_maker" name="제강메이커" [width]="130" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
                 <ngx-datatable-column prop="rcv_date" name="입고일" [width]="100" [canAutoResize]="false"
                                       [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="ms_no" name="M.S.NO" [width]="170" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
                 <ngx-datatable-column prop="remaining_weight" name="재고" [width]="70" [canAutoResize]="false"
                                       [resizeable]="false" cellClass="text-right">
                   <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
@@ -318,11 +313,8 @@
                   </table>
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         <div class="modal-footer">

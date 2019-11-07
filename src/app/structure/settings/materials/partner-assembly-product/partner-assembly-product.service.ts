@@ -2,45 +2,63 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item, matlReceivingItem } from './outsourcing-cutting-work.item';
+import { Item } from './partner-assembly-product.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
 
 @Injectable()
-export class OutsourcingCuttingWorkService {
+export class PartnerAssemblyProductService {
 
     constructor(
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/outsourcing/orders';
+    private url = this.globals.serverUrl + '/assembly-products';
 
-    // GetById (pocNo:string): Observable<Item> {
-    //     return this.http.get<Item>(this.url+'/cutting-work-orders/'+pocNo);
-    // }
-
-    GetPlanningInfo(id) {
-        let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/planning/get-planning-info/' + id + '?t=' + currTime);
+    GetAll (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetMaterialsReceiving (params): Observable<matlReceivingItem[]> {
-        return this.http.get<matlReceivingItem[]>(this.globals.serverUrl + '/materials/receiving', {params: params});
+    GetExcelFile (): Observable<Blob> {
+        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
+            tap((data: Blob) => console.log(data)),
+            catchError(this.handleError<Blob>('Create'))
+        );
     }
 
-    GetCuttingWorkAllocation (pocNo:string) {
-        let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/assembly-works/' + pocNo + '?t=' + currTime);
+    GetById (id:number): Observable<Item> {
+        return this.http.get<Item>(this.url+'/'+id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url + '/outs-cutting-products', data, httpOptions).pipe(
+        return this.http.post<Item>(this.url, data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
+    }
+    private extractData(res: Response) {
+	    let body = res.json();
+        return body || {};
+    }
+    /** PUT: 데이터 수정 */
+    Update (id:number, data:Item): Observable<Item> {
+        return this.http.put<Item>(this.url+'/'+id, data, httpOptions);
+    }
+
+    /** PUT: 숨김,삭제 */
+    changeStatus (id, data) {
+        return this.http.put(this.url+'/status/'+id, data);
+    }
+
+    UploadExcelFile (data) {
+        return this.http.post(this.url + '/excelupload', data, httpOptions)
+    }
+
+    GetProductInfo (id:number): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl + '/products/code/' + id);
     }
 
    /**

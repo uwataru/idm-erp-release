@@ -1,7 +1,6 @@
 export class Item {
     yearmonth: string;
     target_production_qty: number;
-    target_production_weight: number;
     target_production_amount: number;
 
     labels: Array<string>;

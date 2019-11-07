@@ -16,8 +16,8 @@ export class OutsourcedStorageService {
 
     private url = this.globals.serverUrl + '/outsourcing/orders';
 
-    GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url, {params: params});
+    GetAll (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url);
     }
 
     GetExcelFile (): Observable<Blob> {
@@ -51,7 +51,7 @@ export class OutsourcedStorageService {
     Delete (id, data) {
         return this.http.put(this.url+'/delete/'+id, data);
     }
-    
+
    /**
     * 실패한 Http 작업 처리
     * 프로그램은 계속 실행되도록 함.

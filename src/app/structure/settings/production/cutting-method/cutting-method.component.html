@@ -1,139 +1,146 @@
 <div class="panel panel-default">
 
-    <div class="panel-heading text-center">
-        <span class="h4 block">{{ panelTitle }}</span>
-    </div>
+  <div class="panel-heading text-center">
+    <span class="h4 block">{{ panelTitle }}</span>
+  </div>
 
-    <div class="panel-body">
-        <ngx-datatable
-            [style.height.px] = gridHeight
-            class="bootstrap"
-            [rows]="rows"
-            [columnMode]="'force'"
-            [headerHeight]="30"
-            [rowHeight]="30"
-            [scrollbarV]="true"
-            [scrollbarH]="false"
-            [selected]="selected"
-            [selectAllRowsOnPage]="false">
-            <ngx-datatable-column prop="code" name="코드" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="assembly_method" name="조립방법" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="working_group" name="작업조" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="cfg_id" name="수정&middot삭제" cellClass="text-center">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-                    <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-                        <i class="glyphicon glyphicon-edit"></i>
-                    </button>
-                    <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-                        <i class="glyphicon glyphicon-trash"></i>
-                    </button>
-                </ng-template>
-            </ngx-datatable-column>
-        </ngx-datatable>
-    </div>
+  <div class="panel-body">
+    <ngx-datatable
+      [style.height.px]=gridHeight
+      class="bootstrap"
+      [rows]="rows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="30"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [selected]="selected"
+      [selectAllRowsOnPage]="false">
+      <ngx-datatable-column prop="cfg_code" name="코드" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="cfg_name" name="조립방법" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="cfg_value" name="작업조" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="cfg_id" name="수정&middot삭제" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+            <i class="glyphicon glyphicon-edit"></i>
+          </button>
+          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+            <i class="glyphicon glyphicon-trash"></i>
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
 
-    <footer class="panel-footer">
-		<div class="row">
-			<div class="col-sm-6 hidden-xs">
-                <!-- <button class="btn btn-sm btn-danger btn-addon" data-toggle="modal" data-target="#delete-confirm" (click)="openModal('delete','selected')">
-                    <i class="glyphicon glyphicon-trash"></i>삭제
-                </button> -->
-            </div>
-            <div class="col-sm-6 text-right text-center-xs">
-                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
-                    <i class="glyphicon glyphicon-plus"></i>등록
-                </button>
-                <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
-                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
-    		</div>
-        </div>
-	</footer>
+  <footer class="panel-footer">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+        <!-- <button class="btn btn-sm btn-danger btn-addon" data-toggle="modal" data-target="#delete-confirm" (click)="openModal('delete','selected')">
+            <i class="glyphicon glyphicon-trash"></i>삭제
+        </button> -->
+      </div>
+      <div class="col-sm-6 text-right text-center-xs">
+        <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+          <i class="glyphicon glyphicon-plus"></i>등록
+        </button>
+        <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+        <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
+      </div>
+    </div>
+  </footer>
 </div>
 
-<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-            <form [formGroup]="inputForm">
-			<div class="modal-header">
-				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ inputFormTitle }}</h4>
-			</div>
-			<div class="modal-body">
+      <form [formGroup]="inputForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ inputFormTitle }}</h4>
+        </div>
+        <div class="modal-body">
 
-                <table>
-                <tr>
-                    <th width="100px">
-                        <label for="code">코드</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td>
-                        <input type="text" formControlName="cfg_code" id="cfg_code" required class="form-control input-sm w-sm" />
-                    </td>
-                </tr>
-                <tr>
-                    <th width="100px">
-                        <label for="assembly_method">조립방법</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td>
-                        <input type="text" formControlName="assembly_method" id="assembly_method" required class="form-control input-sm w-sm" />
-                    </td>
-                </tr>
-                <tr>
-                    <th width="100px">
-                        <label for="working_group">작업조</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td>
-                        <!-- <input type="text" formControlName="working_group" id="working_group" required class="form-control input-sm w-sm" /> -->
-                        <label class="i-checks">
-                            <input type="radio" formControlName="working_group" value="1조">
-                            <i></i>1조 &nbsp;
-                        </label>
-                        <label class="i-checks">
-                            <input type="radio" formControlName="working_group" value="2조">
-                            <i></i>2조 &nbsp;
-                        </label>
-                        <label class="i-checks">
-                            <input type="radio" formControlName="working_group" value="3조">
-                            <i></i>3조 &nbsp;
-                        </label>
-                    </td>
-                </tr>
-                </table>
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="cfg_code">코드</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="cfg_code" id="cfg_code" required
+                       class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th width="100px">
+                <label for="cfg_name">조립방법</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="cfg_name" id="cfg_name" required
+                       class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th width="100px">
+                <label for="cfg_value">작업조</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <!-- <input type="text" formControlName="working_group" id="working_group" required class="form-control input-sm w-sm" /> -->
+                <label class="i-checks">
+                  <input type="radio" formControlName="cfg_value" value="1조">
+                  <i></i>1조 &nbsp;
+                </label>
+                <label class="i-checks">
+                  <input type="radio" formControlName="cfg_value" value="2조">
+                  <i></i>2조 &nbsp;
+                </label>
+                <label class="i-checks">
+                  <input type="radio" formControlName="cfg_value" value="3조">
+                  <i></i>3조 &nbsp;
+                </label>
+              </td>
+            </tr>
+          </table>
 
-			</div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
-                </div>
-            </div>
-            </form>
-		</div>
-	</div>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
+            </button>
+            <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
-<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
+<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
 
-			<div class="modal-header">
-				<button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ deleteFormTitle }}</h4>
-			</div>
-			<div class="modal-body">
-                <div class="text-center padder-v">
-                    {{ deleteConfirmMsg }}
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
-                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
-                </div>
-            </div>
+      <div class="modal-header">
+        <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{ deleteFormTitle }}</h4>
+      </div>
+      <div class="modal-body">
+        <div class="text-center padder-v">
+          {{ deleteConfirmMsg }}
         </div>
+      </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+          <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

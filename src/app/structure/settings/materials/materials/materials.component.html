@@ -73,7 +73,6 @@
       <ngx-datatable-column prop="material" name="재질"></ngx-datatable-column>
       <ngx-datatable-column prop="size" name="규격" [width]="100" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="maker" name="메이커" cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="221" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="partner_name" name="공급처(약칭)" cellClass="text-center"></ngx-datatable-column>
@@ -153,7 +152,15 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="input_date" id="input_date" bsDatepicker nextFocus="maker"
+                <input type="text" formControlName="input_date" id="input_date" bsDatepicker nextFocus="material"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="material">재질</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="material" id="material" nextFocus="material_type"
                        class="form-control input-sm w-sm"/>
               </td>
             </tr>
@@ -180,7 +187,7 @@
                        (typeaheadOnSelect)="onSelectInputPartner($event)"
                        placeholder="거래처명"
                        class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code"/>
+                <input type="hidden" formControlName="partner_code" id="partner_code" nextFocus="size"/>
               </td>
             </tr>
             <tr>
@@ -189,7 +196,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="size" id="size" nextFocus="price_date"
+                <input type="text" formControlName="size" id="size" nextFocus="price"
                        class="form-control input-sm w-sm"/>
               </td>
               <th>
@@ -197,19 +204,11 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="price" id="price" nextFocus="size"
+                <input type="text" formControlName="price" id="price" nextFocus="price_date"
                        class="form-control input-sm w-sm"/>
               </td>
             </tr>
             <tr>
-              <th>
-                <label for="material">항목</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="material" id="material" nextFocus="price"
-                       class="form-control input-sm w-sm"/>
-              </td>
               <th>
                 <label for="price_date">단가적용일</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>

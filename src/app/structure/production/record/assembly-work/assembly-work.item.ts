@@ -5,7 +5,6 @@ export class RowData {
     product_code: string;
     product_name: string;
     production_line: string;
-    drawing_no: string;
     partner_code: number;
     partner_name: string;
     poc_no: string;

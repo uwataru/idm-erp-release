@@ -71,7 +71,7 @@
       <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
       <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
       <!-- <ngx-datatable-column prop="product_reg_no" name="등록번호" cellClass="text-center"></ngx-datatable-column> -->
-      <ngx-datatable-column prop="forging_partner_name" name="외주업체"></ngx-datatable-column>
+      <ngx-datatable-column prop="assembly_partner_name" name="외주업체"></ngx-datatable-column>
       <ngx-datatable-column prop="outsourcing_cost" name="외주단가" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
@@ -192,28 +192,28 @@
                   </label>
                   <div class="col-lg-8">
                     <input type="text" formControlName="product_reg_no" id="product_reg_no"
-                           nextFocus="forging_partner_name" class="form-control input-sm w-sm"/>
+                           nextFocus="assembly_partner_name" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="row">
-                  <label for="forging_partner_name" class="col-lg-4 control-label">
+                  <label for="assembly_partner_name" class="col-lg-4 control-label">
                     외주업체
                   </label>
                   <div class="col-lg-8">
-                    <input formControlName="forging_partner_name" id="forging_partner_name"
-                           [typeahead]="inputForgingPartners"
+                    <input formControlName="assembly_partner_name" id="assembly_partner_name"
+                           [typeahead]="inputAssemblyPartners"
                            typeaheadOptionField="Alias"
                            [typeaheadOptionsLimit]="50"
                            [typeaheadScrollable]="true"
                            [typeaheadMinLength]="0"
-                           (typeaheadOnSelect)="onSelectInputForgingPartner($event)"
+                           (typeaheadOnSelect)="onSelectInputAssemblyPartner($event)"
                            placeholder="거래처명"
                            autocomplete="off"
                            class="input-sm form-control w-sm inline v-middle"/>
-                    <input type="hidden" formControlName="forging_partner_code" id="forging_partner_code"/>
+                    <input type="hidden" formControlName="assembly_partner_code" id="assembly_partner_code"/>
                   </div>
                 </div>
               </div>

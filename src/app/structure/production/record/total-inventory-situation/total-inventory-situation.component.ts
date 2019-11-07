@@ -36,17 +36,14 @@ export class TotalInventorySituationComponent implements OnInit {
 
   detail_product_code: string;
   detail_product_name: string;
-  detail_drawing_no: string;
   detail_partner_name: string;
   detail_sch_sdate: string;
   detail_sch_edate: string;
 
   detailrows: Item['data'];
 
-  detailsums_cutting_qty: number;
   detailsums_assembly_qty: number;
   detailsums_forwarding_weight: number;
-  detailsums_forging_qty: number;
   detailsums_defective_qty: number;
   detailsums_loss_qty: number;
   detailsums_lucre_qty: number;
@@ -73,7 +70,7 @@ export class TotalInventorySituationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panelTitle = '종합재고상황판(Ⅰ)';
+    this.panelTitle = '종합재고상황판';
     this.detailsTitle = '종합재고상황판(Ⅱ)';
 
     this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
@@ -93,7 +90,7 @@ export class TotalInventorySituationComponent implements OnInit {
   getAll(): void {
     let formData = this.searchForm.value;
     let params = {
-      partner_code: formData.sch_partner_name,
+      partner_code: this.listSltdPaCode,
       sch_prdline: formData.production_line,
       sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
       sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
@@ -117,7 +114,7 @@ export class TotalInventorySituationComponent implements OnInit {
     } else {
       this.listSltdPaCode = event.item['Code'];
     }
-
+    console.log(event.item['Code'])
     const val = this.listSltdPaCode;
   }
 
@@ -142,17 +139,14 @@ export class TotalInventorySituationComponent implements OnInit {
       data => {
         this.detail_product_code = data['viewData']['product_code'];
         this.detail_product_name = data['viewData']['product_name'];
-        this.detail_drawing_no = data['viewData']['drawing_no'];
         this.detail_partner_name = data['viewData']['partner_name'];
         this.detail_sch_sdate = data['viewData']['sch_sdate'];
         this.detail_sch_edate = data['viewData']['sch_edate'];
 
         this.detailrows = data['data'];
 
-        this.detailsums_cutting_qty = data['sumData']['cutting_qty'];
         this.detailsums_assembly_qty = data['sumData']['assembly_qty'];
         this.detailsums_forwarding_weight = data['sumData']['forwarding_weight'];
-        this.detailsums_forging_qty = data['sumData']['forging_qty'];
         this.detailsums_defective_qty = data['sumData']['defective_qty'];
         this.detailsums_loss_qty = data['sumData']['loss_qty'];
         this.detailsums_lucre_qty = data['sumData']['lucre_qty'];

@@ -220,7 +220,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="product_code" id="product_code" (blur)="makeCombiCode($event)"
+                <input type="text" formControlName="product_code" id="product_code"
                        nextFocus="product_type" class="form-control inline input-sm w-sm"/>
               </td>
               <th>
@@ -228,35 +228,42 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="product_name" id="product_name" (blur)="makeCombiName($event)"
+                <input type="text" formControlName="product_name" id="product_name"
                        nextFocus="ann_qt" class="form-control inline input-sm w"/>
-                <span *ngIf="combiChecked == true" class="">({{ prodTypeStr }})</span>
               </td>
             </tr>
             <tr>
+              <th>
+                <label for="material">재질</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="material" id="material"
+                       class="form-control inline input-sm w-sm"/>
+              </td>
               <th>
                 <label for="size">규격</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="size" id="size" nextFocus="material_weight"
+                <input type="text" formControlName="size" id="size"
                        class="form-control inline input-sm w-sm"/>
               </td>
+            </tr>
+            <tr>
               <th>
                 <label for="product_price">제품단가</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" (keyup)="AddComma($event)" (blur)="copyCombiText($event)"
+                <input type="text" (keyup)="AddComma($event)"
                        formControlName="product_price" id="product_price" nextFocus="material"
                        class="form-control inline input-sm w-xs text-right"/>
                 <label class="checkbox-inline">
                   <input type="checkbox" formControlName="is_tmp_price" id="is_tmp_price"/>임시단가
                 </label>
               </td>
-            </tr>
-            <tr>
-              <th width="100px">
+              <th>
                 <label for="production_line">작업라인</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>

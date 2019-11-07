@@ -68,10 +68,6 @@ export class ProductionPlanningService {
         return this.http.get(this.url + '/get-planning-info/' + id + '?t=' + currTime);
     }
 
-    GetStandbyWeight(params):Observable<Item[]>  {
-        return this.http.get<Item[]>(this.url + '/get-standby-weight', {params: params});
-    }
-
     GetOrdersAdjustment (id) {
         let currTime = (new Date()).getTime();
         return this.http.get(this.url + '/get-orders-adjustment/' + id + '?t=' + currTime);

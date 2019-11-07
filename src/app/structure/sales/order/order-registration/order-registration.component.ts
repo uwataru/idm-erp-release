@@ -49,7 +49,6 @@ export class OrderRegistrationComponent implements OnInit {
   inputForm: FormGroup;
   inputPartners: any[] = this.globals.configs['type5Partners'];
   productionLines: any[] = this.globals.configs['productionLine'];
-  isCombi: boolean = false;
   prodTypeStr: string;
   combiTypeStr: string;
   product_price: number;
@@ -78,7 +77,6 @@ export class OrderRegistrationComponent implements OnInit {
     private utils: UtilsService,
     private messageService: MessageService
   ) {
-    console.log('in');
     // 접근권한 체크
     if (route.routeConfig.path && ('id' in route.routeConfig.data)) {
       if (route.routeConfig.data.id in this.globals.userPermission) {
@@ -255,10 +253,6 @@ export class OrderRegistrationComponent implements OnInit {
     formData.is_tmp_price = 'N';
     formData.st = 1;
 
-    if (this.isCombi == true) {
-      formData.combi_product_price = this.utils.removeComma(formData.combi_product_price) * 1;
-    }
-
     this.Create(formData);
   }
 
@@ -336,21 +330,6 @@ export class OrderRegistrationComponent implements OnInit {
         }
       }
     );
-  }
-
-  getCombiTypeString(code) {
-    if (!code) {
-      return false;
-    }
-
-    if (code.indexOf('BB') > 0) {
-      this.prodTypeStr = '내륜';
-      this.combiTypeStr = '외륜';
-    }
-    if (code.indexOf('AA') > 0) {
-      this.prodTypeStr = '외륜';
-      this.combiTypeStr = '내륜';
-    }
   }
 
   onSelect({selected}) {

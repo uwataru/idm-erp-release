@@ -28,20 +28,18 @@ export class ForgingWorksComponent implements OnInit {
   productionLines: any[] = this.globals.configs['productionLine'];
   defectiveClassification: any[] = this.globals.configs['defectiveClassification'];
 
-  forging_qty: number;
   defective_qty: number;
   loss_qty: number;
   lucre_qty: number;
   order_qty: number;
-  cutting_qty: number;
   assembly_qty: number;
 
-  forging_sum: number;
+  assembly_sum: number;
   defective_sum: number;
   loss_sum: number;
   lucre_sum: number;
   more_less_qty: number;
-  orig_forging_sum: number;
+  orig_assembly_sum: number;
   orig_defective_sum: number;
   orig_loss_sum: number;
   orig_lucre_sum: number;
@@ -90,19 +88,15 @@ export class ForgingWorksComponent implements OnInit {
       working_group: ['', Validators.required],
       product_code: ['', Validators.required],
       product_name: ['', Validators.required],
-      drawing_no: '',
       material: '',
       size: '',
-      mold_no: '',
-      forging_qty: ['', Validators.required],
       defective_qty: ['', Validators.required],
       defective_classification: '',
       loss_qty: ['', Validators.required],
       lucre_qty: ['', Validators.required],
       order_qty: ['', Validators.required],
-      cutting_qty: '',
       assembly_qty: ['', Validators.required],
-      forging_sum: '',
+      assembly_sum: '',
       defective_sum: '',
       loss_sum: '',
       lucre_sum: '',
@@ -125,13 +119,6 @@ export class ForgingWorksComponent implements OnInit {
   ngOnInit() {
     this.panelTitle = '조립작업실적 입력';
     this.inputForm.controls['input_date'].setValue(this.tDate);
-  }
-
-  copy_date(event): void {
-    let formData = this.inputForm.value;
-    if (formData.promised_date == null || formData.promised_date == '') {
-      this.inputForm.patchValue({promised_date: event.target.value});
-    }
   }
 
   onValueChange(value: Date): void {
@@ -176,18 +163,19 @@ export class ForgingWorksComponent implements OnInit {
       f.working_etime = this.datePipe.transform(f.working_eday, 'yyyy-MM-dd') + ' 00:00:00';
     }
 
-    f.forging_qty = this.utils.removeComma(f.forging_qty) * 1;
     f.defective_qty = this.utils.removeComma(f.defective_qty) * 1;
     f.loss_qty = this.utils.removeComma(f.loss_qty) * 1;
     f.lucre_qty = this.utils.removeComma(f.lucre_qty) * 1;
     f.order_qty = this.utils.removeComma(f.order_qty) * 1;
-    f.cutting_qty = this.utils.removeComma(f.cutting_qty) * 1;
     f.assembly_qty = this.utils.removeComma(f.assembly_qty) * 1;
-    f.forging_sum = this.utils.removeComma(f.forging_sum) * 1;
+    console.log("AAAAAAAAAAAA");
+    console.log(f.assembly_qty);
+    console.log("AAAAAAAAAAAA");
+    f.assembly_sum = this.utils.removeComma(f.assembly_sum) * 1;
     f.defective_sum = this.utils.removeComma(f.defective_sum) * 1;
     f.loss_sum = this.utils.removeComma(f.loss_sum) * 1;
     f.lucre_sum = this.utils.removeComma(f.lucre_sum) * 1;
-    f.more_less_qty = f.assembly_qty - f.forging_sum - f.loss_sum + f.lucre_sum;
+    f.more_less_qty = f.assembly_qty - f.assembly_sum - f.loss_sum + f.lucre_sum;
 
     f.working_time = f.working_time * 1;
     f.preparation_time = f.preparation_time * 1;
@@ -204,6 +192,7 @@ export class ForgingWorksComponent implements OnInit {
   }
 
   Create(data): void {
+    console.log(data);
     this.dataService.Create(data)
       .subscribe(
         data => {
@@ -241,31 +230,26 @@ export class ForgingWorksComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
 
-          this.orig_forging_sum = this.formData.forging_sum;
           this.orig_defective_sum = this.formData.defective_sum;
           this.orig_loss_sum = this.formData.loss_sum;
           this.orig_lucre_sum = this.formData.lucre_sum;
 
           let order_qty = this.utils.addComma(this.formData.order_qty);
-          let cutting_qty = this.utils.addComma(this.formData.cutting_qty);
           let assembly_qty = this.utils.addComma(this.formData.assembly_qty);
-          let forging_sum = this.utils.addComma(this.formData.forging_sum);
+          let assembly_sum = this.utils.addComma(this.formData.assembly_sum);
           let defective_sum = this.utils.addComma(this.formData.defective_sum);
           let loss_sum = this.utils.addComma(this.formData.loss_sum);
           let lucre_sum = this.utils.addComma(this.formData.lucre_sum);
 
-          let more_less_sum = this.formData.assembly_qty - this.formData.forging_sum - this.formData.defective_sum - this.formData.loss_sum + this.formData.lucre_sum;
+          let more_less_sum = this.formData.assembly_qty - this.formData.assembly_sum - this.formData.defective_sum - this.formData.loss_sum + this.formData.lucre_sum;
 
           this.inputForm.patchValue({
             production_line: this.formData.production_line,
             product_code: this.formData.product_code,
             product_name: this.formData.product_name,
-            drawing_no: this.formData.drawing_no,
-            mold_no: this.formData.mold_no,
             order_qty: order_qty,
-            cutting_qty: cutting_qty,
             assembly_qty: assembly_qty,
-            forging_sum: forging_sum,
+            assembly_sum: assembly_sum,
             defective_sum: defective_sum,
             loss_sum: loss_sum,
             lucre_sum: lucre_sum,
@@ -279,24 +263,22 @@ export class ForgingWorksComponent implements OnInit {
   CalculSum(): void {
     let f = this.inputForm.value;
 
-    let forging_qty = this.utils.removeComma(f.forging_qty) * 1;
     let defective_qty = this.utils.removeComma(f.defective_qty) * 1;
     let loss_qty = this.utils.removeComma(f.loss_qty) * 1;
     let lucre_qty = this.utils.removeComma(f.lucre_qty) * 1;
 
     let order_qty = this.utils.removeComma(f.order_qty) * 1;
-    let cutting_qty = this.utils.removeComma(f.cutting_qty) * 1;
     let assembly_qty = this.utils.removeComma(f.assembly_qty) * 1;
 
-    let forging_sum = this.orig_forging_sum + forging_qty;
+    let assembly_sum = this.orig_assembly_sum + assembly_qty;
     let defective_sum = this.orig_defective_sum + defective_qty;
     let loss_sum = this.orig_loss_sum + loss_qty;
     let lucre_sum = this.orig_lucre_sum + lucre_qty;
 
-    let more_less_qty = assembly_qty - forging_sum - defective_sum - loss_sum + lucre_sum;
+    let more_less_qty = assembly_qty - assembly_sum - defective_sum - loss_sum + lucre_sum;
 
     this.inputForm.patchValue({
-      forging_sum: this.utils.addComma(forging_sum),
+      assembly_sum: this.utils.addComma(assembly_sum),
       defective_sum: this.utils.addComma(defective_sum),
       loss_sum: this.utils.addComma(loss_sum),
       lucre_sum: this.utils.addComma(lucre_sum),

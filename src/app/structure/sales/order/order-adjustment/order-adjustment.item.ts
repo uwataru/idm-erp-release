@@ -10,9 +10,6 @@ export class Item {
         order_type2: string;
         order_no: string;
         product_code: string;
-        // product_type: string;
-        // drawing_no: string;
-        // sub_drawing_no: string;
         product_name: string;
         order_qty: number;
         product_price: number;
@@ -23,8 +20,6 @@ export class Item {
         modi_reason: string;
         st: number;
         size: number;
-
-        is_combi: string;
     };
     maxResultCount: number;
     result: string;

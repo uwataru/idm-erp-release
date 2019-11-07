@@ -7,7 +7,6 @@ export class Item {
         delivery_no: number;
         product_code: string;
         product_name: string;
-        drawing_no: string;
         partner_code: number;
         partner_name: string;
         poc_no: string;

@@ -46,9 +46,7 @@ export class OrderAdjustmentComponent implements OnInit {
     inputForm: FormGroup;
     inputPartners: any[] = this.globals.configs['type5Partners'];
     productionLines: any[] = this.globals.configs['productionLine'];
-    isCombi: boolean = false;
     prodTypeStr: string;
-    combiTypeStr: string;
     product_price: number;
     isTmpPrice: boolean;
     order_qty: number;
@@ -111,21 +109,13 @@ export class OrderAdjustmentComponent implements OnInit {
             order_type1: ['', Validators.required],
             order_type2: ['', Validators.required],
             product_code: ['', Validators.required],
-            combi_product_code: '',
-            is_combi: '',
-            combi_id: '',
             order_qty: ['', Validators.required],
             delivery_date: ['', Validators.required],
             promised_date: ['', Validators.required],
-            // product_type: '',
-            // drawing_no: '',
-            // sub_drawing_no: '',
             size: '',
             production_line: ['', Validators.required],
             product_name: '',
-            combi_product_name: '',
             product_price: '',
-            combi_product_price: '',
             order_no: '',
             modi_reason: ['', Validators.required]
         });
@@ -248,26 +238,7 @@ export class OrderAdjustmentComponent implements OnInit {
                     let product_price = this.utils.addComma(this.formData.product_price);
                     let order_qty = this.utils.addComma(this.formData.order_qty);
 
-                    // 콤비제품인 경우
-                    let isCombi = 'N';
-                    let combiId: number;
-                    let combi_product_code = '';
-                    let combi_product_name = '';
-                    let combi_product_price = 0;
-                    if (editData['combiData'].product_code != '') {
-                        this.isCombi = true;
-                        isCombi = 'Y';
-                        combiId = editData['combiData'].id;
-                        combi_product_code = editData['combiData'].product_code;
-                        combi_product_name = editData['combiData'].product_name;
-                        combi_product_price = this.utils.addComma(editData['combiData'].product_price);
-
-                        this.getCombiTypeString(this.formData.product_code);
-                    }
-
                     this.inputForm.patchValue({
-                        is_combi: isCombi,
-                        combi_id: combiId,
                         partner_code: this.formData.partner_code,
                         partner_name: this.formData.partner_name,
                         input_date: this.formData.input_date,
@@ -275,19 +246,13 @@ export class OrderAdjustmentComponent implements OnInit {
                         order_type2: this.formData.order_type2,
                         order_no: this.formData.order_no,
                         product_code: this.formData.product_code,
-                        // product_type: this.formData.product_type,
-                        // drawing_no: this.formData.drawing_no,
-                        // sub_drawing_no: this.formData.sub_drawing_no,
                         size: this.formData.size,
                         product_name: this.formData.product_name,
                         order_qty: order_qty,
                         product_price: product_price,
                         production_line: this.formData.production_line,
                         delivery_date: this.formData.delivery_date,
-                        promised_date: this.formData.promised_date,
-                        combi_product_code: combi_product_code,
-                        combi_product_name: combi_product_name,
-                        combi_product_price: combi_product_price
+                        promised_date: this.formData.promised_date
                     });
                 }
             }
@@ -332,20 +297,6 @@ export class OrderAdjustmentComponent implements OnInit {
             }
         }
         this.inputForm.controls[event.target.id].setValue(this.utils.addComma(newVal));
-        //this.inputForm.patchValue({'combi_product_price' : this.utils.addComma(newVal)});
-    }
-
-    getCombiTypeString(code) {
-        if (!code) return false;
-
-        if (code.indexOf( "BB" ) > 0) {
-            this.prodTypeStr = "내륜";
-            this.combiTypeStr = "외륜";
-        }
-        if (code.indexOf( "AA" ) > 0) {
-            this.prodTypeStr = "외륜";
-            this.combiTypeStr = "내륜";
-        }
     }
 
     Save () {
@@ -364,10 +315,6 @@ export class OrderAdjustmentComponent implements OnInit {
          formData.delivery_date = this.datePipe.transform(formData.delivery_date, 'yyyy-MM-dd');
          formData.promised_date = this.datePipe.transform(formData.promised_date, 'yyyy-MM-dd');
          formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
-
-         if (this.isCombi == true) {
-             formData.combi_product_price = this.utils.removeComma(formData.combi_product_price) * 1;
-         }
 
          this.Update(this.selectedId, formData);
     }

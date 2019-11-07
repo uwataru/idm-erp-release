@@ -18,12 +18,10 @@ import {SharedModule} from '../shared/shared.module';
 import {ProductionLinePlanningComponent} from './planning/production-line-planning/production-line-planning.component';
 import {ProductionPlanningComponent} from './planning/production-planning/production-planning.component';
 import {MaterialsPlanningComponent} from './planning/materials-planning/materials-planning.component';
-import {CuttingWorksComponent} from './results/cutting-works/cutting-works.component';
 import {AssemblyWorksComponent} from './results/assembly-works/assembly-works.component';
 import {ForgingWorksComponent} from './results/forging-works/forging-works.component';
 import {ForgingResultComponent} from './record/forging-result/forging-result.component';
 import {ForgingWorkTimeComponent} from './aggregation/forging-work-time/forging-work-time.component';
-import {CuttingWorkComponent} from './record/cutting-work/cutting-work.component';
 import {AssemblyWorkComponent} from './record/assembly-work/assembly-work.component';
 import {ProductivityAnalysisComponent} from './record/productivity-analysis/productivity-analysis.component';
 import {ProductionPerformanceChartComponent} from './chart/production-performance-chart/production-performance-chart.component';
@@ -84,12 +82,10 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ProductionLinePlanningComponent,
     ProductionPlanningComponent,
     MaterialsPlanningComponent,
-    CuttingWorksComponent,
     AssemblyWorksComponent,
     ForgingWorksComponent,
     ForgingResultComponent,
     ForgingWorkTimeComponent,
-    CuttingWorkComponent,
     PersonnelManagementComponent,
     AssemblyWorkComponent,
     ProductivityAnalysisComponent,

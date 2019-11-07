@@ -107,7 +107,6 @@ export class MaterialsComponent implements OnInit {
             partner_code: ['', Validators.required],
             price: ['', Validators.required],
             price_date: ['', Validators.required],
-            maker: ''
         });
     }
 
@@ -246,7 +245,6 @@ export class MaterialsComponent implements OnInit {
                         partner_code: this.formData.partner_code,
                         price: this.formData.price,
                         price_date: this.formData.price_date,
-                        maker: this.formData.maker
                     });
                 }
             }

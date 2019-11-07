@@ -131,7 +131,7 @@ export class OutsourcedStorageComponent implements OnInit {
     this.panelTitle = '외주입고현황';
     this.inputFormTitle = '외주입고처리';
 
-    this.getAll(this.orderType);
+    this.getAll();
     this.selectedCnt = 0;
 
     $(document).ready(function () {
@@ -144,32 +144,12 @@ export class OutsourcedStorageComponent implements OnInit {
     });
   }
 
-  getAll(ordType): void {
+  getAll(): void {
     this.selectedCnt = 0;
     this.selectedId = '';
     this.selected = [];
-    this.orderType = ordType;
-    let params = {
-      order_type: ordType
-    };
-    let tmpEL = document.getElementById('order_type_text') as HTMLInputElement;
-    switch (ordType) {
-      case 'F':
-        tmpEL.value = '단조';
-        break;
-      case 'C':
-        tmpEL.value = '절단';
-        break;
-      case 'H':
-        tmpEL.value = '열처리';
-        break;
-      case 'M':
-        tmpEL.value = '가공';
-        break;
-    }
-
     this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
+    this.dataService.GetAll().subscribe(
       listData => {
         this.listData = listData;
         this.rows = listData['data'];
@@ -269,7 +249,7 @@ export class OutsourcedStorageComponent implements OnInit {
         data => {
           if (data['result'] == 'success') {
             this.inputForm.reset();
-            this.getAll(this.orderType);
+            this.getAll();
             this.messageService.add(this.addOkMsg);
           } else {
             this.messageService.add(data['errorMessage']);
@@ -286,7 +266,7 @@ export class OutsourcedStorageComponent implements OnInit {
       .subscribe(
         data => {
           if (data['result'] == 'success') {
-            this.getAll(this.orderType);
+            this.getAll();
             this.messageService.add(this.delOkMsg);
           } else {
             this.messageService.add(data['errorMessage']);

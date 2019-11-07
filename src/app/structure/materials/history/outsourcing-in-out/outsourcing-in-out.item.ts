@@ -9,7 +9,7 @@ export class Item {
     maxResultCount: number;
 
     constructor() {
-        
+
     }
 }
 
@@ -18,7 +18,6 @@ export class ViewData {
     sch_sdate: string;
     sch_edate: string;
     product_code: string;
-    drawing_no: string;
     product_name:string;
     constructor() {
     }
@@ -32,10 +31,8 @@ export class RowData {
     partner_name: string;
     product_code: string;
     product_name: string;
-    drawing_no: string;
     rcv_qty: number;
     order_qty: number;
-
     order_type: string;
     sch_sdate: string;
     sch_edate: string;

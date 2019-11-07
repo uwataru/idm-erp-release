@@ -14,7 +14,7 @@ export class ForgingWorksService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/forging-works';
+    private url = this.globals.serverUrl + '/production/assembly-works';
 
     GetById (pocNo:string): Observable<Item> {
         return this.http.get<Item>(this.url+'/write/'+pocNo);
@@ -34,7 +34,7 @@ export class ForgingWorksService {
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url, data, httpOptions).pipe(
+        return this.http.post<Item>(this.url + '/result', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

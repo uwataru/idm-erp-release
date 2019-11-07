@@ -10,12 +10,12 @@
         </button>
       </div>
     </div>
-  
+
     <div class="panel-body">
       <form [formGroup]="inputForm">
         <div class="row">
           <div class="col-lg-4">
-  
+
             <div class="wrapper">
               <div class="form-group">
                 <div class="row">
@@ -28,7 +28,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="poc_no" class="col-lg-4 control-label">
@@ -40,7 +40,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="production_line" class="col-lg-4 control-label">
@@ -55,7 +55,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="working_group" class="col-lg-4 control-label">
@@ -80,7 +80,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="product_code" class="col-lg-4 control-label">
@@ -91,7 +91,7 @@
                   </div>
                 </div>
               </div>
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="drawing_no" class="col-lg-4 control-label">-->
@@ -102,7 +102,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="product_name" class="col-lg-4 control-label">
@@ -113,7 +113,7 @@
                   </div>
                 </div>
               </div>
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="mold_no" class="col-lg-4 control-label">-->
@@ -125,24 +125,24 @@
   <!--              </div>-->
   <!--            </div>-->
             </div>
-  
+
           </div>
-  
+
           <div class="col-lg-4">
-  
+
             <div class="wrapper r-2x qty">
               <div class="form-group">
                 <div class="row">
-                  <label for="forging_qty" class="col-lg-3 control-label">
+                  <label for="assembly_qty" class="col-lg-3 control-label">
                     정상수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                   </label>
                   <div class="col-lg-9">
-                    <input type="text" decimal [(ngModel)]="forging_qty" formControlName="forging_qty" id="forging_qty"
+                    <input type="text" decimal [(ngModel)]="assembly_qty" formControlName="assembly_qty" id="assembly_qty"
                            (blur)="CalculSum()" nextFocus="defective_qty" class="form-control w-xs text-right"/>
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="defective_qty" class="col-lg-3 control-label">
@@ -163,7 +163,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="loss_qty" class="col-lg-3 control-label">
@@ -175,7 +175,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="lucre_qty" class="col-lg-3 control-label">
@@ -188,7 +188,7 @@
                 </div>
               </div>
             </div>
-  
+
   <!--          <div class="wrapper">-->
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
@@ -201,7 +201,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="cutting_qty" class="col-lg-3 control-label">-->
@@ -213,7 +213,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="forging_sum" class="col-lg-3 control-label">-->
@@ -225,7 +225,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="defective_sum" class="col-lg-3 control-label">-->
@@ -237,7 +237,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="loss_sum" class="col-lg-3 control-label">-->
@@ -249,7 +249,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="lucre_sum" class="col-lg-3 control-label">-->
@@ -261,7 +261,7 @@
   <!--                </div>-->
   <!--              </div>-->
   <!--            </div>-->
-  
+
   <!--            <div class="form-group">-->
   <!--              <div class="row">-->
   <!--                <label for="more_less_qty" class="col-lg-3 control-label">-->
@@ -274,11 +274,11 @@
   <!--              </div>-->
   <!--            </div>-->
   <!--          </div>-->
-  
+
           </div>
-  
+
           <div class="col-lg-4">
-  
+
             <div class="wrapper">
               <div class="form-group">
                 <div class="row">
@@ -295,7 +295,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="working_etime" class="col-lg-4 control-label">
@@ -311,7 +311,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="working_time" class="col-lg-4 control-label">
@@ -323,7 +323,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="preparation_time" class="col-lg-4 control-label">
@@ -335,7 +335,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="meal_time" class="col-lg-4 control-label">
@@ -347,7 +347,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="failure_time" class="col-lg-4 control-label">
@@ -359,7 +359,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="stop_time" class="col-lg-4 control-label">
@@ -371,7 +371,7 @@
                   </div>
                 </div>
               </div>
-  
+
               <div class="form-group">
                 <div class="row">
                   <label for="real_working_time" class="col-lg-4 control-label">
@@ -384,19 +384,19 @@
                 </div>
               </div>
             </div>
-  
+
           </div>
-  
+
         </div>
       </form>
     </div>
-  
+
     <div class="panel-footer text-center">
       <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
       <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
     </div>
   </div>
-  
+
   <div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog"
        aria-hidden="true">
     <div class="modal-dialog">
@@ -424,9 +424,9 @@
       </div>
     </div>
   </div>
-  
+
   <div *ngIf="isLoadingProgress" class="loading-progress">
-  
+
     <div class="sk-fading-circle">
       <div class="sk-circle1 sk-circle"></div>
       <div class="sk-circle2 sk-circle"></div>
@@ -441,6 +441,5 @@
       <div class="sk-circle11 sk-circle"></div>
       <div class="sk-circle12 sk-circle"></div>
     </div>
-  
+
   </div>
-  
