@@ -121,7 +121,7 @@ export class ElectronService {
 
     public setDevTool(): void{
         //개발자도구
-        if (AppConfig.production == false || this.globals.isDevIP) {
+        if ((AppConfig.production == false || this.globals.isDevIP) && this.isMobile == false) {
             remote.globalShortcut.register('Control+Shift+D', () => {
                 remote.BrowserWindow.getFocusedWindow().webContents.openDevTools()
             });
