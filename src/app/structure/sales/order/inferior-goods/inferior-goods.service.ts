@@ -19,10 +19,6 @@ export class InferiorGoodsService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
-    GetExcelFile () {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'});
-    }
-
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }

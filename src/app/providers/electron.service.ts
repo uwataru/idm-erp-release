@@ -4,11 +4,17 @@ import { Injectable } from '@angular/core';
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, webFrame, remote } from 'electron';
 import * as childProcess from 'child_process';
+import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { saveAs as importedSaveAs } from "file-saver";
+import { catchError, tap } from 'rxjs/operators';
 import * as fs from 'fs';
 import * as path from 'path';
 import {AppConfig} from '../../environments/environment';
 import {AuthGuard} from '../app.auth';
 import { AppGlobals } from '../app.globals';
+import { request } from 'http';
+import { browser } from 'protractor';
 
 export enum PRINT_MODE{
   MAIN = 'main',
@@ -32,6 +38,7 @@ export class ElectronService {
     path: typeof path;
 
     constructor(
+        private http: HttpClient,
         private globals: AppGlobals,
         private authGuard: AuthGuard
     ) {
@@ -56,6 +63,57 @@ export class ElectronService {
     isElectron = () => {
         return window && window.process && window.process.type;
     };
+
+
+    GetExcelFile (type,path): Observable<Blob> {
+        let myHeaders = new HttpHeaders();
+        let u = type == true ? '/setexceldown' : '/exceldown'
+        myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        console.log("path!!!!!!!!!!!!!"+this.globals.serverUrl+path);
+        return this.http.get(this.globals.serverUrl+path + u, {headers: myHeaders, responseType: 'blob'}).pipe(
+          tap((data: Blob) => console.log(data)),
+        //   catchError(this.handleError<Blob>('Create'))
+        );
+      }
+
+    public excelDL(type,path='',title=''): void {
+        this.GetExcelFile(type, path).subscribe(
+            res => {
+                // Filesaver.js 1.3.8
+                // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
+                importedSaveAs(res, title);
+                // else importedSaveAs(res, "수주등록현황.xlsx");
+
+                let win = this.remote.getCurrentWindow();
+
+                win.webContents.session.on('will-download', (event, item, webContents) => {
+
+                    const filename = item.getFilename();
+
+                    item.on('updated', (event, state) => {
+                        if (state === 'interrupted') {
+                            console.log('Download is interrupted but can be resumed')
+                        } else if (state === 'progressing') {
+                            if (item.isPaused()) {
+                                console.log('Download is paused')
+                            } else {
+                                console.log(`Received bytes: ${item.getReceivedBytes()}`)
+                            }
+                        }
+                    });
+                    item.once('done', (event, state) => {
+                        if (state === 'completed') {
+                            console.log(filename + ' 저장 완료');
+                        } else {
+                            alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
+                            console.log(`Download failed: ${state}`)
+                        }
+                    })
+                });
+            },
+            // error => this.errorMessage = <any>error
+        );
+    }
 
     public readyPrint(target, printMode = '', opt = ''): void {
         if(this.authGuard.isPrintable == false){

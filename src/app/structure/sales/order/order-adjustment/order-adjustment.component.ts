@@ -431,46 +431,6 @@ export class OrderAdjustmentComponent implements OnInit {
             );
     }
 
-    excelDown(type): void {
-        this.dataService.GetExcelFile(type).subscribe(
-            res => {
-                // Filesaver.js 1.3.8
-                // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                if (type) importedSaveAs(res, "수주마스터.xlsx");
-                else importedSaveAs(res, "수주등록현황.xlsx");
-
-                let win = this.electronService.remote.getCurrentWindow();
-
-                win.webContents.session.on('will-download', (event, item, webContents) => {
-
-                    const filename = item.getFilename();
-
-                    item.on('updated', (event, state) => {
-                        if (state === 'interrupted') {
-                            console.log('Download is interrupted but can be resumed')
-                        } else if (state === 'progressing') {
-                            if (item.isPaused()) {
-                                console.log('Download is paused')
-                            } else {
-                                console.log(`Received bytes: ${item.getReceivedBytes()}`)
-                            }
-                        }
-                    });
-                    item.once('done', (event, state) => {
-                        if (state === 'completed') {
-                            console.log(filename + ' 저장 완료');
-                            this.uploadFormModal.hide();
-                        } else {
-                            alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
-                            console.log(`Download failed: ${state}`)
-                        }
-                    })
-                });
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
-
     fileSelected (event) {
         let fileList: FileList = event.target.files;
         if(fileList.length > 0) {

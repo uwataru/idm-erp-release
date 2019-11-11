@@ -73,7 +73,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
     @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
 
     constructor(
-        private electronService: ElectronService,
+        public electronService: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
         private datePipe: DatePipe,
         private dataService: RawMaterialsReceivingService,
@@ -349,56 +349,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     checkSelect(event) {
         return event.id > 0 ? true : false;
-    }
-
-    excelDown() {
-        let path = this.electronService.path;
-        let app = this.electronService.remote.app;
-        //let dialog = this.electronService.remote.dialog;
-        //let toLocalPath = path.resolve(app.getPath("desktop"), "원자재마스터.xlsx");
-        //let userChosenPath = dialog.showSaveDialog({ defaultPath: toLocalPath });
-
-        //if (userChosenPath) {
-        this.dataService.GetExcelFile().subscribe(
-            res => {
-                // Filesaver.js 1.3.8
-                // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-                importedSaveAs(res, "원자재재고현황.xlsx");
-
-                let win = this.electronService.remote.getCurrentWindow();
-
-                win.webContents.session.on('will-download', (event, item, webContents) => {
-                    // Set the save path, making Electron not to prompt a save dialog.
-                    //item.setSavePath('d:\project\원자재마스터.xlsx')
-                    //item.setSavePath('d:\\project\\원자재마스터.xlsx');
-
-                    const filename = item.getFilename();
-
-                    item.on('updated', (event, state) => {
-                        if (state === 'interrupted') {
-                            console.log('Download is interrupted but can be resumed')
-                        } else if (state === 'progressing') {
-                            if (item.isPaused()) {
-                                console.log('Download is paused')
-                            } else {
-                                console.log(`Received bytes: ${item.getReceivedBytes()}`)
-                            }
-                        }
-                    })
-                    item.once('done', (event, state) => {
-                        if (state === 'completed') {
-                            console.log(filename + ' 저장 완료');
-                            this.uploadFormModal.hide();
-                        } else {
-                            alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
-                            console.log(`Download failed: ${state}`)
-                        }
-                    })
-                });
-            },
-            error => this.errorMessage = <any>error
-        );
-        //}
     }
 
     fileSelected (event) {

@@ -17,10 +17,6 @@ export class ProductivityAnalysisService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
-    GetExcelFile () {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'});
-    }
-
    /**
     * Handle Http operation that failed.
     * Let the app continue.

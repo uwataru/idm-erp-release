@@ -274,47 +274,6 @@ export class ScreeningComponent implements OnInit {
     }
   }
 
-  excelDown() {
-    let path = this.electronService.path;
-    let app = this.electronService.remote.app;
-
-    //if (userChosenPath) {
-    this.dataService.GetExcelFile().subscribe(
-      res => {
-        importedSaveAs(res, '단조(선별전)재고 현황.xlsx');
-
-        let win = this.electronService.remote.getCurrentWindow();
-
-        win.webContents.session.on('will-download', (event, item, webContents) => {
-          const filename = item.getFilename();
-
-          item.on('updated', (event, state) => {
-            if (state === 'interrupted') {
-              console.log('Download is interrupted but can be resumed');
-            } else if (state === 'progressing') {
-              if (item.isPaused()) {
-                console.log('Download is paused');
-              } else {
-                console.log(`Received bytes: ${item.getReceivedBytes()}`);
-              }
-            }
-          });
-          item.once('done', (event, state) => {
-            if (state === 'completed') {
-              console.log(filename + ' 저장 완료');
-              this.uploadFormModal.hide();
-            } else {
-              alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
-              console.log(`Download failed: ${state}`);
-            }
-          });
-        });
-      },
-      error => this.errorMessage = <any>error
-    );
-    //}
-  }
-
   fileSelected(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {

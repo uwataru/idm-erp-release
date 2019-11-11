@@ -20,13 +20,6 @@ export class ForgingWorksService {
         return this.http.get<Item>(this.url+'/write/'+pocNo);
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
     GetWorkingTime (data:string): Observable<Item> {
         return this.http.get<Item>(this.url+'/get-working-time/'+data);
     }

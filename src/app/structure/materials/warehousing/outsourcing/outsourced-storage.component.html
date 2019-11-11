@@ -79,7 +79,7 @@
             (click)="electronService.readyPrint('print-target-outsourced-storage', '', electronService.PRINT_OPT.LANDSCAPE)">
       <i class="glyphicon glyphicon-print"></i>인쇄
     </button>
-    <button type="button" class="btn btn-sm btn-success btn-addon" (click)="excelDown()"><i
+    <button type="button" class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL(false,'/outsourcing/orders/storage','외주발주현황.xlsx')"><i
       class="glyphicon glyphicon-download-alt"></i>엑셀
     </button>
   </div>

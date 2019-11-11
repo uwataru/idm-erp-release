@@ -21,7 +21,10 @@
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
         </form>
       </div>
-      <div class="col-sm-4 text-right">
+      <div class="col-sm-4 text-right text-center-xs">
+        <button (click)="openModal()" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+          <i class="glyphicon glyphicon-plus"></i>등록
+        </button>
       </div>
     </div>
   </div>
@@ -40,14 +43,18 @@
       [selectionType]="'single'"
       (select)='onSelect($event)'
       [messages]="messages">
-      <ngx-datatable-column prop="partner_name" name="거래처명"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="1" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="수주번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="등록일자"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="약속일자"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column> -->
+      <!-- <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="1" [canAutoResize]="false" -->
+                            <!-- [resizeable]="false"></ngx-datatable-column> -->
       <!-- <ngx-datatable-column prop="drawing_no" name="도번"></ngx-datatable-column> -->
       <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column> -->
       <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="수량" cellClass="text-center"></ngx-datatable-column>
       <!-- <ngx-datatable-column>
           <ng-template let-column="column" ngx-datatable-header-template>
     규격&middot;길이
@@ -65,11 +72,11 @@
             class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="production_line" name="작업라인" cellClass="text-center"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="production_line" name="작업라인" cellClass="text-center"></ngx-datatable-column> -->
     </ngx-datatable>
   </div>
 
-  <footer class="panel-footer">
+  <!-- <footer class="panel-footer">
     <div class="row">
       <div class="col-sm-6 hidden-xs">
 
@@ -80,7 +87,7 @@
         </button>
       </div>
     </div>
-  </footer>
+  </footer> -->
 </div>
 
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"

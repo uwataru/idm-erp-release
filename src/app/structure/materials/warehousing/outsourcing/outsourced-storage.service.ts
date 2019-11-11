@@ -20,13 +20,6 @@ export class OutsourcedStorageService {
         return this.http.get<Item[]>(this.url);
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/storage/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
     GetById (pocNo:string): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+pocNo);
     }

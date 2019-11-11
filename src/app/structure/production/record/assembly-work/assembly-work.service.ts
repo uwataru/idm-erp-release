@@ -25,13 +25,6 @@ export class AssemblyWorkService {
         return this.http.get<Item[]>(this.url + '/details?t=' + currTime, {params: params});
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
    /**
     * Handle Http operation that failed.
     * Let the app continue.

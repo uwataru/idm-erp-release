@@ -29,13 +29,6 @@ export class RawMaterialsReceivingService {
         return this.http.get<Item>(this.url + '/' + id);
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.receiving_url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {

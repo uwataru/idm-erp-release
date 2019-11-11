@@ -20,14 +20,6 @@ export class ForgingResultService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
-    GetExcelFile () {
-        let myHeaders = new HttpHeaders();
-        myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        return this.http.get(this.url + '/exceldown', {headers: myHeaders, responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
    /**
     * Handle Http operation that failed.
     * Let the app continue.

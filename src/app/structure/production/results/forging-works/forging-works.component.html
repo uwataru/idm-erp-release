@@ -418,7 +418,7 @@
             <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
                     class="btn btn-default btn-cancel" data-dismiss="modal" aria-label="Close" #uploadFormClose>취소
             </button>
-            <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+            <button type="button" (click)="electronService.excelDL(false,'/production/assembly-works','조립재고현황.xlsx')" class="btn btn-success">다운로드</button>
           </div>
         </div>
       </div>

@@ -156,7 +156,7 @@
                 <button class="btn btn-sm btn-info btn-addon" (click)="electronService.readyPrint('print-target-sales-slips', '', electronService.PRINT_OPT.LANDSCAPE)">
                     <i class="glyphicon glyphicon-print"></i>인쇄
                 </button>
-                <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+                <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL(false,'/sales/history/COMPLETION','판매전표.xlsx')">
                     <i class="glyphicon glyphicon-download-alt"></i>엑셀
                 </button>
                 </form>

@@ -107,20 +107,4 @@ export class ReturnComponent implements OnInit {
         const val = this.listSltdPaCode;
     }
 
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
-            blob => {
-                if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-                    window.navigator.msSaveBlob(blob, "반품명세서.xlsx");
-                }
-                else { // for chrome and firfox
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "반품명세서.xlsx";
-                    link.click();
-                }
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }

@@ -109,21 +109,4 @@ export class ProductivityAnalysisComponent implements OnInit {
             }
         );
     }
-
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
-            blob => {
-                if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-                    window.navigator.msSaveBlob(blob, "Report.xlsx");
-                }
-                else { // for chrome and firfox
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Report.xlsx";
-                    link.click();
-                }
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }
