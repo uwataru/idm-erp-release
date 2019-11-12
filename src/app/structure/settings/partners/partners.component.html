@@ -14,6 +14,7 @@
             <option value="3">소모</option>
             <option value="4">외주</option>
             <option value="5">영업</option>
+            <option value="6">해외</option>
           </select>
           <input type="text" formControlName="sch_partner_name" id="sch_partner_name" (keyup)="updateFilter($event)"
                  class="input-sm form-control w-sm inline v-middle" placeholder="거래처명"/>
@@ -71,8 +72,6 @@
       </ngx-datatable-column>
       <ngx-datatable-column prop="ptype_str" name="구분" [width]="50" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="biz_no" name="사업자등록번호" [width]="110" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="name" name="풀네임" [width]="140" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="alias" name="약칭명" [width]="90" [canAutoResize]="false"
@@ -80,7 +79,11 @@
       <ngx-datatable-column prop="ceo" name="대표자" [width]="60" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column prop="addr" name="주소"></ngx-datatable-column>
-      <ngx-datatable-column prop="phone_no" name="전화" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="" name="전화" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="담당자" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="phone_no" name="휴대전화" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="fax_no" name="팩스" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
@@ -222,6 +225,9 @@
                 <label class="checkbox-inline">
                   <input type="checkbox" formControlName="ptype5" id="ptype5" value="1" />영업
                 </label>
+                <label class="checkbox-inline">
+                  <input type="checkbox" formControlName="ptype6" id="ptype6" value="1" />해외
+                </label>
               </td>
             </tr>
             <tr>
@@ -230,12 +236,11 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="name" id="name" nextFocus="alias"
+                <input type="text" formControlName="name" id="name" required nextFocus="alias"
                        class="form-control input-sm w-md"/>
               </td>
               <th width="140px">
                 <label for="alias">거래처명(약칭)</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
                 <input type="text" formControlName="alias" id="alias" nextFocus="biz_no"
@@ -245,19 +250,27 @@
             <tr>
               <th>
                 <label for="biz_no">사업자등록번호</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="biz_no" id="biz_no" required nextFocus="ceo"
+                <input type="text" formControlName="biz_no" id="biz_no" nextFocus="ceo"
                        class="form-control input-sm w-md"/>
               </td>
               <th>
                 <label for="ceo">대표자</label>
+              </th>
+              <td>
+                <input type="text" formControlName="ceo" id="ceo" nextFocus="mobile"
+                       class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="mobile">Mobile.</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="ceo" id="ceo" required nextFocus="addr"
-                       class="form-control input-sm w-sm"/>
+                <input type="text" formControlName="mobile" id="mobile" required nextFocus="ceo"
+                       class="form-control input-sm w-md"/>
               </td>
             </tr>
             <tr>
@@ -303,9 +316,10 @@
             <tr>
               <th>
                 <label for="phone_no">전화</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="phone_no" id="phone_no" nextFocus="fax_no"
+                <input type="text" formControlName="phone_no" id="phone_no" required nextFocus="fax_no"
                        class="form-control input-sm w-md"/>
               </td>
               <th>
@@ -319,18 +333,25 @@
             <tr>
               <th>
                 <label for="biz_cate1">업태</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="biz_cate1" id="biz_cate1" required nextFocus="biz_cate2"
+                <input type="text" formControlName="biz_cate1" id="biz_cate1" nextFocus="biz_cate2"
                        class="form-control input-sm w-md"/>
               </td>
               <th>
                 <label for="biz_cate2">종목</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="biz_cate2" id="biz_cate2" required
+                <input type="text" formControlName="biz_cate2" id="biz_cate2"
+                       class="form-control input-sm w-md"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="nation">국가</label>
+              </th>
+              <td>
+                <input type="text" formControlName="nation" id="nation"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>

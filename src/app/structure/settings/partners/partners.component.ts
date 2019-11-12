@@ -94,7 +94,10 @@ export class PartnersComponent implements OnInit {
       ptype3: '',
       ptype4: '',
       ptype5: '',
+      ptype6: '',
       biz_no: ['', Validators.required],
+      mobile: ['', Validators.required],
+      nation: ['', Validators.required],
       name: ['', Validators.required],
       alias: ['', Validators.required],
       ceo: ['', Validators.required],
@@ -199,6 +202,10 @@ export class PartnersComponent implements OnInit {
           if (this.formData.ptype5 == 'Y') {
             ptype5 = true;
           }
+          let ptype6 = false;
+          if (this.formData.ptype6 == 'Y') {
+            ptype6 = true;
+          }
           this.inputForm.patchValue({
             input_date: this.formData.input_date,
             ptype1: ptype1,
@@ -206,7 +213,10 @@ export class PartnersComponent implements OnInit {
             ptype3: ptype3,
             ptype4: ptype4,
             ptype5: ptype5,
+            ptype6: ptype6,
             biz_no: this.formData.biz_no,
+            mobile: this.formData.mobile,
+            nation: this.formData.nation,
             name: this.formData.name,
             alias: this.formData.alias,
             ceo: this.formData.ceo,
