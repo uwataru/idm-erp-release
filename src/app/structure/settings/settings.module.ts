@@ -29,6 +29,7 @@ import {AcctMgmtItemValuesComponent} from './accounting/acct-mgmt-item-values/ac
 import {UsersComponent} from './accounting/users/users.component';
 import {PermissionsComponent} from './accounting/permissions/permissions.component';
 import {MoldStorageComponent} from './technology/molds/mold-storage.component';
+import {NgDaumAddressModule} from 'ng2-daum-address';
 
 
 export const routes: Routes = [
@@ -73,6 +74,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ReactiveFormsModule,
     CommonModule,
     SharedModule,
+    NgDaumAddressModule,
     RouterModule.forChild(routes)
   ],
   declarations: [

@@ -51,6 +51,7 @@
     "jquery": "^3.4.1",
     "jsonp-client": "^1.2.2",
     "ng2-charts": "^1.6.0",
+    "ng2-daum-address": "^1.1.4",
     "ng2-dragula": "^1.5.0",
     "ngx-barcode": "^0.2.4",
     "ngx-bootstrap": "^3.0.1",

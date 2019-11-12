@@ -424,4 +424,21 @@ export class PartnersComponent implements OnInit {
       error => this.errorMessage = <any>error
     );
   }
+
+  daumAddressOptions = {
+    class: ['btn-small', 'btn-primary'],
+    type: 'layer',
+    target: 'daum_address_pop',
+    width: 400,
+    left: 600,
+  };
+
+  setAddressData(data) {
+    // console.log(data);
+    this.inputForm.patchValue({
+          zipcode: data.zip,
+          addr: data.addr
+      }
+    );
+  }
 }

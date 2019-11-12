@@ -284,8 +284,13 @@
                 <label for="zipcode">우편번호</label>
               </th>
               <td>
-                <input type="text" formControlName="zipcode" id="zipcode" nextFocus="email"
-                       class="form-control input-sm w-sm"/>
+                <input type="text" size="7" formControlName="zipcode" id="zipcode" nextFocus="email"
+                       class="form-control input-sm w-sm" style="width: 100px; display: inline !important;"/>
+                <btn-daum-address (result)="setAddressData($event)" [options]="daumAddressOptions"></btn-daum-address>
+                <div id="daum_address_pop"
+                     style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;left:100px !important;">
+                  <img src="//t1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" alt="닫기 버튼">
+                </div>
               </td>
               <th>
                 <label for="email">E-mail</label>
