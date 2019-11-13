@@ -168,7 +168,7 @@
         <button class="btn btn-sm btn-info btn-addon">
           <i class="glyphicon glyphicon-print"></i>인쇄
         </button>
-        <button class="btn btn-sm btn-success btn-addon" (click)="excelDown()">
+        <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/products','제품등록현황.xlsx')">
           <i class="glyphicon glyphicon-download-alt"></i>엑셀
         </button>
       </div>
@@ -347,7 +347,7 @@
           <button type="button" (click)="UploadFileSrc.value=''; UploadFormModal.hide()"
                   class="btn btn-default btn-cancel">취소
           </button>
-          <button type="button" (click)="excelDown()" class="btn btn-success">다운로드</button>
+          <button type="button" (click)="electronService.excelDL('master','/products','제품마스터.xlsx')" class="btn btn-success">다운로드</button>
         </div>
       </div>
     </div>

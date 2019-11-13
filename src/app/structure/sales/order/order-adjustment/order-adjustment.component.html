@@ -108,7 +108,7 @@
                 (click)="electronService.readyPrint('print-target-oa-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
           <i class="glyphicon glyphicon-print"></i>인쇄
         </button>
-        <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL(false,'/sales/orders','수주등록현황.xlsx')">
+        <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/sales/orders','수주등록현황.xlsx')">
           <i class="glyphicon glyphicon-download-alt"></i>엑셀
         </button>
       </div>
@@ -444,7 +444,7 @@
           <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
                   class="btn btn-default btn-cancel">취소
           </button>
-          <button type="button" (click)="electronService.excelDL(true,'/sales/orders','수주마스터.xlsx')" class="btn btn-success">다운로드</button>
+          <button type="button" (click)="electronService.excelDL('master','/sales/orders','수주마스터.xlsx')" class="btn btn-success">다운로드</button>
         </div>
       </div>
     </div>

@@ -74,11 +74,4 @@ export class PermissionsService {
         console.log(message);
         //this.messageService.add('오류: ' + message);
     }
-
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
 }

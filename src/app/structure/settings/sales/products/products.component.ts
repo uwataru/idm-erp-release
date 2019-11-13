@@ -79,7 +79,7 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
-    private electronService: ElectronService,
+    public electronService: ElectronService,
     private dataService: ProductsService,
     private globals: AppGlobals,
     private route: ActivatedRoute,
@@ -467,45 +467,6 @@ export class ProductsComponent implements OnInit {
         this.isEditMode = false;
       }
     }
-  }
-
-  excelDown(): void {
-    this.dataService.GetExcelFile().subscribe(
-      blob => {
-        // Filesaver.js 1.3.8
-        // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
-        importedSaveAs(blob, '제품마스터.xlsx');
-
-        let win = this.electronService.remote.getCurrentWindow();
-
-        win.webContents.session.on('will-download', (event, item, webContents) => {
-
-          const filename = item.getFilename();
-
-          item.on('updated', (event, state) => {
-            if (state === 'interrupted') {
-              console.log('Download is interrupted but can be resumed');
-            } else if (state === 'progressing') {
-              if (item.isPaused()) {
-                console.log('Download is paused');
-              } else {
-                console.log(`Received bytes: ${item.getReceivedBytes()}`);
-              }
-            }
-          });
-          item.once('done', (event, state) => {
-            if (state === 'completed') {
-              console.log(filename + ' 저장 완료');
-              this.uploadFormModal.hide();
-            } else {
-              alert('저장하려는 파일이 열려져 있습니다. 파일을 닫은 후 다시 진행해주세요');
-              console.log(`Download failed: ${state}`);
-            }
-          });
-        });
-      },
-      error => this.errorMessage = <any>error
-    );
   }
 
   fileSelected(event) {

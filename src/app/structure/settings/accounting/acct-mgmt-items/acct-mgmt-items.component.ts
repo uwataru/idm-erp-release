@@ -241,20 +241,4 @@ export class AcctMgmtItemsComponent implements OnInit {
         }
     }
 
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
-            blob => {
-                if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-                    window.navigator.msSaveBlob(blob, "관리항목.xlsx");
-                }
-                else { // for chrome and firfox
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "관리항목.xlsx";
-                    link.click();
-                }
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }

@@ -20,13 +20,6 @@ export class PartnerAssemblyProductService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetExcelFile (): Observable<Blob> {
-        return this.http.get(this.url + '/exceldown', {responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }

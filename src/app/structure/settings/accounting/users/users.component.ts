@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppGlobals } from '../../../../app.globals';
+import { ElectronService } from '../../../../providers/electron.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from './users.service';
 import { ValidationService } from './validation.service';
@@ -45,6 +46,7 @@ export class UsersComponent implements OnInit {
 
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
+        public electronService: ElectronService,
         private dataService: UsersService,
         private globals: AppGlobals,
         private route: ActivatedRoute,
@@ -234,20 +236,4 @@ export class UsersComponent implements OnInit {
         }
     }
 
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
-            blob => {
-                if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-                    window.navigator.msSaveBlob(blob, "사용자등록현황.xlsx");
-                }
-                else { // for chrome and firfox
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "사용자등록현황.xlsx";
-                    link.click();
-                }
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }

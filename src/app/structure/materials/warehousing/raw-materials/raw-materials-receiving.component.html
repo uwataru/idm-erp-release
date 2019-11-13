@@ -413,7 +413,7 @@
           <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
                   class="btn btn-default btn-cancel">취소
           </button>
-          <button type="button" (click)="electronService.excelDL(false,'/materials/receiving','원자재재고현황.xlsx')" class="btn btn-success">다운로드</button>
+          <button type="button" (click)="electronService.excelDL('','/materials/receiving','원자재재고현황.xlsx')" class="btn btn-success">다운로드</button>
         </div>
       </div>
     </div>

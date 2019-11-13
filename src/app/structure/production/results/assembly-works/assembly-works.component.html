@@ -55,7 +55,7 @@
               (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
         <i class="glyphicon glyphicon-print"></i>인쇄
       </button>
-      <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL(false,'/production/assembly-works','조립작업지시현황.xlsx')"><i
+      <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works','조립작업지시현황.xlsx')"><i
         class="glyphicon glyphicon-download-alt"></i>엑셀
       </button>
     </div>
@@ -351,7 +351,7 @@
           <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
                   class="btn btn-default btn-cancel" data-dismiss="modal" aria-label="Close" #uploadFormClose>취소
           </button>
-          <button type="button" (click)="elSrv.excelDL(false,'/production/assembly-works','조립작업지시현황.xlsx')" class="btn btn-success">다운로드</button>
+          <button type="button" (click)="elSrv.excelDL('','/production/assembly-works','조립작업지시현황.xlsx')" class="btn btn-success">다운로드</button>
         </div>
       </div>
     </div>

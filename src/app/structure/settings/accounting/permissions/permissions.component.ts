@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { PermissionsService } from './permissions.service';
+import { ElectronService } from '../../../../providers/electron.service';
 import { AppGlobals } from '../../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../../../message.service';
@@ -45,6 +46,7 @@ export class PermissionsComponent implements OnInit {
 
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
+        public electronService: ElectronService,
         private dataService: PermissionsService,
         private globals: AppGlobals,
         private route: ActivatedRoute,
@@ -251,20 +253,4 @@ export class PermissionsComponent implements OnInit {
             );
     }
 
-    excelDown(): void {
-        this.dataService.GetExcelFile().subscribe(
-            blob => {
-                if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-                    window.navigator.msSaveBlob(blob, "사용자권한.xlsx");
-                }
-                else { // for chrome and firfox
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "사용자권한.xlsx";
-                    link.click();
-                }
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }

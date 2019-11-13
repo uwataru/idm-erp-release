@@ -23,11 +23,15 @@ export enum PRINT_MODE{
 export enum PRINT_OPT{
   LANDSCAPE = 'landscape'
 }
+export enum EXCELDL_MODE{
+    MASTER = 'master'
+}
 
 @Injectable()
 export class ElectronService {
     public readonly PRINT_MODE = PRINT_MODE;
     public readonly PRINT_OPT = PRINT_OPT;
+    public readonly EXCELDL_MODE = EXCELDL_MODE;
     public isMobile: boolean = false;
 
     ipcRenderer: typeof ipcRenderer;
@@ -65,9 +69,9 @@ export class ElectronService {
     };
 
 
-    GetExcelFile (type,path): Observable<Blob> {
+    GetExcelFile (opt,path): Observable<Blob> {
         let myHeaders = new HttpHeaders();
-        let u = type == true ? '/setexceldown' : '/exceldown'
+        let u = opt == EXCELDL_MODE.MASTER ? '/setexceldown' : '/exceldown'
         myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         console.log("path!!!!!!!!!!!!!"+this.globals.serverUrl+path);
         return this.http.get(this.globals.serverUrl+path + u, {headers: myHeaders, responseType: 'blob'}).pipe(
@@ -76,8 +80,8 @@ export class ElectronService {
         );
       }
 
-    public excelDL(type,path='',title=''): void {
-        this.GetExcelFile(type, path).subscribe(
+    public excelDL(opt='',path='',title=''): void {
+        this.GetExcelFile(opt, path).subscribe(
             res => {
                 // Filesaver.js 1.3.8
                 // 사용자가 지정한 저장위치를 읽을 수 있는 방법이 없어 저장된 파일의 링크를 제공할 수 없음.
