@@ -21,5 +21,9 @@
             "src/**/*",
             "node_modules/ng2-daum-address/*.ts"
         ]
-    }
+    },
+    "include": [
+        "src/**/*",
+        "node_modules/ng2-daum-address/*.ts"
+    ]
 }
