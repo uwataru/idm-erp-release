@@ -29,6 +29,16 @@ export class AppGlobals {
     public isNotExecutable: string = '실행 권한이 없습니다.';
     public isNotPrintable: string = '인쇄 권한이 없습니다.';
 
+    //엑셀 생성관련
+    public excelMasterPath: string = 'master';
+    public headerFontStyle = {color: {argb: 'ff000000'}, size: 11, bold: true};
+    public headerFillColor = {type: 'pattern', pattern: 'solid', fgColor: {argb: 'ffb8cce4'}} ;
+    public headerBorderStyle = {top: {style: 'hair'}, left: {style: 'hair'}, bottom: {style: 'hair'}, right: {style: 'hair'}};
+    public headerAlignment = {horizontal: "center"};
+    public bodyFontStyle = {color: {argb: 'ff000000'}, size: 10, bold: false};
+    public bodyBorderStyle = {top: {style: 'hair'}, left: {style: 'hair'}, bottom: {style: 'hair'}, right: {style: 'hair'}};
+
+
     //테스트서버와 실제사용서버 구분
     getServerUrl() {
       if(!AppConfig.production){
