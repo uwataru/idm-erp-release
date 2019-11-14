@@ -43,7 +43,7 @@ export class PartnersService {
 
     /** PUT: 숨김,삭제 */
     changeStatus (id, data) {
-        return this.http.put(this.url+'/status/'+id, data, httpOptions);
+        return this.http.put(this.url+'/change-status/'+id, data, httpOptions);
     }
 
     UploadExcelFile (data) {

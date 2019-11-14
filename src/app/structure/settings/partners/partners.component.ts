@@ -101,12 +101,13 @@ export class PartnersComponent implements OnInit {
       name: ['', Validators.required],
       alias: ['', Validators.required],
       ceo: ['', Validators.required],
-      addr: ['', Validators.required],
+      addr1: '',
       addr2: '',
+      addr3: '',
       zipcode: '',
       email: '',
-      phone_no: '',
-      fax_no: '',
+      phone: '',
+      fax: '',
       biz_cate1: ['', Validators.required],
       biz_cate2: ['', Validators.required]
     });
@@ -183,27 +184,27 @@ export class PartnersComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
           let ptype1 = false;
-          if (this.formData.ptype1 == 'Y') {
+          if (this.formData.ptype1 == true) {
             ptype1 = true;
           }
           let ptype2 = false;
-          if (this.formData.ptype2 == 'Y') {
+          if (this.formData.ptype2 == true) {
             ptype2 = true;
           }
           let ptype3 = false;
-          if (this.formData.ptype3 == 'Y') {
+          if (this.formData.ptype3 == true) {
             ptype3 = true;
           }
           let ptype4 = false;
-          if (this.formData.ptype4 == 'Y') {
+          if (this.formData.ptype4 == true) {
             ptype4 = true;
           }
           let ptype5 = false;
-          if (this.formData.ptype5 == 'Y') {
+          if (this.formData.ptype5 == true) {
             ptype5 = true;
           }
           let ptype6 = false;
-          if (this.formData.ptype6 == 'Y') {
+          if (this.formData.ptype6 == true) {
             ptype6 = true;
           }
           this.inputForm.patchValue({
@@ -216,16 +217,17 @@ export class PartnersComponent implements OnInit {
             ptype6: ptype6,
             biz_no: this.formData.biz_no,
             mobile: this.formData.mobile,
-            nation: this.formData.nation,
+            country: this.formData.country,
             name: this.formData.name,
             alias: this.formData.alias,
             ceo: this.formData.ceo,
-            addr: this.formData.addr,
+            addr1: this.formData.addr1,
             addr2: this.formData.addr2,
             zipcode: this.formData.zipcode,
             email: this.formData.email,
-            phone_no: this.formData.phone_no,
-            fax_no: this.formData.fax_no,
+            phone: this.formData.phone,
+            costumer: this.formData.costumer,
+            fax: this.formData.fax,
             biz_cate1: this.formData.biz_cate1,
             biz_cate2: this.formData.biz_cate2
           });
@@ -408,7 +410,7 @@ export class PartnersComponent implements OnInit {
     // console.log(data);
     this.inputForm.patchValue({
           zipcode: data.zip,
-          addr: data.addr
+          addr1: data.addr
       }
     );
   }
