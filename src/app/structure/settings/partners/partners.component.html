@@ -78,14 +78,14 @@
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="ceo" name="대표자" [width]="60" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="addr" name="주소"></ngx-datatable-column>
-      <ngx-datatable-column prop="" name="전화" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="addr1" name="주소"></ngx-datatable-column>
+      <ngx-datatable-column prop="phone" name="전화" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="" name="담당자" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="costumer" name="담당자" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="phone_no" name="휴대전화" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="mobile" name="휴대전화" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="fax_no" name="팩스" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="fax" name="팩스" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제&middot;숨김" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
@@ -259,27 +259,35 @@
                 <label for="ceo">대표자</label>
               </th>
               <td>
-                <input type="text" formControlName="ceo" id="ceo" nextFocus="mobile"
+                <input type="text" formControlName="ceo" id="ceo" nextFocus="costumer"
                        class="form-control input-sm w-sm"/>
               </td>
             </tr>
             <tr>
               <th>
+                <label for="costumer">담당자</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="costumer" id="costumer" nextFocus="mobile"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
                 <label for="mobile">Mobile.</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="mobile" id="mobile" required nextFocus="ceo"
+                <input type="text" formControlName="mobile" id="mobile" required nextFocus="addr1"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>
             <tr>
               <th>
-                <label for="addr">사업장소재지</label>
+                <label for="addr1">사업장소재지</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td colspan="3">
-                <input type="text" formControlName="addr" id="addr" required nextFocus="addr2"
+                <input type="text" formControlName="addr1" id="addr1" required nextFocus="addr2"
                        class="form-control input-sm"/>
               </td>
             </tr>
@@ -315,11 +323,11 @@
             </tr>
             <tr>
               <th>
-                <label for="phone_no">전화</label>
+                <label for="phone">전화</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="phone_no" id="phone_no" required nextFocus="fax_no"
+                <input type="text" formControlName="phone" id="phone" required nextFocus="fax"
                        class="form-control input-sm w-md"/>
               </td>
               <th>
@@ -348,10 +356,10 @@
             </tr>
             <tr>
               <th>
-                <label for="nation">국가</label>
+                <label for="country">국가</label>
               </th>
               <td>
-                <input type="text" formControlName="nation" id="nation"
+                <input type="text" formControlName="country" id="country"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>
