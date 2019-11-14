@@ -23,15 +23,16 @@ export enum PRINT_MODE{
 export enum PRINT_OPT{
   LANDSCAPE = 'landscape'
 }
-export enum EXCELDL_MODE{
-    MASTER = 'master'
+export enum EXPORT_EXCEL_MODE{
+    MASTER = 'master',
+    LIST = 'list'
 }
 
 @Injectable()
 export class ElectronService {
     public readonly PRINT_MODE = PRINT_MODE;
     public readonly PRINT_OPT = PRINT_OPT;
-    public readonly EXCELDL_MODE = EXCELDL_MODE;
+    public readonly EXPORT_EXCEL_MODE = EXPORT_EXCEL_MODE;
     public isMobile: boolean = false;
 
     ipcRenderer: typeof ipcRenderer;
@@ -71,7 +72,7 @@ export class ElectronService {
 
     GetExcelFile (opt,path): Observable<Blob> {
         let myHeaders = new HttpHeaders();
-        let u = opt == EXCELDL_MODE.MASTER ? '/setexceldown' : '/exceldown'
+        let u = opt == EXPORT_EXCEL_MODE.MASTER ? '/setexceldown' : '/exceldown'
         myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         console.log("path!!!!!!!!!!!!!"+this.globals.serverUrl+path);
         return this.http.get(this.globals.serverUrl+path + u, {headers: myHeaders, responseType: 'blob'}).pipe(
@@ -117,6 +118,14 @@ export class ElectronService {
             },
             // error => this.errorMessage = <any>error
         );
+    }
+
+    public checkExportExcel() {
+        if(this.isMobile==true){
+            alert("pc에서 지원되는 기능입니다.");
+            return false;
+        }
+        return true;
     }
 
     public readyPrint(target, printMode = '', opt = ''): void {

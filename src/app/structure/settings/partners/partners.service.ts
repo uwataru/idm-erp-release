@@ -24,6 +24,10 @@ export class PartnersService {
         return this.http.get<Item>(this.url+'/'+id);
     }
 
+    GetMasterExcelData (): Observable<Item> {
+        return this.http.get<Item>(this.url + '/' + this.globals.excelMasterPath);
+    }
+
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {

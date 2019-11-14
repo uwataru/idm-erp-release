@@ -16,7 +16,12 @@
             "es2016",
             "es2015",
             "dom"
-        ]
+        ],
+        "paths": {
+          "exceljs": [
+            "node_modules/exceljs/dist/exceljs.min"
+          ]
+        }
     },
     "include": [
         "src/**/*",
