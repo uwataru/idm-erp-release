@@ -6,7 +6,7 @@ import { ServerConfig } from '../environments/serverinfo';
 export class AppGlobals {
     constructor() { }
 
-    public remoteUrl: string = 'http://seil-erp.innest.co.kr/d';
+    public remoteUrl: string = 'http://lucas.innest.co.kr';
     public serverUrl: string = this.getServerUrl();
 
 

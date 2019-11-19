@@ -12,12 +12,13 @@ export class ConfigService {
         ) { }
     public isCorrect : boolean;
     private currTime = (new Date()).getTime();
-    private url = this.globals.serverUrl + '/configs.json';
+    // private url = this.globals.serverUrl + '/configs.json';
+    private url = 'http://lucas.innest.co.kr/menu';
 
     /** GET data from the server */
     public load() {
         return new Promise((resolve, reject) => {
-            this.http.get(this.url+'?t='+this.currTime).subscribe((responseData) => {
+            this.http.get(this.url).subscribe((responseData) => {
                 this.globals.configs = responseData;
                 resolve(true);
                 this.isCorrect = true;
