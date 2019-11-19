@@ -38,8 +38,7 @@
     "test": "npm run postinstall:web && ng test",
     "e2e": "npm run postinstall:web && ng e2e",
     "publish": "build -p always",
-    "publish_32bit": "build && npx electron-builder --ia32 --x64 -w -p always",
-    "pubilsh_for_APP": "npm run postinstall:web && ng build --prod=true"
+    "publish_32bit": "build && npx electron-builder --ia32 --x64 -w -p always"
   },
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "^2.1.2",
