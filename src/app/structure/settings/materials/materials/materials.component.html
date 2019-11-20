@@ -9,15 +9,13 @@
         <form [formGroup]="searchForm">
           <input formControlName="sch_partner_name"
                  [typeahead]="listPartners"
-                 typeaheadOptionField="Alias"
+                 typeaheadOptionField="alias"
                  [typeaheadOptionsLimit]="50"
                  [typeaheadScrollable]="true"
                  [typeaheadMinLength]="0"
                  (typeaheadOnSelect)="onSelectListPartner($event)"
                  placeholder="거래처명"
                  class="input-sm form-control w-sm inline v-middle"/>
-          <input type="text" formControlName="sch_material" id="sch_material" (keyup)="updateFilter($event)"
-                 class="input-sm form-control w-sm inline v-middle" placeholder="재질"/>
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
 
           <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg"
@@ -69,20 +67,17 @@
           </label>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="material_type" name="종류" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="material" name="재질"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_code" name="거래처코드" [width]="221" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="공급처(약칭)" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="input_date" name="등록일자" [width]="110" cellClass="text-center" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처" [width]="221"></ngx-datatable-column>
       <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="110" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="price_date" name="단가적용일" [width]="110" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-center">
@@ -156,29 +151,11 @@
                        class="form-control input-sm w-sm"/>
               </td>
               <th>
-                <label for="material">재질</label>
+                <label for="partner_alias">공급처(약칭)</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="material" id="material" nextFocus="material_type"
-                       class="form-control input-sm w-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                <label for="material_type">자재명</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="material_type" id="material_type" nextFocus="partner_name"
-                       class="form-control input-sm w-sm"/>
-              </td>
-              <th>
-                <label for="partner_code">공급처(약칭)</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input formControlName="partner_name" id="partner_name"
+                <input formControlName="partner_alias" id="partner_alias"
                        [typeahead]="inputPartners"
                        typeaheadOptionField="Name"
                        [typeaheadOptionsLimit]="50"
@@ -187,18 +164,29 @@
                        (typeaheadOnSelect)="onSelectInputPartner($event)"
                        placeholder="거래처명"
                        class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code" nextFocus="size"/>
+                <input type="hidden" formControlName="partner_id" id="partner_id" nextFocus="name"/>
               </td>
             </tr>
             <tr>
               <th>
-                <label for="size">규격</label>
+                <label for="name">자재명</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="name" id="name" nextFocus="size"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="size">자재규격</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
                 <input type="text" formControlName="size" id="size" nextFocus="price"
                        class="form-control input-sm w-sm"/>
               </td>
+            </tr>
+            <tr>
+              
               <th>
                 <label for="price">단가</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
@@ -207,8 +195,6 @@
                 <input type="text" formControlName="price" id="price" nextFocus="price_date"
                        class="form-control input-sm w-sm"/>
               </td>
-            </tr>
-            <tr>
               <th>
                 <label for="price_date">단가적용일</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>

@@ -4,13 +4,13 @@ export class Item {
     data: {
         id: number;
         input_date: string;
-        material: string;
-        material_type: string;
+        name: string;
+        partner_id: string;
         size: string;
-        partner_code: string;
-        partner_name: string;
         price: number;
         price_date: string;
+        partner_alias: string;
+        partner_name: string;
     };
     maxResultCount: number;
     result: string;

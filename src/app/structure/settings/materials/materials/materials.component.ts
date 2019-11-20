@@ -40,12 +40,11 @@ export class MaterialsComponent implements OnInit {
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
-    //listPartners = [];
-    listPartners: any[] = this.globals.configs['type2Partners'];
-    listSltdPaCode: number = 0;
+    // listPartners = [];
+    listPartners: any[];
+    listSltdPaId: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
-    sch_material: string;
     sch_st: number;
     st: number;
     rows = [];
@@ -56,7 +55,7 @@ export class MaterialsComponent implements OnInit {
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type2Partners'];
+    inputPartners: any[];
     editData: Item;
 
     isExecutable: boolean = false;
@@ -96,15 +95,12 @@ export class MaterialsComponent implements OnInit {
 
         this.searchForm = fb.group({
             sch_partner_name: '',
-            sch_material: ''
         });
         this.inputForm = fb.group({
             input_date: ['', Validators.required],
-            material: ['', Validators.required],
-            material_type: ['', Validators.required],
             size: ['', Validators.required],
-            partner_name: ['', Validators.required],
-            partner_code: ['', Validators.required],
+            name: ['', Validators.required],
+            partner_alias: ['', Validators.required],
             price: ['', Validators.required],
             price_date: ['', Validators.required],
         });
@@ -116,7 +112,8 @@ export class MaterialsComponent implements OnInit {
         this.uploadFormTitle = '자재 엑셀업로드';
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         this.hideConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
-
+        
+        this.getPartners();
         this.changeSubMenu(1);
 
         $(document).ready(function(){
@@ -127,6 +124,12 @@ export class MaterialsComponent implements OnInit {
                 handle: '.modal-header'
             });
         });
+        console.log("typeahead!!!!!!!!!"+this.listPartners);
+    }
+
+    getPartners(): void {
+        this.dataService.GetPartners();
+        this.listPartners = this.globals.partners['data'];
     }
 
     changeSubMenu(st): void {
@@ -146,15 +149,14 @@ export class MaterialsComponent implements OnInit {
 
         let formData = this.searchForm.value;
         let params = {
-            //partner_name: formData.sch_partner_name,
-            material: formData.sch_material,
-            st: this.sch_st,
-            sortby: ['material_name','size'],
+            partner_name: formData.sch_partner_name,
+            // st: this.sch_st,
+            sortby: ['name','size'],
             order: ['asc','asc'],
             maxResultCount: 10000
         }
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
+        if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
+            params['partner_id'] = this.listSltdPaId;
         }
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
@@ -190,19 +192,19 @@ export class MaterialsComponent implements OnInit {
 
     onSelectListPartner(event: TypeaheadMatch): void {
 
-        if (event.item['Code'] == '') {
-            this.listSltdPaCode = 0;
+        if (event.item['id'] == '') {
+            this.listSltdPaId = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaId = event.item['id'];
         }
 
-        let partner_code = this.listSltdPaCode;
-        let formData = this.searchForm.value;
-        let material = formData.sch_material;
+        let partner_id = this.listSltdPaId;
+        // let formData = this.searchForm.value;
+        // let material = formData.sch_material;
 
         let rt = this.temp.filter(function(d){
-            d.partner_code = String(d.partner_code);
-            return (d.partner_code.indexOf(partner_code) !== -1 && d.material.indexOf(material) !== -1) || !partner_code && !material;
+            d.partner_id = String(d.partner_id);
+            return d.partner_id.indexOf(partner_id) !== -1  || !partner_id ;
         });
 
         this.rows = rt;
@@ -211,10 +213,10 @@ export class MaterialsComponent implements OnInit {
     updateFilter(event) {
 
         let material = event.target.value;
-        let partner_code = this.listSltdPaCode;
+        let partner_id = this.listSltdPaId;
 
         let rt = this.temp.filter(function(d){
-            return (d.material.indexOf(material) !== -1 && d.partner_code.indexOf(partner_code) !== -1) || !material && !partner_code;
+            return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
         });
 
         this.rows = rt;
@@ -223,9 +225,9 @@ export class MaterialsComponent implements OnInit {
 
     onSelectInputPartner(event: TypeaheadMatch): void {
         if (event.item == '') {
-            this.inputForm.controls['partner_code'].setValue(0);
+            this.inputForm.controls['partner_id'].setValue(0);
         } else {
-            this.inputForm.controls['partner_code'].setValue(event.item.Code);
+            this.inputForm.controls['partner_id'].setValue(event.item.id);
         }
     }
 
@@ -238,11 +240,9 @@ export class MaterialsComponent implements OnInit {
                     this.formData = editData['data'];
                     this.inputForm.patchValue({
                         input_date: this.formData.input_date,
-                        material: this.formData.material,
-                        material_type: this.formData.material_type,
                         size: this.formData.size,
-                        partner_name: this.formData.partner_name,
-                        partner_code: this.formData.partner_code,
+                        partner_alias: this.formData.partner_alias,
+                        partner_id: this.formData.partner_id,
                         price: this.formData.price,
                         price_date: this.formData.price_date,
                     });
