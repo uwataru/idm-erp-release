@@ -46,3 +46,4 @@ Thumbs.db
 release/
 
 src/environments/serverinfo.ts
+/idm-erp-frontend.iml
