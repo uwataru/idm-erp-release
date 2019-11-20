@@ -4,22 +4,12 @@ export class Item {
   data: {
     id: number;
     input_date: string;
-    product_code: string;
-    product_reg_no: string;
-    assembly_partner_code: number;
-    assembly_partner_name: string;
-    material_supply_type: number;
-    material_cost: number;
-    assembly_cost: number;
-    outsourcing_cost: number;
-    partner_code: number;
+    name: string;
+    partner_id: number;
     partner_name: string;
-    product_type: string;
-    product_name: string;
-    production_line: string;
-    product_price: string;
-    is_tmp_price: string;
-    material: string;
+    partner_alias: string;
+    price: number;
+    price_date: string;
     size: string;
     st: number;
   };

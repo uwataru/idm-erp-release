@@ -40,7 +40,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   //listPartners = [];
-  listPartners: any[] = this.globals.configs['type41Partners'];
+  listPartners: any[] = this.globals.partners['data'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
@@ -58,9 +58,6 @@ export class PartnerAssemblyProductComponent implements OnInit {
   inputAssemblyPartners: any[] = this.globals.configs['type4Partners'];
   inputPartners: any[] = this.globals.configs['type5Partners'];
   productionLines: any[] = this.globals.configs['productionLine'];
-  material_cost: number;
-  assembly_cost: number;
-  outsourcing_cost: number;
   product_price: number;
   editData: Item;
 
@@ -101,24 +98,14 @@ export class PartnerAssemblyProductComponent implements OnInit {
 
     this.searchForm = fb.group({
       sch_partner_name: '',
-      sch_product_name: ''
     });
     this.inputForm = fb.group({
       input_date: ['', Validators.required],
-      product_code: ['', Validators.required],
-      product_reg_no: ['', Validators.required],
-      assembly_partner_code: '',
-      assembly_partner_name: '',
-      material_supply_type: ['', Validators.required],
-      material_cost: '',
-      assembly_cost: '',
-      outsourcing_cost: ['', Validators.required],
-      partner_code: '',
-      product_name: '',
-      product_price: '',
-      is_tmp_price: '',
-      material: '',
-      size: '',
+      name: ['', Validators.required],
+      partner_alias: ['', Validators.required],
+      size: ['', Validators.required],
+      price: ['', Validators.required],
+      price_date: ['', Validators.required]
     });
   }
 
@@ -159,7 +146,6 @@ export class PartnerAssemblyProductComponent implements OnInit {
     let formData = this.searchForm.value;
     let params = {
       partner_name: formData.sch_partner_name,
-      product_name: formData.sch_product_name,
       st: this.sch_st,
       sortby: ['product_reg_no', 'product_code'],
       order: ['asc'],
@@ -200,10 +186,10 @@ export class PartnerAssemblyProductComponent implements OnInit {
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['Code'] == '') {
+    if (event.item['id'] == '') {
       this.listSltdPaCode = 0;
     } else {
-      this.listSltdPaCode = event.item['Code'];
+      this.listSltdPaCode = event.item['id'];
     }
 
     const val = this.listSltdPaCode;
@@ -253,35 +239,21 @@ export class PartnerAssemblyProductComponent implements OnInit {
         if (editData['result'] == 'success') {
           this.editData = editData;
           this.formData = editData['data'];
-          if (this.formData.material_supply_type == 1) {
-
           }
-          let material_cost = this.utils.addComma(this.formData.material_cost);
-          let assembly_cost = this.utils.addComma(this.formData.assembly_cost);
-          let outsourcing_cost = this.utils.addComma(this.formData.outsourcing_cost);
-          let product_price = this.utils.addComma(this.formData.product_price);
+          let price = this.utils.addComma(this.formData.price);
           this.inputForm.patchValue({
             input_date: this.formData.input_date,
-            product_code: this.formData.product_code,
-            product_reg_no: this.formData.product_reg_no,
-            assembly_partner_code: this.formData.assembly_partner_code,
-            assembly_partner_name: this.formData.assembly_partner_name,
-            material_supply_type: this.formData.material_supply_type.toString(),
-            material_cost: material_cost,
-            assembly_cost: assembly_cost,
-            outsourcing_cost: outsourcing_cost,
+            name: this.formData.name,
+            partner_alias: this.formData.partner_alias,
+            size: this.formData.size,
+            price: this.formData.price,
+            price_date: this.formData.price_date,
             // partner_code: this.formData.partner_code,
             // partner_name: this.formData.partner_name,
             // product_type: this.formData.product_type,
-            product_name: this.formData.product_name,
             // production_line: this.formData.production_line,
-            product_price: product_price,
-            is_tmp_price: this.formData.is_tmp_price,
-            material: this.formData.material,
-            size: this.formData.size
           });
         }
-      }
     );
   }
 
@@ -293,20 +265,16 @@ export class PartnerAssemblyProductComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
           let is_tmp_price = false;
-          if (this.formData.is_tmp_price == 'Y') {
-            is_tmp_price = true;
-          }
-          let product_price = this.utils.addComma(this.formData.product_price);
+          let price = this.utils.addComma(this.formData.price);
           this.inputForm.patchValue({
-            partner_code: this.formData.partner_code,
+            // partner_id: this.formData.partner_id,
             // partner_name: this.formData.partner_name,
             // product_type: this.formData.product_type,
             // drawing_no: this.formData.drawing_no,
             // sub_drawing_no: this.formData.sub_drawing_no,
-            product_name: this.formData.product_name,
+            name: this.formData.name,
             // production_line: this.formData.production_line,
-            product_price: product_price,
-            is_tmp_price: is_tmp_price,
+            price: price,
             // material: this.formData.material,
             // size: this.formData.size,
             // cut_length: this.formData.cut_length,

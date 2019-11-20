@@ -37,7 +37,7 @@ export class MaterialsService {
     }
 
     GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/materials/list/ptype2'+id);
+        return this.http.get<Item>(this.url+'/materials/'+id);
     }
 
     //======= 저장 =======//

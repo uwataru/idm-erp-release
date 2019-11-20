@@ -16,8 +16,6 @@
                  (typeaheadOnSelect)="onSelectListPartner($event)"
                  placeholder="거래처명"
                  class="input-sm form-control w-sm inline v-middle"/>
-          <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)"
-                 class="input-sm form-control w-sm inline v-middle" placeholder="제품번호"/>
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
 
           <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg"
@@ -68,23 +66,18 @@
           </label>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-      <!-- <ngx-datatable-column prop="product_reg_no" name="등록번호" cellClass="text-center"></ngx-datatable-column> -->
-      <ngx-datatable-column prop="assembly_partner_name" name="외주업체"></ngx-datatable-column>
-      <ngx-datatable-column prop="outsourcing_cost" name="외주단가" cellClass="text-right">
+      <ngx-datatable-column prop="input_date" name="등록일자" [width]="110" cellClass="text-center" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처" [width]="221"></ngx-datatable-column>
+      <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
-          <span *ngIf='value == 0'>0</span>
+          <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="material_supply_type" name="소재지급" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <span *ngIf='value == 1'>유상</span>
-          <span *ngIf='value == 2'>무상</span>
-          <span *ngIf='value == 3'>도급</span>
-        </ng-template>
-      </ngx-datatable-column>
+      <ngx-datatable-column prop="price_date" name="단가적용일" [width]="110" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-center">
         <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
@@ -146,196 +139,73 @@
         </div>
         <div class="modal-body">
 
-          <div class="row">
-            <div class="col-lg-6">
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="input_date" class="col-lg-4 control-label">
-                    등록일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="input_date" id="input_date" nextFocus="product_code"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_name" class="col-lg-4 control-label">
-                    제품명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="product_name" id="product_name" nextFocus="production_line"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_code" class="col-lg-4 control-label">
-                    제품번호 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <input (blur)="loadProductInfo($event)" type="text" formControlName="product_code" id="product_code"
-                           nextFocus="product_reg_no" class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_reg_no" class="col-lg-4 control-label">
-                    외주등록번호 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="product_reg_no" id="product_reg_no"
-                           nextFocus="assembly_partner_name" class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="assembly_partner_name" class="col-lg-4 control-label">
-                    외주업체
-                  </label>
-                  <div class="col-lg-8">
-                    <input formControlName="assembly_partner_name" id="assembly_partner_name"
-                           [typeahead]="inputAssemblyPartners"
-                           typeaheadOptionField="Alias"
-                           [typeaheadOptionsLimit]="50"
-                           [typeaheadScrollable]="true"
-                           [typeaheadMinLength]="0"
-                           (typeaheadOnSelect)="onSelectInputAssemblyPartner($event)"
-                           placeholder="거래처명"
-                           autocomplete="off"
-                           class="input-sm form-control w-sm inline v-middle"/>
-                    <input type="hidden" formControlName="assembly_partner_code" id="assembly_partner_code"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="material_supply_type" class="col-lg-4 control-label">
-                    소재지급 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <label class="i-checks">
-                      <input type="radio" formControlName="material_supply_type" id="material_supply_type1" value="1"
-                             checked/>
-                      <i></i>
-                      유상
-                    </label>
-                    <label class="i-checks">
-                      <input type="radio" formControlName="material_supply_type" id="material_supply_type2" value="2"/>
-                      <i></i>
-                      무상
-                    </label>
-                    <label class="i-checks">
-                      <input type="radio" formControlName="material_supply_type" id="material_supply_type3" value="3"/>
-                      <i></i>
-                      도급
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="outsourcing_cost" class="col-lg-4 control-label">
-                    외주단가 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" decimal [(ngModel)]="outsourcing_cost" formControlName="outsourcing_cost"
-                           id="outsourcing_cost" nextFocus="partner_name" class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- <div class="col-lg-6"> -->
-
-              <!-- <div class="form-group">
-                <div class="row">
-                  <label for="partner_name" class="col-lg-4 control-label">
-                    거래처
-                  </label>
-                  <div class="col-lg-8">
-                    <input formControlName="partner_name" id="partner_name"
-                           [typeahead]="inputPartners"
-                           typeaheadOptionField="Name"
-                           [typeaheadOptionsLimit]="50"
-                           [typeaheadScrollable]="true"
-                           [typeaheadMinLength]="0"
-                           (typeaheadOnSelect)="onSelectInputPartner($event)"
-                           placeholder="거래처명"
-                           class="input-sm form-control w-sm inline v-middle"/>
-                    <input type="hidden" formControlName="partner_code" id="partner_code"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_type" class="col-lg-4 control-label">
-                    기종
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="product_type" id="product_type" nextFocus="drawing_no"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="drawing_no" class="col-lg-4 control-label">
-                    위도번
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="drawing_no" id="drawing_no" nextFocus="sub_drawing_no"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="sub_drawing_no" class="col-lg-4 control-label">
-                    도번
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="sub_drawing_no" id="sub_drawing_no" nextFocus="product_name"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="production_line" class="col-lg-4 control-label">
-                    작업라인
-                  </label>
-                  <div class="col-lg-8">
-                    <select formControlName="production_line" id="production_line" nextFocus="product_price"
-                            class="input-sm form-control w-sm inline v-middle">
-                      <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
-                        -{{ line.EquipmentName }}</option>
-                    </select>
-                  </div>
-                </div>
-              </div> -->
-            <!-- </div> -->
-          </div>
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="input_date">등록일자</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="input_date" id="input_date" bsDatepicker nextFocus="material"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="partner_alias">공급처(약칭)</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input formControlName="partner_alias" id="partner_alias"
+                       [typeahead]="inputPartners"
+                       typeaheadOptionField="Name"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="onSelectInputPartner($event)"
+                       placeholder="거래처명"
+                       class="input-sm form-control w-sm inline v-middle"/>
+                <input type="hidden" formControlName="partner_id" id="partner_id" nextFocus="name"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="name">자재명</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="name" id="name" nextFocus="size"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="size">자재규격</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="size" id="size" nextFocus="price"
+                       class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              
+              <th>
+                <label for="price">단가</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="price" id="price" nextFocus="price_date"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="price_date">단가적용일</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="price_date" id="price_date" bsDatepicker
+                       class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+          </table>
+          
         </div>
-
         <div class="modal-footer">
           <div class="text-center">
             <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료

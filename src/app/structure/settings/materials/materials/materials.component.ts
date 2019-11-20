@@ -240,6 +240,7 @@ export class MaterialsComponent implements OnInit {
                     this.formData = editData['data'];
                     this.inputForm.patchValue({
                         input_date: this.formData.input_date,
+                        name: this.formData.name,
                         size: this.formData.size,
                         partner_alias: this.formData.partner_alias,
                         partner_id: this.formData.partner_id,

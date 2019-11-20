@@ -14,20 +14,20 @@ export class PartnerAssemblyProductService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/assembly-products';
+    private url = this.globals.serverUrl ;
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url, {params: params});
+        return this.http.get<Item[]>(this.url+ '/materials/list/ptype4');
     }
 
     GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
+        return this.http.get<Item>(this.url+'/materials/'+id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url, data, httpOptions).pipe(
+        return this.http.post<Item>(this.url+'/materials/', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
@@ -38,12 +38,12 @@ export class PartnerAssemblyProductService {
     }
     /** PUT: 데이터 수정 */
     Update (id:number, data:Item): Observable<Item> {
-        return this.http.put<Item>(this.url+'/'+id, data, httpOptions);
+        return this.http.put<Item>(this.url+'/materials/'+id, data, httpOptions);
     }
 
     /** PUT: 숨김,삭제 */
     changeStatus (id, data) {
-        return this.http.put(this.url+'/status/'+id, data);
+        return this.http.put(this.url+'/materials/change-status/'+id, data);
     }
 
     UploadExcelFile (data) {
