@@ -187,7 +187,7 @@
           </button>
           <h4 class="modal-title">{{ inputFormTitle }}</h4>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: scroll; height: 700px;">
           <table id="add_row">
             <tr>
               <th width="100px">
@@ -217,7 +217,7 @@
               <td>
                 <input type="text" formControlName="size" id="size"
                        class="form-control inline input-sm w-sm"/>
-                <button (click)="addMaterial()" class="btn btn-sm btn-info btn-addon">자재추가</button>
+                <button (click)="addMaterialRow()" class="btn btn-sm btn-info btn-addon">자재추가</button>
               </td>
             </tr>
             <tr>
@@ -234,27 +234,27 @@
                 </label>
               </td>
             </tr>
-            <tr>
+            <tr *ngFor='let material of materialData; let index = index;'>
               <th>
-                <label for="">소요자재</label>
-                <span>{{cnt}}</span>
+                <label for="material_title_{{index+1}}">소요자재</label>
+                <span>{{index+1}}</span>
               </th>
               <td>
-                <input type="text" formControlName="" id="" nextFocus=""
+                <input type="text" formControlName="" id="material_title_{{index+1}}" nextFocus=""
                   class="form-control inline input-sm w"/>
               </td>
               <th>
-                <label for="">Qty</label>
+                <label for="material_qty_{{index+1}}">Qty</label>
               </th>
               <td>
-                <input type="text" formControlName="" id=""
+                <input type="text" formControlName="" id="material_qty_{{index+1}}"
                   class="form-control inline input-sm w-xs text-right"/>
               </td>
               <th>
-                <label for="">단가</label>
+                <label for="material_price_{{index+1}}">단가</label>
               </th>
               <td>
-                <input type="text" formControlName="" id=""
+                <input type="text" formControlName="" id="material_price_{{index+1}}"
                   class="form-control inline input-sm w-xs text-right"/>
               </td>
             </tr>

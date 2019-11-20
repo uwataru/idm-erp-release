@@ -28,6 +28,12 @@ export class Item {
     errorMessage: string;
 }
 
+export class MaterialItem{
+    material_name: string;
+    material_qty: number;
+    material_price: number;
+}
+
 export class PartnerItem {
     partner_code: string;
     partner_name: string;
