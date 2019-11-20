@@ -465,10 +465,10 @@ export class PartnersComponent implements OnInit {
             jsonValueToArray.push(d.name);
             jsonValueToArray.push(d.alias);
             jsonValueToArray.push(d.ceo);
-            jsonValueToArray.push(d.addr);
-            jsonValueToArray.push('');
-            jsonValueToArray.push('');
-            jsonValueToArray.push(d.phone_no);
+            jsonValueToArray.push(d.addr1);
+            jsonValueToArray.push(d.phone);
+            jsonValueToArray.push(d.costumer);
+            jsonValueToArray.push(d.mobile);
             jsonValueToArray.push(d.fax);
             // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
 
@@ -476,6 +476,7 @@ export class PartnersComponent implements OnInit {
             row.font = this.globals.bodyFontStyle as Font;
             row.getCell(1).alignment = {horizontal: "center"};
             row.getCell(4).alignment = {horizontal: "center"};
+            row.getCell(7).alignment = {horizontal: "center"};
             row.eachCell((cell, number) => {
               cell.border = this.globals.bodyBorderStyle as Borders;
             });
