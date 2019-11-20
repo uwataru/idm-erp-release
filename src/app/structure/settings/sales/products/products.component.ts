@@ -9,7 +9,7 @@ import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
-import {Item} from './products.item';
+import {Item, MaterialItem} from './products.item';
 
 declare var $: any;
 
@@ -54,7 +54,7 @@ export class ProductsComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
-  cnt: number = 0;
+  materialData: MaterialItem[] = [];
 
   inputForm: FormGroup;
   prodTypeStr: string;
@@ -134,6 +134,9 @@ export class ProductsComponent implements OnInit {
     this.uploadFormTitle = '제품 엑셀업로드';
 
     this.changeSubMenu(1);
+
+    let material = new MaterialItem();
+    this.materialData.push(material);
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -504,4 +507,8 @@ export class ProductsComponent implements OnInit {
     );
   }
 
+  addMaterialRow() {
+    let material = new MaterialItem();
+    this.materialData.push(material);
+  }
 }
