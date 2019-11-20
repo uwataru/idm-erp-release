@@ -71,9 +71,9 @@
           </label>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="input_date" name="등록일자"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false"></ngx-datatable-column> -->
       <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
       <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>
       <ngx-datatable-column prop="product_price" name="단가" cellClass="text-right">
@@ -82,7 +82,8 @@
             class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="production_line" name="작업라인" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="소요자재" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="" name="Qty" cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
         <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
@@ -187,7 +188,7 @@
           <h4 class="modal-title">{{ inputFormTitle }}</h4>
         </div>
         <div class="modal-body">
-          <table>
+          <table id="add_row">
             <tr>
               <th width="100px">
                 <label for="input_date">등록일자</label>
@@ -197,32 +198,8 @@
                 <input type="text" formControlName="input_date" id="input_date" nextFocus="partner_name"
                        class="form-control input-sm w-sm"/>
               </td>
-              <th>
-                <label for="partner_code">거래처</label>
-                <!-- <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span> -->
-              </th>
-              <td>
-                <input formControlName="partner_name" id="partner_name"
-                       [typeahead]="inputPartners"
-                       typeaheadOptionField="Alias"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectInputPartner($event)"
-                       placeholder="거래처명"
-                       class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code"/>
-              </td>
             </tr>
             <tr>
-              <th>
-                <label for="product_code">제품번호</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="product_code" id="product_code"
-                       nextFocus="product_type" class="form-control inline input-sm w-sm"/>
-              </td>
               <th>
                 <label for="product_name">제품명</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
@@ -234,20 +211,13 @@
             </tr>
             <tr>
               <th>
-                <label for="material">재질</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="material" id="material"
-                       class="form-control inline input-sm w-sm"/>
-              </td>
-              <th>
                 <label for="size">규격</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
                 <input type="text" formControlName="size" id="size"
                        class="form-control inline input-sm w-sm"/>
+                <button (click)="addMaterial()" class="btn btn-sm btn-info btn-addon">자재추가</button>
               </td>
             </tr>
             <tr>
@@ -263,16 +233,29 @@
                   <input type="checkbox" formControlName="is_tmp_price" id="is_tmp_price"/>임시단가
                 </label>
               </td>
+            </tr>
+            <tr>
               <th>
-                <label for="production_line">작업라인</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                <label for="">소요자재</label>
+                <span>{{cnt}}</span>
               </th>
               <td>
-                <select formControlName="production_line" id="production_line" nextFocus="preparation_time"
-                        class="input-sm form-control w-sm inline v-middle">
-                  <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
-                    -{{ line.EquipmentName }}</option>
-                </select>
+                <input type="text" formControlName="" id="" nextFocus=""
+                  class="form-control inline input-sm w"/>
+              </td>
+              <th>
+                <label for="">Qty</label>
+              </th>
+              <td>
+                <input type="text" formControlName="" id=""
+                  class="form-control inline input-sm w-xs text-right"/>
+              </td>
+              <th>
+                <label for="">단가</label>
+              </th>
+              <td>
+                <input type="text" formControlName="" id=""
+                  class="form-control inline input-sm w-xs text-right"/>
               </td>
             </tr>
           </table>

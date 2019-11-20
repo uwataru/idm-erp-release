@@ -54,6 +54,8 @@ export class ProductsComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
+  cnt: number = 0;
+
   inputForm: FormGroup;
   prodTypeStr: string;
 
@@ -142,6 +144,11 @@ export class ProductsComponent implements OnInit {
       });
     });
   }
+
+  // addMaterial(){
+  //   this.cnt++;
+  //   document.getElementById('add_row').append()
+  // }
 
   changeSubMenu(st): void {
     this.sch_st = st;
