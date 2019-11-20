@@ -96,21 +96,23 @@ export class PartnersComponent implements OnInit {
       ptype4: '',
       ptype5: '',
       ptype6: '',
-      biz_no: ['', Validators.required],
+      biz_no: '',
       mobile: ['', Validators.required],
-      nation: ['', Validators.required],
       name: ['', Validators.required],
-      alias: ['', Validators.required],
-      ceo: ['', Validators.required],
+      alias: '',
+      ceo: '',
       addr1: '',
       addr2: '',
       addr3: '',
+      costumer: '',
+      country: '',
       zipcode: '',
+      zipcode2: '',
       email: '',
       phone: '',
       fax: '',
-      biz_cate1: ['', Validators.required],
-      biz_cate2: ['', Validators.required]
+      biz_cate1: '',
+      biz_cate2: ''
     });
   }
 
@@ -225,6 +227,7 @@ export class PartnersComponent implements OnInit {
             addr1: this.formData.addr1,
             addr2: this.formData.addr2,
             zipcode: this.formData.zipcode,
+            zipcode2: this.formData.zipcode2,
             email: this.formData.email,
             phone: this.formData.phone,
             costumer: this.formData.costumer,
@@ -414,6 +417,14 @@ export class PartnersComponent implements OnInit {
       }
     );
   }
+  setAddressData2(data) {
+    // console.log(data);
+    this.inputForm.patchValue({
+          zipcode2: data.zip,
+          addr2: data.addr
+      }
+    );
+  }
 
   //
   exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
@@ -458,7 +469,7 @@ export class PartnersComponent implements OnInit {
             jsonValueToArray.push('');
             jsonValueToArray.push('');
             jsonValueToArray.push(d.phone_no);
-            jsonValueToArray.push(d.fax_no);
+            jsonValueToArray.push(d.fax);
             // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
 
             let row = worksheet.addRow(jsonValueToArray);

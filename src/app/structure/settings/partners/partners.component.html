@@ -269,7 +269,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="costumer" id="costumer" nextFocus="mobile"
+                <input type="text" formControlName="costumer" id="costumer" required nextFocus="mobile"
                        class="form-control input-sm w-sm"/>
               </td>
               <th>
@@ -293,15 +293,6 @@
             </tr>
             <tr>
               <th>
-                <label for="addr2">본점소재지</label>
-              </th>
-              <td colspan="3">
-                <input type="text" formControlName="addr2" id="addr2" nextFocus="zipcode"
-                       class="form-control input-sm"/>
-              </td>
-            </tr>
-            <tr>
-              <th>
                 <label for="zipcode">우편번호</label>
               </th>
               <td>
@@ -313,6 +304,31 @@
                   <img src="//t1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" alt="닫기 버튼">
                 </div>
               </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="addr2">본점소재지</label>
+              </th>
+              <td colspan="3">
+                <input type="text" formControlName="addr2" id="addr2" nextFocus="zipcode"
+                       class="form-control input-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="zipcode2">우편번호</label>
+              </th>
+              <td>
+                <input type="text" size="7" formControlName="zipcode2" id="zipcode" nextFocus="email"
+                       class="form-control input-sm w-sm" style="width: 100px; display: inline !important;"/>
+                <btn-daum-address (result)="setAddressData2($event)" [options]="daumAddressOptions"></btn-daum-address>
+                <div id="daum_address_pop"
+                     style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;left:100px !important;">
+                  <img src="//t1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" alt="닫기 버튼">
+                </div>
+              </td>
+            </tr>
+            <tr>
               <th>
                 <label for="email">E-mail</label>
               </th>
@@ -331,10 +347,10 @@
                        class="form-control input-sm w-md"/>
               </td>
               <th>
-                <label for="fax_no">팩스</label>
+                <label for="fax">팩스</label>
               </th>
               <td>
-                <input type="text" formControlName="fax_no" id="fax_no" nextFocus="biz_cate1"
+                <input type="text" formControlName="fax" id="fax" nextFocus="biz_cate1"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>

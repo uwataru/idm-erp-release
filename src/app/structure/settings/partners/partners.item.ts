@@ -2,26 +2,29 @@ export class Item {
     //id: number;
     totalCount: number;
     data: {
+        id: string;
         input_date: string;
-        ptype1: string;
-        ptype2: string;
-        ptype3: string;
-        ptype4: string;
-        ptype5: string;
-        ptype6: string;
+        ptype1: boolean;
+        ptype2: boolean;
+        ptype3: boolean;
+        ptype4: boolean;
+        ptype5: boolean;
+        ptype6: boolean;
         biz_no: string;
         name: string;
         alias: string;
         code: string;
         ceo: string;
-        addr: string;
+        addr1: string;
         addr2: string;
         zipcode: string;
+        zipcode2: string;
         mobile: string;
-        nation: string;
         email: string;
-        phone_no: string;
-        fax_no: string;
+        phone: string;
+        fax: string;
+        country: string;
+        costumer: string;
         biz_cate1: string;
         biz_cate2: '',
         st: number
