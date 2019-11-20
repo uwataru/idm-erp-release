@@ -16,8 +16,8 @@ export class AppGlobals {
     public userPermission: Object = null;
     public isDevIP: boolean = false;
 
-    public configs: Object = null;
-    public partners: Object = null;
+
+    public configs: any[] = [];
     public tDate: string = this.convertDate();
 
     // 그리드 높이

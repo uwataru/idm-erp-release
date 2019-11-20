@@ -21,20 +21,6 @@ export class MaterialsService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url+ '/materials/list/ptype2');
     }
-    GetPartners () {
-        return new Promise((resolve, reject) => {
-            this.http.get(this.url + '/partners/search/ptype2').subscribe((responseData) => {
-                this.globals.partners = responseData;
-                resolve(true);
-                
-            },
-            error => {
-                console.log(error);
-                resolve(false);
-            });
-
-        });
-    }
 
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/materials/'+id);

@@ -41,7 +41,7 @@ export class MaterialsComponent implements OnInit {
     formData: Item['data'];
     sch_partner_name: string;
     // listPartners = [];
-    listPartners: any[];
+    listPartners: any[] = this.globals.configs['type2Partners'];
     listSltdPaId: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
@@ -113,7 +113,6 @@ export class MaterialsComponent implements OnInit {
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         this.hideConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
         
-        this.getPartners();
         this.changeSubMenu(1);
 
         $(document).ready(function(){
@@ -127,10 +126,7 @@ export class MaterialsComponent implements OnInit {
         console.log("typeahead!!!!!!!!!"+this.listPartners);
     }
 
-    getPartners(): void {
-        this.dataService.GetPartners();
-        this.listPartners = this.globals.partners['data'];
-    }
+
 
     changeSubMenu(st): void {
         this.sch_st = st;

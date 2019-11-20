@@ -40,7 +40,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   //listPartners = [];
-  listPartners: any[] = this.globals.partners['data'];
+  listPartners: any[] = this.globals.configs['type4Partners'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];

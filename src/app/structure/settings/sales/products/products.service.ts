@@ -45,7 +45,7 @@ export class ProductsService {
 
     /** PUT: 숨김,삭제 */
     changeStatus (id, data) {
-        return this.http.put(this.url+'/status/'+id, data);
+        return this.http.put(this.url+'/products/change-status/'+id, data);
     }
 
     UploadExcelFile (data) {
