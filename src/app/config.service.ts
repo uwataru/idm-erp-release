@@ -13,27 +13,37 @@ export class ConfigService {
     public isCorrect : boolean;
     private currTime = (new Date()).getTime();
     // private url = this.globals.serverUrl + '/configs.json';
-    private url = 'http://lucas.innest.co.kr/menu';
+    private menuAPI = 'http://lucas.innest.co.kr/menu';
+    private pType2API = 'http://lucas.innest.co.kr/partners/search/ptype2';
 
     /** GET data from the server */
     public load() {
         return new Promise((resolve, reject) => {
-            this.http.get(this.url).subscribe((responseData) => {
+            this.http.get(this.menuAPI).subscribe((responseData) => {
                 this.globals.configs = responseData;
                 resolve(true);
                 this.isCorrect = true;
-                
-            },
-            error => {
+
+            },error => {
                 console.log(error);
                 resolve(false);
                 this.isCorrect = false;
-                // if(confirm('Error \n 확인을 누르면 기존 페이지로 넘어갑니다')){
-                //    // this.router.navigate (['/page-not-found']);
-                // };
             });
+        }).then((_)=>{
+            return new Promise((resolve, reject) => {
+                this.http.get(this.pType2API).subscribe((responseData) => {
+                    this.globals.configs['type2Partners'] = responseData;
+                    resolve(true);
+                    this.isCorrect = true;
 
+                },error => {
+                    console.log(error);
+                    resolve(false);
+                    this.isCorrect = false;
+                });
+            });
         });
+
     }
 
    /**
