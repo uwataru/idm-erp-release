@@ -20,7 +20,7 @@ export class ConfigService {
     public load() {
         return new Promise((resolve, reject) => {
             this.http.get(this.menuAPI).subscribe((responseData) => {
-                this.globals.configs = responseData;
+                this.globals.configs['menu'] = responseData['data'];
                 resolve(true);
                 this.isCorrect = true;
 
@@ -32,7 +32,7 @@ export class ConfigService {
         }).then((_)=>{
             return new Promise((resolve, reject) => {
                 this.http.get(this.pType2API).subscribe((responseData) => {
-                    this.globals.configs['type2Partners'] = responseData;
+                    this.globals.configs['type2Partners'] = responseData['data'];
                     resolve(true);
                     this.isCorrect = true;
 
@@ -42,6 +42,8 @@ export class ConfigService {
                     this.isCorrect = false;
                 });
             });
+        }).then(()=>{
+            console.log(this.globals.configs['menu']);
         });
 
     }
