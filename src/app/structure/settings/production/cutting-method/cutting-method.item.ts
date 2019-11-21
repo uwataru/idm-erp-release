@@ -1,10 +1,10 @@
 export class Item {
   totalCount: number;
   data: {
-    cfg_id: number;
-    cfg_code: string;
-    cfg_name: string;
-    cfg_value: string;
+    id: number;
+    code: string;
+    assembly_type: string;
+    group: string;
   };
   maxResultCount: number;
   result: string;

@@ -14,7 +14,7 @@ export class CuttingMethodService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/configs/assembly-method';
+    private url = this.globals.serverUrl + '/production/process';
 
     GetAll (): Observable<Item[]> {
         return this.http.get<Item[]>(this.url);

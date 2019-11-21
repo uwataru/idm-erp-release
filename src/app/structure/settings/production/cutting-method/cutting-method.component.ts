@@ -68,9 +68,9 @@ export class CuttingMethodComponent implements OnInit {
     }
 
     this.inputForm = fb.group({
-      cfg_code: ['', [Validators.required]],
-      cfg_name: ['', [Validators.required]],
-      cfg_value: ['', [Validators.required]]
+      code: ['', [Validators.required]],
+      assembly_type: ['', [Validators.required]],
+      group: ['', [Validators.required]]
     });
   }
 
@@ -108,9 +108,9 @@ export class CuttingMethodComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
           this.inputForm.patchValue({
-            cfg_code: this.formData.cfg_code,
-            cfg_name: this.formData.cfg_name,
-            cfg_value: this.formData.cfg_value,
+            code: this.formData.code,
+            assembly_type: this.formData.assembly_type,
+            group: this.formData.group,
           });
         } else {
           this.messageService.add(editData['errorMessage']);
