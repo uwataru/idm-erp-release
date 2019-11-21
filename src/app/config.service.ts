@@ -16,6 +16,7 @@ export class ConfigService {
     private menuAPI = 'http://lucas.innest.co.kr/menu';
     private pType2API = 'http://lucas.innest.co.kr/partners/search/ptype2';
     private pType4API = 'http://lucas.innest.co.kr/partners/search/ptype4';
+    private MaterialAPI = 'http://lucas.innest.co.kr/materials/search';
 
     /** GET data from the server */
     public load() {
@@ -56,8 +57,21 @@ export class ConfigService {
                     this.isCorrect = false;
                 });
             });
+        }).then((_)=>{
+            return new Promise((resolve, reject) => {
+                this.http.get(this.MaterialAPI).subscribe((responseData) => {
+                    this.globals.configs['schMaterials'] = responseData['data'];
+                    resolve(true);
+                    this.isCorrect = true;
+
+                },error => {
+                    console.log(error);
+                    resolve(false);
+                    this.isCorrect = false;
+                });
+            });
         }).then(()=>{
-            console.log(this.globals.configs['menu']);
+            console.log(this.globals.configs['schMaterials']);
         });
 
     }

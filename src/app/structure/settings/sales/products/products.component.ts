@@ -40,6 +40,7 @@ export class ProductsComponent implements OnInit {
   //listPartners = [];
   listPartners: any[] = this.globals.configs['type5Partners'];
   listSltdPaCode: number = 0;
+  listSltdMaterialId: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
   sch_product_name: string;
@@ -61,6 +62,7 @@ export class ProductsComponent implements OnInit {
 
   tDate = this.globals.tDate;
   inputPartners: any[] = this.globals.configs['type5Partners'];
+  listMaterials: any[] = this.globals.configs['schMaterials'];
   productionLines: any[] = this.globals.configs['productionLine'];
   product_price: number;
   ann_qt: number;
@@ -146,6 +148,7 @@ export class ProductsComponent implements OnInit {
         handle: '.modal-header'
       });
     });
+    console.log("list~~~~~~~"+this.listMaterials);
   }
 
   // addMaterial(){
@@ -222,10 +225,10 @@ export class ProductsComponent implements OnInit {
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['Code'] == '') {
+    if (event.item['id'] == '') {
       this.listSltdPaCode = 0;
     } else {
-      this.listSltdPaCode = event.item['Code'];
+      this.listSltdPaCode = event.item['id'];
     }
 
     let partner_code = this.listSltdPaCode;
@@ -235,6 +238,25 @@ export class ProductsComponent implements OnInit {
     const temp = this.temp.filter(function (d) {
       d.partner_code = String(d.partner_code);
       return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(product_val) !== -1 || d.product_name.indexOf(product_val) !== -1) || !partner_code && !product_val;
+    });
+
+    this.rows = temp;
+
+  }
+  onSelectListMaterials(event: TypeaheadMatch): void {
+    if (event.item['id'] == '') {
+      this.listSltdMaterialId = 0;
+    } else {
+      this.listSltdMaterialId = event.item['id'];
+    }
+
+    let id = this.listSltdMaterialId;
+    let formData = this.inputForm.value;
+    let material_val = formData.sch_materials;
+
+    const temp = this.temp.filter(function (d) {
+      d.partner_code = String(d.partner_code);
+      return d.partner_code.indexOf(id) !== -1 && (d.product_code.indexOf(material_val) !== -1 || d.product_name.indexOf(material_val) !== -1) || !id && !material_val;
     });
 
     this.rows = temp;
@@ -474,6 +496,8 @@ export class ProductsComponent implements OnInit {
       } else {
         this.inputForm.reset();
         this.inputForm.controls['input_date'].setValue(this.tDate);
+        // document.getElementById('material_title_{{index+1}}').
+        console.log(this.listMaterials);
         this.isEditMode = false;
       }
     }
