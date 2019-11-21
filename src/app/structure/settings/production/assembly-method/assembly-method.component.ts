@@ -1,23 +1,23 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {CuttingMethodService} from './cutting-method.service';
+import {AssemblyMethodService} from './assembly-method.service';
 import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {ConfigService} from '../../../../config.service';
 import {MessageService} from '../../../../message.service';
-import {Item} from './cutting-method.item';
+import {Item} from './assembly-method.item';
 
 declare var $: any;
 
 @Component({
   selector: 'app-page',
-  templateUrl: './cutting-method.component.html',
-  styleUrls: ['./cutting-method.component.css'],
-  providers: [CuttingMethodService]
+  templateUrl: './assembly-method.component.html',
+  styleUrls: ['./assembly-method.component.css'],
+  providers: [AssemblyMethodService]
 })
 
-export class CuttingMethodComponent implements OnInit {
+export class AssemblyMethodComponent implements OnInit {
   panelTitle: string;
   inputFormTitle: string;
   deleteFormTitle: string;
@@ -48,7 +48,7 @@ export class CuttingMethodComponent implements OnInit {
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
-    private dataService: CuttingMethodService,
+    private dataService: AssemblyMethodService,
     private globals: AppGlobals,
     private route: ActivatedRoute,
     private configService: ConfigService,

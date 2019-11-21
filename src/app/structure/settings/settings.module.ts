@@ -15,7 +15,7 @@ import {SharedModule} from '../shared/shared.module';
 import {ProductsComponent} from './sales/products/products.component';
 import {PartnersComponent} from './partners/partners.component';
 import {ProductionLineComponent} from './production/production-line/production-line.component';
-import {CuttingMethodComponent} from './production/cutting-method/cutting-method.component';
+import {AssemblyMethodComponent} from './production/assembly-method/assembly-method.component';
 import {HeatingProcessComponent} from './production/heating-process/heating-process.component';
 import {HeatingPriceComponent} from './production/heating-price/heating-price.component';
 import {SpecialProcessComponent} from './production/special-process/special-process.component';
@@ -42,7 +42,7 @@ export const routes: Routes = [
   {path: 'materials/outsourcing', component: PartnerAssemblyProductComponent, data: {title: '환경설정 > 자재 > 외주물품등록', id: 8, level: 2, parent_id: 5}, canActivate: [AuthGuard]},
   {path: 'production', redirectTo: 'production/worklines', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'production/worklines', component: ProductionLineComponent, data: {title: '환경설정 > 생산 > 작업LINE등록', id: 10, level: 2, parent_id: 9}, canActivate: [AuthGuard]},
-  {path: 'production/process', component: CuttingMethodComponent, data: {title: '환경설정 > 생산 > 조립공정등록', id: 11, level: 2, parent_id: 9}, canActivate: [AuthGuard]},
+  {path: 'production/process', component: AssemblyMethodComponent, data: {title: '환경설정 > 생산 > 조립공정등록', id: 11, level: 2, parent_id: 9}, canActivate: [AuthGuard]},
   {path: 'accounting', redirectTo: 'accounting/accounts', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'accounting/accounts', component: AccountsComponent, data: {title: '환경설정 > 계정관리 > 계정과목등록', id: 13, level: 2, parent_id: 12}, canActivate: [AuthGuard]},
   {path: 'accounting/acct-mgmt-items', component: AcctMgmtItemsComponent, data: {title: '환경설정 > 계정관리 > 관리항목등록', id: 14, level: 2, parent_id: 12}, canActivate: [AuthGuard]},
@@ -81,7 +81,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ProductsComponent,
     PartnersComponent,
     ProductionLineComponent,
-    CuttingMethodComponent,
+    AssemblyMethodComponent,
     HeatingProcessComponent,
     HeatingPriceComponent,
     SpecialProcessComponent,

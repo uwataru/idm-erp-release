@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './cutting-method.item';
+import { Item } from './assembly-method.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
 
 @Injectable()
-export class CuttingMethodService {
+export class AssemblyMethodService {
 
     constructor(
         private http: HttpClient,
