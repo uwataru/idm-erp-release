@@ -14,7 +14,7 @@ export class ProductionLineService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production-lines';
+    private url = this.globals.serverUrl + '/production/worklines';
 
     GetAll (): Observable<Item[]> {
         return this.http.get<Item[]>(this.url);

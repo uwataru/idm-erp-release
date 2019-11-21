@@ -66,11 +66,11 @@ export class ProductionLineComponent implements OnInit {
         }
 
         this.inputForm = fb.group({
-            line_code: ['', [Validators.required]],
-            main_process: ['', [Validators.required]],
+            line_no: ['', [Validators.required]],
+            process_id: ['', [Validators.required]],
             run_time: ['', [Validators.required]],
             worker_cnt: ['', [Validators.required]],
-            is_outs: ''
+            is_outsourcing: ''
         });
     }
 
@@ -110,11 +110,11 @@ export class ProductionLineComponent implements OnInit {
                     this.editData = editData;
                     this.formData = editData['data'];
                     this.inputForm.patchValue({
-                        line_code: this.formData.line_code,
-                        main_process: this.formData.main_process,
+                        line_no: this.formData.line_no,
+                        process_id: this.formData.process_id,
                         run_time: this.formData.run_time,
                         worker_cnt: this.formData.worker_cnt,
-                        is_out: this.formData.is_outs
+                        is_outsourcing: this.formData.is_outsourcing
                     });
                 } else {
                     this.messageService.add(editData['errorMessage']);
