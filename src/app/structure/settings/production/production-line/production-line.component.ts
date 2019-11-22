@@ -126,6 +126,9 @@ export class ProductionLineComponent implements OnInit {
     Save () {
          //disabled="!inputForm.valid"
          let formData = this.inputForm.value;
+         formData.process_id = parseInt(formData.process_id);
+         formData.worker_cnt = parseInt(formData.worker_cnt);
+         formData.run_time = parseInt(formData.run_time);
 
          if (this.isEditMode == true) {
              this.Update(this.selectedId, formData);

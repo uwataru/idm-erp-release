@@ -5,7 +5,7 @@ export class Item {
         id: number;
         input_date: string;
         name: string;
-        partner_id: string;
+        partner_id: number;
         size: string;
         price: number;
         price_date: string;

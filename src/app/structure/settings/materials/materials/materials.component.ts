@@ -124,7 +124,6 @@ export class MaterialsComponent implements OnInit {
                 handle: '.modal-header'
             });
         });
-        console.log("typeahead!!!!!!!!!"+this.listPartners);
     }
 
 
@@ -163,24 +162,6 @@ export class MaterialsComponent implements OnInit {
                 this.temp = listData['data'];
                 this.rows = listData['data'];
 
-                // 제품 목록에서 거래처 추출
-                // let pcodes = [];
-                // var temp = [];
-                // temp['Code'] = '';
-                // temp['Name'] = '　';
-                // this.listPartners[0] = temp;
-                // var n = 1;
-                // for (var i=0; i<this.rows.length; i++) {
-                //     var temp = [];
-                //     temp['Code'] = this.rows[i]['partner_code'];
-                //     temp['Name'] = this.rows[i]['partner_name'];
-                //
-                //     if (pcodes.indexOf(temp['Code']) == -1 && this.rows[i]['partner_name'] != '') {
-                //         pcodes.push(this.rows[i]['partner_code']);
-                //         this.listPartners[n] = temp;
-                //         n++;
-                //     }
-                // }
 
                 this.isLoadingProgress = false;
             }
@@ -255,6 +236,7 @@ export class MaterialsComponent implements OnInit {
 
          formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
          formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
+         formData.price = parseInt(formData.price) ;
 
          if (this.isEditMode == true) {
              this.Update(this.selectedId, formData);

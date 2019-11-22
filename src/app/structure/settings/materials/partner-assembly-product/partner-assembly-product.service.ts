@@ -27,7 +27,7 @@ export class PartnerAssemblyProductService {
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url+'/materials/', data, httpOptions).pipe(
+        return this.http.post<Item>(this.url+'/materials', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

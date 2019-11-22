@@ -1,6 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import { DatePipe } from '@angular/common';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import {PartnerAssemblyProductService} from './partner-assembly-product.service';
 import {AppGlobals} from '../../../../app.globals';
@@ -17,7 +18,7 @@ declare var $: any;
   selector: 'app-page',
   templateUrl: './partner-assembly-product.component.html',
   styleUrls: ['./partner-assembly-product.component.css'],
-  providers: [PartnerAssemblyProductService]
+  providers: [PartnerAssemblyProductService, DatePipe]
 })
 export class PartnerAssemblyProductComponent implements OnInit {
   tDate = this.globals.tDate;
@@ -41,7 +42,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
   sch_partner_name: string;
   //listPartners = [];
   listPartners: any[] = this.globals.configs['type4Partners'];
-  listSltdPaCode: number = 0;
+  listSltdPaId: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
   sch_product_name: string;
@@ -79,6 +80,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
     @Inject(FormBuilder) fb: FormBuilder,
     private dataService: PartnerAssemblyProductService,
     private globals: AppGlobals,
+    private datePipe: DatePipe,
     private route: ActivatedRoute,
     private utils: UtilsService,
     private messageService: MessageService
@@ -129,321 +131,261 @@ export class PartnerAssemblyProductComponent implements OnInit {
     });
   }
 
+ 
   changeSubMenu(st): void {
     this.sch_st = st;
     this.getAll();
-  }
+}
 
-  onSelect({selected}) {
+onSelect({ selected }) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
     this.selected.push(...selected);
-  }
+}
 
-  getAll(): void {
+getAll(): void {
     this.selected = [];
 
     let formData = this.searchForm.value;
     let params = {
-      partner_name: formData.sch_partner_name,
-      st: this.sch_st,
-      sortby: ['product_reg_no', 'product_code'],
-      order: ['asc'],
-      maxResultCount: 10000
-    };
-    if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-      params['partner_code'] = this.listSltdPaCode;
+        partner_name: formData.sch_partner_name,
+        // st: this.sch_st,
+        sortby: ['name','size'],
+        order: ['asc','asc'],
+        maxResultCount: 10000
+    }
+    if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
+        params['partner_id'] = this.listSltdPaId;
     }
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.temp = listData['data'];
-        this.rows = listData['data'];
+        listData =>
+        {
+            this.listData = listData;
+            this.temp = listData['data'];
+            this.rows = listData['data'];
 
-        // 제품 목록에서 거래처 추출
-        // let pcodes = [];
-        // var temp = [];
-        // temp['Code'] = '';
-        // temp['Name'] = '　';
-        // this.listPartners[0] = temp;
-        // var n = 1;
-        // for (var i=0; i<this.rows.length; i++) {
-        //     var temp = [];
-        //     temp['Code'] = this.rows[i]['partner_code'];
-        //     temp['Name'] = this.rows[i]['partner_name'];
-        //
-        //     if (pcodes.indexOf(temp['Code']) == -1 && this.rows[i]['partner_name'] != '') {
-        //         pcodes.push(this.rows[i]['partner_code']);
-        //         this.listPartners[n] = temp;
-        //         n++;
-        //     }
-        // }
-
-        this.isLoadingProgress = false;
-      }
+            this.isLoadingProgress = false;
+        }
     );
-  }
+}
 
-  onSelectListPartner(event: TypeaheadMatch): void {
+onSelectListPartner(event: TypeaheadMatch): void {
+
     if (event.item['id'] == '') {
-      this.listSltdPaCode = 0;
+        this.listSltdPaId = 0;
     } else {
-      this.listSltdPaCode = event.item['id'];
+        this.listSltdPaId = event.item['id'];
     }
 
-    const val = this.listSltdPaCode;
+    let partner_id = this.listSltdPaId;
+    // let formData = this.searchForm.value;
+    // let material = formData.sch_material;
 
-    // filter data
-    // const temp = this.temp.filter(function(d){
-    //     return d.partner_code.indexOf(val) !== -1 || !val;
-    // })
-    //
-    // // update the rows
-    // this.rows = temp;
-  }
-
-  onSelectInputAssemblyPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['assembly_partner_code'].setValue(0);
-    } else {
-      this.inputForm.controls['assembly_partner_code'].setValue(event.item.Code);
-    }
-  }
-
-  onSelectInputPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['partner_id'].setValue(0);
-    } else {
-      this.inputForm.controls['partner_id'].setValue(event.item.Code);
-    }
-  }
-
-  updateFilter(event) {
-    const val = event.target.value;
-
-    // filter data
-    const temp = this.temp.filter(function (d) {
-      return d.product_code.indexOf(val) !== -1 || !val;
+    let rt = this.temp.filter(function(d){
+        d.partner_id = String(d.partner_id);
+        return d.partner_id.indexOf(partner_id) !== -1  || !partner_id ;
     });
 
-    // update the rows
-    this.rows = temp;
-    // 필터 변경될때마다 항상 첫 페이지로 이동.
-    //this.table.offset = 0;
-  }
+    this.rows = rt;
+}
 
-  Edit(id) {
-    this.dataService.GetById(id).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          }
-          let price = this.utils.addComma(this.formData.price);
-          this.inputForm.patchValue({
-            input_date: this.formData.input_date,
-            name: this.formData.name,
-            partner_alias: this.formData.partner_alias,
-            size: this.formData.size,
-            price: this.formData.price,
-            price_date: this.formData.price_date,
-            // partner_code: this.formData.partner_code,
-            // partner_name: this.formData.partner_name,
-            // product_type: this.formData.product_type,
-            // production_line: this.formData.production_line,
-          });
-        }
-    );
-  }
+updateFilter(event) {
 
-  loadProductInfo(event) {
-    let productCode = event.target.value;
-    this.dataService.GetProductInfo(productCode).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          let is_tmp_price = false;
-          let price = this.utils.addComma(this.formData.price);
-          this.inputForm.patchValue({
-            // partner_id: this.formData.partner_id,
-            // partner_name: this.formData.partner_name,
-            // product_type: this.formData.product_type,
-            // drawing_no: this.formData.drawing_no,
-            // sub_drawing_no: this.formData.sub_drawing_no,
-            name: this.formData.name,
-            // production_line: this.formData.production_line,
-            price: price,
-            // material: this.formData.material,
-            // size: this.formData.size,
-            // cut_length: this.formData.cut_length,
-            // material_weight: this.formData.material_weight,
-            // input_weight: this.formData.input_weight
-          });
-        }
-      }
-    );
-  }
+    let material = event.target.value;
+    let partner_id = this.listSltdPaId;
 
-  Save() {
-    let formData = this.inputForm.value;
+    let rt = this.temp.filter(function(d){
+        return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
+    });
 
-    // 숫자필드
-    formData.material_supply_type = formData.material_supply_type * 1;
-    formData.material_cost = this.utils.removeComma(formData.material_cost) * 1;
-    formData.assembly_cost = this.utils.removeComma(formData.assembly_cost) * 1;
-    formData.outsourcing_cost = this.utils.removeComma(formData.outsourcing_cost) * 1;
-    formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-    formData.size = formData.size * 1;
+    this.rows = rt;
+}
 
-    if (this.isEditMode == true) {
-      this.Update(this.selectedId, formData);
+
+onSelectInputPartner(event: TypeaheadMatch): void {
+    console.log(event.item.id);
+    if (event.item == '') {
+        this.inputForm.controls['partner_id'].setValue(0);
     } else {
-      formData.is_tmp_price = false;
-      formData.st = 1;
-      this.Create(formData);
+        this.inputForm.controls['partner_id'].setValue(event.item.id);
     }
-  }
+}
 
-  Create(data): void {
+Edit (id) {
+    this.dataService.GetById(id).subscribe(
+        editData =>
+        {
+            if (editData['result'] == "success") {
+                this.editData = editData;
+                this.formData = editData['data'];
+                this.inputForm.patchValue({
+                    input_date: this.formData.input_date,
+                    name: this.formData.name,
+                    size: this.formData.size,
+                    partner_alias: this.formData.partner_alias,
+                    partner_id: this.formData.partner_id,
+                    price: this.formData.price,
+                    price_date: this.formData.price_date,
+                });
+            }
+        }
+    );
+}
+
+Save () {
+     let formData = this.inputForm.value;
+
+     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
+     formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
+     formData.price = parseInt(formData.price) ;
+
+     if (this.isEditMode == true) {
+         this.Update(this.selectedId, formData);
+     } else {
+         formData.st = '1';
+         this.Create(formData);
+     }
+}
+
+Create (data): void {
     this.dataService.Create(data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.addOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
+        .subscribe(
+            data => {
+                if (data['result'] == "success") {
+                    this.inputForm.reset();
+                    this.getAll();
+                    this.messageService.add(this.addOkMsg);
+                } else {
+                    this.messageService.add(data['errorMessage']);
+                }
+                this.inputFormModal.hide();
+            },
+            error => this.errorMessage = <any>error
+        );
+}
 
-  Update(id, data): void {
-    console.log(data);
+Update (id, data): void {
     this.dataService.Update(id, data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.editOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
+        .subscribe(
+            data => {
+                if (data['result'] == "success") {
+                    this.inputForm.reset();
+                    this.getAll();
+                    this.messageService.add(this.editOkMsg);
+                } else {
+                    this.messageService.add(data['errorMessage']);
+                }
+                this.inputFormModal.hide();
+            },
+            error => this.errorMessage = <any>error
+        );
+}
 
-  changeStatus(id, st): void {
+changeStatus (id, st): void {
     const formData: FormData = new FormData();
     formData.append('st', st);
     this.dataService.changeStatus(id, formData)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.getAll();
-            this.messageService.add(this.delOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.selectedId = '';
-          this.selected = [];
-          this.statusFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
+        .subscribe(
+            data => {
+                if (data['result'] == "success") {
+                    this.getAll();
+                    this.messageService.add(this.delOkMsg);
+                } else {
+                    this.messageService.add(data['errorMessage']);
+                }
+                this.selectedId = '';
+                this.selected = [];
+                this.statusFormModal.hide();
+            },
+            error => this.errorMessage = <any>error
+        );
+}
 
-  openModal(method, id) {
+openModal(method, id) {
     // 실행권한
     if (this.isExecutable == true) {
-      if (method == 'delete' || method == 'hide' || method == 'use') {
-        this.statusFormModal.show();
-      } else if (method == 'write') {
-        this.inputFormModal.show();
-      } else if (method == 'upload') {
-        this.uploadFormModal.show();
-      }
+        if (method == 'delete' || method == 'hide' || method == 'use') {
+            this.statusFormModal.show();
+        } else if (method == 'write') {
+            this.inputFormModal.show();
+        } else if (method == 'upload') {
+            this.uploadFormModal.show();
+        }
     } else {
-      alert(this.globals.isNotExecutable);
-      return false;
+        alert(this.globals.isNotExecutable);
+        return false;
     }
 
     switch (method) {
-      case 'delete':
-        this.statusFormTitle = '거래처 삭제';
-        this.statusFormValue = -1;
-        this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+        case 'delete':
+            this.statusFormTitle = '자재 삭제';
+            this.statusFormValue = -1;
+            this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         break;
-      case 'hide':
-        this.statusFormTitle = '거래처 숨김';
-        this.statusFormValue = 0;
-        this.statusConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
+        case 'hide':
+            this.statusFormTitle = '자재 숨김';
+            this.statusFormValue = 0;
+            this.statusConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
         break;
-      case 'use':
-        this.statusFormTitle = '거래처 사용';
-        this.statusFormValue = 1;
-        this.statusConfirmMsg = '선택하신 데이터를 사용처리하시겠습니까?';
+        case 'use':
+            this.statusFormTitle = '자재 사용';
+            this.statusFormValue = 1;
+            this.statusConfirmMsg = '선택하신 데이터를 사용처리하시겠습니까?';
         break;
     }
     if (id) {
-      if (id == 'selected') {
-        let idArr = [];
-        this.selected.forEach((e: any) => {
-          idArr.push(e.id);
-        });
-        this.selectedId = idArr.join(',');
-        console.log(this.selectedId);
-      } else {
-        this.selectedId = id;
-      }
+        if (id == 'selected') {
+            let idArr = [];
+            this.selected.forEach((e:any) => {
+                idArr.push(e.id);
+            });
+            this.selectedId = idArr.join(',');
+        } else {
+            this.selectedId = id;
+        }
     }
     if (method == 'write') {
-      if (id) {
-        this.isEditMode = true;
-        this.Edit(id);
-      } else {
-        this.inputForm.reset();
-        this.inputForm.controls['input_date'].setValue(this.tDate);
-        this.isEditMode = false;
-      }
+        if (id) {
+            this.isEditMode = true;
+            this.Edit(id);
+        } else {
+            this.inputForm.reset();
+            this.inputForm.controls['input_date'].setValue(this.tDate);
+            this.inputForm.controls['price_date'].setValue(this.tDate);
+            this.isEditMode = false;
+        }
     }
-  }
+}
 
-  fileSelected(event) {
+
+fileSelected (event) {
     let fileList: FileList = event.target.files;
-    if (fileList.length > 0) {
-      let file: File = fileList[0];
-      let formData: FormData = new FormData();
-      formData.append('uploadFile', file, file.name);
+    if(fileList.length > 0) {
+        let file: File = fileList[0];
+        let formData:FormData = new FormData();
+        formData.append('uploadFile', file, file.name);
 
-      this.excelUpload(formData);
+        this.excelUpload(formData);
     }
-  }
+}
 
-  excelUpload(data): void {
+excelUpload (data): void {
     this.isLoadingProgress = true;
     this.dataService.UploadExcelFile(data).subscribe(
-      data => {
-        if (data['result'] == 'success') {
-          this.inputForm.reset();
-          this.getAll();
-          this.messageService.add(this.editOkMsg);
-        } else {
-          this.messageService.add(data['errorMessage']);
-        }
-        this.uploadFormModal.hide();
-      },
-      error => this.errorMessage = <any>error
+        data => {
+            if (data['result'] == "success") {
+                this.inputForm.reset();
+                this.getAll();
+                this.messageService.add(this.editOkMsg);
+            } else {
+                this.messageService.add(data['errorMessage']);
+            }
+            this.uploadFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
     );
-  }
+}
 
 }
