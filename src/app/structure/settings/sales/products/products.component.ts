@@ -76,10 +76,6 @@ export class ProductsComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '단종처리되었습니다.';
 
-
-
-  value;
-
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
   @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
@@ -114,17 +110,14 @@ export class ProductsComponent implements OnInit {
     this.inputForm = fb.group({
       input_date: ['', Validators.required],
       type: '',
-      name: '',
-      product_price: '',
+      name: ['', Validators.required],
+      product_price: ['', Validators.required],
       is_tmp_price: '',
-      material: '',
-      preparation_time: '',
-      assembly_method: '',
-      selection: '',
       material_id_1: '',
       sch_materials_1: ['', Validators.required],
       material_qty_1: ['', Validators.required],
-      material_price_1: ['', Validators.required]
+      material_price_1: ['', Validators.required],
+      material_base_price_1: ['', ]
     });
   }
 
@@ -247,12 +240,12 @@ export class ProductsComponent implements OnInit {
       this.inputForm.controls['material_price_'+this.materialData.length].setValue(0);
     } else {
       this.inputForm.controls['material_price_'+this.materialData.length].setValue(event.item.price);
+      this.inputForm.controls['material_base_price_'+this.materialData.length].setValue(event.item.price);
       this.inputForm.controls['material_id_'+this.materialData.length].setValue(event.item.id);
       let formData = this.inputForm.value;
 
       console.log(typeof(formData.material_price_+this.materialData.length));
     }
-
   }
 
 
@@ -365,39 +358,51 @@ export class ProductsComponent implements OnInit {
     let formData = this.inputForm.value;
 
     // 숫자필드 체크
-    formData.material_weight = formData.material_weight * 1;
-    formData.product_weight = formData.product_weight * 1;
     formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-    formData.ann_qt = this.utils.removeComma(formData.ann_qt) * 1;
-    formData.lot_qt = this.utils.removeComma(formData.lot_qt) * 1;
-    formData.size = formData.size * 1;
-    formData.ct = formData.ct * 1;
-    formData.ea_m = formData.ea_m * 1;
-    formData.preparation_time = formData.preparation_time * 1;
 
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);
     } else {
-      formData.st = 1;
+      formData.is_tmp_price = false;  //todo 체크박스 체크해서 설정.
+      formData.materials = []
+      for(let i=1; i<=this.materialData.length; i++){
+        let material = {
+          id: '',
+          materials_id: formData['material_id_'+i],
+          qty: formData['material_id_'+i],
+          price: formData['material_price_'+i],
+          state: '1'
+        }
+        formData.materials.push(material);
+      }
+
+      delete formData.material_base_price_1;
+      delete formData.material_id_1;
+      delete formData.material_price_1;
+      delete formData.material_qty_1;
+      delete formData.sch_materials_1;
+
       this.Create(formData);
     }
   }
 
   Create(data): void {
+    console.warn(data);
     this.dataService.Create(data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.addOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
+        .subscribe(
+            data => {
+              if (data['result'] == 'success') {
+                this.inputForm.reset();
+                this.getAll();
+                this.messageService.add(this.addOkMsg);
+              } else {
+                this.messageService.add(data['errorMessage']);
+              }
+              this.inputFormModal.hide();
+            },
+            error => this.errorMessage = <any>error
+        );
+
   }
 
   Update(id, data): void {
@@ -531,25 +536,18 @@ export class ProductsComponent implements OnInit {
     this.inputForm.addControl('sch_materials_' + len, new FormControl('', Validators.required));
     this.inputForm.addControl('material_qty_' + len, new FormControl('', Validators.required));
     this.inputForm.addControl('material_price_' + len, new FormControl('', Validators.required));
+    this.inputForm.addControl('material_base_price_' + len, new FormControl(''));
     this.inputForm.addControl('material_id_' + len, new FormControl(''));
 
   }
   priceMulQty(event) {
+    console.log('event', event);
     let formData = this.inputForm.value;
 
-    this.value = event.target.value;
-    // this.inputForm.controls['material_qty_'+this.materialData.length].setValue(this.);
-    let mQty = 0;
-    let mPrice = 0;
-    console.error(formData['material_qty_'+this.materialData.length]);
-    mQty = Number(formData['material_qty_'+this.materialData.length]) * 1;
-    console.log(typeof('formData.material_qty_'+this.materialData.length),formData.material_qty_+this.materialData.length);
-    mPrice = Number(formData['material_price_'+this.materialData.length]) * 1;
+    let mQty = Number(formData['material_qty_'+this.materialData.length]) * 1;
+    let mPrice = Number(formData['material_base_price_'+this.materialData.length]) * 1;
 
     let result = mQty*mPrice;
-
-    console.log(mQty, mPrice);
-
     this.inputForm.controls['material_price_'+this.materialData.length].setValue(result);
     }
 }
