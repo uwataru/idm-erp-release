@@ -26,7 +26,7 @@ export class PermissionsComponent implements OnInit {
     selected = [];
 
     inputFormTitle: string;
-    users = this.globals.configs['users'];
+    users = this.globals.configs['users'] || [];
     selectedAuthType: string;
     selectedMenuId: number;
     selectedMenuName: string;
