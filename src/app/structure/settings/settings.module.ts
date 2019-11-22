@@ -35,7 +35,7 @@ import {NgDaumAddressModule} from 'ng2-daum-address';
 export const routes: Routes = [
   {path: '', redirectTo: 'sales/partners', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'sales', redirectTo: 'sales/partners', pathMatch: 'full', canActivate: [AuthGuard]},
-  {path: 'sales/partners', component: PartnersComponent, data: {title: '환경설정 > 영업 > 거래처등록', id: 4, level: 2, parent_id: 1 }, canActivate: [AuthGuard]},
+  {path: 'sales/partners', component: PartnersComponent, data: {title: '환경설정 > 영업 > 거래처등록', id: 4, level: 2, parent_id: 3 }, canActivate: [AuthGuard]},
   {path: 'materials', redirectTo: 'materials/products', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'materials/products', component: ProductsComponent, data: {title: '환경설정 > 자재 > 제품등록', id:6, level: 2, parent_id: 5 }, canActivate: [AuthGuard]},
   {path: 'materials/raw', component: MaterialsComponent, data: {title: '환경설정 > 자재 > 원자재물품등록', id: 7, level: 2, parent_id: 5}, canActivate: [AuthGuard]},
@@ -48,8 +48,8 @@ export const routes: Routes = [
   {path: 'accounting/acct-mgmt-items', component: AcctMgmtItemsComponent, data: {title: '환경설정 > 계정관리 > 관리항목등록', id: 14, level: 2, parent_id: 12}, canActivate: [AuthGuard]},
   {path: 'accounting/acct-mgmt-item-values', component: AcctMgmtItemValuesComponent, data: {title: '환경설정 > 계정관리 > 관리내역등록', id: 15, level: 2, parent_id: 12}, canActivate: [AuthGuard]},
   {path: 'users', redirectTo: 'users/management', pathMatch: 'full', canActivate: [AuthGuard]},
-  {path: 'users/management', component: UsersComponent, data: {title: '환경설정 > 계정관리 > 사용자등록', id: 102}, canActivate: [AuthGuard]},
-  {path: 'users/permissions', component: PermissionsComponent, data: {title: '환경설정 > 관리/회계 > 사용자권한', id: 264}, canActivate: [AuthGuard]}
+  {path: 'users/management', component: UsersComponent, data: {title: '환경설정 > 사용자관리 > 사용자등록', id: 17, level: 2, parent_id: 16}, canActivate: [AuthGuard]},
+  {path: 'users/permissions', component: PermissionsComponent, data: {title: '환경설정 > 사용자관리 > 사용자권한', id: 18, level: 2, parent_id: 16}, canActivate: [AuthGuard]}
 ];
 
 // Datepicker Config
