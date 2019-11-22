@@ -19,61 +19,32 @@ export class ConfigService {
     private MaterialAPI = 'http://lucas.innest.co.kr/materials/search';
 
     /** GET data from the server */
-    public load() {
+    public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
-            this.http.get(this.menuAPI).subscribe((responseData) => {
-                this.globals.configs['menu'] = responseData['data'];
+            this.http.get(apiURL).subscribe((responseData) => {
+                this.globals.configs[configKey] = responseData['data'];
                 resolve(true);
                 this.isCorrect = true;
 
-            },error => {
+            }, error => {
                 console.log(error);
                 resolve(false);
                 this.isCorrect = false;
             });
-        }).then((_)=>{
-            return new Promise((resolve, reject) => {
-                this.http.get(this.pType2API).subscribe((responseData) => {
-                    this.globals.configs['type2Partners'] = responseData['data'];
-                    resolve(true);
-                    this.isCorrect = true;
+        })
+    }
 
-                },error => {
-                    console.log(error);
-                    resolve(false);
-                    this.isCorrect = false;
-                });
+    public load() {
+        return this.getConfigData(this.menuAPI, 'menu')
+            .then(() => this.getConfigData(this.pType2API, 'type2Partners'))
+            .then(() => this.getConfigData(this.pType4API, 'type4Partners'))
+            .then(() => this.getConfigData(this.MaterialAPI, 'schMaterials'))
+            .then(() => {
+                console.warn(this.globals.configs['menu']);
+                console.warn(this.globals.configs['type2Partners']);
+                console.warn(this.globals.configs['type4Partners']);
+                console.warn(this.globals.configs['schMaterials']);
             });
-        }).then((_)=>{
-            return new Promise((resolve, reject) => {
-                this.http.get(this.pType4API).subscribe((responseData) => {
-                    this.globals.configs['type4Partners'] = responseData['data'];
-                    resolve(true);
-                    this.isCorrect = true;
-
-                },error => {
-                    console.log(error);
-                    resolve(false);
-                    this.isCorrect = false;
-                });
-            });
-        }).then((_)=>{
-            return new Promise((resolve, reject) => {
-                this.http.get(this.MaterialAPI).subscribe((responseData) => {
-                    this.globals.configs['schMaterials'] = responseData['data'];
-                    resolve(true);
-                    this.isCorrect = true;
-
-                },error => {
-                    console.log(error);
-                    resolve(false);
-                    this.isCorrect = false;
-                });
-            });
-        }).then(()=>{
-            console.log(this.globals.configs['schMaterials']);
-        });
-
     }
 
    /**
