@@ -92,7 +92,7 @@
                 <ul class="users row">
                     <li *ngFor="let user of users">
                         <label class="checkbox-inline">
-                            <input type="checkbox" formControlName="id_{{ user.UserId }}" id="id_{{ user.UserId }}" />{{ user.UserName }}
+                            <input type="checkbox" formControlName="id_{{ user.user_id }}" id="id_{{ user.user_id }}" />{{ user.user_name }}
                         </label>
                     </li>
                 </ul>
@@ -135,7 +135,7 @@
                     <td>
                         <input formControlName="approval_user_name1"
                             [typeahead]="users"
-                            typeaheadOptionField="UserName"
+                            typeaheadOptionField="user_name"
                             [typeaheadOptionsLimit]="50"
                             [typeaheadScrollable]="true"
                             [typeaheadMinLength]="0"
@@ -147,7 +147,7 @@
                     <td>
                         <input formControlName="approval_user_name2"
                             [typeahead]="users"
-                            typeaheadOptionField="UserName"
+                            typeaheadOptionField="user_name"
                             [typeaheadOptionsLimit]="50"
                             [typeaheadScrollable]="true"
                             [typeaheadMinLength]="0"
@@ -159,7 +159,7 @@
                     <td>
                         <input formControlName="approval_user_name3"
                             [typeahead]="users"
-                            typeaheadOptionField="UserName"
+                            typeaheadOptionField="user_name"
                             [typeaheadOptionsLimit]="50"
                             [typeaheadScrollable]="true"
                             [typeaheadMinLength]="0"
@@ -171,7 +171,7 @@
                     <td>
                         <input formControlName="approval_user_name4"
                             [typeahead]="users"
-                            typeaheadOptionField="UserName"
+                            typeaheadOptionField="user_name"
                             [typeaheadOptionsLimit]="50"
                             [typeaheadScrollable]="true"
                             [typeaheadMinLength]="0"
@@ -183,7 +183,7 @@
                     <td>
                         <input formControlName="approval_user_name5"
                             [typeahead]="users"
-                            typeaheadOptionField="UserName"
+                            typeaheadOptionField="user_name"
                             [typeaheadOptionsLimit]="50"
                             [typeaheadScrollable]="true"
                             [typeaheadMinLength]="0"

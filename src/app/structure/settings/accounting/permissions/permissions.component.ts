@@ -208,10 +208,10 @@ export class PermissionsComponent implements OnInit {
     }
 
     onSelectApprovalUser(event: TypeaheadMatch, n): void {
-        if (event.item['UserId'] == '') {
+        if (event.item['user_id'] == '') {
             this.approvalForm.controls['approval_user_id' + n].setValue('');
         } else {
-            this.approvalForm.controls['approval_user_id' + n].setValue(event.item['UserId']);
+            this.approvalForm.controls['approval_user_id' + n].setValue(event.item['user_id']);
         }
     }
 
