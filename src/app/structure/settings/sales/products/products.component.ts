@@ -1,5 +1,5 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import {ElectronService} from '../../../../providers/electron.service';
@@ -76,6 +76,10 @@ export class ProductsComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '단종처리되었습니다.';
 
+
+
+  value;
+
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
   @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
@@ -109,24 +113,18 @@ export class ProductsComponent implements OnInit {
     });
     this.inputForm = fb.group({
       input_date: ['', Validators.required],
-      partner_code: '',
-      partner_name: '',
-      product_code: ['', [Validators.required, Validators.minLength(4)]],
-      product_type: '',
-      product_name: '',
-      product_price: ['', Validators.required],
+      type: '',
+      name: '',
+      product_price: '',
       is_tmp_price: '',
       material: '',
-      size: ['', Validators.required],
-      production_line: '',
       preparation_time: '',
       assembly_method: '',
-      special_process: '',
-      sq: '',
-      inspection: '',
       selection: '',
-      ann_qt: '',
-      lot_qt: ''
+      material_id_1: '',
+      sch_materials_1: ['', Validators.required],
+      material_qty_1: ['', Validators.required],
+      material_price_1: ['', Validators.required]
     });
   }
 
@@ -148,13 +146,9 @@ export class ProductsComponent implements OnInit {
         handle: '.modal-header'
       });
     });
-    console.log("list~~~~~~~"+this.listMaterials);
+    console.log("list~~~~~~~"+this.listMaterials['name']);
   }
 
-  // addMaterial(){
-  //   this.cnt++;
-  //   document.getElementById('add_row').append()
-  // }
 
   changeSubMenu(st): void {
     this.sch_st = st;
@@ -196,24 +190,28 @@ export class ProductsComponent implements OnInit {
         this.temp = listData['data'];
         this.rows = listData['data'];
 
-        // 제품 목록에서 거래처 추출
-        // let pcodes = [];
-        // var temp = [];
-        // temp['Code'] = '';
-        // temp['Name'] = '　';
-        // this.listPartners[0] = temp;
-        // var n = 1;
-        // for (var i=0; i<this.rows.length; i++) {
-        //     var temp = [];
-        //     temp['Code'] = this.rows[i]['partner_code'];
-        //     temp['Name'] = this.rows[i]['partner_name'];
-        //
-        //     if (pcodes.indexOf(temp['Code']) == -1 && this.rows[i]['partner_name'] != '') {
-        //         pcodes.push(this.rows[i]['partner_code']);
-        //         this.listPartners[n] = temp;
-        //         n++;
-        //     }
-        // }
+
+        let tRows = [];
+        let len = this.rows.length;
+        for (let i = 0; i < len; i++) {
+          let row;
+          if (this.rows[i].materials) {
+            let lenMat = this.rows[i].materials.length;
+            for (let j = 0; j < lenMat; j++) {
+              row = [];
+              if(j==0){
+                row = {...this.rows[i]};
+              }
+              row.material = this.rows[i].materials[j];
+              tRows.push(row);
+            }
+          } else {
+            row = {...this.rows[i]};
+            tRows.push(row);
+          }
+        }
+        this.rows = tRows;
+        console.log(this.rows);
 
         this.isLoadingProgress = false;
 
@@ -244,22 +242,16 @@ export class ProductsComponent implements OnInit {
 
   }
   onSelectListMaterials(event: TypeaheadMatch): void {
-    if (event.item['id'] == '') {
-      this.listSltdMaterialId = 0;
+    console.log(event.item);
+    if (event.item == '') {
+      this.inputForm.controls['material_price_'+this.materialData.length].setValue(0);
     } else {
-      this.listSltdMaterialId = event.item['id'];
+      this.inputForm.controls['material_price_'+this.materialData.length].setValue(event.item.price);
+      this.inputForm.controls['material_id_'+this.materialData.length].setValue(event.item.id);
+      let formData = this.inputForm.value;
+
+      console.log(typeof(formData.material_price_+this.materialData.length));
     }
-
-    let id = this.listSltdMaterialId;
-    let formData = this.inputForm.value;
-    let material_val = formData.sch_materials;
-
-    const temp = this.temp.filter(function (d) {
-      d.partner_code = String(d.partner_code);
-      return d.partner_code.indexOf(id) !== -1 && (d.product_code.indexOf(material_val) !== -1 || d.product_name.indexOf(material_val) !== -1) || !id && !material_val;
-    });
-
-    this.rows = temp;
 
   }
 
@@ -320,7 +312,7 @@ export class ProductsComponent implements OnInit {
             partner_name: this.formData.partner_name,
             product_code: this.formData.product_code,
             product_type: this.formData.product_type,
-            product_name: this.formData.product_name,
+            name: this.formData.name,
             product_price: product_price,
             is_tmp_price: is_tmp_price,
             material: this.formData.material,
@@ -534,5 +526,30 @@ export class ProductsComponent implements OnInit {
   addMaterialRow() {
     let material = new MaterialItem();
     this.materialData.push(material);
+    let len = this.materialData.length;
+
+    this.inputForm.addControl('sch_materials_' + len, new FormControl('', Validators.required));
+    this.inputForm.addControl('material_qty_' + len, new FormControl('', Validators.required));
+    this.inputForm.addControl('material_price_' + len, new FormControl('', Validators.required));
+    this.inputForm.addControl('material_id_' + len, new FormControl(''));
+
   }
+  priceMulQty(event) {
+    let formData = this.inputForm.value;
+
+    this.value = event.target.value;
+    // this.inputForm.controls['material_qty_'+this.materialData.length].setValue(this.);
+    let mQty = 0;
+    let mPrice = 0;
+    console.error(formData['material_qty_'+this.materialData.length]);
+    mQty = Number(formData['material_qty_'+this.materialData.length]) * 1;
+    console.log(typeof('formData.material_qty_'+this.materialData.length),formData.material_qty_+this.materialData.length);
+    mPrice = Number(formData['material_price_'+this.materialData.length]) * 1;
+
+    let result = mQty*mPrice;
+
+    console.log(mQty, mPrice);
+
+    this.inputForm.controls['material_price_'+this.materialData.length].setValue(result);
+    }
 }

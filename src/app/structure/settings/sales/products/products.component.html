@@ -64,76 +64,77 @@
             <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
           </label>
         </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                     let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-          </label>
+        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-row="row"
+          let-onCheckboxChangeFn="onCheckboxChangeFn">
+          <div *ngIf="row.id != null">
+            <label class="i-checks i-checks-sm m-b-none">
+              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+            </label>
+          </div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column prop="input_date" name="등록일자"></ngx-datatable-column>
       <!-- <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column> -->
       <ngx-datatable-column prop="name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column prop="type" name="규격"></ngx-datatable-column>
       <ngx-datatable-column prop="product_price" name="단가" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <span
             class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="소요자재" cellClass="text-center">
-        <!-- <ng-template let-column="column" ngx-datatable-header-template>
-          <span (click)="sort()">Name</span>
-      </ng-template>
-      <ng-template let-row="row" ngx-datatable-cell-template>
-          {{row.masterData.name}}
-      </ng-template> -->
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="" name="Qty" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column name="소요자재" prop="material.name" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column  name="Qty" prop="material.qty" cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
         <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-          <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-ban-circle"></i>
-          </button>
+            <div *ngIf="row.id != null">
+              <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+                <i class="glyphicon glyphicon-edit"></i>
+              </button>
+              <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
+              <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
+                <i class="glyphicon glyphicon-ban-circle"></i>
+              </button>
+            </div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===0" prop="id" name="수정&middot;단종&middot;사용" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
         <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-          <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
+          <div *ngIf="row.id != null">
+            <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+              <i class="glyphicon glyphicon-edit"></i>
+            </button>
+            <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+            <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
+              <i class="glyphicon glyphicon-repeat"></i>
+            </button>
+          </div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===-1" prop="id" name="수정&middot;숨김&middot;사용" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
         <!-- <ng-template ngx-datatable-header-template><span id="st_header_cell_title">{{name}}</span></ng-template> -->
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-            <i class="glyphicon glyphicon-edit"></i>
-          </button>
-          <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-ban-circle"></i>
-          </button>
-          <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
-            <i class="glyphicon glyphicon-repeat"></i>
-          </button>
+          <div *ngIf="row.id != null">
+            <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
+              <i class="glyphicon glyphicon-edit"></i>
+            </button>
+            <button (click)="openModal('hide',value)" class="btn btn-xs btn-warning">
+              <i class="glyphicon glyphicon-ban-circle"></i>
+            </button>
+            <button (click)="openModal('use',value)" class="btn btn-xs btn-success">
+              <i class="glyphicon glyphicon-repeat"></i>
+            </button>
+          </div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===99" prop="id" name="수정&middot;관리&middot;사용" [width]="100"
@@ -202,35 +203,35 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="input_date" id="input_date" nextFocus="partner_name"
+                <input type="text" formControlName="input_date" id="input_date" nextFocus="name"
                        class="form-control input-sm w-sm"/>
               </td>
             </tr>
             <tr>
               <th>
-                <label for="product_name">제품명</label>
+                <label for="name">제품명</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="product_name" id="product_name"
+                <input type="text" formControlName="name" id="name"
                        nextFocus="ann_qt" class="form-control inline input-sm w"/>
               </td>
             </tr>
             <tr>
               <th>
-                <label for="size">규격</label>
+                <label for="type">규격</label>
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="size" id="size"
+                <input type="text" formControlName="type" id="type"
                        class="form-control inline input-sm w-sm"/>
-                <button (click)="addMaterialRow()" class="btn btn-sm btn-info btn-addon">자재추가</button>
+                <button (click)="addMaterialRow()" [disabled]="!inputForm.valid"  class="btn btn-sm btn-info btn-addon">자재추가</button>
+                <span class="text-xs text-danger">소요자재 항목을 모두 입력한 뒤 추가하세요</span>
               </td>
             </tr>
             <tr>
               <th>
                 <label for="product_price">제품단가</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
                 <input type="text" (keyup)="AddComma($event)"
@@ -247,7 +248,7 @@
                 <span>{{index+1}}</span>
               </th>
               <td>
-                <input formControlName="sch_materials"
+                <input formControlName="sch_materials_{{index+1}}"
                 id="material_title_{{index+1}}"
                  [typeahead]="listMaterials"
                  typeaheadOptionField="name"
@@ -257,19 +258,21 @@
                  (typeaheadOnSelect)="onSelectListMaterials($event)"
                  class="input-sm form-control w-sm inline v-middle"
                  (keyup)="listSltdMaterialId=0"/>
+                <input type="hidden" formControlName="material_id_{{index+1}}" id="material_id_{{index+1}}"/>
               </td>
               <th>
                 <label for="material_qty_{{index+1}}">Qty</label>
               </th>
               <td>
-                <input type="text" formControlName="" id="material_qty_{{index+1}}"
+                <input type="text" formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}"
+                  (keyup)="priceMulQty($event)"
                   class="form-control inline input-sm w-xs text-right"/>
               </td>
               <th>
                 <label for="material_price_{{index+1}}">단가</label>
               </th>
               <td>
-                <input type="text" formControlName="" id="material_price_{{index+1}}"
+                <input type="text" formControlName="material_price_{{index+1}}" id="material_price_{{index+1}}"
                   class="form-control inline input-sm w-xs text-right"/>
               </td>
             </tr>
@@ -305,7 +308,7 @@
           {{ statusConfirmMsg }}
         </div>
       </div>
-      s
+      
       <div class="modal-footer">
         <div class="text-center">
           <button type="button" *ngIf="statusFormValue === 1" (click)="changeStatus(selectedId, 1)"

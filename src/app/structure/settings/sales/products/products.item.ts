@@ -8,7 +8,8 @@ export class Item {
         partner_name: string;
         product_code: string;
         product_type: string;
-        product_name: string;
+        name: string;
+        type: string;
         product_price: number;
         is_tmp_price: string;
         material: string;
@@ -29,9 +30,12 @@ export class Item {
 }
 
 export class MaterialItem{
-    material_name: string;
-    material_qty: number;
-    material_price: number;
+    id: number;
+    materials_id: number;
+    name: string;
+    qty: number;
+    price: number;
+    state: number;
 }
 
 export class PartnerItem {
