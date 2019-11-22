@@ -17,6 +17,7 @@ export class ConfigService {
     private pType2API = 'http://lucas.innest.co.kr/partners/search/ptype2';
     private pType4API = 'http://lucas.innest.co.kr/partners/search/ptype4';
     private MaterialAPI = 'http://lucas.innest.co.kr/materials/search';
+    private userAPI = 'http://lucas.innest.co.kr/users/list';
 
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
@@ -39,11 +40,13 @@ export class ConfigService {
             .then(() => this.getConfigData(this.pType2API, 'type2Partners'))
             .then(() => this.getConfigData(this.pType4API, 'type4Partners'))
             .then(() => this.getConfigData(this.MaterialAPI, 'schMaterials'))
+            .then(() => this.getConfigData(this.userAPI, 'users'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type2Partners']);
                 console.warn(this.globals.configs['type4Partners']);
                 console.warn(this.globals.configs['schMaterials']);
+                console.warn(this.globals.configs['users']);
             });
     }
 
