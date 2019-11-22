@@ -103,6 +103,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
       input_date: ['', Validators.required],
       name: ['', Validators.required],
       partner_alias: ['', Validators.required],
+      partner_id: '',
       size: ['', Validators.required],
       price: ['', Validators.required],
       price_date: ['', Validators.required]
@@ -213,9 +214,9 @@ export class PartnerAssemblyProductComponent implements OnInit {
 
   onSelectInputPartner(event: TypeaheadMatch): void {
     if (event.item == '') {
-      this.inputForm.controls['partner_code'].setValue(0);
+      this.inputForm.controls['partner_id'].setValue(0);
     } else {
-      this.inputForm.controls['partner_code'].setValue(event.item.Code);
+      this.inputForm.controls['partner_id'].setValue(event.item.Code);
     }
   }
 

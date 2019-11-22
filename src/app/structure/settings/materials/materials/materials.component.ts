@@ -101,6 +101,7 @@ export class MaterialsComponent implements OnInit {
             size: ['', Validators.required],
             name: ['', Validators.required],
             partner_alias: ['', Validators.required],
+            partner_id: ['', Validators.required],
             price: ['', Validators.required],
             price_date: ['', Validators.required],
         });
@@ -220,6 +221,7 @@ export class MaterialsComponent implements OnInit {
 
 
     onSelectInputPartner(event: TypeaheadMatch): void {
+        console.log(event.item.id);
         if (event.item == '') {
             this.inputForm.controls['partner_id'].setValue(0);
         } else {
