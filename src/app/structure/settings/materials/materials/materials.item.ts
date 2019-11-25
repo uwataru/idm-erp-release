@@ -11,6 +11,7 @@ export class Item {
         price_date: string;
         partner_alias: string;
         partner_name: string;
+        is_type: boolean;
     };
     maxResultCount: number;
     result: string;

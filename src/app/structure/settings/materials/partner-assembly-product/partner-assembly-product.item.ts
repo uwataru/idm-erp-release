@@ -12,6 +12,7 @@ export class Item {
     price_date: string;
     size: string;
     st: number;
+    is_type: boolean;
   };
   maxResultCount: number;
   result: string;

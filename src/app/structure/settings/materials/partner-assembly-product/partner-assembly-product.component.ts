@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import {PartnerAssemblyProductService} from './partner-assembly-product.service';
 import {AppGlobals} from '../../../../app.globals';
@@ -9,7 +9,6 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './partner-assembly-product.item';
-import {saveAs as importedSaveAs} from 'file-saver';
 import {ElectronService} from '../../../../providers/electron.service';
 
 declare var $: any;
@@ -108,7 +107,8 @@ export class PartnerAssemblyProductComponent implements OnInit {
       partner_id: '',
       size: ['', Validators.required],
       price: ['', Validators.required],
-      price_date: ['', Validators.required]
+      price_date: ['', Validators.required],
+      is_type: '',
     });
   }
 
@@ -131,258 +131,256 @@ export class PartnerAssemblyProductComponent implements OnInit {
     });
   }
 
- 
+
   changeSubMenu(st): void {
     this.sch_st = st;
     this.getAll();
-}
+  }
 
-onSelect({ selected }) {
+  onSelect({selected}) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
     this.selected.push(...selected);
-}
+  }
 
-getAll(): void {
+  getAll(): void {
     this.selected = [];
 
     let formData = this.searchForm.value;
     let params = {
-        partner_name: formData.sch_partner_name,
-        // st: this.sch_st,
-        sortby: ['name','size'],
-        order: ['asc','asc'],
-        maxResultCount: 10000
-    }
+      partner_name: formData.sch_partner_name,
+      // st: this.sch_st,
+      sortby: ['name', 'size'],
+      order: ['asc', 'asc'],
+      maxResultCount: 10000
+    };
     if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
-        params['partner_id'] = this.listSltdPaId;
+      params['partner_id'] = this.listSltdPaId;
     }
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
-        listData =>
-        {
-            this.listData = listData;
-            this.temp = listData['data'];
-            this.rows = listData['data'];
+      listData => {
+        this.listData = listData;
+        this.temp = listData['data'];
+        this.rows = listData['data'];
 
-            this.isLoadingProgress = false;
-        }
+        this.isLoadingProgress = false;
+      }
     );
-}
+  }
 
-onSelectListPartner(event: TypeaheadMatch): void {
+  onSelectListPartner(event: TypeaheadMatch): void {
 
     if (event.item['id'] == '') {
-        this.listSltdPaId = 0;
+      this.listSltdPaId = 0;
     } else {
-        this.listSltdPaId = event.item['id'];
-    }   
-     let id = this.listSltdPaId;
-     let formData = this.searchForm.value;  
-     const temp = this.temp.filter(function(d){
-         d.partner_code = String(d.id);
-         return d.partner_code.indexOf(id) !== -1  ||  !id ;
-     });
- 
-     this.rows = temp;
-}
+      this.listSltdPaId = event.item['id'];
+    }
+    let id = this.listSltdPaId;
+    let formData = this.searchForm.value;
+    const temp = this.temp.filter(function (d) {
+      d.partner_code = String(d.id);
+      return d.partner_code.indexOf(id) !== -1 || !id;
+    });
 
-updateFilter(event) {
+    this.rows = temp;
+  }
+
+  updateFilter(event) {
 
     let material = event.target.value;
     let partner_id = this.listSltdPaId;
 
-    let rt = this.temp.filter(function(d){
-        return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
+    let rt = this.temp.filter(function (d) {
+      return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
     });
 
     this.rows = rt;
-}
+  }
 
 
-onSelectInputPartner(event: TypeaheadMatch): void {
+  onSelectInputPartner(event: TypeaheadMatch): void {
     console.log(event.item.id);
     if (event.item == '') {
-        this.inputForm.controls['partner_id'].setValue(0);
+      this.inputForm.controls['partner_id'].setValue(0);
     } else {
-        this.inputForm.controls['partner_id'].setValue(event.item.id);
+      this.inputForm.controls['partner_id'].setValue(event.item.id);
     }
-}
+  }
 
-Edit (id) {
+  Edit(id) {
     this.dataService.GetById(id).subscribe(
-        editData =>
-        {
-            if (editData['result'] == "success") {
-                this.editData = editData;
-                this.formData = editData['data'];
-                this.inputForm.patchValue({
-                    input_date: this.formData.input_date,
-                    name: this.formData.name,
-                    size: this.formData.size,
-                    partner_alias: this.formData.partner_alias,
-                    partner_id: this.formData.partner_id,
-                    price: this.formData.price,
-                    price_date: this.formData.price_date,
-                });
-            }
+      editData => {
+        if (editData['result'] == 'success') {
+          this.editData = editData;
+          this.formData = editData['data'];
+          this.inputForm.patchValue({
+            input_date: this.formData.input_date,
+            name: this.formData.name,
+            size: this.formData.size,
+            partner_alias: this.formData.partner_alias,
+            partner_id: this.formData.partner_id,
+            price: this.formData.price,
+            price_date: this.formData.price_date,
+          });
         }
+      }
     );
-}
+  }
 
-Save () {
-     let formData = this.inputForm.value;
+  Save() {
+    let formData = this.inputForm.value;
 
-     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
-     formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
-     formData.price = parseInt(formData.price) ;
+    formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
+    formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
+    formData.price = parseInt(formData.price);
+    formData.is_type = false;
+    if (this.isEditMode == true) {
+      this.Update(this.selectedId, formData);
+    } else {
+      formData.st = '1';
+      this.Create(formData);
+    }
+  }
 
-     if (this.isEditMode == true) {
-         this.Update(this.selectedId, formData);
-     } else {
-         formData.st = '1';
-         this.Create(formData);
-     }
-}
-
-Create (data): void {
+  Create(data): void {
     this.dataService.Create(data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.addOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.inputForm.reset();
+            this.getAll();
+            this.messageService.add(this.addOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.inputFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
+  }
 
-Update (id, data): void {
+  Update(id, data): void {
     this.dataService.Update(id, data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.inputForm.reset();
+            this.getAll();
+            this.messageService.add(this.editOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.inputFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
+  }
 
-changeStatus (id, st): void {
+  changeStatus(id, st): void {
     const formData: FormData = new FormData();
     formData.append('st', st);
     this.dataService.changeStatus(id, formData)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.getAll();
-                    this.messageService.add(this.delOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.selectedId = '';
-                this.selected = [];
-                this.statusFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.getAll();
+            this.messageService.add(this.delOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.selectedId = '';
+          this.selected = [];
+          this.statusFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
+  }
 
-openModal(method, id) {
+  openModal(method, id) {
     // 실행권한
     if (this.isExecutable == true) {
-        if (method == 'delete' || method == 'hide' || method == 'use') {
-            this.statusFormModal.show();
-        } else if (method == 'write') {
-            this.inputFormModal.show();
-        } else if (method == 'upload') {
-            this.uploadFormModal.show();
-        }
+      if (method == 'delete' || method == 'hide' || method == 'use') {
+        this.statusFormModal.show();
+      } else if (method == 'write') {
+        this.inputFormModal.show();
+      } else if (method == 'upload') {
+        this.uploadFormModal.show();
+      }
     } else {
-        alert(this.globals.isNotExecutable);
-        return false;
+      alert(this.globals.isNotExecutable);
+      return false;
     }
 
     switch (method) {
-        case 'delete':
-            this.statusFormTitle = '자재 삭제';
-            this.statusFormValue = -1;
-            this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+      case 'delete':
+        this.statusFormTitle = '자재 삭제';
+        this.statusFormValue = -1;
+        this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
         break;
-        case 'hide':
-            this.statusFormTitle = '자재 숨김';
-            this.statusFormValue = 0;
-            this.statusConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
+      case 'hide':
+        this.statusFormTitle = '자재 숨김';
+        this.statusFormValue = 0;
+        this.statusConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
         break;
-        case 'use':
-            this.statusFormTitle = '자재 사용';
-            this.statusFormValue = 1;
-            this.statusConfirmMsg = '선택하신 데이터를 사용처리하시겠습니까?';
+      case 'use':
+        this.statusFormTitle = '자재 사용';
+        this.statusFormValue = 1;
+        this.statusConfirmMsg = '선택하신 데이터를 사용처리하시겠습니까?';
         break;
     }
     if (id) {
-        if (id == 'selected') {
-            let idArr = [];
-            this.selected.forEach((e:any) => {
-                idArr.push(e.id);
-            });
-            this.selectedId = idArr.join(',');
-        } else {
-            this.selectedId = id;
-        }
+      if (id == 'selected') {
+        let idArr = [];
+        this.selected.forEach((e: any) => {
+          idArr.push(e.id);
+        });
+        this.selectedId = idArr.join(',');
+      } else {
+        this.selectedId = id;
+      }
     }
     if (method == 'write') {
-        if (id) {
-            this.isEditMode = true;
-            this.Edit(id);
-        } else {
-            this.inputForm.reset();
-            this.inputForm.controls['input_date'].setValue(this.tDate);
-            this.inputForm.controls['price_date'].setValue(this.tDate);
-            this.isEditMode = false;
-        }
+      if (id) {
+        this.isEditMode = true;
+        this.Edit(id);
+      } else {
+        this.inputForm.reset();
+        this.inputForm.controls['input_date'].setValue(this.tDate);
+        this.inputForm.controls['price_date'].setValue(this.tDate);
+        this.isEditMode = false;
+      }
     }
-}
+  }
 
 
-fileSelected (event) {
+  fileSelected(event) {
     let fileList: FileList = event.target.files;
-    if(fileList.length > 0) {
-        let file: File = fileList[0];
-        let formData:FormData = new FormData();
-        formData.append('uploadFile', file, file.name);
+    if (fileList.length > 0) {
+      let file: File = fileList[0];
+      let formData: FormData = new FormData();
+      formData.append('uploadFile', file, file.name);
 
-        this.excelUpload(formData);
+      this.excelUpload(formData);
     }
-}
+  }
 
-excelUpload (data): void {
+  excelUpload(data): void {
     this.isLoadingProgress = true;
     this.dataService.UploadExcelFile(data).subscribe(
-        data => {
-            if (data['result'] == "success") {
-                this.inputForm.reset();
-                this.getAll();
-                this.messageService.add(this.editOkMsg);
-            } else {
-                this.messageService.add(data['errorMessage']);
-            }
-            this.uploadFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
+      data => {
+        if (data['result'] == 'success') {
+          this.inputForm.reset();
+          this.getAll();
+          this.messageService.add(this.editOkMsg);
+        } else {
+          this.messageService.add(data['errorMessage']);
+        }
+        this.uploadFormModal.hide();
+      },
+      error => this.errorMessage = <any>error
     );
-}
+  }
 
 }
