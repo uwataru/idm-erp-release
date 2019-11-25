@@ -32,17 +32,17 @@ export const routes: Routes = [
     { path: 'orders', redirectTo: 'orders', pathMatch: 'full', canActivate: [AuthGuard] },
     { path: 'orders', component: OrderRegistrationComponent, data: { title: '영업 > 수주등록', id:103 }, canActivate: [AuthGuard] },
     { path: 'orders-adjustment', component: OrderAdjustmentComponent, data: { title: '영업 > 수주조정', id:104 }, canActivate: [AuthGuard] },
-    { path: '1', component: OrderNotDeliveredComponent, data: { title: '영업 > 납품처리', id:105 }, canActivate: [AuthGuard] },
-    { path: '2', component: CompletionWaitingComponent, data: { title: '영업 > 판매처리', id:106 }, canActivate: [AuthGuard] },
-    { path: '3', component: SalesSlipsComponent, data: { title: '영업 > 판매전표처리', id:107 }, canActivate: [AuthGuard] },
-    { path: '4', component: LossHandlingComponent, data: { title: '영업 > 정기LOSS처리', id:108 }, canActivate: [AuthGuard] },
+    { path: 'orders-not-delivered', component: OrderNotDeliveredComponent, data: { title: '영업 > 납품처리', id:105 }, canActivate: [AuthGuard] },
+    { path: 'orders-completion-waiting', component: CompletionWaitingComponent, data: { title: '영업 > 판매처리', id:106 }, canActivate: [AuthGuard] },
+    { path: 'orders-sales-slips', component: SalesSlipsComponent, data: { title: '영업 > 판매전표처리', id:107 }, canActivate: [AuthGuard] },
+    { path: 'loss-handling', component: LossHandlingComponent, data: { title: '영업 > 정기LOSS처리', id:108 }, canActivate: [AuthGuard] },
     { path: 'orders-adjustment-history', component: OrderChangeHistoryComponent, data: { title: '영업 > 수주조정내역', id:109 }, canActivate: [AuthGuard] },
-    { path: '5', component: DeliveryComponent, data: { title: '영업 > 납품명세서', id:110 }, canActivate: [AuthGuard] },
-    { path: '6', component: ReturnComponent, data: { title: '영업 > 반품명세서', id:111 }, canActivate: [AuthGuard] },
-    { path: '7', component: InferiorGoodsComponent, data: { title: '영업 > 납품불량명세서', id:112 }, canActivate: [AuthGuard] },
+    { path: 'orders-delivery', component: DeliveryComponent, data: { title: '영업 > 납품명세서', id:110 }, canActivate: [AuthGuard] },
+    { path: 'orders-return', component: ReturnComponent, data: { title: '영업 > 반품명세서', id:111 }, canActivate: [AuthGuard] },
+    { path: 'orders-inferior-goods', component: InferiorGoodsComponent, data: { title: '영업 > 납품불량명세서', id:112 }, canActivate: [AuthGuard] },
     { path: 'order/unsold', component: UnsoldComponent, data: { title: '영업 > 미판매명세서', id:262 }, canActivate: [AuthGuard] },
     { path: 'order/self', component: SelfComponent, data: { title: '영업 > 자가제품수불명세서', id:113 }, canActivate: [AuthGuard] },
-    { path: '8', component: DeliveryPerformanceChartComponent, data: { title: '영업 > 납품실적차트', id:114 }, canActivate: [AuthGuard] }
+    { path: 'chart-delivery-performance', component: DeliveryPerformanceChartComponent, data: { title: '영업 > 납품실적차트', id:114 }, canActivate: [AuthGuard] }
 ];
 
 // Datepicker Config
