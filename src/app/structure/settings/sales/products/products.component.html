@@ -7,18 +7,16 @@
     <div class="row">
       <div class="col-sm-8 m-b-xs pos-rlt">
         <form [formGroup]="searchForm">
-          <input formControlName="sch_partner_name"
-                 [typeahead]="listPartners"
-                 typeaheadOptionField="Alias"
-                 [typeaheadOptionsLimit]="50"
-                 [typeaheadScrollable]="true"
-                 [typeaheadMinLength]="0"
-                 (typeaheadOnSelect)="onSelectListPartner($event)"
-                 placeholder="거래처명"
-                 class="input-sm form-control w-sm inline v-middle"
-                 (keyup)="listSltdPaCode=0"/>
-          <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)"
-                 class="input-sm form-control w-sm inline v-middle" placeholder="제품번호/제품명"/>
+          <input type="text" formControlName="sch_product_name"
+                  [typeahead]="productList"
+                  typeaheadOptionField="name"
+                  [typeaheadOptionsLimit]="50"
+                  [typeaheadScrollable]="true"
+                  [typeaheadMinLength]="0"
+                  (typeaheadOnSelect)="onSelectListPartner($event)"
+                  class="input-sm form-control w-sm inline v-middle"
+                  id="sch_product_name"
+                   placeholder="제품번호/제품명"/>
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
 
           <button (click)="changeSubMenu(1)" class="btn btn-sm m-l-lg"
