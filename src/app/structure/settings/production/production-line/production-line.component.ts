@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ProductionLineService } from './production-line.service';
 import { AppGlobals } from '../../../../app.globals';
@@ -25,7 +26,8 @@ export class ProductionLineComponent implements OnInit {
     listData : Item[];
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
-
+    
+    processList: any[] = this.globals.configs['processList'];
     editData: Item;
     formData: Item['data'];
     rows = [];
@@ -67,10 +69,11 @@ export class ProductionLineComponent implements OnInit {
 
         this.inputForm = fb.group({
             line_no: ['', [Validators.required]],
-            process_id: ['', [Validators.required]],
+            process_id: '',
             run_time: ['', [Validators.required]],
             worker_cnt: ['', [Validators.required]],
-            is_outsourcing: ''
+            is_outsourcing: '',
+            main_process: ['', [Validators.required]]
         });
     }
 
@@ -223,6 +226,15 @@ export class ProductionLineComponent implements OnInit {
                 //this.inputForm.controls['input_date'].setValue(this.tDate);
                 this.isEditMode = false;
             }
+        }
+    }
+
+    onSelectInputProcess(event: TypeaheadMatch): void {
+        console.log(event.item.id);
+        if (event.item == '') {
+            this.inputForm.controls['process_id'].setValue(0);
+        } else {
+            this.inputForm.controls['process_id'].setValue(event.item.id);
         }
     }
 }

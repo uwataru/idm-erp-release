@@ -6,7 +6,7 @@ export class Item {
         process_id: number;
         run_time: number;
         worker_cnt: number;
-        is_outsourcing: string;
+        is_outsourcing: boolean;
         process_code: string;
         process_group: string;
     };

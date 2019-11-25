@@ -82,7 +82,16 @@
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="process_id" id="process_id" required onReturn class="form-control input-sm w-sm" />
+                        <input formControlName="main_process" id="main_process"
+                        [typeahead]="processList"
+                        typeaheadOptionField="assembly_type"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectInputProcess($event)"
+                        placeholder="주공정"
+                        class="input-sm form-control w-sm inline v-middle"/>
+                        <input type="hidden" formControlName="process_id" id="process_id" />
                     </td>
                 </tr>
                 <tr>
