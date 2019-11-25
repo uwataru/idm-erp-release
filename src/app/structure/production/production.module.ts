@@ -33,20 +33,21 @@ import { PersonnelManagementComponent } from './personnel-management/personnel-m
 
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'planning/production-planning', pathMatch: 'full', canActivate: [AuthGuard]},
+  {path: '', redirectTo: 'planning/production-line-planning', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'planning/production-line-planning', component: ProductionLinePlanningComponent, data: {title: '생산 > 라인별가동계획', id: 115}, canActivate: [AuthGuard]},
   {path: 'planning/production-planning', component: ProductionPlanningComponent, data: {title: '생산 > 생산계획관리', id: 116}, canActivate: [AuthGuard]},
   {path: 'planning/materials-planning', component: MaterialsPlanningComponent, data: {title: '생산 > 자재계획', id: 117}, canActivate: [AuthGuard]},
-  {path: 'results/assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 118}, canActivate: [AuthGuard]},
-  {path: 'results/forging-works', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 119}, canActivate: [AuthGuard]},
-  {path: 'record/forging-result', component: ForgingResultComponent, data: {title: '생산 > 조립작업실적서', id: 120}, canActivate: [AuthGuard]},
-  {path: 'aggregation/forging-work-time', component: ForgingWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 121}, canActivate: [AuthGuard]},
-  {path: 'record/assembly-work', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 122}, canActivate: [AuthGuard]},
+  {path: 'assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 118}, canActivate: [AuthGuard]},
+  {path: 'assembly-performance', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 119}, canActivate: [AuthGuard]},
+  {path: 'record/assembly-personnel-performance', component: ForgingResultComponent, data: {title: '생산 > 조립작업실적서', id: 120}, canActivate: [AuthGuard]},
+  {path: 'record/chart-assembly-performance', component: ForgingWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 121}, canActivate: [AuthGuard]},
+  {path: 'record/assembly-performance-statement', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 122}, canActivate: [AuthGuard]},
   {path: 'record/productivity-analysis', component: ProductivityAnalysisComponent, data: {title: '생산 > 생산성분석서', id: 123}, canActivate: [AuthGuard]},
-  {path: 'chart/production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 124}, canActivate: [AuthGuard]},
+  {path: 'chart/record/chart-production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 124}, canActivate: [AuthGuard]},
   {path: 'record/forging-work', component: ForgingWorkComponent, data: {title: '생산 > 단조작업명세서', id: 125}, canActivate: [AuthGuard]},
   {path: 'record/total-inventory-situation', component: TotalInventorySituationComponent, data: {title: '생산 > 종합재고상황판', id: 126}, canActivate: [AuthGuard]},
   {path: 'record/lot-tracker', component: LotTrackerComponent, data: {title: '생산 > LOT추적표', id: 127}, canActivate: [AuthGuard]},
+  {path: 'personnel', redirectTo: 'personnel', pathMatch: 'full', canActivate: [AuthGuard]},
   {path: 'personnel', component: PersonnelComponent, data: { title: '생산>생산인력등록'}},
   {path: 'personnel-management', component: PersonnelManagementComponent, data: { title: '생산>생산인력관리'}}
 ];

@@ -36,7 +36,6 @@ export class ProductsComponent implements OnInit {
   listData: Item[];
   editData: Item;
 
-  sch_partner_name: string;
   //listPartners = [];
   listPartners: any[] = this.globals.configs['type5Partners'];
   listSltdPaCode: number = 0;
@@ -61,7 +60,8 @@ export class ProductsComponent implements OnInit {
   prodTypeStr: string;
 
   tDate = this.globals.tDate;
-  inputPartners: any[] = this.globals.configs['type5Partners'];
+  productList: any[] = this.globals.configs['productList'];
+  listSltdProductId: number = 0;
   listMaterials: any[] = this.globals.configs['schMaterials'];
   productionLines: any[] = this.globals.configs['productionLine'];
   product_price: number;
@@ -215,25 +215,6 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['id'] == '') {
-      this.listSltdPaCode = 0;
-    } else {
-      this.listSltdPaCode = event.item['id'];
-    }
-
-    let partner_code = this.listSltdPaCode;
-    let formData = this.searchForm.value;
-    let product_val = formData.sch_product_name;
-
-    const temp = this.temp.filter(function (d) {
-      d.partner_code = String(d.partner_code);
-      return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(product_val) !== -1 || d.product_name.indexOf(product_val) !== -1) || !partner_code && !product_val;
-    });
-
-    this.rows = temp;
-
-  }
   onSelectListMaterials(event: TypeaheadMatch): void {
     console.log(event.item);
     if (event.item == '') {
@@ -249,19 +230,23 @@ export class ProductsComponent implements OnInit {
   }
 
 
-  updateFilter(event) {
+  onSelectListPartner(event: TypeaheadMatch): void {
+    if (event.item['id'] == '') {
+        this.listSltdProductId = 0;
+    } else {
+        this.listSltdProductId = event.item['id'];
+    }
 
-    let partner_code = this.listSltdPaCode;
-    const val = event.target.value;
+     let id = this.listSltdProductId;
 
-    // filter data
-    const temp = this.temp.filter(function (d) {
-      return d.partner_code.indexOf(partner_code) !== -1 && (d.product_code.indexOf(val) !== -1 || d.product_name.indexOf(val) !== -1) || !val && !partner_code;
-    });
+     const temp = this.temp.filter(function(d){
+         d.product_name = String(d.id);
+         return d.product_name.indexOf(id) !== -1  ||  !id ;
+     });
 
-    // update the rows
-    this.rows = temp;
-  }
+     this.rows = temp;
+
+}
 
 
   onSelectInputPartner(event: TypeaheadMatch): void {

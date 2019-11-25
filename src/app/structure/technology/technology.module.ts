@@ -21,9 +21,9 @@ import { QualityStatusComponent } from './quality/quality-status/quality-status.
 
 export const routes: Routes = [
     { path: '', redirectTo: 'inspection-item', pathMatch: 'full', canActivate: [AuthGuard] },
-    { path: 'inspection-item', component: InspectionItemComponent, data: { title: '기술/품질 > 검사항목' } },
+    { path: 'quality/inspection-item', component: InspectionItemComponent, data: { title: '기술/품질 > 검사항목' } },
     { path: 'quality/screening', component: ScreeningComponent, data: { title: '품질 > 선별작업실적', id:143 }, canActivate: [AuthGuard] },
-    { path: 'quality-status', component: QualityStatusComponent, data: { title: '품질 > 품질현황', id:142 }, canActivate: [AuthGuard] },
+    { path: 'quality/quality-status', component: QualityStatusComponent, data: { title: '품질 > 품질현황', id:142 }, canActivate: [AuthGuard] },
     { path: 'products/shipping-packaging', component: ShippingPackagingComponent, data: { title: '품질 > 출하/포장관리' } },
     { path: 'quality/defect-inspection', component: DefectInspectionComponent, data: { title: '품질 > 불량관리', id:144 }, canActivate: [AuthGuard] },
     { path: 'products/return', component: ReturnComponent, data: { title: '품질 > 반품관리' } },

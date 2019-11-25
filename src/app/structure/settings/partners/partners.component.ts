@@ -1,5 +1,6 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import {ElectronService, EXPORT_EXCEL_MODE} from '../../../providers/electron.service';
 import {saveAs as importedSaveAs} from 'file-saver';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -40,6 +41,8 @@ export class PartnersComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
+  listPartners: any[] = this.globals.configs['type1Partners'];
+  listSltdPaId: number = 0;
   formData: Item['data'];
   rows = [];
   temp = [];
@@ -166,19 +169,24 @@ export class PartnersComponent implements OnInit {
     );
   }
 
-  updateFilter(event) {
-    const val = event.target.value;
+  onSelectListPartner(event: TypeaheadMatch): void {
+    if (event.item['id'] == '') {
+        this.listSltdPaId = 0;
+    } else {
+        this.listSltdPaId = event.item['id'];
+    }
 
-    // filter data
-    const temp = this.temp.filter(function (d) {
-      return d.name.indexOf(val) !== -1 || !val;
-    });
+     let id = this.listSltdPaId;
+     let formData = this.searchForm.value;
 
-    // update the rows
-    this.rows = temp;
-    // 필터 변경될때마다 항상 첫 페이지로 이동.
-    //this.table.offset = 0;
-  }
+     const temp = this.temp.filter(function(d){
+         d.partner_code = String(d.id);
+         return d.partner_code.indexOf(id) !== -1  ||  !id ;
+     });
+
+     this.rows = temp;
+
+}
 
   Edit(id) {
     this.dataService.GetById(id).subscribe(

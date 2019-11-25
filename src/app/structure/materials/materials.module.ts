@@ -27,49 +27,49 @@ import {MaterialsInOutComponent} from './history/materials-in-out/materials-in-o
 import {OutsourcingInOutComponent} from './history/outsourcing-in-out/outsourcing-in-out.component';
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'order/raw-materials', pathMatch: 'full', canActivate: [AuthGuard]},
-  {path: 'order/raw-materials', component: RawMaterialsComponent, data: {title: '자재 > 원자재발주', id: 128}, canActivate: [AuthGuard]},
+  {path: '', redirectTo: 'orders', pathMatch: 'full', canActivate: [AuthGuard]},
+  {path: 'orders', component: RawMaterialsComponent, data: {title: '자재 > 원자재발주', id: 128}, canActivate: [AuthGuard]},
+  // {
+  //   path: 'order/outsourcing-forging-work',
+  //   component: OutsourcingForgingWorkComponent,
+  //   data: {title: '자재 > 외주단조발주', id: 129},
+  //   canActivate: [AuthGuard]
+  // },
   {
-    path: 'order/outsourcing-forging-work',
-    component: OutsourcingForgingWorkComponent,
-    data: {title: '자재 > 외주단조발주', id: 129},
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'order/outsourcing-assembly-work',
+    path: 'outsourcing-order',
     component: OutsourcingAssemblyWorkComponent,
     data: {title: '자재 > 외주발주', id: 130},
     canActivate: [AuthGuard]
   },
+  // {
+  //   path: 'order/outsourcing-heat-treatment',
+  //   component: HeatTreatmentOutsourcingComponent,
+  //   data: {title: '자재 > 외주열처리발주', id: 131},
+  //   canActivate: [AuthGuard]
+  // },
+  // {
+  //   path: 'order/outsourcing-machining',
+  //   component: OutsideMachiningComponent,
+  //   data: {title: '자재 > 외주가공발주', id: 132},
+  //   canActivate: [AuthGuard]
+  // },
   {
-    path: 'order/outsourcing-heat-treatment',
-    component: HeatTreatmentOutsourcingComponent,
-    data: {title: '자재 > 외주열처리발주', id: 131},
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'order/outsourcing-machining',
-    component: OutsideMachiningComponent,
-    data: {title: '자재 > 외주가공발주', id: 132},
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'warehousing/raw-materials',
+    path: 'receiving',
     component: RawMaterialsReceivingComponent,
     data: {title: '자재 > 원자재입고처리', id: 133},
     canActivate: [AuthGuard]
   },
-  {path: 'slips/raw-materials', component: RawMaterialSlipsComponent, data: {title: '자재 > 원자재입고전표처리', id: 134}, canActivate: [AuthGuard]},
-  {path: 'warehousing/outsourcing', component: OutsourcedStorageComponent, data: {title: '자재 > 외주입고처리', id: 135}, canActivate: [AuthGuard]},
+  {path: 'record/receiving', component: RawMaterialSlipsComponent, data: {title: '자재 > 원자재입고전표처리', id: 134}, canActivate: [AuthGuard]},
+  {path: 'outsourcing-receiving', component: OutsourcedStorageComponent, data: {title: '자재 > 외주입고처리', id: 135}, canActivate: [AuthGuard]},
   {
-    path: 'slips/outsourcing',
+    path: 'record/outsourcing-receiving',
     component: OutsourcedStorageSlipsComponent,
     data: {title: '자재 > 외주입고전표처리', id: 136},
     canActivate: [AuthGuard]
   },
-  {path: 'history/materials-in-out', component: MaterialsInOutComponent, data: {title: '자재 > 원자재수불명세서', id: 138}, canActivate: [AuthGuard]},
+  {path: 'record/receiving-statement', component: MaterialsInOutComponent, data: {title: '자재 > 원자재수불명세서', id: 138}, canActivate: [AuthGuard]},
   {
-    path: 'history/outsourcing-in-out',
+    path: 'record/outsourcing-receiving-statement',
     component: OutsourcingInOutComponent,
     data: {title: '자재 > 외주수불명세서', id: 139},
     canActivate: [AuthGuard]

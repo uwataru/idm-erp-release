@@ -177,18 +177,15 @@ onSelectListPartner(event: TypeaheadMatch): void {
         this.listSltdPaId = 0;
     } else {
         this.listSltdPaId = event.item['id'];
-    }
-
-    let partner_id = this.listSltdPaId;
-    // let formData = this.searchForm.value;
-    // let material = formData.sch_material;
-
-    let rt = this.temp.filter(function(d){
-        d.partner_id = String(d.partner_id);
-        return d.partner_id.indexOf(partner_id) !== -1  || !partner_id ;
-    });
-
-    this.rows = rt;
+    }   
+     let id = this.listSltdPaId;
+     let formData = this.searchForm.value;  
+     const temp = this.temp.filter(function(d){
+         d.partner_code = String(d.id);
+         return d.partner_code.indexOf(id) !== -1  ||  !id ;
+     });
+ 
+     this.rows = temp;
 }
 
 updateFilter(event) {

@@ -16,7 +16,13 @@
             <option value="5">영업</option>
             <option value="6">해외</option>
           </select>
-          <input type="text" formControlName="sch_partner_name" id="sch_partner_name" (keyup)="updateFilter($event)"
+          <input formControlName="sch_partner_name" id="sch_partner_name"
+                 [typeahead]="listPartners"
+                 typeaheadOptionField="name"
+                 [typeaheadOptionsLimit]="50"
+                 [typeaheadScrollable]="true"
+                 [typeaheadMinLength]="0"
+                 (typeaheadOnSelect)="onSelectListPartner($event)"
                  class="input-sm form-control w-sm inline v-middle" placeholder="거래처명"/>
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
 
