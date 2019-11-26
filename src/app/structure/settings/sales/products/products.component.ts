@@ -10,6 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item, MaterialItem} from './products.item';
+import { FormArray } from '@angular/forms';
 
 declare var $: any;
 
@@ -82,7 +83,7 @@ export class ProductsComponent implements OnInit {
   @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
-    @Inject(FormBuilder) fb: FormBuilder,
+    @Inject(FormBuilder) public fb: FormBuilder,
     public electronService: ElectronService,
     private dataService: ProductsService,
     private globals: AppGlobals,
@@ -107,7 +108,10 @@ export class ProductsComponent implements OnInit {
       sch_partner_name: '',
       sch_product_name: ''
     });
-    this.inputForm = fb.group({
+    this.buildInputFormGroup();
+  }
+  buildInputFormGroup(){
+    this.inputForm = this.fb.group({
       input_date: ['', Validators.required],
       type: '',
       name: ['', Validators.required],
@@ -157,9 +161,7 @@ export class ProductsComponent implements OnInit {
 
   getAll(): void {
     this.selected = [];
-
     let formData = this.searchForm.value;
-
     let params = {
       //partner_name: formData.sch_partner_name,
       product_name: formData.sch_product_name,
@@ -168,6 +170,7 @@ export class ProductsComponent implements OnInit {
       order: ['asc'],
       maxResultCount: 10000
     };
+
     if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
       params['partner_code'] = this.listSltdPaCode;
     }
@@ -182,30 +185,7 @@ export class ProductsComponent implements OnInit {
         this.listData = listData;
         this.temp = listData['data'];
         this.rows = listData['data'];
-
-
-        // let tRows = [];
-        // let len = this.rows.length;
-        // for (let i = 0; i < len; i++) {
-        //   let row;
-        //   if (this.rows[i].materials) {
-        //     let lenMat = this.rows[i].materials.length;
-        //     for (let j = 0; j < lenMat; j++) {
-        //       row = [];
-        //       if(j==0){
-        //         row = {...this.rows[i]};
-        //       }
-        //       row.material = this.rows[i].materials[j];
-        //       tRows.push(row);
-        //     }
-        //   } else {
-        //     row = {...this.rows[i]};
-        //     tRows.push(row);
-        //   }
-        // }
-        // this.rows = tRows;
-        // this.temp = tRows;
-        console.log('getAll', this.rows);
+        // console.log('getAll', this.rows);
 
         this.isLoadingProgress = false;
 
@@ -217,7 +197,7 @@ export class ProductsComponent implements OnInit {
   }
 
   onSelectListMaterials(event: TypeaheadMatch, index): void {
-    console.log(event.item, index);
+    // console.log('onSelectListMaterials', event.item, index);
     this.inputForm.controls['material_price_' + index].setValue(event.item.price);
     this.inputForm.controls['material_base_price_' + index].setValue(event.item.price);
     this.inputForm.controls['material_id_' + index].setValue(event.item.id);
@@ -228,11 +208,9 @@ export class ProductsComponent implements OnInit {
   updateFilter(event) {
     // let partner_code = this.listSltdPaCode;
     const val = event.target.value;
-    console.log(val);
-
     // filter data
     const temp = this.temp.filter(function (d) {
-      console.log(d);
+      // console.log(d);
       return (d.name!=null &&  d.name.indexOf(val) !== -1) || !val;
     });
 
@@ -277,15 +255,19 @@ export class ProductsComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
           this.formData['materials'] = editData['materials_data'];
-          console.warn(this.formData);
+          // console.warn(this.formData);
           let product_price = this.utils.addComma(this.formData.product_price);
+          let is_tmp_price = false;
+          if (this.formData.is_tmp_price == 'Y') {
+            is_tmp_price = true;
+          }
 
           for(let i=1; i<=this.formData['materials'].length; i++){
             if(i != 1) {
-              this.addMaterialRow(i);
+              this.addMaterialRow();
             }
             let matierialInfo = this.getMateriaInfo(this.formData['materials'][i-1].material_id);
-            console.log(matierialInfo);
+            // console.log(matierialInfo);
             this.inputForm.controls['sch_materials_' + i].setValue(matierialInfo.name);
             this.inputForm.controls['id_' + i].setValue(this.formData['materials'][i-1].id);
             this.inputForm.controls['material_id_' + i].setValue(this.formData['materials'][i-1].material_id);
@@ -299,7 +281,7 @@ export class ProductsComponent implements OnInit {
             type: this.formData.type,
             name: this.formData.name,
             product_price: product_price,
-            is_tmp_price: this.formData.is_tmp_price,
+            is_tmp_price: is_tmp_price,
             materials: this.formData.materials,
             assembly_method: this.formData.assembly_method,
           });
@@ -317,35 +299,43 @@ export class ProductsComponent implements OnInit {
     if (formData.is_tmp_price == null) {
       formData.is_tmp_price = false;
     }
-    formData.materials = []
+    formData.materials = [];
 
     let state = 1;
     let id = '';
-    if (this.isEditMode == true) {
-      state = 2;
-    }
     for(let i=1; i<=this.materialData.length; i++){
+      id = formData['id_'+i];
       if (this.isEditMode == true) {
-        id = formData['id_'+i];
+        if(formData['material_id_'+i] == -1) {
+          state = 3; //삭제
+        } else{
+          if(id == '') {
+            state = 1; //추가
+          } else{
+            state = 2; //수정
+          }
+        }
       }
-      let material = {
-        id: id,
-        material_id: formData['material_id_'+i],
-        qty: parseInt(formData['material_qty_'+i]),
-        price: formData['material_price_'+i],
-        state: state
+      if(formData['material_id_'+i] != -1 || this.isEditMode == true) {  //-1 은 삭제된 행
+        let material = {
+          id: id,
+          material_id: formData['material_id_' + i],
+          qty: parseInt(formData['material_qty_' + i]),
+          price: formData['material_price_' + i],
+          state: state
+        }
+        formData.materials.push(material);
       }
-      formData.materials.push(material);
+
+      delete formData['material_id_'+i];
+      delete formData['id_'+i];
+      delete formData['material_price_'+i];
+      delete formData['material_base_price_'+i];
+      delete formData['material_qty_'+i];
+      delete formData['sch_materials_'+i];
     }
 
-    delete formData.material_id_1;
-    delete formData.id_1;
-    delete formData.material_price_1;
-    delete formData.material_base_price_1;
-    delete formData.material_qty_1;
-    delete formData.sch_materials_1;
-
-    console.log('save', this.materialData.length, formData);
+    console.log('save', this.selectedId, formData);
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);
     } else {
@@ -446,17 +436,22 @@ export class ProductsComponent implements OnInit {
           idArr.push(e.id);
         });
         this.selectedId = idArr.join(',');
-        console.log(this.selectedId);
+        console.log('selectedId=', this.selectedId);
       } else {
         this.selectedId = id;
       }
     }
     if (method == 'write') {
+      this.materialData = [];
+      let material = new MaterialItem();
+      this.materialData.push(material);
+      this.inputForm.reset();
+      this.buildInputFormGroup();
+      // console.log(this.inputForm);
       if (id) { //수정 모드
         this.isEditMode = true;
         this.Edit(id);
       } else {
-        this.inputForm.reset();
         this.inputForm.controls['input_date'].setValue(this.tDate);
         // document.getElementById('material_title_{{index+1}}').
         console.log(this.listMaterials);
@@ -464,7 +459,6 @@ export class ProductsComponent implements OnInit {
       }
     }
   }
-
   fileSelected(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -503,13 +497,11 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  addMaterialRow(index = 0) {
-    console.log('addMaterialRow', index);
+  addMaterialRow() {
+    // console.log('addMaterialRow', index);
     let material = new MaterialItem();
     this.materialData.push(material);
-    if(index == 0){
-      index = this.materialData.length;
-    }
+    let index = this.materialData.length;
 
     this.inputForm.addControl('sch_materials_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('id_' + index, new FormControl(''));
@@ -517,36 +509,63 @@ export class ProductsComponent implements OnInit {
     this.inputForm.addControl('material_qty_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('material_price_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('material_base_price_' + index, new FormControl(''));
-
   }
   removeMaterialRow(index) {
     console.log('removeMaterialRow', index);
-    this.inputForm.value['material_id_'+index] = -1; //save() 할 때 이 값을 기준으로 저장여부 판단.
-    console.log('removeMaterialRow', this.inputForm.value);
+    this.inputForm.controls['material_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
   }
 
-  calculatePrice(event) {
-    console.log('calculatePrice', event);
+  calculatePrice(event, index) {
+    console.log('calculatePrice', event, index);
     let formData = this.inputForm.value;
 
-    let mQty = Number(formData['material_qty_'+this.materialData.length]) * 1;
-    let mPrice = Number(formData['material_base_price_'+this.materialData.length]) * 1;
+    // console.log(formData['material_qty_'+index], formData['material_base_price_'+index]);
+    let mQty = Number(formData['material_qty_'+index]) * 1;
+    let mPrice = Number(formData['material_base_price_'+index]) * 1;
 
-    let result = mQty*mPrice;
-    this.inputForm.controls['material_price_'+this.materialData.length].setValue(result);
+    let result = mQty * mPrice;
+    this.inputForm.controls['material_price_'+index].setValue(result);
+    // console.log('calculatePrice', this.inputForm.value);
   }
 
-  chkViewAddBtn(index){
-    let isView = false;
-    let len = this.materialData.length;
-    for(let i = 1; i <= len; i++){
-
+  chkViewAddBtn(index) {
+    if (this.inputForm.value['material_id_' + index] != -1) {
+      let len = this.materialData.length;
+      let upItemCnt = 0;
+      for (let i = index + 1; i <= len; i++) {
+        if (this.inputForm.value['material_id_' + i] == -1) {
+          upItemCnt++;
+        }
+      }
+      // console.log(index, len , upItemCnt);
+      if((len - upItemCnt) == index){
+        return true;
+      } else{
+        return false;
+      }
+    } else {
+      return false;
     }
-    return isView;
   }
 
   chkViewRemoveBtn(index){
-
+    if (this.inputForm.value['material_id_' + index] != -1) {
+      let len = this.materialData.length;
+      let upItemCnt = 0;
+      for (let i = index + 1; i <= len; i++) {
+        if (this.inputForm.value['material_id_' + i] == -1) {
+          upItemCnt++;
+        }
+      }
+      // console.log(index, len , upItemCnt);
+      if((len - upItemCnt) == index){
+        return false;
+      } else{
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
 
   getMateriaInfo(id){

@@ -230,10 +230,11 @@
               </td>
             </tr>
             <tr *ngFor='let material of materialData; let index = index;'>
-              <div *ngIf="inputForm.value['material_id_'+(index+1)] != -1" style="display: contents">
+              <div *ngIf="inputForm.value['material_id_'+(index+1)] != -1" style="display: contents"
+                   id="material_wrap_{{index+1}}">
                 <th>
                   <label for="material_title_{{index+1}}">소요자재</label>
-                  <span>{{index+1}}</span>
+<!--                  <span>{{index+1}}</span>-->
                 </th>
                 <td>
                   <input formControlName="sch_materials_{{index+1}}" id="material_title_{{index+1}}"
@@ -253,7 +254,7 @@
                 </th>
                 <td>
                   <input type="text" formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}"
-                    (keyup)="calculatePrice($event)"
+                    (keyup)="calculatePrice($event, index+1)"
                     class="form-control inline input-sm w-xs text-right"/>
                 </td>
                 <th>
@@ -266,7 +267,7 @@
                 </td>
                 <td>
                   <div style="display: flex">
-                    <button *ngIf="materialData.length == index+1" (click)="addMaterialRow()"
+                    <button *ngIf="chkViewAddBtn(index+1)" (click)="addMaterialRow()"
                             [disabled]="!inputForm.valid"
                             id="material_add_btn_{{index+1}}"
                             class="btn btn-sm btn-info btn-addon" style="margin-right: 5px">추가
