@@ -513,6 +513,11 @@ export class ProductsComponent implements OnInit {
   removeMaterialRow(index) {
     console.log('removeMaterialRow', index);
     this.inputForm.controls['material_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    if (this.isEditMode == false) {
+      this.inputForm.controls['sch_materials_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+      this.inputForm.controls['material_qty_' + index].setValue(-1);
+      this.inputForm.controls['material_price_' + index].setValue(-1);
+    }
   }
 
   calculatePrice(event, index) {
@@ -529,43 +534,33 @@ export class ProductsComponent implements OnInit {
   }
 
   chkViewAddBtn(index) {
-    if (this.inputForm.value['material_id_' + index] != -1) {
-      let len = this.materialData.length;
-      let upItemCnt = 0;
-      for (let i = index + 1; i <= len; i++) {
-        if (this.inputForm.value['material_id_' + i] == -1) {
-          upItemCnt++;
-        }
+    let len = this.materialData.length;
+    let unVisibleItemCnt = 0;
+    for (let i = index + 1; i <= len; i++) {
+      if (this.inputForm.value['material_id_' + i] == -1) {
+        unVisibleItemCnt++;
       }
-      // console.log(index, len , upItemCnt);
-      if((len - upItemCnt) == index){
-        return true;
-      } else{
-        return false;
-      }
-    } else {
-      return false;
     }
+    // console.log(index, len , upItemCnt);
+    if((len - unVisibleItemCnt) == index){
+      return true;
+    }
+    return false;
+
   }
 
   chkViewRemoveBtn(index){
-    if (this.inputForm.value['material_id_' + index] != -1) {
-      let len = this.materialData.length;
-      let upItemCnt = 0;
-      for (let i = index + 1; i <= len; i++) {
-        if (this.inputForm.value['material_id_' + i] == -1) {
-          upItemCnt++;
-        }
+    let len = this.materialData.length;
+    let unVisibleItemCnt = 0;
+    for (let i = 1; i <= len; i++) {
+      if (this.inputForm.value['material_id_' + i] == -1) {
+        unVisibleItemCnt++;
       }
-      // console.log(index, len , upItemCnt);
-      if((len - upItemCnt) == index){
-        return false;
-      } else{
-        return true;
-      }
-    } else {
-      return false;
     }
+    if(len - unVisibleItemCnt > 1){
+      return true;
+    }
+    return false;
   }
 
   getMateriaInfo(id){
