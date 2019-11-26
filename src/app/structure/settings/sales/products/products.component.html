@@ -30,7 +30,6 @@
           <button (click)="changeSubMenu(-1)" class="btn btn-sm m-l-xss"
                   [ngClass]="{'btn-primary':sch_st === -1, 'btn-default':sch_st !== -1}">단종
           </button>
-          <!-- <button (click)="changeSubMenu(99)" class="btn btn-sm m-l-xss" [ngClass]="{'btn-primary':sch_st === 99, 'btn-default':sch_st !== 99}">전체</button> -->
         </form>
       </div>
       <div class="col-sm-4 text-right">
@@ -86,12 +85,14 @@
       </ngx-datatable-column>
       <ngx-datatable-column name="소요자재" prop="" cellClass="text-center">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.materials">
-              <div *ngFor="let item of row">{{item.name}}</div>
+              <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+              '2px' : '0px' }">{{item.name}}</div>
           </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Qty" prop="" cellClass="text-center">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.materials">
-              <div *ngFor="let item of row">{{item.qty}}</div>
+            <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+              '2px' : '0px' }">{{item.qty}}</div>
           </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100"
