@@ -24,8 +24,3 @@ export class Item {
   result: string;
   errorMessage: string;
 }
-
-export class PartnerItem {
-  partner_code: string;
-  partner_name: string;
-}

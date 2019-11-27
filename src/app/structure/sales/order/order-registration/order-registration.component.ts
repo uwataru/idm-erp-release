@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import {DatePipe} from '@angular/common';
@@ -31,8 +31,6 @@ export class OrderRegistrationComponent implements OnInit {
   listData: Item[];
   formData: Item['data'];
   sch_partner_name: string;
-  //listPartners = [];
-  listPartners: any[] = this.globals.configs['type5Partners'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
@@ -47,8 +45,9 @@ export class OrderRegistrationComponent implements OnInit {
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  inputPartners: any[] = this.globals.configs['type5Partners'];
+  partnerList: any[] = this.globals.configs['type2Partners'];
   productionLines: any[] = this.globals.configs['productionLine'];
+  productList: any[] = this.globals.configs['productList'];
   prodTypeStr: string;
   combiTypeStr: string;
   product_price: number;
@@ -56,6 +55,8 @@ export class OrderRegistrationComponent implements OnInit {
   order_qty: number;
   editData: Item;
   data: Date;
+
+  productDataCnt:number;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -68,7 +69,7 @@ export class OrderRegistrationComponent implements OnInit {
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
 
   constructor(
-    @Inject(FormBuilder) fb: FormBuilder,
+    @Inject(FormBuilder) public fb: FormBuilder,
     private router: Router,
     private datePipe: DatePipe,
     private dataService: OrderRegistrationService,
@@ -94,28 +95,36 @@ export class OrderRegistrationComponent implements OnInit {
       sch_partner_name: '',
       sch_product_name: ''
     });
-    this.inputForm = fb.group({
-      product_code: ['', Validators.required],
+
+    this.buildInputFormGroup();
+  }
+
+  buildInputFormGroup(){
+    this.inputForm = this.fb.group({
       input_date: ['', Validators.required],
-      order_type1: ['', Validators.required],
-      order_type2: ['', Validators.required],
-      partner_code: ['', Validators.required],
-      partner_name: ['', Validators.required],
-      product_name: '',
-      delivery_date: ['', Validators.required],
-      size: '',
+      order_no: ['', Validators.required],
+      partner_id: [''],
+      sch_partner_name: ['', Validators.required],
+      order_type: ['', Validators.required],
+      demand_date: ['', Validators.required],
       promised_date: ['', Validators.required],
-      production_line: ['', Validators.required],
-      product_price: '',
-      order_qty: ['', Validators.required],
-      order_no: '',
-      modi_reason: '',
+      sch_product_1: ['', Validators.required],
+      product_id_1: [''],
+      product_type_1: ['', Validators.required],
+      product_qty_1: ['', Validators.required],
+      product_unit_price_1: ['', Validators.required],
+      product_base_unit_price_1: [''],
+      product_price_1: ['', Validators.required],
+      sch_work_line_1: ['', Validators.required],
+      product_workline_id_1: [''],
     });
   }
 
   ngOnInit() {
-    this.panelTitle = '제품마스터';
+    this.panelTitle = '수주 현황';
     this.inputFormTitle = '수주 등록';
+
+    this.productDataCnt = 1;
 
     this.getAll();
 
@@ -134,60 +143,70 @@ export class OrderRegistrationComponent implements OnInit {
 
     let formData = this.searchForm.value;
 
-    if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-      let params = {
-        partner_code: this.listSltdPaCode,
-        partner_name: formData.sch_partner_name,
-        product_name: formData.sch_product_name,
-        st: 1,
-        sortby: ['sort_no'],
-        order: ['asc'],
-        maxResultCount: 10000
-      };
+    let params = {
+      // partner_code: this.listSltdPaCode,
+      // partner_name: formData.sch_partner_name,
+      // product_name: formData.sch_product_name,
+      // st: 1,
+      // sortby: ['sort_no'],
+      // order: ['asc'],
+      maxResultCount: 10000
+    };
 
-      this.isLoadingProgress = true;
-      this.dataService.GetAll(params).subscribe(
-        listData => {
-          this.listData = listData;
-          this.temp = listData['data'];
-          this.rows = listData['data'];
+    this.isLoadingProgress = true;
+    this.dataService.GetAll(params).subscribe(
+      listData => {
+        this.listData = listData;
+        this.temp = listData['data'];
+        this.rows = listData['data'].map(x => Object.assign({}, x));
+        this.dataConvert();
 
-          this.isLoadingProgress = false;
-        }
-      );
+        this.isLoadingProgress = false;
+      }
+    );
+  }
+
+  dataConvert(){  //같은 수주 번호 제품은 기본수주정보 제거
+    let len = this.rows.length;
+    for(let i = 0; i<len; i++){
+      if(this.rows[i-1] != null && this.rows[i].id == this.rows[i-1].id){
+        this.rows[i].order_no = '';
+        this.rows[i].partner_name = '';
+        this.rows[i].demand_date = '';
+        this.rows[i].promised_date = '';
+      }
     }
   }
 
-  onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['Code'] == '') {
-      this.listSltdPaCode = 0;
-    } else {
-      this.listSltdPaCode = event.item['Code'];
-    }
-
-    const val = this.listSltdPaCode;
-
-    this.getAll();
-  }
-
-  onSelectInputPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['partner_code'].setValue(0);
-    } else {
-      this.inputForm.controls['partner_code'].setValue(event.item.Code);
-    }
-  }
+  // onSearchSelectListPartner(event: TypeaheadMatch): void {
+  //   if (event.item['id'] == '') {
+  //     this.listSltdPaId = 0;
+  //   } else {
+  //     this.listSltdPaId = event.item['id'];
+  //   }
+  //
+  //   let id = this.listSltdPaId;
+  //   let formData = this.searchForm.value;
+  //
+  //   const temp = this.temp.filter(function(d){
+  //     d.partner_code = String(d.id);
+  //     return d.partner_code.indexOf(id) !== -1  ||  !id ;
+  //   });
+  //
+  //   this.rows = temp;
+  //
+  // }
 
   updateFilter(event) {
     const val = event.target.value;
-
     // filter data
-    const temp = this.temp.filter(function (d) {
-      return d.product_code.indexOf(val) !== -1 || !val;
+    let tempArr = this.temp.map(x => Object.assign({}, x));
+    let temp = tempArr.filter(function (d) {
+      return d.product_name.indexOf(val) !== -1 || !val;
     });
-
     // update the rows
     this.rows = temp;
+    this.dataConvert()
     // 필터 변경될때마다 항상 첫 페이지로 이동.
     //this.table.offset = 0;
   }
@@ -235,24 +254,43 @@ export class OrderRegistrationComponent implements OnInit {
 
   Save() {
     let formData = this.inputForm.value;
-    if (!formData.production_line) {
-      alert('작업라인을 선택해주세요!');
-      return false;
-    }
-    if (this.isEditMode == true && !formData.modi_reason) {
-      alert('정정사유를 선택해주세요!');
-      return false;
-    }
-    formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-    formData.order_qty = this.utils.removeComma(formData.order_qty) * 1;
+    // if (!formData.production_line) {
+    //   alert('작업라인을 선택해주세요!');
+    //   return false;
+    // }
+    // if (this.isEditMode == true && !formData.modi_reason) {
+    //   alert('정정사유를 선택해주세요!');
+    //   return false;
+    // }
 
-    formData.delivery_date = this.datePipe.transform(formData.delivery_date, 'yyyy-MM-dd');
-    formData.promised_date = this.datePipe.transform(formData.promised_date, 'yyyy-MM-dd');
     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
+    formData.demand_date = this.datePipe.transform(formData.demand_date, 'yyyy-MM-dd');
+    formData.promised_date = this.datePipe.transform(formData.promised_date, 'yyyy-MM-dd');
 
-    formData.is_tmp_price = 'N';
-    formData.st = 1;
+    formData.sales_orders_detail = [];
+    for(let i=1; i<=this.productDataCnt; i++){
+      if(formData['product_id_'+i] != -1) {  //-1 은 삭제된 행
+        let product = {
+          product_id: formData['product_id_' + i],
+          product_qty: parseInt(this.utils.removeComma(formData['product_qty_' + i])),
+          product_price: parseInt(this.utils.removeComma(formData['product_price_' + i])),
+          production_wrokline_id: formData['product_workline_id_' + i],
+        }
+        formData.sales_orders_detail.push(product);
+      }
 
+      delete formData['sch_product_'+i];
+      delete formData['product_id_'+i];
+      delete formData['product_type_'+i];
+      delete formData['product_qty_'+i];
+      delete formData['product_unit_price_'+i];
+      delete formData['product_base_unit_price_'+i];
+      delete formData['product_price_'+i];
+      delete formData['sch_work_line_'+i];
+      delete formData['product_workline_id_'+i];
+    }
+
+    console.log('save', this.selectedId, formData);
     this.Create(formData);
   }
 
@@ -262,6 +300,7 @@ export class OrderRegistrationComponent implements OnInit {
         data => {
           if (data['result'] == 'success') {
             this.inputForm.reset();
+            this.getAll();
             // this.router.navigate(['/sales/order/order-adjustment']);
             this.messageService.add(this.addOkMsg);
           } else {
@@ -284,10 +323,12 @@ export class OrderRegistrationComponent implements OnInit {
     }
 
     // 입력폼 리셋
+
     this.inputForm.reset();
+    this.buildInputFormGroup();
 
     // 수주구분1 기본값
-    this.inputForm.controls['order_type1'].setValue('D');
+    this.inputForm.controls['order_type'].setValue('Y');
 
     // 입력일
     this.inputForm.controls['input_date'].setValue(this.tDate);
@@ -304,36 +345,103 @@ export class OrderRegistrationComponent implements OnInit {
         },
         error => this.errorMessage = <any>error
       );
-
-    // 제품정보
-    this.dataService.GetProductInfo(this.selectedId).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          let product_price = this.utils.addComma(this.formData.product_price);
-
-          if (this.formData.is_tmp_price == 'Y') {
-            this.isTmpPrice = true;
-          }
-
-          // 콤비제품인 경우
-          this.inputForm.patchValue({
-            product_code: this.selectedId,
-            partner_code: this.formData.partner_code,
-            partner_name: this.formData.partner_name,
-            product_name: this.formData.product_name,
-            size: this.formData.size,
-            production_line: this.formData.production_line,
-            product_price: product_price,
-          });
-        }
-      }
-    );
   }
 
   onSelect({selected}) {
     this.selectedId = selected[0].product_code;
+  }
+
+  onSelectListPartner(event: TypeaheadMatch): void {
+    console.log('onSelectListPartner', event.item);
+    this.inputForm.controls['partner_id'].setValue(event.item.id);
+  }
+
+  onSelectListProduct(event: TypeaheadMatch, index): void {
+    console.log('onSelectListProduct', event.item, index);
+    this.inputForm.controls['product_unit_price_' + index].setValue(this.utils.addComma(event.item.product_price));
+    this.inputForm.controls['product_base_unit_price_' + index].setValue(event.item.product_price);
+    this.inputForm.controls['product_id_' + index].setValue(event.item.id);
+    this.inputForm.controls['product_type_' + index].setValue(event.item.type);
+  }
+
+  onSelectListWorkLine(event: TypeaheadMatch, index): void {
+    console.log('onSelectListWorkLine', event.item, index);
+    this.inputForm.controls['product_workline_id_' + index].setValue(event.item.id);
+  }
+
+  calculatePrice(event, index) {
+    console.log('calculatePrice', event, index);
+    let formData = this.inputForm.value;
+
+    console.log(formData['product_qty_'+index], formData['product_base_unit_price_'+index]);
+    let mQty = this.utils.removeComma( (formData['product_qty_'+index]) );
+    let mPrice = parseInt(formData['product_base_unit_price_'+index]);
+
+    let result = mQty * mPrice;
+    result = this.utils.addComma(result);
+    this.inputForm.controls['product_price_'+index].setValue(result);
+
+    this.AddComma(event);
+    // console.log('calculatePrice', this.inputForm.value);
+  }
+
+  addMaterialRow() {
+    console.log('addMaterialRow');
+    this.productDataCnt++;
+    let index = this.productDataCnt;
+
+    this.inputForm.addControl('sch_product_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('product_id_' + index, new FormControl(''));
+    this.inputForm.addControl('product_type_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('product_qty_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('product_unit_price_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('product_base_unit_price_' + index, new FormControl(''));
+    this.inputForm.addControl('product_price_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('sch_work_line_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('product_workline_id_' + index, new FormControl(''));
+  }
+
+  removeMaterialRow(index) {
+    console.log('removeMaterialRow', index);
+    this.inputForm.controls['product_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    if (this.isEditMode == false) {
+      this.inputForm.controls['sch_product_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+      this.inputForm.controls['product_type_' + index].setValue(-1);
+      this.inputForm.controls['product_qty_' + index].setValue(-1);
+      this.inputForm.controls['product_unit_price_' + index].setValue(-1);
+      this.inputForm.controls['product_price_' + index].setValue(-1);
+      this.inputForm.controls['sch_work_line_' + index].setValue(-1);
+    }
+  }
+
+  chkViewAddBtn(index) {
+    let len = this.productDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = index + 1; i <= len; i++) {
+      if (this.inputForm.value['product_id_' + i] == -1) {
+        unVisibleItemCnt++;
+      }
+    }
+    // console.log(index, len , unVisibleItemCnt);
+    if((len - unVisibleItemCnt) == index){
+      return true;
+    }
+    return false;
+
+  }
+
+  chkViewRemoveBtn(index){
+    let len = this.productDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = 1; i <= len; i++) {
+      if (this.inputForm.value['product_id_' + i] == -1) {
+        unVisibleItemCnt++;
+      }
+    }
+    if(len - unVisibleItemCnt > 1){
+      return true;
+    }
+    return false;
   }
 
 }
