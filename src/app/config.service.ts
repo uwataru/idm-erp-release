@@ -14,7 +14,7 @@ export class ConfigService {
     private currTime = (new Date()).getTime();
     // private url = this.globals.serverUrl + '/configs.json';
     private menuAPI = this.globals.serverUrl+ '/menu';
-    private pType1API = this.globals.serverUrl+'/partners/search/ptype1';
+    private partnerAPI = this.globals.serverUrl+'/partners/search';
     private pType2API = this.globals.serverUrl+'/partners/search/ptype2';
     private pType4API = this.globals.serverUrl+'/partners/search/ptype4';
     private MaterialAPI = this.globals.serverUrl+'/materials/search';
@@ -41,9 +41,7 @@ export class ConfigService {
 
     public load() {
         return this.getConfigData(this.menuAPI, 'menu')
-            .then(() => this.getConfigData(this.pType1API, 'type1Partners'))
-            .then(() => this.getConfigData(this.pType2API, 'type2Partners'))
-            .then(() => this.getConfigData(this.pType4API, 'type4Partners'))
+            .then(() => this.getConfigData(this.partnerAPI, 'partnerList'))
             .then(() => this.getConfigData(this.MaterialAPI, 'schMaterials'))
             .then(() => this.getConfigData(this.userAPI, 'users'))
             .then(() => this.getConfigData(this.processAPI, 'processList'))
