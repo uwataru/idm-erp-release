@@ -16,12 +16,3 @@ export class Item {
     result: string;
     errorMessage: string;
 }
-
-export class MaterialItem{
-    id: number;
-    material_id: number;
-    name: string;
-    qty: number;
-    price: number;
-    state: number;
-}

@@ -230,7 +230,7 @@
                 </label>
               </td>
             </tr>
-            <tr *ngFor='let material of materialData; let index = index;'>
+            <tr *ngFor='let material of [].constructor(materialDataCnt); let index = index;'>
               <div *ngIf="inputForm.value['material_id_'+(index+1)] != -1" style="display: contents"
                    id="material_wrap_{{index+1}}">
                 <th>
@@ -245,8 +245,7 @@
                    [typeaheadScrollable]="true"
                    [typeaheadMinLength]="0"
                    (typeaheadOnSelect)="onSelectListMaterials($event, index+1)"
-                   class="input-sm form-control w-sm inline v-middle"
-                   (keyup)="listSltdMaterialId=0"/>
+                   class="input-sm form-control w-sm inline v-middle"/>
                   <input type="hidden" formControlName="id_{{index+1}}" id="id_{{index+1}}"/>
                   <input type="hidden" formControlName="material_id_{{index+1}}" id="material_id_{{index+1}}"/>
                 </td>

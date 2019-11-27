@@ -9,7 +9,7 @@ import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
-import {Item, MaterialItem} from './products.item';
+import {Item} from './products.item';
 import { FormArray } from '@angular/forms';
 
 declare var $: any;
@@ -41,7 +41,6 @@ export class ProductsComponent implements OnInit {
   //listPartners = [];
   listPartners: any[] = this.globals.configs['type5Partners'];
   listSltdPaCode: number = 0;
-  listSltdMaterialId: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
   sch_product_name: string;
@@ -56,7 +55,7 @@ export class ProductsComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
-  materialData: MaterialItem[] = [];
+  materialDataCnt: number;
 
   inputForm: FormGroup;
   prodTypeStr: string;
@@ -133,8 +132,7 @@ export class ProductsComponent implements OnInit {
 
     this.changeSubMenu(1);
 
-    let material = new MaterialItem();
-    this.materialData.push(material);
+    this.materialDataCnt = 1;
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -303,7 +301,7 @@ export class ProductsComponent implements OnInit {
 
     let state = 1;
     let id = '';
-    for(let i=1; i<=this.materialData.length; i++){
+    for(let i=1; i<=this.materialDataCnt; i++){
       id = formData['id_'+i];
       if (this.isEditMode == true) {
         if(formData['material_id_'+i] == -1) {
@@ -442,9 +440,7 @@ export class ProductsComponent implements OnInit {
       }
     }
     if (method == 'write') {
-      this.materialData = [];
-      let material = new MaterialItem();
-      this.materialData.push(material);
+      this.materialDataCnt = 1;
       this.inputForm.reset();
       this.buildInputFormGroup();
       // console.log(this.inputForm);
@@ -499,9 +495,8 @@ export class ProductsComponent implements OnInit {
 
   addMaterialRow() {
     // console.log('addMaterialRow', index);
-    let material = new MaterialItem();
-    this.materialData.push(material);
-    let index = this.materialData.length;
+    this.materialDataCnt++;
+    let index = this.materialDataCnt;
 
     this.inputForm.addControl('sch_materials_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('id_' + index, new FormControl(''));
@@ -534,7 +529,7 @@ export class ProductsComponent implements OnInit {
   }
 
   chkViewAddBtn(index) {
-    let len = this.materialData.length;
+    let len = this.materialDataCnt;
     let unVisibleItemCnt = 0;
     for (let i = index + 1; i <= len; i++) {
       if (this.inputForm.value['material_id_' + i] == -1) {
@@ -550,7 +545,7 @@ export class ProductsComponent implements OnInit {
   }
 
   chkViewRemoveBtn(index){
-    let len = this.materialData.length;
+    let len = this.materialDataCnt;
     let unVisibleItemCnt = 0;
     for (let i = 1; i <= len; i++) {
       if (this.inputForm.value['material_id_' + i] == -1) {
