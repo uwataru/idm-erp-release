@@ -13,7 +13,7 @@
                  [typeaheadOptionsLimit]="50"
                  [typeaheadScrollable]="true"
                  [typeaheadMinLength]="0"
-                 (typeaheadOnSelect)="onSelectListPartner($event)"
+                 (typeaheadOnSelect)="onSearchSelectListPartner($event)"
                  placeholder="거래처명"
                  class="input-sm form-control w-sm inline v-middle"/>
           <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)"

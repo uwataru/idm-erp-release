@@ -45,7 +45,7 @@ export class OrderRegistrationComponent implements OnInit {
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  partnerList: any[] = this.globals.configs['type2Partners'];
+  partnerList: any[] = this.globals.configs['partnerList'];
   productionLines: any[] = this.globals.configs['productionLine'];
   productList: any[] = this.globals.configs['productList'];
   prodTypeStr: string;
@@ -144,13 +144,8 @@ export class OrderRegistrationComponent implements OnInit {
     let formData = this.searchForm.value;
 
     let params = {
-      // partner_code: this.listSltdPaCode,
-      // partner_name: formData.sch_partner_name,
-      // product_name: formData.sch_product_name,
-      // st: 1,
-      // sortby: ['sort_no'],
-      // order: ['asc'],
-      maxResultCount: 10000
+      partner_code: this.listSltdPaCode,
+      // maxResultCount: 10000
     };
 
     this.isLoadingProgress = true;
@@ -178,24 +173,19 @@ export class OrderRegistrationComponent implements OnInit {
     }
   }
 
-  // onSearchSelectListPartner(event: TypeaheadMatch): void {
-  //   if (event.item['id'] == '') {
-  //     this.listSltdPaId = 0;
-  //   } else {
-  //     this.listSltdPaId = event.item['id'];
-  //   }
-  //
-  //   let id = this.listSltdPaId;
-  //   let formData = this.searchForm.value;
-  //
-  //   const temp = this.temp.filter(function(d){
-  //     d.partner_code = String(d.id);
-  //     return d.partner_code.indexOf(id) !== -1  ||  !id ;
-  //   });
-  //
-  //   this.rows = temp;
-  //
-  // }
+  onSearchSelectListPartner(event: TypeaheadMatch): void {
+      console.log(event);
+      let id = event.item['id'];
+      if (id == '') {
+          this.listSltdPaCode = 0;
+      } else {
+          this.listSltdPaCode = id;
+      }
+
+      const val = this.listSltdPaCode;
+
+      this.getAll();
+  }
 
   updateFilter(event) {
     const val = event.target.value;
