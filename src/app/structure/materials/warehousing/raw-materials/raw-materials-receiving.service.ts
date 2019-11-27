@@ -14,37 +14,37 @@ export class RawMaterialsReceivingService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/materials/orders';
-    private receiving_url = this.globals.serverUrl + '/materials/receiving';
+    private url = this.globals.serverUrl + '/materials-orders';
+    // private receiving_url = this.globals.serverUrl + '/materials/receiving';
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url, {params: params});
+        return this.http.get<Item[]>(this.url+'/receiving-processing-list/Y');
     }
 
-    GetInventory (id:string): Observable<Item> {
-        return this.http.get<Item>(this.url + '/inventory/' + id);
+    GetInventory (id): Observable<Item> {
+        return this.http.get<Item>(this.url + '/' + id);
     }
 
-    GetById (id:string): Observable<Item> {
+    GetById (id): Observable<Item> {
         return this.http.get<Item>(this.url + '/' + id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
-    Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.receiving_url, data, httpOptions).pipe(
+    Create (id,data:Item): Observable<Item> {
+        return this.http.put<Item>(this.url+'/receiving-processing/'+id, data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
     }
     
-    Delete (id, data) {
-        return this.http.put(this.url+'/delete/'+id, data);
+    Delete (id): Observable<Item> {
+        return this.http.put<Item>(this.url+'/receiving-cancel/'+id, httpOptions);
     }
     
 
     UploadExcelFile (data) {
-        return this.http.post(this.receiving_url + '/excelupload', data, httpOptions)
+        return this.http.post(this.url + '/excelupload', data, httpOptions)
     }
 
    /**

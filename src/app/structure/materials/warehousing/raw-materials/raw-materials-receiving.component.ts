@@ -7,7 +7,7 @@ import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
 import { RawMaterialsReceivingService } from './raw-materials-receiving.service';
 import { AppGlobals } from '../../../../app.globals';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './raw-materials-receiving.item';
@@ -34,12 +34,15 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     searchForm: FormGroup;
 
+    selected = [];
     selectedId: string;
+    selectedCnt: number;
+
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
     //listPartners = [];
-    listPartners: any[] = this.globals.configs['type4Partners'];
+    listPartners: any[] = this.globals.configs['partnerList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
@@ -52,10 +55,10 @@ export class RawMaterialsReceivingComponent implements OnInit {
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type4Partners'];
-    storagePartners: any[] = this.globals.configs['type4Partners'];
+    inputPartners: any[] = this.globals.configs['partnerList'];
+    storagePartners: any[] = this.globals.configs['partnerList'];
     inputMakers: any[] = this.globals.configs['maker'];
-    rcv_weight: number;
+    receiving_qty: number;
     editData: Item;
     data: Date;
 
@@ -75,6 +78,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
     constructor(
         public electronService: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
+        private router: Router,
         private datePipe: DatePipe,
         private dataService: RawMaterialsReceivingService,
         private globals: AppGlobals,
@@ -100,29 +104,28 @@ export class RawMaterialsReceivingComponent implements OnInit {
             sch_product_name: ''
         });
         this.inputForm = fb.group({
-            order_id: ['', Validators.required],
-            material_code: ['', Validators.required],
-            rcv_date: ['', Validators.required],
+            receiving_date: ['', Validators.required],
+            id: ['', Validators.required],
+            material_id: ['', Validators.required],
             partner_name: ['', Validators.required],
-            partner_code: ['', Validators.required],
-            result_type: ['', Validators.required],
-            steel_maker_name: '',
-            steel_maker: '',
+            partner_id: ['', Validators.required],
+            price: ['', Validators.required],
+            receiving_type: ['', Validators.required],
+            receiving_qty: ['', Validators.required],
+            name: '',
+            receiving_price: '',
             // is_report: '',
             // is_mealsheet: '',
-            materials: ['', Validators.required],
-            // ms_no: ['', Validators.required],
             size: ['', Validators.required],
-            rcv_weight: ['', Validators.required],
-            price_per_unit: ['', Validators.required],
-            storage: ['', Validators.required],
-            order_amount: ['', Validators.required]
+            // ms_no: ['', Validators.required],
+            receiving_location_name: ['', Validators.required],
+            receiving_location_id: ['', Validators.required],
         });
 
 
-        if( this.storagePartners.filter(v => v.Code == 0).length < 1 ) {
-            this.storagePartners.unshift({Code:0, Name:'자가', Alias:'자가'});
-        }
+        // if( this.storagePartners.filter(v => v.Code == 0).length < 1 ) {
+        //     this.storagePartners.unshift({Code:0, Name:'자가', Alias:'자가'});
+        // }
     }
 
     ngOnInit() {
@@ -143,17 +146,21 @@ export class RawMaterialsReceivingComponent implements OnInit {
     }
 
     getAll(): void {
+        this.selectedCnt = 0;
+        this.selectedId = '';
+        this.selected = [];
+
         let formData = this.searchForm.value;
         let params = {
-            partner_name: formData.sch_partner_name,
-            product_name: formData.sch_product_name,
-            st: 0,
-            sortby: ['material_code'],
-            order: ['asc'],
-            maxResultCount: 10000
+            // partner_name: formData.sch_partner_name,
+            // product_name: formData.sch_product_name,
+            // st: 0,
+            // sortby: ['material_id'],
+            // order: ['asc'],
+            // maxResultCount: 10000
         }
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
+            params['partner_id'] = this.listSltdPaCode;
         }
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
@@ -169,51 +176,65 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     onSelectInputPartner(event: TypeaheadMatch): void {
         if (event.item == '') {
-            this.inputForm.controls['partner_code'].setValue(0);
+            this.inputForm.controls['partner_id'].setValue(0);
         } else {
-            this.inputForm.controls['partner_code'].setValue(event.item.Code);
+            this.inputForm.controls['partner_id'].setValue(event.item.id);
         }
     }
 
     onSelectStoragePartner(event: TypeaheadMatch): void {
         if (event.item == '') {
-            this.inputForm.controls['storage'].setValue("");
+            this.inputForm.controls['receiving_location_id'].setValue(0);
         } else {
-            this.inputForm.controls['storage'].setValue(event.item.Name);
+            this.inputForm.controls['receiving_location_id'].setValue(event.item.receiving_location_id);
         }
     }
 
-    onSelectInputMaker(event: TypeaheadMatch): void {
-        if (event.item == '') {
-            this.inputForm.controls['maker_code'].setValue(0);
-        } else {
-            this.inputForm.controls['maker_code'].setValue(event.item.CfgCode);
-        }
-    }
 
     CalculOrderAmount (event): void {
         let formData = this.inputForm.value;
-        let f = event.target.id.replace('order_weight', 'order_amount');
+        let f = event.target.id.replace('order_qty', 'receiving_price');
         let q = this.utils.removeComma(event.target.value) * 1;
-        let p = this.utils.removeComma(formData.price_per_unit) * 1;
+        let p = this.utils.removeComma(formData.price) * 1;
         let dp = this.utils.addComma(q * p)
-        this.inputForm.controls['order_amount'].setValue(dp);
+        this.inputForm.controls['receiving_price'].setValue(dp);
     }
 
     Save () {
-        let formData = this.inputForm.value;
+        let formModel = this.inputForm.value;
 
-        formData.price_per_unit = this.utils.removeComma(formData.price_per_unit) * 1;
-        formData.rcv_weight = this.utils.removeComma(formData.rcv_weight) * 1;
-        formData.order_amount = this.utils.removeComma(formData.order_amount) * 1;
+    
+          let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
+          let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
+    
+          let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+    
+          let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
+    
+  
+    
+        let formData = {
+            material_id: formModel.material_id,
+            receiving_type: receiving_type,
+            receiving_qty: receiving_qty,
+            receiving_price: receiving_price,
+            receiving_date: receiving_date,
+            // order_price: order_price,
+            receiving_location_id: formModel.receiving_location_id
+            // id: formModel.id,
+            // name: formModel.name,
+            // size: formModel.size * 1,
+            // partner_name: formModel.partner_name,
+            // price_per_unit: this.utils.removeComma(formModel.price_per_unit) * 1,
+        };
 
-        formData.rcv_date = this.datePipe.transform(formData.rcv_date, 'yyyy-MM-dd');
 
-        this.Create(formData);
+
+        this.Create(this.selectedId,formData);
     }
 
-    Create (data): void {
-        this.dataService.Create(data)
+    Create (id,data): void {
+        this.dataService.Create(id,data)
             .subscribe(
                 data => {
                     if (data['result'] == "success") {
@@ -243,17 +264,18 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
 
     deleteOrder(id) {
-        const formData: FormData = new FormData();
-        this.dataService.Delete(id, formData)
+        this.dataService.Delete(id)
         .subscribe(
             data => {
                 if (data['result'] == "success") {
                     this.getAll();
-                    this.messageService.add(this.delOkMsg);
+                    this.messageService.add('입고취소되었습니다.');
                 } else {
                     this.messageService.add(data['errorMessage']);
                 }
+                this.selectedCnt = 0;
                 this.selectedId = '';
+                this.selected = [];
                 this.statusFormModal.hide();
             },
             error => this.errorMessage = <any>error
@@ -265,23 +287,24 @@ export class RawMaterialsReceivingComponent implements OnInit {
         if (this.isExecutable == true) {
             if (method == 'receiving') {
                 this.inputFormModal.show();
+
             } else if (method == 'upload') {
                 this.uploadFormModal.show();
-            } else if (method == 'delete') {
+            } else if (method == 'cancel') {
 
                 //입고가 있으면 리턴
-                this.dataService.GetInventory(this.selectedId).subscribe(
-                    inventoryData =>
-                    {
-                        if(inventoryData['data'] && Object.keys(inventoryData['data']).length > 0) {
-                            this.messageService.add('입고처리된 데이터가 존재하여 삭제할수 없습니다.');
-                            return false;
-                        } else {
-                            this.isLoadingProgress = false;
+                // this.dataService.GetInventory(this.selectedId).subscribe(
+                    // inventoryData =>
+                    // {
+                        // if(inventoryData['data'] && Object.keys(inventoryData['data']).length > 0) {
+                        //     this.messageService.add('입고처리된 데이터가 존재하여 삭제할수 없습니다.');
+                        //     return false;
+                        // } else {
+                            // this.isLoadingProgress = false;
                             this.statusFormModal.show();
-                        }
-                    }
-                );
+                        // }
+                    // }
+                // );
 
             }
         } else {
@@ -291,22 +314,22 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
         if (method == 'upload') {
 
-        } else if(method == 'delete') {
-            this.statusFormTitle = '발주 삭제';
-            this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+        } else if(method == 'cancel') {
+            this.statusFormTitle = '입고 취소';
+            this.statusConfirmMsg = '선택하신 데이터를 취소하시겠습니까?';
         } else {
 
             // 입력폼 리셋
             this.inputForm.reset();
-
             // 주문 ID
-            this.inputForm.controls['order_id'].setValue(this.selectedId);
+            this.inputForm.controls['id'].setValue(this.selectedId);
 
             // 입력일
-            this.inputForm.controls['rcv_date'].setValue(this.tDate);
+            this.inputForm.controls['receiving_date'].setValue(this.tDate);
 
             // 입고구분
-            this.inputForm.controls['result_type'].setValue('RCV');
+            this.inputForm.controls['receiving_type'].setValue('1');
+
 
             // 단조품정보
             this.dataService.GetById(this.selectedId).subscribe(
@@ -316,21 +339,21 @@ export class RawMaterialsReceivingComponent implements OnInit {
                         this.editData = editData;
                         this.formData = editData['data'];
 
-                        let price_per_unit = this.utils.addComma(this.formData.price_per_unit);
-                        let order_amount = this.utils.addComma(this.formData.order_amount);
+                        let price = this.utils.addComma(this.formData.price);
+                        let receiving_price = this.utils.addComma(this.formData.receiving_price);
                         this.inputForm.patchValue({
-                            material_code: this.formData.material_code,
-                            partner_code: this.formData.partner_code,
+                            material_id: this.formData.material_id,
+                            partner_id: this.formData.partner_id,
                             partner_name: this.formData.partner_name,
-                            steel_maker_name: editData['makerName'],
-                            steel_maker: this.formData.material_maker,
-                            materials: this.formData.material_name,
-                            size: this.formData.material_size,
-                            rcv_weight: this.formData.order_weight,
-                            price_per_unit: price_per_unit,
-                            storage: this.formData.rcv_location,
-                            order_amount: order_amount,
+                            name: this.formData.name,
+                            size: this.formData.size,
+                            receiving_qty: this.formData.receiving_qty,
+                            price: price,
+                            receiving_location_name: this.formData.receiving_location_name,
+                            receiving_location_id: this.formData.receiving_location_id,
                         });
+
+                        console.log(this.inputForm.value['material_id']);
                     }
                 }
             );
@@ -339,17 +362,18 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     }
 
-    onSelect({ selected }) {
-        if(selected.length > 0) {
-            this.selectedId = selected[0].id;
-        } else {
-            this.selectedId = "";
+    onSelect({selected}) {
+        this.selectedCnt = selected.length;
+        if (this.selectedCnt == 1) {
+          this.selectedId = selected[0].id;
+          this.inputForm.controls['id'].setValue(this.selectedId);
         }
-    }
+      }
+    
 
-    checkSelect(event) {
-        return event.id > 0 ? true : false;
-    }
+    // checkSelect(event) {
+    //     return event.id > 0 ? true : false;
+    // }
 
     fileSelected (event) {
         let fileList: FileList = event.target.files;

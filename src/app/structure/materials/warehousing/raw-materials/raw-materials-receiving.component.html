@@ -20,147 +20,60 @@
       [headerHeight]="30"
       [rowClass]="getRowClass"
       [rowHeight]="30"
+      [selected]="selected"
       (select)='onSelect($event)'
-      [selectCheck]="checkSelect"
       [scrollbarV]="true"
       [scrollbarH]="false"
-      [selectionType]="'single'"
+      [selectionType]="'checkbox'"
       [selectAllRowsOnPage]="false"
       [messages]="messages">
-
+      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"
+                            [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+        <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+                     let-selectFn="selectFn">
+          <label class="i-checks i-checks-sm m-b-none">
+            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+          </label>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                     let-onCheckboxChangeFn="onCheckboxChangeFn">
+          <label class="i-checks i-checks-sm m-b-none">
+            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+          </label>
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center" [width]="12"></ngx-datatable-column>
-      <!--            <ngx-datatable-column prop="material_name" name="재질" cellClass="text-center" [width]="9"></ngx-datatable-column>-->
-      <ngx-datatable-column prop="material_size" name="규격" cellClass="text-center" [width]="5">
+      <ngx-datatable-column prop="name" name="제품명" cellClass="text-center" [width]="12"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" cellClass="text-center" [width]="5"></ngx-datatable-column>
+      <ngx-datatable-column prop="receiving_date" name="발주일자" cellClass="text-center" [width]="9"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_qty" name="발주수량" cellClass="text-right" [width]="7">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div class="wrapper-xs active">{{ value > 0 ? value : "" }} &nbsp;</div>
+          <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
         </ng-template>
-      </ngx-datatable-column>
-      <!--            <ngx-datatable-column prop="material_maker" name="메이커" cellClass="text-center" [width]="9"></ngx-datatable-column>-->
-      <ngx-datatable-column prop="price_per_unit" name="단가" cellClass="text-right" [width]="6">
+      </ngx-datatable-column>      
+      <ngx-datatable-column prop="price" name="단가" cellClass="text-right" [width]="6">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="order_weight" name="주문수량" cellClass="text-right" [width]="7">
+      <ngx-datatable-column prop="order_price" name="금액" cellClass="text-right" [width]="10">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="order_amount" name="금액" cellClass="text-right" [width]="10">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="order_date" name="주문일자" cellClass="text-center" [width]="9"></ngx-datatable-column>
-      <ngx-datatable-column prop="sum_rcv_weight" name="입고량" cellClass="text-right" [width]="5">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div class="wrapper-xs active">{{ value > 0 ? (value | numberFormat) : "" }} &nbsp;</div>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="residual_weight" name="잔량" cellClass="text-right" [width]="5">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div class="wrapper-xs active">{{ value > 0 ? (value | numberFormat) : "" }} &nbsp;</div>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="rcv_req_date" name="입고요구일" cellClass="text-center" [width]="9"></ngx-datatable-column>
-      <ngx-datatable-column prop="rcv_location" name="입고지정장소" cellClass="text-left" [width]="12"></ngx-datatable-column>
-
     </ngx-datatable>
-
   </div>
-
-
-  <!--
-  <div class="panel-body">
-      <div id="dnd_head" class="head dnd-row">
-          <div class="cell partner_name">거래처</div>
-          <div class="cell material">재질</div>
-          <div class="cell size">규격</div>
-          <div class="cell material_maker">메이커</div>
-          <div class="cell price_per_unit">단가</div>
-          <div class="cell order_weight">주문중량</div>
-          <div class="cell order_amount">금액</div>
-          <div class="cell order_date">주문일자</div>
-          <div class="cell sum_rcv_weight">입고량</div>
-          <div class="cell residual_qty">잔량</div>
-          <div class="cell rcv_req_date">입고요구일</div>
-          <div class="cell rcv_location">입고지정장소</div>
-      </div>
-      <div class="dnd_body">
-          <div *ngFor="let ptnRows of rows" class="dnd-group">
-              <div *ngFor="let matRows of ptnRows.partnerData" class="dnd-row">
-                  <div *ngFor="let row of matRows.subData" (click)="onSelect(row.id)" class="dnd-row data" [class.active]="selectedId === row.id">
-                      <div class="cell partner_name text-center">&nbsp; {{ row.partner_name }} &nbsp;</div>
-                      <div class="cell material text-center">&nbsp; {{ row.material_name }} &nbsp;</div>
-                      <div class="cell size text-center">&nbsp; {{ row.material_size }} &nbsp;</div>
-                      <div class="cell material_maker text-center">&nbsp; {{ row.material_maker }} &nbsp;</div>
-                      <div class="cell price_per_unit text-right">
-                          <span>&nbsp; {{ row.price_per_unit | numberFormat }} &nbsp;</span>
-                      </div>
-                      <div class="cell order_weight text-right">
-                          <span>&nbsp; {{ row.order_weight | numberFormat }} &nbsp;</span>
-                      </div>
-                      <div class="cell order_amount text-right">
-                          <span>&nbsp; {{ row.order_amount | numberFormat }} &nbsp;</span>
-                      </div>
-                      <div class="cell order_date text-center">&nbsp; {{ row.order_date }} &nbsp;</div>
-                      <div class="cell sum_rcv_weight text-right">&nbsp; {{ row.sum_rcv_weight > 0 ? (row.sum_rcv_weight | numberFormat) : 0 }} &nbsp;</div>
-                      <div class="cell residual_qty text-right">&nbsp; {{ row.order_weight - row.sum_rcv_weight | numberFormat }} &nbsp;</div>
-                      <div class="cell rcv_req_date text-center">&nbsp; {{ row.rcv_req_date }} &nbsp;</div>
-                      <div class="cell rcv_location">&nbsp; {{ row.rcv_location }} &nbsp;</div>
-                  </div>
-                  <div class="mat-sum dnd-row">
-                      <div class="cell partner_name text-center">&nbsp; &nbsp;</div>
-                      <div class="cell material text-center">&nbsp; &nbsp;</div>
-                      <div class="cell size">&nbsp; &nbsp;</div>
-                      <div class="cell material_maker">&nbsp; &nbsp;</div>
-                      <div class="cell price_per_unit text-right">&nbsp; &nbsp;</div>
-                      <div class="cell order_weight text-right">
-                          <span>&nbsp; {{ matRows.matOrderWeightSum | numberFormat }} &nbsp;</span>
-                      </div>
-                      <div class="cell order_amount text-right">
-                          <span>&nbsp; {{ matRows.matOrderAmountSum | numberFormat }} &nbsp;</span>
-                      </div>
-                      <div class="cell order_date">&nbsp; &nbsp;</div>
-                      <div class="cell sum_rcv_weight">&nbsp; &nbsp;</div>
-                      <div class="cell residual_qty">&nbsp; &nbsp;</div>
-                      <div class="cell rcv_req_date">&nbsp; &nbsp;</div>
-                      <div class="cell rcv_location">&nbsp; &nbsp;</div>
-                  </div>
-              </div>
-              <div class="ptn-sum dnd-row">
-                  <div class="cell partner_name text-center">&nbsp; {{ ptnRows.partnerName }} &nbsp;</div>
-                  <div class="cell material text-center">&nbsp; &nbsp;</div>
-                  <div class="cell size">&nbsp; &nbsp;</div>
-                  <div class="cell material_maker">&nbsp; &nbsp;</div>
-                  <div class="cell price_per_unit text-right">&nbsp; &nbsp;</div>
-                  <div class="cell order_weight text-right">
-                      <span>&nbsp; {{ ptnRows.ptnOrderWeightSum | numberFormat }} &nbsp;</span>
-                  </div>
-                  <div class="cell order_amount text-right">
-                      <span>&nbsp; {{ ptnRows.ptnOrderAmountSum | numberFormat }} &nbsp;</span>
-                  </div>
-                  <div class="cell order_date">&nbsp; &nbsp;</div>
-                  <div class="cell sum_rcv_weight">&nbsp; &nbsp;</div>
-                  <div class="cell residual_qty">&nbsp; &nbsp;</div>
-                  <div class="cell rcv_req_date">&nbsp; &nbsp;</div>
-                  <div class="cell rcv_location">&nbsp; &nbsp;</div>
-              </div>
-          </div>
-      </div>
-  </div>
-  -->
 
 
   <div class="panel-footer">
     <div class="row">
       <div class="col-sm-6 hidden-xs">
-        <button (click)="openModal('delete')" [disabled]="!selectedId" class="btn btn-sm btn-danger btn-addon">
-          <i class="glyphicon glyphicon-trash"></i>삭제
+        <button (click)="openModal('cancel')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-danger btn-addon">
+          <i class="glyphicon glyphicon-minus"></i>입고취소
         </button>
       </div>
       <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('receiving')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+        <button (click)="openModal('receiving')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>입고
         </button>
       </div>
@@ -185,7 +98,7 @@
       </div>
       <div class="modal-footer">
         <div class="text-center">
-          <button type="button" (click)="deleteOrder(selectedId)" class="btn btn-danger btn-save">삭제</button>
+          <button type="button" (click)="deleteOrder(selectedId)" class="btn btn-danger btn-save">확인</button>
           <button type="button" class="btn btn-primary btn-cancel" (click)="StatusFormModal.hide()">취소</button>
         </div>
       </div>
@@ -200,8 +113,8 @@
     <div class="modal-content">
 
       <form [formGroup]="inputForm">
-        <input type="hidden" formControlName="order_id"/>
-        <input type="hidden" formControlName="material_code"/>
+        <input type="hidden" formControlName="id"/>
+        <input type="hidden" formControlName="material_id"/>
 
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
@@ -212,11 +125,11 @@
 
           <div class="form-group">
             <div class="row">
-              <label for="rcv_date" class="col-lg-2 control-label">
-                입고일자
+              <label for="receiving_date" class="col-lg-2 control-label">
+                입고일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </label>
               <div class="col-lg-10">
-                <input type="text" formControlName="rcv_date" id="rcv_date" nextFocus="partner_name"
+                <input type="text" formControlName="receiving_date" id="receiving_date" nextFocus="partner_name"
                        class="form-control input-sm w-sm"/>
               </div>
             </div>
@@ -227,87 +140,64 @@
               <label for="partner_name" class="col-lg-2 control-label">
                 거래처
               </label>
-              <div class="col-lg-10">
+              <div class="col-lg-4">
                 <input formControlName="partner_name" id="partner_name"
-                       [typeahead]="inputPartners"
-                       typeaheadOptionField="Name"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectInputPartner($event)"
-                       placeholder="거래처명"
-                       autocomplete="off"
+                       readonly
                        class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code"/>
+                <input type="hidden" formControlName="partner_id" id="partner_id"/>
               </div>
+              <label for="price" class="col-lg-2 control-label">
+                단가
+              </label>
+              <div class="col-lg-4">
+                <input readonly type="text" formControlName="price" id="price" nextFocus="result_type"
+                       class="form-control input-sm w-sm text-right"/>
+              </div>              
             </div>
           </div>
 
           <div class="form-group">
             <div class="row">
-              <label for="result_type" class="col-lg-2 control-label">
-                입고 구분
+              <label for="receiving_type" class="col-lg-2 control-label">
+                입고 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </label>
-              <div class="col-lg-10">
+              <div class="col-lg-4">
                 <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="RCV">
+                  <input type="radio" formControlName="receiving_type" value="1">
                   <i></i>입고
                 </label>
                 <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="RETURN">
+                  <input type="radio" formControlName="receiving_type" value="2">
                   <i></i>반품
                 </label>
+              </div>
+              <label for="receiving_qty" class="col-lg-2 control-label">
+                입고수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </label>
+              <div class="col-lg-4">
+                <input readonly type="text" formControlName="receiving_qty" id="receiving_qty" (blur)="CalculOrderAmount($event)"
+                       decimal [(ngModel)]="receiving_qty" nextFocus="storage"
+                       class="form-control input-sm w-sm text-right"/>
               </div>
             </div>
           </div>
 
-          <!-- <div class="form-group">
-              <div class="row">
-                  <label for="steel_maker" class="col-lg-2 control-label">
-                      메이커
-                  </label>
-                  <div class="col-lg-4">
-                      <input formControlName="steel_maker_name" id="steel_maker_name"
-                          [typeahead]="inputMakers"
-                          typeaheadOptionField="CfgName"
-                          [typeaheadOptionsLimit]="50"
-                          [typeaheadScrollable]="true"
-                          [typeaheadMinLength]="0"
-                          (typeaheadOnSelect)="onSelectInputMaker($event)"
-                          placeholder="메이커명"
-                          autocomplete="off"
-                          class="input-sm form-control w-sm inline v-middle" />
-                      <input type="hidden" formControlName="steel_maker" id="steel_maker" />
-                  </div>
-                  <label for="passenger_name" class="col-lg-2 control-label">
-                      성적서/밀시트
-                  </label>
-                  <div class="col-lg-4">
-                      <label class="checkbox-inline">
-                          <input type="checkbox" formControlName="is_report" />성적서
-                      </label>
-                      <label class="checkbox-inline">
-                          <input type="checkbox" formControlName="is_mealsheet" />밀시트
-                      </label>
-                  </div>
-              </div>
-          </div> -->
-
           <div class="form-group">
             <div class="row">
-              <label for="materials" class="col-lg-2 control-label">
+              <label for="name" class="col-lg-2 control-label">
                 자재명
               </label>
               <div class="col-lg-4">
-                <input type="text" formControlName="materials" id="materials" nextFocus="size"
+                <input readonly type="text" formControlName="name" id="name" nextFocus="size"
                        class="form-control input-sm w-sm"/>
               </div>
-              <!-- <label for="ms_no" class="col-lg-2 control-label">
-                  M.S.NO
+              <label for="receiving_price" class="col-lg-2 control-label">
+                금액
               </label>
               <div class="col-lg-4">
-                  <input type="text" formControlName="ms_no" id="ms_no" nextFocus="rcv_weight" class="form-control input-sm w-sm" />
-              </div> -->
+                <input type="text" formControlName="receiving_price" id="receiving_price"
+                       class="form-control input-sm w-sm text-right"/>
+              </div>
             </div>
           </div>
 
@@ -317,57 +207,16 @@
                 규격
               </label>
               <div class="col-lg-4">
-                <input type="text" formControlName="size" id="size" nextFocus="price_per_unit"
+                <input readonly type="text" formControlName="size" id="size" nextFocus="price_per_unit"
                        class="form-control input-sm w-sm text-right"/>
               </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="price_per_unit" class="col-lg-2 control-label">
-                단가
-              </label>
-              <div class="col-lg-10">
-                <input type="text" formControlName="price_per_unit" id="price_per_unit" nextFocus="order_amount"
-                       class="form-control input-sm w-sm text-right"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="rcv_weight" class="col-lg-2 control-label">
-                입고수량
-              </label>
-              <div class="col-lg-10">
-                <input type="text" formControlName="rcv_weight" id="rcv_weight" (blur)="CalculOrderAmount($event)"
-                       decimal [(ngModel)]="rcv_weight" nextFocus="storage"
-                       class="form-control input-sm w-sm text-right"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="order_amount" class="col-lg-2 control-label">
-                금액
-              </label>
-              <div class="col-lg-10">
-                <input type="text" formControlName="order_amount" id="order_amount"
-                       class="form-control input-sm w-sm text-right"/>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="row">
-              <label for="storage" class="col-lg-2 control-label">
-                보관장소
+              <label for="receiving_location_name" class="col-lg-2 control-label">
+                입고장소
               </label>
               <div class="col-lg-4">
-                <input formControlName="storage" id="storage"
+                <input formControlName="receiving_location_name" id="receiving_location_name"
                        [typeahead]="storagePartners"
-                       typeaheadOptionField="Name"
+                       typeaheadOptionField="name"
                        [typeaheadOptionsLimit]="50"
                        [typeaheadScrollable]="true"
                        [typeaheadMinLength]="0"
@@ -375,9 +224,11 @@
                        placeholder="거래처명"
                        autocomplete="off"
                        class="input-sm form-control w-sm inline v-middle"/>
+                <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
               </div>
             </div>
           </div>
+
         </div>
         <div class="modal-footer">
           <div class="text-center">

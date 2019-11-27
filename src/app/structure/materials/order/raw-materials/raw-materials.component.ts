@@ -53,8 +53,8 @@ export class RawMaterialsComponent implements OnInit {
 
   inputForm: FormGroup;
   lossForm: FormGroup;
-  inputPartners: any[] = this.globals.configs['type2Partners'];
-  locationPartners: any[] = this.globals.configs['type4Partners'];
+  inputPartners: any[] = this.globals.configs['partnerList'] ;
+  locationPartners: any[] = this.globals.configs['partnerList'];
 
   inputMakers: any[] = this.globals.configs['maker'];
   product_price: number;
