@@ -20,14 +20,14 @@ export class RawMaterialsService {
         return this.http.get<Item[]>(this.globals.serverUrl + '/materials', {params: params});
     }
 
-    GetMaterialInfo (code:string): Observable<Item> {
-        return this.http.get<Item>(this.globals.serverUrl + '/materials/code/' + code);
+    GetMaterialInfo (id:string): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl +'/materials/'+ id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url, data, httpOptions).pipe(
+        return this.http.post<Item>(this.globals.serverUrl +'/materials-orders', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
