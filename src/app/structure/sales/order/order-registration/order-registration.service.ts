@@ -17,7 +17,7 @@ export class OrderRegistrationService {
     private url = this.globals.serverUrl + '/sales/orders';
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.globals.serverUrl + '/products', {params: params});
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
     GetProductInfo (code:string): Observable<Item> {

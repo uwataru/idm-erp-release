@@ -29,7 +29,6 @@ import { DeliveryPerformanceChartComponent } from './chart/delivery-performance-
 
 export const routes: Routes = [
     { path: '', redirectTo: 'orders', pathMatch: 'full', canActivate: [AuthGuard] },
-    { path: 'orders', redirectTo: 'orders', pathMatch: 'full', canActivate: [AuthGuard] },
     { path: 'orders', component: OrderRegistrationComponent, data: { title: '영업 > 수주등록', id:20 }, canActivate: [AuthGuard] },
     { path: 'orders-adjustment', component: OrderAdjustmentComponent, data: { title: '영업 > 수주조정', id:21 }, canActivate: [AuthGuard] },
     { path: 'orders-not-delivered', component: OrderNotDeliveredComponent, data: { title: '영업 > 납품처리', id:23 }, canActivate: [AuthGuard] },
