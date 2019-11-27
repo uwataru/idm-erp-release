@@ -13,14 +13,15 @@ export class ConfigService {
     public isCorrect : boolean;
     private currTime = (new Date()).getTime();
     // private url = this.globals.serverUrl + '/configs.json';
-    private menuAPI = 'http://lucas.innest.co.kr/menu';
-    private pType1API = 'http://lucas.innest.co.kr/partners/search/ptype1';
-    private pType2API = 'http://lucas.innest.co.kr/partners/search/ptype2';
-    private pType4API = 'http://lucas.innest.co.kr/partners/search/ptype4';
-    private MaterialAPI = 'http://lucas.innest.co.kr/materials/search';
-    private userAPI = 'http://lucas.innest.co.kr/users/list';
-    private processAPI = 'http://lucas.innest.co.kr/production/process/search';
-    private productAPI = 'http://lucas.innest.co.kr/products/search';
+    private menuAPI = this.globals.serverUrl+ '/menu';
+    private pType1API = this.globals.serverUrl+'/partners/search/ptype1';
+    private pType2API = this.globals.serverUrl+'/partners/search/ptype2';
+    private pType4API = this.globals.serverUrl+'/partners/search/ptype4';
+    private MaterialAPI = this.globals.serverUrl+'/materials/search';
+    private userAPI = this.globals.serverUrl+'/users/list';
+    private processAPI = this.globals.serverUrl+'/production/process/search';
+    private productAPI = this.globals.serverUrl+'/products/search';
+    private workLineAPI = this.globals.serverUrl+'/production/worklines/search';
 
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
@@ -47,6 +48,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.userAPI, 'users'))
             .then(() => this.getConfigData(this.processAPI, 'processList'))
             .then(() => this.getConfigData(this.productAPI, 'productList'))
+            .then(() => this.getConfigData(this.workLineAPI, 'productionLine'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);
