@@ -40,7 +40,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   //listPartners = [];
-  listPartners: any[] = this.globals.configs['type4Partners'];
+  listPartners: any[] = this.globals.configs['partnerList'];
   listSltdPaId: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
@@ -55,8 +55,8 @@ export class PartnerAssemblyProductComponent implements OnInit {
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  inputAssemblyPartners: any[] = this.globals.configs['type4Partners'];
-  inputPartners: any[] = this.globals.configs['type5Partners'];
+  inputAssemblyPartners: any[] = this.globals.configs['partnerList'];
+  inputPartners: any[] = this.globals.configs['partnerList'];
   productionLines: any[] = this.globals.configs['productionLine'];
   product_price: number;
   editData: Item;

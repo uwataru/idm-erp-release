@@ -41,7 +41,7 @@ export class PartnersComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
-  listPartners: any[] = this.globals.configs['type1Partners'];
+  listPartners: any[] = this.globals.configs['partnerList'];
   listSltdPaId: number = 0;
   formData: Item['data'];
   rows = [];

@@ -40,7 +40,7 @@ export class MaterialsComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   // listPartners = [];
-  listPartners: any[] = this.globals.configs['type2Partners'];
+  listPartners: any[] = this.globals.configs['partnerList'];
   listSltdPaId: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
