@@ -165,7 +165,7 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     onSearchSelectListPartner(event: TypeaheadMatch): void {
-        console.log(event);
+        // console.log(event);
         let id = event.item['id'];
         if (id == '') {
             this.listSltdPaCode = 0;
@@ -190,16 +190,16 @@ export class OrderAdjustmentComponent implements OnInit {
         //this.table.offset = 0;
     }
 
-    copy_date(event): void {
-        let formData = this.inputForm.value;
-        if (formData.promised_date == null || formData.promised_date == '') {
-            this.inputForm.patchValue({promised_date: event.target.value});
-        }
-    }
+    // copy_date(event): void {
+    //     let formData = this.inputForm.value;
+    //     if (formData.promised_date == null || formData.promised_date == '') {
+    //         this.inputForm.patchValue({promised_date: event.target.value});
+    //     }
+    // }
 
-    onValueChange(value: Date): void {
-        this.inputForm.patchValue({promised_date: value});
-    }
+    // onValueChange(value: Date): void {
+    //     this.inputForm.patchValue({promised_date: value});
+    // }
 
     AddComma(event) {
         var valArray = event.target.value.split('.');
@@ -279,7 +279,7 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     openModal(row) {
-        console.log('openModal', row);
+        // console.log('openModal', row);
         // 실행권한
         if (this.isExecutable == true) {
             this.inputFormModal.show();
@@ -299,7 +299,7 @@ export class OrderAdjustmentComponent implements OnInit {
             .subscribe(
                 data => {
                     if (data['result'] == 'success') {
-                        console.log('GetById', data['data']);
+                        // console.log('GetById', data['data']);
                         this.inputForm.controls['product_name'].setValue(data['data']['product_name']);
                         this.inputForm.controls['product_type'].setValue(data['data']['product_type']);
                         this.inputForm.controls['order_type'].setValue(data['data']['order_type']);
@@ -327,12 +327,12 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     onSelectListCollectionReason(event: TypeaheadMatch): void {
-        console.log('onSelectListPartner', event.item);
+        // console.log('onSelectListPartner', event.item);
         this.inputForm.controls['correction_reason_id'].setValue(event.item.id);
     }
 
     onSelectListWorkLine(event: TypeaheadMatch, index): void {
-        console.log('onSelectListWorkLine', event.item, index);
+        // console.log('onSelectListWorkLine', event.item, index);
         this.inputForm.controls['product_workline_id_' + index].setValue(event.item.id);
     }
 
@@ -340,7 +340,7 @@ export class OrderAdjustmentComponent implements OnInit {
         // console.log('calculatePrice', event);
         let formData = this.inputForm.value;
 
-        console.log(formData['product_qty'], formData['product_price']);
+        // console.log(formData['product_qty'], formData['product_price']);
         let mQty = this.utils.removeComma( formData['product_qty'] );
         let mPrice = this.utils.removeComma( formData['product_price'] );
 
