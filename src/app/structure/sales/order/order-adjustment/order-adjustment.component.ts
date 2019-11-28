@@ -253,7 +253,7 @@ export class OrderAdjustmentComponent implements OnInit {
             'correction_reason_id': inputData.correction_reason_id,
             'promised_date': this.datePipe.transform(inputData.promised_date, 'yyyy-MM-dd'),
             'product_qty': afterProductQty,
-            'product_price': parseInt(this.utils.removeComma(inputData.product_price))
+            'price': parseInt(this.utils.removeComma(inputData.price))
         };
 
         console.log('save', this.selectedId, formData);
