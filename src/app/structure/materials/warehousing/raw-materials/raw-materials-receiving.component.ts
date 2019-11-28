@@ -347,7 +347,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
                             partner_name: this.formData.partner_name,
                             name: this.formData.name,
                             size: this.formData.size,
-                            receiving_qty: this.formData.receiving_qty,
+                            // receiving_qty: this.formData.receiving_qty,
                             price: price,
                             receiving_location_name: this.formData.receiving_location_name,
                             receiving_location_id: this.formData.receiving_location_id,

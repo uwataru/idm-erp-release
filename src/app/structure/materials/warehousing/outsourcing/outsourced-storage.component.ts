@@ -1,5 +1,5 @@
 import {ElectronService} from '../../../../providers/electron.service';
-import {Component, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, ViewEncapsulation, ElementRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
@@ -7,7 +7,7 @@ import {DatePipe} from '@angular/common';
 import {OutsourcedStorageService} from './outsourced-storage.service';
 import {saveAs as importedSaveAs} from 'file-saver';
 import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './outsourced-storage.item';
@@ -27,43 +27,37 @@ export class OutsourcedStorageComponent implements OnInit {
   inputFormTitle: string;
   statusFormTitle: string;
   statusConfirmMsg: string;
+  uploadFormTitle: string;
   isLoadingProgress: boolean = false;
   isEditMode: boolean = false;
 
   searchForm: FormGroup;
-  selectedCnt: number;
-  selectedId: string;
-  listData: Item[];
-  formData: Item['data'];
-  orderType: string = 'H';
-  filteredPartners: any[] = [];
-  rows = [];
-  materialRows = [];
+
   selected = [];
+  selectedId: string;
+  selectedCnt: number;
+
+  listData : Item[];
+  formData: Item['data'];
+  sch_partner_name: string;
+  //listPartners = [];
+  listPartners: any[] = this.globals.configs['partnerList'];
+  listSltdPaCode: number = 0;
+  searchValue: string;
+  filteredPartners: any[] = [];
+  sch_product_name: string;
+  sch_st: number;
+  st: number;
+  rows = [];
   delId = [];
-  selectedRcvItems = [];
-  usedRcvItems: string;
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  heatingProcess: any[] = this.globals.configs['heatingProcess'];
-  inputPartners: any[] = this.globals.configs['type43Partners'];
-
-  price_per_unit: number;
-  rcv_qty: number;
-  outs_cost: number;
-  totalWeight: number;
-  cutting_total: number;
-  assembly_total: number;
-  product_price: number;
-  isTmpPrice: boolean;
-  order_qty: number;
-  cutting_qty: number;
-  assembly_qty: number;
-  input_weight: number;
-  input_weight_total: number;
-  product_weight: number;
+  inputPartners: any[] = this.globals.configs['partnerList'];
+  storagePartners: any[] = this.globals.configs['partnerList'];
+  inputMakers: any[] = this.globals.configs['maker'];
+  receiving_qty: number;
   editData: Item;
   data: Date;
 
@@ -72,263 +66,339 @@ export class OutsourcedStorageComponent implements OnInit {
 
   errorMessage: string;
   addOkMsg = '등록이 완료되었습니다.';
+  editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
-  noScreeningOkMsg = '무선별 처리되었습니다.';
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
+  @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
+  @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
-    public elSrv: ElectronService,
-    @Inject(FormBuilder) fb: FormBuilder,
-    public electronService: ElectronService,
-    private datePipe: DatePipe,
-    private dataService: OutsourcedStorageService,
-    private globals: AppGlobals,
-    private route: ActivatedRoute,
-    private utils: UtilsService,
-    private messageService: MessageService
+      public electronService: ElectronService,
+      @Inject(FormBuilder) fb: FormBuilder,
+      private router: Router,
+      private datePipe: DatePipe,
+      private dataService: OutsourcedStorageService,
+      private globals: AppGlobals,
+      private route: ActivatedRoute,
+      private utils: UtilsService,
+      private messageService: MessageService
   ) {
-    // 접근권한 체크
-    if (route.routeConfig.path && ('id' in route.routeConfig.data)) {
-      if (route.routeConfig.data.id in this.globals.userPermission) {
-        console.log(route.routeConfig.data.id);
-        if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
-          this.isExecutable = true;
-        }
-        if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
-          this.isPrintable = true;
-        }
+      // 접근권한 체크
+      if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+          if (route.routeConfig.data.id in this.globals.userPermission) {
+              console.log(route.routeConfig.data.id);
+              if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
+                  this.isExecutable = true;
+              }
+              if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
+                  this.isPrintable = true;
+              }
+          }
       }
-    }
 
-    this.searchForm = fb.group({
-      sch_partner_name: '',
-      sch_sdate: '',
-      sch_edate: ''
-    });
-    this.inputForm = fb.group({
-      outs_id: ['', Validators.required],
-      rcv_date: ['', Validators.required],
-      order_type: ['', Validators.required],
-      heat_treatment_process: '',
-      rcv_qty: ['', Validators.required],
-      product_weight: ['', Validators.required],
-      result_type: ['', Validators.required],
-      partner_name: ['', Validators.required],
-      partner_code: ['', Validators.required],
-      product_code: ['', Validators.required],
-      drawing_no: '',
-      product_name: ['', Validators.required],
-      poc_no: ['', Validators.required],
-      price_per_unit: '',
-      outs_cost: '',
-      memo: ''
-    });
+      this.searchForm = fb.group({
+          sch_partner_name: '',
+          sch_product_name: ''
+      });
+      this.inputForm = fb.group({
+          receiving_date: ['', Validators.required],
+          id: ['', Validators.required],
+          material_id: ['', Validators.required],
+          partner_name: ['', Validators.required],
+          partner_id: ['', Validators.required],
+          price: ['', Validators.required],
+          receiving_type: ['', Validators.required],
+          receiving_qty: ['', Validators.required],
+          name: '',
+          receiving_price: '',
+          // is_report: '',
+          // is_mealsheet: '',
+          size: ['', Validators.required],
+          // ms_no: ['', Validators.required],
+          receiving_location_name: ['', Validators.required],
+          receiving_location_id: ['', Validators.required],
+      });
+
+
+      // if( this.storagePartners.filter(v => v.Code == 0).length < 1 ) {
+      //     this.storagePartners.unshift({Code:0, Name:'자가', Alias:'자가'});
+      // }
   }
 
   ngOnInit() {
-    this.panelTitle = '외주입고현황';
-    this.inputFormTitle = '외주입고처리';
+      this.panelTitle = '외주발주현황';
+      this.inputFormTitle = '외주입고처리';
+      this.uploadFormTitle = '외주 재고 엑셀업로드';
 
-    this.getAll();
-    this.selectedCnt = 0;
+      this.getAll();
 
-    $(document).ready(function () {
-      let modalContent: any = $('.modal-content');
-      let modalHeader = $('.modal-header');
-      modalHeader.addClass('cursor-all-scroll');
-      modalContent.draggable({
-        handle: '.modal-header'
+      $(document).ready(function(){
+          let modalContent: any = $('.modal-content');
+          let modalHeader = $('.modal-header');
+          modalHeader.addClass('cursor-all-scroll');
+          modalContent.draggable({
+              handle: '.modal-header'
+          });
       });
-    });
   }
 
   getAll(): void {
-    this.selectedCnt = 0;
-    this.selectedId = '';
-    this.selected = [];
-    this.isLoadingProgress = true;
-    this.dataService.GetAll().subscribe(
-      listData => {
-        this.listData = listData;
-        this.rows = listData['data'];
+      this.selectedCnt = 0;
+      this.selectedId = '';
+      this.selected = [];
 
-        this.isLoadingProgress = false;
+      let formData = this.searchForm.value;
+      let params = {
+          // partner_name: formData.sch_partner_name,
+          // product_name: formData.sch_product_name,
+          // st: 0,
+          // sortby: ['material_id'],
+          // order: ['asc'],
+          // maxResultCount: 10000
       }
-    );
-  }
+      if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+          params['partner_id'] = this.listSltdPaCode;
+      }
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+          listData =>
+          {
+              this.listData = listData;
+              this.rows = listData['data'];
 
-  getPricePerUnit() {
-    let formData = this.inputForm.value;
-
-    if (formData.order_type == 'H') {
-      // 열처리단가
-      this.dataService.GetPricePerUnit(formData.partner_code, formData.heat_treatment_process).subscribe(
-        editData => {
-          if (editData['result'] == 'success') {
-            let price = this.utils.addComma(editData['heatingPrice']);
-            this.inputForm.controls['price_per_unit'].patchValue(price);
-
-            this.calculOutsCost();
-          }
-        }
-      );
-    }
-  }
-
-  delPricePerUnit() {
-    this.inputForm.controls['price_per_unit'].patchValue(0);
-    this.inputForm.controls['outs_cost'].patchValue(0);
-  }
-
-  Save() {
-    let formData = this.inputForm.value;
-
-    formData.rcv_date = this.datePipe.transform(formData.rcv_date, 'yyyy-MM-dd');
-
-    formData.rcv_qty = this.utils.removeComma(formData.rcv_qty) * 1;
-    formData.price_per_unit = this.utils.removeComma(formData.price_per_unit) * 1;
-    formData.outs_cost = this.utils.removeComma(formData.outs_cost) * 1;
-
-    this.Create(formData);
-  }
-
-  Create(data): void {
-    this.dataService.Create(data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.addOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  deleteOrder(id) {
-    const formData: FormData = new FormData();
-    this.dataService.Delete(id, formData)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.getAll();
-            this.messageService.add(this.delOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.selectedId = '';
-          this.selectedCnt = 0;
-          this.statusFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-
-  openModal(method) {
-    // 실행권한
-    if (this.isExecutable == false) {
-      alert(this.globals.isNotExecutable);
-      return false;
-    }
-
-    if (method == 'delete') {
-
-      if (this.selectedCnt > 0) {
-
-        //입고가 있으면 리턴
-        this.dataService.GetOutsReceiving(this.selectedId).subscribe(
-          outsData => {
-            if (outsData['data'] && Object.keys(outsData['data']).length > 0) {
-              this.messageService.add('입고처리된 데이터가 존재하여 삭제할수 없습니다.');
-              return false;
-            } else {
               this.isLoadingProgress = false;
-              this.statusFormModal.show();
-              this.statusFormTitle = '발주 삭제';
-              this.statusConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
-            }
           }
-        );
-
-      }
-
-    } else {
-
-      this.inputFormModal.show();
-
-      // 입력폼 리셋
-      this.inputForm.reset();
-
-      // 외주발주내용
-      this.dataService.GetById(this.selectedId).subscribe(
-        editData => {
-          if (editData['result'] == 'success') {
-            this.editData = editData;
-            this.formData = editData['data'];
-
-            let price_per_unit: string;
-            if (editData['price_per_unit'] * 1 >= 1000) {
-              price_per_unit = this.utils.addComma(editData['price_per_unit']);
-            } else if (price_per_unit == '0') {
-              price_per_unit = '';
-            }
-            let outs_cost = '';//this.formData.input_weight * 1;
-
-            this.inputForm.patchValue({
-              outs_id: this.formData.id,
-              rcv_date: this.tDate,
-              order_type: this.formData.order_type,
-              heat_treatment_process: editData['heat_treatment_process'],
-              product_weight: editData['product_weight'],
-              rcv_qty: this.utils.addComma(this.formData.order_qty),
-              partner_code: this.formData.partner_code,
-              partner_name: this.formData.partner_name,
-              product_code: this.formData.product_code,
-              drawing_no: this.formData.drawing_no,
-              product_name: this.formData.product_name,
-              poc_no: this.formData.poc_no,
-              price_per_unit: price_per_unit,
-              outs_cost: outs_cost
-            });
-          }
-        }
       );
-
-    }
-
   }
 
   onSelectInputPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['partner_code'].setValue(0);
-    } else {
-      this.inputForm.controls['partner_code'].setValue(event.item.Code);
-    }
+      if (event.item == '') {
+          this.inputForm.controls['partner_id'].setValue(0);
+      } else {
+          this.inputForm.controls['partner_id'].setValue(event.item.id);
+      }
+  }
+
+  onSelectStoragePartner(event: TypeaheadMatch): void {
+      if (event.item == '') {
+          this.inputForm.controls['receiving_location_id'].setValue(0);
+      } else {
+          this.inputForm.controls['receiving_location_id'].setValue(event.item.receiving_location_id);
+      }
+  }
+
+
+  CalculOrderAmount (event): void {
+      let formData = this.inputForm.value;
+      let f = event.target.id.replace('order_qty', 'receiving_price');
+      let q = this.utils.removeComma(event.target.value) * 1;
+      let p = this.utils.removeComma(formData.price) * 1;
+      let dp = this.utils.addComma(q * p)
+      this.inputForm.controls['receiving_price'].setValue(dp);
+  }
+
+  Save () {
+      let formModel = this.inputForm.value;
+
+  
+        let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
+        let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
+  
+        let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+  
+        let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
+  
+
+  
+      let formData = {
+          material_id: formModel.material_id,
+          receiving_type: receiving_type,
+          receiving_qty: receiving_qty,
+          receiving_price: receiving_price,
+          receiving_date: receiving_date,
+          // order_price: order_price,
+          receiving_location_id: formModel.receiving_location_id
+          // id: formModel.id,
+          // name: formModel.name,
+          // size: formModel.size * 1,
+          // partner_name: formModel.partner_name,
+          // price_per_unit: this.utils.removeComma(formModel.price_per_unit) * 1,
+      };
+
+
+
+      this.Create(this.selectedId,formData);
+  }
+
+  Create (id,data): void {
+      this.dataService.Create(id,data)
+          .subscribe(
+              data => {
+                  if (data['result'] == "success") {
+                      this.inputForm.reset();
+                      this.getAll();
+                      this.messageService.add(this.addOkMsg);
+                  } else {
+                      this.messageService.add(data['errorMessage']);
+                  }
+                  this.inputFormModal.hide();
+              },
+              error => this.errorMessage = <any>error
+          );
+  }
+
+
+  getRowClass(row) {
+
+      let rt = '';
+      if(row.is_sum_row == 'Y') {
+          rt = 'row-color';
+      } else if(row.is_all_sum_row == 'Y') {
+          rt = 'all-row-color';
+      }
+      return rt;
+   }
+
+
+  deleteOrder(id) {
+      this.dataService.Delete(id)
+      .subscribe(
+          data => {
+              if (data['result'] == "success") {
+                  this.getAll();
+                  this.messageService.add('입고취소되었습니다.');
+              } else {
+                  this.messageService.add(data['errorMessage']);
+              }
+              this.selectedCnt = 0;
+              this.selectedId = '';
+              this.selected = [];
+              this.statusFormModal.hide();
+          },
+          error => this.errorMessage = <any>error
+      );
+  }
+
+  openModal(method) {
+      // 실행권한
+      if (this.isExecutable == true) {
+          if (method == 'receiving') {
+              this.inputFormModal.show();
+
+          } else if (method == 'upload') {
+              this.uploadFormModal.show();
+          } else if (method == 'cancel') {
+
+              //입고가 있으면 리턴
+              // this.dataService.GetInventory(this.selectedId).subscribe(
+                  // inventoryData =>
+                  // {
+                      // if(inventoryData['data'] && Object.keys(inventoryData['data']).length > 0) {
+                      //     this.messageService.add('입고처리된 데이터가 존재하여 삭제할수 없습니다.');
+                      //     return false;
+                      // } else {
+                          // this.isLoadingProgress = false;
+                          this.statusFormModal.show();
+                      // }
+                  // }
+              // );
+
+          }
+      } else {
+          alert(this.globals.isNotExecutable);
+          return false;
+      }
+
+      if (method == 'upload') {
+
+      } else if(method == 'cancel') {
+          this.statusFormTitle = '입고 취소';
+          this.statusConfirmMsg = '선택하신 데이터를 취소하시겠습니까?';
+      } else {
+
+          // 입력폼 리셋
+          this.inputForm.reset();
+          // 주문 ID
+          this.inputForm.controls['id'].setValue(this.selectedId);
+
+          // 입력일
+          this.inputForm.controls['receiving_date'].setValue(this.tDate);
+
+          // 입고구분
+          this.inputForm.controls['receiving_type'].setValue('1');
+
+
+          // 단조품정보
+          this.dataService.GetById(this.selectedId).subscribe(
+              editData =>
+              {
+                  if (editData['result'] == "success") {
+                      this.editData = editData;
+                      this.formData = editData['data'];
+
+                      let price = this.utils.addComma(this.formData.price);
+                      let receiving_price = this.utils.addComma(this.formData.receiving_price);
+                      this.inputForm.patchValue({
+                          material_id: this.formData.material_id,
+                          partner_id: this.formData.partner_id,
+                          partner_name: this.formData.partner_name,
+                          name: this.formData.name,
+                          size: this.formData.size,
+                        //   receiving_qty: this.formData.receiving_qty,
+                          price: price,
+                          receiving_location_name: this.formData.receiving_location_name,
+                          receiving_location_id: this.formData.receiving_location_id,
+                      });
+
+                      console.log(this.inputForm.value['material_id']);
+                  }
+              }
+          );
+
+      }
+
   }
 
   onSelect({selected}) {
-    this.selectedCnt = selected.length;
-
-    let tmpArr = [];
-    for (var i in selected) {
-      tmpArr.push(selected[i].id);
+      this.selectedCnt = selected.length;
+      if (this.selectedCnt == 1) {
+        this.selectedId = selected[0].id;
+        this.inputForm.controls['id'].setValue(this.selectedId);
+      }
     }
-    this.selectedId = tmpArr.join(',');
+  
+
+  // checkSelect(event) {
+  //     return event.id > 0 ? true : false;
+  // }
+
+  fileSelected (event) {
+      let fileList: FileList = event.target.files;
+      if(fileList.length > 0) {
+          let file: File = fileList[0];
+          let formData:FormData = new FormData();
+          formData.append('uploadFile', file, file.name);
+
+          this.excelUpload(formData);
+      }
   }
 
-  calculOutsCost() {
-    let formData = this.inputForm.value;
-    let rcv_qty = this.utils.removeComma(formData.rcv_qty) * 1;
-    let price_per_unit = this.utils.removeComma(formData.price_per_unit) * 1;
-
-    this.inputForm.patchValue({outs_cost: this.utils.addComma(rcv_qty * price_per_unit)});
+  excelUpload (data): void {
+      this.isLoadingProgress = true;
+      this.dataService.UploadExcelFile(data).subscribe(
+          data => {
+              if (data['result'] == "success") {
+                  this.inputForm.reset();
+                  this.getAll();
+                  this.messageService.add(this.editOkMsg);
+              } else {
+                  this.messageService.add(data['errorMessage']);
+              }
+              this.uploadFormModal.hide();
+          },
+          error => this.errorMessage = <any>error
+      );
   }
-
 }

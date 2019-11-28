@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item, matlReceivingItem } from './outsourcing-assembly-work.item';
+import { Item } from './outsourcing-assembly-work.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
@@ -13,33 +13,35 @@ export class OutsourcingAssemblyWorkService {
     constructor(
         private http: HttpClient,
         private globals: AppGlobals) { }
+        
+        private url = this.globals.serverUrl + '/outsourcing/orders';
 
-    private url = this.globals.serverUrl + '/outsourcing/orders';
-
-    // GetById (pocNo:string): Observable<Item> {
-    //     return this.http.get<Item>(this.url+'/cutting-work-orders/'+pocNo);
-    // }
-
-    GetPlanningInfo(id) {
-        let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/planning/get-planning-info/' + id + '?t=' + currTime);
+    GetAll (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl + '/materials', {params: params});
     }
 
-    GetMaterialsReceiving (params): Observable<matlReceivingItem[]> {
-        return this.http.get<matlReceivingItem[]>(this.globals.serverUrl + '/materials/receiving', {params: params});
-    }
-
-    GetCuttingWorkAllocation (pocNo:string) {
-        let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/assembly-works/' + pocNo + '?t=' + currTime);
+    GetMaterialInfo (id:string): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl +'/materials/'+ id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url + '/outs-assembly-products', data, httpOptions).pipe(
+        return this.http.post<Item>(this.globals.serverUrl +'/materials-orders', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
+        );
+    }
+
+
+    GetMaterialsReceiving (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl + '/materials/receiving', {params: params});
+    }
+
+    LossSave (data:any): Observable<any> {
+        return this.http.post<any>(this.url+'/loss-save', data, httpOptions).pipe(
+            tap((data: any) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<any>('Create'))
         );
     }
 

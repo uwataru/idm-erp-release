@@ -1,323 +1,293 @@
-<div class="panel panel-default" id="print-target-outsourced-storage">
+<div class="panel panel-default">
 
-  <div class="panel-heading">
-    <div class="text-center">
-      <span class="h4 block m-b-sm">{{ panelTitle }}</span>
-    </div>
-  </div>
-
-  <div class="panel-body">
-    <ngx-datatable
-      [style.height.px]=gridHeight
-      class="bootstrap"
-      [rows]="rows"
-      [columnMode]="'force'"
-      [headerHeight]="30"
-      [rowHeight]="30"
-      [scrollbarV]="true"
-      [scrollbarH]="false"
-      [selected]="selected"
-      [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="false"
-      (select)="onSelect($event)"
-      [messages]="messages">
-      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-                            [resizeable]="false" headerClass="checkAll" cellClass="text-center">
-        <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                     let-selectFn="selectFn">
-          <label class="i-checks i-checks-sm m-b-none hidden-print">
-            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
-          </label>
-        </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                     let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <label class="i-checks i-checks-sm m-b-none hidden-print">
-            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-          </label>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="거래처" [width]="160" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호" [width]="160" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <!--            <ngx-datatable-column prop="drawing_no" name="도번"[width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>-->
-      <ngx-datatable-column prop="product_name" name="제품명" [width]="200" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="poc_no" name="POC No" [width]="160" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="발주수량" [resizeable]="false" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span> {{ value | numberFormat }} </span>
-          &nbsp; &nbsp;
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="rcv_qty" name="입고수량" [resizeable]="false" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span> {{ value | numberFormat }} </span>
-          &nbsp; &nbsp;
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="inven_qty" name="재고수량" [resizeable]="false" cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span> {{ value | numberFormat }} </span>
-          &nbsp; &nbsp;
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="rcv_req_date" name="입고요구일" [width]="130" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-    </ngx-datatable>
-  </div>
-
-  <div class="panel-footer text-right hidden-print">
-    <button (click)="openModal('delete')" [disabled]="selectedCnt < 1" class="btn btn-sm btn-danger btn-addon">
-      <i class="glyphicon glyphicon-plus"></i>삭제
-    </button>
-    <button (click)="openModal('receiving')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
-      <i class="glyphicon glyphicon-plus"></i>입고
-    </button>
-    <button class="btn btn-sm btn-info btn-addon"
-            (click)="electronService.readyPrint('print-target-outsourced-storage', '', electronService.PRINT_OPT.LANDSCAPE)">
-      <i class="glyphicon glyphicon-print"></i>인쇄
-    </button>
-    <button type="button" class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/outsourcing/orders/storage','외주발주현황.xlsx')"><i
-      class="glyphicon glyphicon-download-alt"></i>엑셀
-    </button>
-  </div>
-</div>
-
-
-<div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span>
+    <div class="panel-heading">
+      <div class="text-center">
+        <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+      </div>
+      <div class="text-right">
+        <button (click)="openModal('upload')" class="btn btn-sm btn-success btn-addon">
+          <i class="glyphicon glyphicon-upload"></i>엑셀업로드
         </button>
-        <h4 class="modal-title">{{ statusFormTitle }}</h4>
       </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          {{ statusConfirmMsg }}
+    </div>
+  
+    <div class="panel-body">
+      <ngx-datatable
+        [style.height.px]=gridHeight
+        class="bootstrap"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="30"
+        [rowClass]="getRowClass"
+        [rowHeight]="30"
+        [selected]="selected"
+        (select)='onSelect($event)'
+        [scrollbarV]="true"
+        [scrollbarH]="false"
+        [selectionType]="'checkbox'"
+        [selectAllRowsOnPage]="false"
+        [messages]="messages">
+        <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"
+                              [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+          <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+                       let-selectFn="selectFn">
+            <label class="i-checks i-checks-sm m-b-none">
+              <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+            </label>
+          </ng-template>
+          <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                       let-onCheckboxChangeFn="onCheckboxChangeFn">
+            <label class="i-checks i-checks-sm m-b-none">
+              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+            </label>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center" [width]="12"></ngx-datatable-column>
+        <ngx-datatable-column prop="name" name="제품명" cellClass="text-center" [width]="12"></ngx-datatable-column>
+        <ngx-datatable-column prop="size" name="규격" cellClass="text-center" [width]="5"></ngx-datatable-column>
+        <ngx-datatable-column prop="receiving_date" name="발주일자" cellClass="text-center" [width]="9"></ngx-datatable-column>
+        <ngx-datatable-column prop="order_qty" name="발주수량" cellClass="text-right" [width]="7">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+          </ng-template>
+        </ngx-datatable-column>      
+        <ngx-datatable-column prop="price" name="단가" cellClass="text-right" [width]="6">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="order_price" name="금액" cellClass="text-right" [width]="10">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <div class="wrapper-xs active">{{ value | numberFormat }} &nbsp;</div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  
+  
+    <div class="panel-footer">
+      <div class="row">
+        <div class="col-sm-6 hidden-xs">
+          <button (click)="openModal('cancel')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-danger btn-addon">
+            <i class="glyphicon glyphicon-minus"></i>입고취소
+          </button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" (click)="deleteOrder(selectedId)" class="btn btn-danger btn-save">삭제</button>
-          <button type="button" class="btn btn-primary btn-cancel" (click)="StatusFormModal.hide()">취소</button>
+        <div class="col-sm-6 text-right text-center-xs">
+          <button (click)="openModal('receiving')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
+            <i class="glyphicon glyphicon-plus"></i>입고
+          </button>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-
-<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <form [formGroup]="inputForm">
-        <input type="hidden" formControlName="outs_id" id="outs_id"/>
-
+  
+  
+  <div bsModal #StatusFormModal="bs-modal" id="change-status-confirm" class="modal fade" tabindex="-1" role="dialog"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+          <button type="button" class="close" (click)="StatusFormModal.hide()"><span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">{{ inputFormTitle }}</h4>
+          <h4 class="modal-title">{{ statusFormTitle }}</h4>
         </div>
         <div class="modal-body">
-
-          <div class="form-group">
-            <div class="row">
-              <label for="rcv_date" class="col-lg-2 control-label">
-                입고일자
-              </label>
-              <div class="col-lg-5">
-                <input type="text" formControlName="rcv_date" id="rcv_date" bsDatepicker placement="bottom left"
-                       class="form-control input-sm w-sm"/>
-              </div>
-              <label for="partner_name" class="col-lg-2 control-label">
-                거래처
-              </label>
-              <div class="col-lg-3">
-                <input formControlName="partner_name" id="partner_name"
-                       [typeahead]="inputPartners"
-                       typeaheadOptionField="Alias"
-                       [typeaheadOptionsLimit]="50"
-                       [typeaheadScrollable]="true"
-                       [typeaheadMinLength]="0"
-                       (typeaheadOnSelect)="onSelectInputPartner($event)"
-                       placeholder="거래처명"
-                       class="input-sm form-control w-sm inline v-middle"/>
-                <input type="hidden" formControlName="partner_code" id="partner_code"/>
-              </div>
-            </div>
+          <div class="text-center padder-v">
+            {{ statusConfirmMsg }}
           </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="order_type" class="col-lg-2 control-label">
-                외주구분
-              </label>
-              <div class="col-lg-5">
-                <select formControlName="order_type" id="order_type" class="form-control input-sm w-sm inline v-middle">
-<!--                  <option value="F">단조</option>-->
-                  <option value="C">조립</option>
-<!--                  <option value="H">열처리</option>-->
-<!--                  <option value="M">가공</option>-->
-                </select>
-                <select *ngIf="inputForm.get('order_type').value == 'H'" formControlName="heat_treatment_process"
-                        id="heat_treatment_process" class="input-sm form-control w-xs inline v-middle">
-                  <option *ngFor="let item of heatingProcess" value="{{ item.CfgCode }}">{{ item.CfgName }}</option>
-                </select>
-              </div>
-              <label for="rcv_qty" class="col-lg-2 control-label">
-                입고수량
-              </label>
-              <div class="col-lg-3">
-                <input type="text" formControlName="rcv_qty" id="rcv_qty" decimal [(ngModel)]="rcv_qty"
-                       class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="result_type" class="col-lg-2 control-label">
-                처리 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-5">
-                <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="NORMAL" (click)="getPricePerUnit();">
-                  <i></i>정상
-                </label>
-                <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="PAY" (click)="getPricePerUnit();">
-                  <i></i>유불
-                </label>
-                <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="NOPAY" (click)="delPricePerUnit();">
-                  <i></i>무불
-                </label>
-                <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="LOSS" (click)="delPricePerUnit();">
-                  <i></i>LOSS
-                </label>
-                <label class="i-checks">
-                  <input type="radio" formControlName="result_type" value="LUCRE" (click)="delPricePerUnit();">
-                  <i></i>LUCRE
-                </label>
-              </div>
-              <label for="product_weight" class="col-lg-2 control-label">
-                제중
-              </label>
-              <div class="col-lg-3">
-                <input type="text" formControlName="product_weight" id="product_weight" decimal
-                       [(ngModel)]="product_weight" class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="product_code" class="col-lg-2 control-label">
-                제품번호
-              </label>
-              <div class="col-lg-5">
-                <input type="text" formControlName="product_code" id="product_code" class="form-control input-sm w-sm"/>
-              </div>
-              <label for="price_per_unit" class="col-lg-2 control-label">
-                단가<span
-                *ngIf="inputForm.get('result_type').value == 'NORMAL' || inputForm.get('result_type').value == 'PAY'"
-                class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-3">
-                <input type="text" formControlName="price_per_unit" id="price_per_unit" decimal
-                       [(ngModel)]="price_per_unit" (blur)="calculOutsCost()" nextFocus="outs_cost"
-                       class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <!--                        <label for="drawing_no" class="col-lg-2 control-label">-->
-              <!--                            도번-->
-              <!--                        </label>-->
-              <!--                        <div class="col-lg-5">-->
-              <!--                            <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control input-sm w-sm" />-->
-              <!--                        </div>-->
-              <label for="outs_cost" class="col-lg-2 control-label">
-                금액
-              </label>
-              <div class="col-lg-3">
-                <input type="text" formControlName="outs_cost" id="outs_cost" decimal [(ngModel)]="outs_cost"
-                       nextFocus="ms_no" class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="product_name" class="col-lg-2 control-label">
-                제품명
-              </label>
-              <div class="col-lg-5">
-                <input type="text" formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="row">
-              <label for="poc_no" class="col-lg-2 control-label">
-                POC No
-              </label>
-              <div class="col-lg-5">
-                <input type="text" formControlName="poc_no" id="poc_no" class="form-control input-sm w-sm"/>
-              </div>
-              <label for="memo" class="col-lg-2 control-label">
-                특이사항
-              </label>
-              <div class="col-lg-3">
-                <input type="text" formControlName="memo" id="memo" class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
-
         </div>
-
         <div class="modal-footer">
           <div class="text-center">
-            <button type="button"
-                    (click)="Save()"
-                    [disabled]="!inputForm.valid || ( (inputForm.get('result_type').value == 'NORMAL' || inputForm.get('result_type').value == 'PAY') && !inputForm.get('price_per_unit').value )"
-                    class="btn btn-primary btn-save">
-              완료
-            </button>
-            <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+            <button type="button" (click)="deleteOrder(selectedId)" class="btn btn-danger btn-save">확인</button>
+            <button type="button" class="btn btn-primary btn-cancel" (click)="StatusFormModal.hide()">취소</button>
           </div>
         </div>
-      </form>
-
+      </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="isLoadingProgress" class="loading-progress">
-
-  <div class="sk-fading-circle">
-    <div class="sk-circle1 sk-circle"></div>
-    <div class="sk-circle2 sk-circle"></div>
-    <div class="sk-circle3 sk-circle"></div>
-    <div class="sk-circle4 sk-circle"></div>
-    <div class="sk-circle5 sk-circle"></div>
-    <div class="sk-circle6 sk-circle"></div>
-    <div class="sk-circle7 sk-circle"></div>
-    <div class="sk-circle8 sk-circle"></div>
-    <div class="sk-circle9 sk-circle"></div>
-    <div class="sk-circle10 sk-circle"></div>
-    <div class="sk-circle11 sk-circle"></div>
-    <div class="sk-circle12 sk-circle"></div>
+  
+  
+  <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <form [formGroup]="inputForm">
+          <input type="hidden" formControlName="id"/>
+          <input type="hidden" formControlName="material_id"/>
+  
+          <div class="modal-header">
+            <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">{{ inputFormTitle }}</h4>
+          </div>
+          <div class="modal-body">
+  
+            <div class="form-group">
+              <div class="row">
+                <label for="receiving_date" class="col-lg-2 control-label">
+                  입고일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-10">
+                  <input type="text" formControlName="receiving_date" id="receiving_date" nextFocus="partner_name"
+                         class="form-control input-sm w-sm"/>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <div class="row">
+                <label for="partner_name" class="col-lg-2 control-label">
+                  거래처
+                </label>
+                <div class="col-lg-4">
+                  <input formControlName="partner_name" id="partner_name"
+                         readonly
+                         class="input-sm form-control w-sm inline v-middle"/>
+                  <input type="hidden" formControlName="partner_id" id="partner_id"/>
+                </div>
+                <label for="price" class="col-lg-2 control-label">
+                  단가
+                </label>
+                <div class="col-lg-4">
+                  <input readonly type="text" formControlName="price" id="price" nextFocus="result_type"
+                         class="form-control input-sm w-sm text-right"/>
+                </div>              
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <div class="row">
+                <label for="receiving_type" class="col-lg-2 control-label">
+                  입고 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-4">
+                  <label class="i-checks">
+                    <input type="radio" formControlName="receiving_type" value="1">
+                    <i></i>입고
+                  </label>
+                  <label class="i-checks">
+                    <input type="radio" formControlName="receiving_type" value="2">
+                    <i></i>반품
+                  </label>
+                </div>
+                <label for="receiving_qty" class="col-lg-2 control-label">
+                  입고수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+                <div class="col-lg-4">
+                  <input type="text" formControlName="receiving_qty" id="receiving_qty" (blur)="CalculOrderAmount($event)"
+                         decimal [(ngModel)]="receiving_qty" nextFocus="storage"
+                         class="form-control input-sm w-sm text-right"/>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <div class="row">
+                <label for="name" class="col-lg-2 control-label">
+                  자재명
+                </label>
+                <div class="col-lg-4">
+                  <input readonly type="text" formControlName="name" id="name" nextFocus="size"
+                         class="form-control input-sm w-sm"/>
+                </div>
+                <label for="receiving_price" class="col-lg-2 control-label">
+                  금액
+                </label>
+                <div class="col-lg-4">
+                  <input type="text" formControlName="receiving_price" id="receiving_price"
+                         class="form-control input-sm w-sm text-right"/>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <div class="row">
+                <label for="size" class="col-lg-2 control-label">
+                  규격
+                </label>
+                <div class="col-lg-4">
+                  <input readonly type="text" formControlName="size" id="size" nextFocus="price_per_unit"
+                         class="form-control input-sm w-sm text-right"/>
+                </div>
+                <label for="receiving_location_name" class="col-lg-2 control-label">
+                  입고장소
+                </label>
+                <div class="col-lg-4">
+                  <input formControlName="receiving_location_name" id="receiving_location_name"
+                         [typeahead]="storagePartners"
+                         typeaheadOptionField="name"
+                         [typeaheadOptionsLimit]="50"
+                         [typeaheadScrollable]="true"
+                         [typeaheadMinLength]="0"
+                         (typeaheadOnSelect)="onSelectStoragePartner($event)"
+                         placeholder="거래처명"
+                         autocomplete="off"
+                         class="input-sm form-control w-sm inline v-middle"/>
+                  <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
+                </div>
+              </div>
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <div class="text-center">
+              <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
+              </button>
+              <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+            </div>
+          </div>
+        </form>
+  
+      </div>
+    </div>
   </div>
-
-</div>
+  
+  <div bsModal #UploadFormModal="bs-modal" id="upload-form" class="modal fade" tabindex="-1" role="dialog"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="UploadFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ uploadFormTitle }}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="text-center padder-v">
+            <input type="file" (change)="fileSelected($event)" placeholder="Upload file" accept=".xls,.xlsx"
+                   #uploadFileSrc/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="fileSelected($event)" class="btn btn-primary btn-save">업로드</button>
+            <button type="button" (click)="uploadFileSrc.value=''; UploadFormModal.hide()"
+                    class="btn btn-default btn-cancel">취소
+            </button>
+            <button type="button" (click)="electronService.excelDL('','/materials/receiving','원자재재고현황.xlsx')" class="btn btn-success">다운로드</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div *ngIf="isLoadingProgress" class="loading-progress">
+  
+    <div class="sk-fading-circle">
+      <div class="sk-circle1 sk-circle"></div>
+      <div class="sk-circle2 sk-circle"></div>
+      <div class="sk-circle3 sk-circle"></div>
+      <div class="sk-circle4 sk-circle"></div>
+      <div class="sk-circle5 sk-circle"></div>
+      <div class="sk-circle6 sk-circle"></div>
+      <div class="sk-circle7 sk-circle"></div>
+      <div class="sk-circle8 sk-circle"></div>
+      <div class="sk-circle9 sk-circle"></div>
+      <div class="sk-circle10 sk-circle"></div>
+      <div class="sk-circle11 sk-circle"></div>
+      <div class="sk-circle12 sk-circle"></div>
+    </div>
+  
+  </div>
+  

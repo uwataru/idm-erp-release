@@ -175,7 +175,7 @@
                 입고수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </label>
               <div class="col-lg-4">
-                <input readonly type="text" formControlName="receiving_qty" id="receiving_qty" (blur)="CalculOrderAmount($event)"
+                <input type="text" formControlName="receiving_qty" id="receiving_qty" (blur)="CalculOrderAmount($event)"
                        decimal [(ngModel)]="receiving_qty" nextFocus="storage"
                        class="form-control input-sm w-sm text-right"/>
               </div>
