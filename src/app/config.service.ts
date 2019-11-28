@@ -22,7 +22,7 @@ export class ConfigService {
     private processAPI = this.globals.serverUrl+'/production/process/search';
     private productAPI = this.globals.serverUrl+'/products/search';
     private workLineAPI = this.globals.serverUrl+'/production/worklines/search';
-
+    private correctionReasonAPI = this.globals.serverUrl+'/settings/search/correction_reason';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -39,7 +39,7 @@ export class ConfigService {
         })
     }
 
-    public load() {
+    public load() {     //todo 재질, 제품등은 해당 페이지 생성시 재로딩해서 사용하도록 수정
         return this.getConfigData(this.menuAPI, 'menu')
             .then(() => this.getConfigData(this.partnerAPI, 'partnerList'))
             .then(() => this.getConfigData(this.MaterialAPI, 'schMaterials'))
@@ -47,6 +47,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.processAPI, 'processList'))
             .then(() => this.getConfigData(this.productAPI, 'productList'))
             .then(() => this.getConfigData(this.workLineAPI, 'productionLine'))
+            .then(() => this.getConfigData(this.correctionReasonAPI, 'correctionReasonList'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);

@@ -1,16 +1,16 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { ElectronService } from '../../../../providers/electron.service';
 import { saveAs as importedSaveAs } from "file-saver";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
 import { OrderAdjustmentService } from './order-adjustment.service';
 import { AppGlobals } from '../../../../app.globals';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
-import { Item, PartnerItem } from './order-adjustment.item';
+import { Item } from './order-adjustment.item';
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -21,19 +21,22 @@ declare var $: any;
 })
 export class OrderAdjustmentComponent implements OnInit {
     tDate = this.globals.tDate;
+    panelTitle: string;
+    inputFormTitle: string;
     isLoadingProgress: boolean = false;
     isEditMode: boolean = false;
 
-    panelTitle = '수주 등록 현황';
     searchForm: FormGroup;
-    selectedId: string;
-    listData : Item[];
+
+    selectedId: number;
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
-    listPartners: any[] = this.globals.configs['type5Partners'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
+    sch_product_name: string;
+    sch_st: number;
     st: number;
     rows = [];
     temp = [];
@@ -42,51 +45,44 @@ export class OrderAdjustmentComponent implements OnInit {
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
 
-    inputFormTitle: string = '수주 조정';
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type5Partners'];
+    partnerList: any[] = this.globals.configs['partnerList'];
     productionLines: any[] = this.globals.configs['productionLine'];
+    productList: any[] = this.globals.configs['productList'];
+    correctionReasonList: any[] = this.globals.configs['correctionReasonList'];
     prodTypeStr: string;
+    combiTypeStr: string;
     product_price: number;
     isTmpPrice: boolean;
     order_qty: number;
     editData: Item;
     data: Date;
-    editOkMsg: string = '수정이 완료되었습니다.';
 
-    deleteConfirmTitle: string = '수주 삭제';
-    deleteConfirmMsg: string = '선택하신 데이터를 삭제하시겠습니까?';
-
-    sendToPlanningTitle: string = '생산계획으로 자료전송';
-    sendToPlanningMsg: string = '수주등록현황 자료를 생산계획으로 보내시겠습니까?'
-    sendOkMsg: string = '전송이 완료되었습니다';
+    productDataCnt:number;
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
 
     errorMessage: string;
-    uploadFormTitle = '수주 엑셀업로드';
     addOkMsg = '등록이 완료되었습니다.';
+    editOkMsg = '수정이 완료되었습니다.';
     delOkMsg = '삭제되었습니다.';
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-    @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
-    @ViewChild('SendToPlanningModal') sendToPlanningModal: ModalDirective;
-    @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
-    @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
     constructor(
-        public electronService: ElectronService,
-        @Inject(FormBuilder) fb: FormBuilder,
+        @Inject(FormBuilder) public fb: FormBuilder,
+        private router: Router,
         private datePipe: DatePipe,
         private dataService: OrderAdjustmentService,
         private globals: AppGlobals,
         private route: ActivatedRoute,
         private utils: UtilsService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        public elSrv: ElectronService
     ) {
         // 접근권한 체크
-        if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+        if (route.routeConfig.path && ('id' in route.routeConfig.data)) {
             if (route.routeConfig.data.id in this.globals.userPermission) {
                 console.log(route.routeConfig.data.id);
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
@@ -100,31 +96,41 @@ export class OrderAdjustmentComponent implements OnInit {
 
         this.searchForm = fb.group({
             sch_partner_name: '',
-            sch_product_code: ''
+            sch_product_name: ''
         });
-        this.inputForm = fb.group({
-            partner_code: ['', Validators.required],
-            partner_name: ['', Validators.required],
-            input_date: ['', Validators.required],
-            order_type1: ['', Validators.required],
-            order_type2: ['', Validators.required],
-            product_code: ['', Validators.required],
-            order_qty: ['', Validators.required],
-            delivery_date: ['', Validators.required],
+
+        this.buildInputFormGroup();
+    }
+
+    buildInputFormGroup(){
+        this.inputForm = this.fb.group({
+            product_name: [''],
+            product_type: [''],
+            order_type: [''],
+            demand_date: [''],
+            product_qty: ['', Validators.required],
+            price: [''],
+            product_price: [''],
+            // input_date: [''],
+            first_input_date: [''],
+            partner_name: [''],
+            order_no: [''],
             promised_date: ['', Validators.required],
-            size: '',
-            production_line: ['', Validators.required],
-            product_name: '',
-            product_price: '',
-            order_no: '',
-            modi_reason: ['', Validators.required]
+            line_no: [''],
+            sch_correction_reason: ['', Validators.required],
+            correction_reason_id: [''],
         });
     }
 
     ngOnInit() {
+        this.panelTitle = '수주 조정';
+        this.inputFormTitle = '수주 조정';
+
+        this.productDataCnt = 1;
+
         this.getAll();
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
             modalHeader.addClass('cursor-all-scroll');
@@ -135,128 +141,66 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     getAll(): void {
+        this.selectedId = -1;
+
         let formData = this.searchForm.value;
+
         let params = {
-            product_code: formData.sch_product_code,
-            sortby: ['input_date', 'order_no', 'product_code'],
-            order: ['desc', 'desc', 'desc'],
-            maxResultCount: 10000
-        }
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
-        }
+            partner_code: this.listSltdPaCode,
+            sortby: ['order_no'],
+            order: ['asc']
+            // maxResultCount: 10000
+        };
+
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
+            listData => {
+                this.listData = listData as Item[];
                 this.temp = listData['data'];
-                this.rows = listData['data'];
+                this.rows = listData['data'].map(x => Object.assign({}, x));
+                this.dataConvert();
 
                 this.isLoadingProgress = false;
             }
         );
     }
 
-    onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
+    dataConvert(){  //같은 수주 번호 제품은 기본수주정보 제거
+        let len = this.rows.length;
+        for(let i = 0; i<len; i++){
+            if(this.rows[i-1] != null && this.rows[i].id == this.rows[i-1].id){
+                this.rows[i].order_no = '';
+                this.rows[i].partner_name = '';
+                this.rows[i].demand_date = '';
+                this.rows[i].promised_date = '';
+            }
+        }
+    }
+
+    onSearchSelectListPartner(event: TypeaheadMatch): void {
+        console.log(event);
+        let id = event.item['id'];
+        if (id == '') {
             this.listSltdPaCode = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaCode = id;
         }
 
-        const val = this.listSltdPaCode;
-
-        // filter data
-        // const temp = this.temp.filter(function(d){
-        //     return d.partner_code.indexOf(val) !== -1 || !val;
-        // })
-        //
-        // // update the rows
-        // this.rows = temp;
-    }
-
-    onSelectInputPartner(event: TypeaheadMatch): void {
-        if (event.item == '') {
-            this.inputForm.controls['partner_code'].setValue(0);
-        } else {
-            this.inputForm.controls['partner_code'].setValue(event.item.Code);
-        }
-    }
-
-    loadProductInfo (event) {
-        let productCode = event.target.value;
-        this.isTmpPrice = false;
-        this.dataService.GetProductInfo(productCode).subscribe(
-            editData =>
-            {
-                if (editData['result'] == "success") {
-                    this.editData = editData;
-                    this.formData = editData['data'];
-                    let product_price = this.utils.addComma(this.formData.product_price);
-                    this.inputForm.patchValue({
-                        partner_code: this.formData.partner_code,
-                        partner_name: this.formData.partner_name,
-                        // product_type: this.formData.product_type,
-                        // drawing_no: this.formData.drawing_no,
-                        // sub_drawing_no: this.formData.sub_drawing_no,
-                        size: this.formData.size,
-                        product_name: this.formData.product_name,
-                        production_line: this.formData.production_line,
-                        product_price: product_price,
-                    });
-
-                    if (this.formData.is_tmp_price == 'Y') {
-                        this.isTmpPrice = true;
-                    }
-                }
-            }
-        );
+        this.getAll();
     }
 
     updateFilter(event) {
         const val = event.target.value;
-
         // filter data
-        const temp = this.temp.filter(function(d){
-            return d.product_code.indexOf(val) !== -1 || !val;
-        })
-
+        let tempArr = this.temp.map(x => Object.assign({}, x));
+        let temp = tempArr.filter(function (d) {
+            return d.product_name.indexOf(val) !== -1 || !val;
+        });
         // update the rows
         this.rows = temp;
+        this.dataConvert()
         // 필터 변경될때마다 항상 첫 페이지로 이동.
         //this.table.offset = 0;
-    }
-
-    Edit (id) {
-        this.dataService.GetById(id).subscribe(
-            editData =>
-            {
-                if (editData['result'] == "success") {
-                    this.editData = editData;
-                    this.formData = editData['data'];
-                    let product_price = this.utils.addComma(this.formData.product_price);
-                    let order_qty = this.utils.addComma(this.formData.order_qty);
-
-                    this.inputForm.patchValue({
-                        partner_code: this.formData.partner_code,
-                        partner_name: this.formData.partner_name,
-                        input_date: this.formData.input_date,
-                        order_type1: this.formData.order_type1,
-                        order_type2: this.formData.order_type2,
-                        order_no: this.formData.order_no,
-                        product_code: this.formData.product_code,
-                        size: this.formData.size,
-                        product_name: this.formData.product_name,
-                        order_qty: order_qty,
-                        product_price: product_price,
-                        production_line: this.formData.production_line,
-                        delivery_date: this.formData.delivery_date,
-                        promised_date: this.formData.promised_date
-                    });
-                }
-            }
-        );
     }
 
     copy_date(event): void {
@@ -272,7 +216,7 @@ export class OrderAdjustmentComponent implements OnInit {
 
     AddComma(event) {
         var valArray = event.target.value.split('.');
-        for(var i = 0; i < valArray.length; ++i) {
+        for (var i = 0; i < valArray.length; ++i) {
             valArray[i] = valArray[i].replace(/\D/g, '');
         }
 
@@ -283,7 +227,7 @@ export class OrderAdjustmentComponent implements OnInit {
         } else {
             let matches = valArray[0].match(/[0-9]{3}/mig);
 
-            if(matches !== null && valArray[0].length > 3) {
+            if (matches !== null && valArray[0].length > 3) {
                 let commaGroups = Array.from(Array.from(valArray[0]).reverse().join('').match(/[0-9]{3}/mig).join()).reverse().join('');
                 let replacement = valArray[0].replace(commaGroups.replace(/\D/g, ''), '');
 
@@ -292,41 +236,40 @@ export class OrderAdjustmentComponent implements OnInit {
                 newVal = valArray[0];
             }
 
-            if(valArray.length > 1) {
-                newVal += "." + valArray[1].substring(0,2);
+            if (valArray.length > 1) {
+                newVal += '.' + valArray[1].substring(0, 2);
             }
         }
         this.inputForm.controls[event.target.id].setValue(this.utils.addComma(newVal));
+        //this.inputForm.patchValue({'combi_product_price' : this.utils.addComma(newVal)});
     }
 
-    Save () {
-         let formData = this.inputForm.value;
-         if ( ! formData.production_line ) {
-             alert('작업라인을 선택해주세요!');
-             return false;
-         }
-         if ( ! formData.modi_reason) {
-             alert('정정사유를 선택해주세요!');
-             return false;
-         }
-         formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-         formData.order_qty = this.utils.removeComma(formData.order_qty) * 1;
+    Save() {
+        let inputData = this.inputForm.value;
+        let formData = {
+            'correction_reason_id': inputData.correction_reason_id,
+            'promised_date': this.datePipe.transform(inputData.promised_date, 'yyyy-MM-dd'),
+            'product_qty': parseInt(this.utils.removeComma(inputData.product_qty)),
+            'product_price': parseInt(this.utils.removeComma(inputData.product_price))
+        };
+        // if (this.isEditMode == true && !formData.modi_reason) {
+        //   alert('정정사유를 선택해주세요!');
+        //   return false;
+        // }
 
-         formData.delivery_date = this.datePipe.transform(formData.delivery_date, 'yyyy-MM-dd');
-         formData.promised_date = this.datePipe.transform(formData.promised_date, 'yyyy-MM-dd');
-         formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
-
-         this.Update(this.selectedId, formData);
+        console.log('save', this.selectedId, formData);
+        this.Modify(formData);
     }
 
-    Update (id, data): void {
-        this.dataService.Update(id, data)
+    Modify(data): void {
+        this.dataService.Modify(this.selectedId, data)
             .subscribe(
                 data => {
-                    if (data['result'] == "success") {
+                    if (data['result'] == 'success') {
                         this.inputForm.reset();
                         this.getAll();
-                        this.messageService.add(this.editOkMsg);
+                        // this.router.navigate(['/sales/order/order-adjustment']);
+                        this.messageService.add(this.addOkMsg);
                     } else {
                         this.messageService.add(data['errorMessage']);
                     }
@@ -336,127 +279,77 @@ export class OrderAdjustmentComponent implements OnInit {
             );
     }
 
-    delete (id): void {
-        const formData: FormData = new FormData();
-        formData.append('st', '-1');
-        this.dataService.Delete(id, formData)
-            .subscribe(
-                data => {
-                    if (data['result'] == "success") {
-                        this.getAll();
-                        this.messageService.add(this.delOkMsg);
-                    } else {
-                        this.messageService.add(data['errorMessage']);
-                    }
-                    this.selectedId = '';
-                    this.selected = [];
-                    this.deleteFormModal.hide();
-                },
-                error => this.errorMessage = <any>error
-            );
-    }
-
-    openModal(method, id) {
+    openModal(row) {
+        console.log('openModal', row);
         // 실행권한
         if (this.isExecutable == true) {
-            switch (method) {
-                case 'delete':
-                    this.deleteFormModal.show();
-                break;
-                case 'edit':
-                    this.inputFormModal.show();
-                break;
-                case 'send':
-                    this.sendToPlanningModal.show();
-                break;
-                case 'upload':
-                    this.uploadFormModal.show();
-                break;
-            }
+            this.inputFormModal.show();
         } else {
             alert(this.globals.isNotExecutable);
             return false;
         }
 
-        if (id) {
-            if (id == 'selected') {
-                let idArr = [];
-                this.selected.forEach((e:any) => {
-                    idArr.push(e.id);
-                });
-                this.selectedId = idArr.join(',');
-                console.log(this.selectedId);
-            } else {
-                this.selectedId = id;
-            }
-        }
-        if (method == 'edit') {
-            this.Edit(id);
-        }
-    }
+        // 입력폼 리셋
+        this.inputForm.reset();
+        this.buildInputFormGroup();
 
-    SendToPlanning(): void {
-        const formData: FormData = new FormData();
-        formData.append('user', this.globals.userId);
-        this.dataService.SendToPlanning(formData)
+        this.selectedId = row.sales_order_detail_id;
+
+        // 수주번호
+        this.dataService.GetById(this.selectedId)
             .subscribe(
                 data => {
-                    if (data['result'] == "success") {
-                        this.messageService.add(this.sendOkMsg);
+                    if (data['result'] == 'success') {
+                        console.log('GetById', data['data']);
+                        this.inputForm.controls['product_name'].setValue(data['data']['product_name']);
+                        this.inputForm.controls['product_type'].setValue(data['data']['product_type']);
+                        this.inputForm.controls['order_type'].setValue(data['data']['order_type']);
+                        this.inputForm.controls['demand_date'].setValue(data['data']['demand_date']);
+                        this.inputForm.controls['product_qty'].setValue(this.utils.addComma(data['data']['product_qty']));
+                        this.inputForm.controls['price'].setValue(this.utils.addComma(data['data']['price']));
+                        this.inputForm.controls['product_price'].setValue(this.utils.addComma(data['data']['product_price']));
+                        // this.inputForm.controls['input_date'].setValue(data['data']['input_date']);
+                        this.inputForm.controls['first_input_date'].setValue(data['data']['first_input_date']);
+                        this.inputForm.controls['partner_name'].setValue(data['data']['partner_name']);
+                        this.inputForm.controls['order_no'].setValue(data['data']['order_no']);
+                        this.inputForm.controls['promised_date'].setValue(data['data']['promised_date']);
+                        this.inputForm.controls['line_no'].setValue(data['data']['line_no']);
                     } else {
                         this.messageService.add(data['errorMessage']);
-
-                        // 오류난 수주 출력
-                        let params = {
-                            order_no: data['order_no'],
-                            sortby: ['input_date', 'order_no', 'product_code'],
-                            order: ['desc', 'desc', 'desc'],
-                            maxResultCount: 10000
-                        }
-                        this.isLoadingProgress = true;
-                        this.dataService.GetAll(params).subscribe(
-                            listData =>
-                            {
-                                this.listData = listData;
-                                this.temp = listData['data'];
-                                this.rows = listData['data'];
-
-                                this.isLoadingProgress = false;
-                            }
-                        );
                     }
-                    this.sendToPlanningModal.hide();
                 },
                 error => this.errorMessage = <any>error
             );
     }
 
-    fileSelected (event) {
-        let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
-            let file: File = fileList[0];
-            let formData:FormData = new FormData();
-            formData.append('uploadFile', file, file.name);
-
-            this.excelUpload(formData);
-        }
+    onSelect({selected}) {
+        this.selectedId = selected[0].sales_order_detail_id;
     }
 
-    excelUpload (data): void {
-        this.isLoadingProgress = true;
-        this.dataService.UploadExcelFile(data).subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.uploadFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
+    onSelectListCollectionReason(event: TypeaheadMatch): void {
+        console.log('onSelectListPartner', event.item);
+        this.inputForm.controls['correction_reason_id'].setValue(event.item.id);
+    }
+
+    onSelectListWorkLine(event: TypeaheadMatch, index): void {
+        console.log('onSelectListWorkLine', event.item, index);
+        this.inputForm.controls['product_workline_id_' + index].setValue(event.item.id);
+    }
+
+    calculatePrice(event) {
+        // console.log('calculatePrice', event);
+        let formData = this.inputForm.value;
+
+        console.log(formData['product_qty'], formData['product_price']);
+        let mQty = this.utils.removeComma( formData['product_qty'] );
+        let mPrice = this.utils.removeComma( formData['product_price'] );
+
+        let result = mQty * mPrice;
+        result = this.utils.addComma(result);
+        this.inputForm.controls['price'].setValue(result);
+
+        this.AddComma(event);
+        // console.log('calculatePrice', this.inputForm.value);
     }
 
 }

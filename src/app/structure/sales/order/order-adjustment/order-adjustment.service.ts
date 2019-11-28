@@ -21,15 +21,15 @@ export class OrderAdjustmentService {
     }
 
     GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
+        return this.http.get<Item>(this.url+'/detail/'+id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
-    Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url, data, httpOptions).pipe(
-            tap((data: Item) => this.log(`added data w/ id=${data}`)),
-            catchError(this.handleError<Item>('Create'))
+    Modify (id:number, data:Item): Observable<Item> {
+        return this.http.post<Item>(this.url + '/detail/' + id, data, httpOptions).pipe(
+            tap((data: Item) => this.log(`modify data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Modify'))
         );
     }
     private extractData(res: Response) {
