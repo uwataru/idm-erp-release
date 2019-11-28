@@ -26,7 +26,7 @@ export class OrderChangeHistoryComponent implements OnInit {
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
-    listPartners: any[] = this.globals.configs['type5Partners'];
+    listPartners: any[] = this.globals.configs['partnerList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
@@ -54,7 +54,7 @@ export class OrderChangeHistoryComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '수주조정내역';
-        this.searchForm.controls['sch_sdate'].setValue(this.tDate);
+        this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
     }
@@ -67,12 +67,13 @@ export class OrderChangeHistoryComponent implements OnInit {
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
             sortby: ['order_no'],
             order: ['asc'],
-            maxResultCount: 10000
-        }   
+            // maxResultCount: 10000
+        };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_code'] = this.listSltdPaCode;
         }
         this.isLoadingProgress = true;
+        console.log(params);
         this.dataService.GetAll(params).subscribe(
             listData =>
             {
@@ -91,7 +92,7 @@ export class OrderChangeHistoryComponent implements OnInit {
             this.listSltdPaCode = event.item['Code'];
         }
 
-        const val = this.listSltdPaCode;
+        this.getAll();
     }
 
 }
