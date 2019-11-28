@@ -115,8 +115,8 @@ export class OrderRegistrationComponent implements OnInit {
       product_unit_price_1: ['', Validators.required],
       product_base_unit_price_1: [''],
       product_price_1: ['', Validators.required],
-      sch_work_line_1: ['', Validators.required],
-      product_workline_id_1: [''],
+      // sch_work_line_1: ['', Validators.required],
+      // product_workline_id_1: [''],
     });
   }
 
@@ -276,8 +276,8 @@ export class OrderRegistrationComponent implements OnInit {
       delete formData['product_unit_price_'+i];
       delete formData['product_base_unit_price_'+i];
       delete formData['product_price_'+i];
-      delete formData['sch_work_line_'+i];
-      delete formData['product_workline_id_'+i];
+      // delete formData['sch_work_line_'+i];
+      // delete formData['product_workline_id_'+i];
     }
 
     console.log('save', this.selectedId, formData);
@@ -387,8 +387,8 @@ export class OrderRegistrationComponent implements OnInit {
     this.inputForm.addControl('product_unit_price_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('product_base_unit_price_' + index, new FormControl(''));
     this.inputForm.addControl('product_price_' + index, new FormControl('', Validators.required));
-    this.inputForm.addControl('sch_work_line_' + index, new FormControl('', Validators.required));
-    this.inputForm.addControl('product_workline_id_' + index, new FormControl(''));
+    // this.inputForm.addControl('sch_work_line_' + index, new FormControl('', Validators.required));
+    // this.inputForm.addControl('product_workline_id_' + index, new FormControl(''));
   }
 
   removeMaterialRow(index) {
@@ -400,7 +400,7 @@ export class OrderRegistrationComponent implements OnInit {
       this.inputForm.controls['product_qty_' + index].setValue(-1);
       this.inputForm.controls['product_unit_price_' + index].setValue(-1);
       this.inputForm.controls['product_price_' + index].setValue(-1);
-      this.inputForm.controls['sch_work_line_' + index].setValue(-1);
+      // this.inputForm.controls['sch_work_line_' + index].setValue(-1);
     }
   }
 

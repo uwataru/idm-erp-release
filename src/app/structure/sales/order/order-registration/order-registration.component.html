@@ -70,7 +70,7 @@
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
      aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="width: 960px !important;">
+    <div class="modal-content" style="width: 880px !important;">
       <form [formGroup]="inputForm">
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
@@ -179,10 +179,10 @@
                   <div *ngIf="inputForm.value['product_id_'+(index+1)] != -1" style="display: contents"
                        id="product_wrap_{{index+1}}">
                     <th>
-                      <label for="material_title_{{index+1}}">제품명</label>
+                      <label for="sch_product_{{index+1}}">제품명</label>
                     </th>
                     <td>
-                      <input formControlName="sch_product_{{index+1}}" id="product_title_{{index+1}}"
+                      <input formControlName="sch_product_{{index+1}}" id="sch_product_{{index+1}}"
                              [typeahead]="productList"
                              typeaheadOptionField="name"
                              [typeaheadOptionsLimit]="50"
@@ -190,7 +190,7 @@
                              [typeaheadMinLength]="0"
                              (typeaheadOnSelect)="onSelectListProduct($event, index+1)"
                              class="input-sm form-control w-sm inline v-middle"/>
-                      <input type="hidden" formControlName="product_id_{{index+1}}" id="product_id_{{index+1}}"/>
+                      <input type="hidden" formControlName="sch_product_{{index+1}}" id="product_id_{{index+1}}"/>
                     </td>
                     <th>
                       <label for="product_type_{{index+1}}">규격</label>
@@ -223,21 +223,21 @@
                       <input type="text" formControlName="product_price_{{index+1}}" id="product_price_{{index+1}}"
                              class="form-control inline input-sm w-xs text-right"/>
                     </td>
-                    <th>
-                      <label for="sch_work_line{{index+1}}">작업라인</label>
-                    </th>
-                    <td>
-                      <input formControlName="sch_work_line_{{index+1}}" id="sch_work_line_{{index+1}}"
-                             [typeahead]="productionLines"
-                             typeaheadOptionField="line_no"
-                             [typeaheadOptionsLimit]="50"
-                             [typeaheadScrollable]="true"
-                             [typeaheadMinLength]="0"
-                             (typeaheadOnSelect)="onSelectListWorkLine($event, index+1)"
-                             class="input-sm form-control w-xxs inline v-middle"/>
-                      <input type="hidden" formControlName="product_workline_id_{{index+1}}"
-                             id="product_workline_id_{{index+1}}"/>
-                    </td>
+<!--                    <th>-->
+<!--                      <label for="sch_work_line_{{index+1}}">작업라인</label>-->
+<!--                    </th>-->
+<!--                    <td>-->
+<!--                      <input formControlName="sch_work_line_{{index+1}}" id="sch_work_line_{{index+1}}"-->
+<!--                             [typeahead]="productionLines"-->
+<!--                             typeaheadOptionField="line_no"-->
+<!--                             [typeaheadOptionsLimit]="50"-->
+<!--                             [typeaheadScrollable]="true"-->
+<!--                             [typeaheadMinLength]="0"-->
+<!--                             (typeaheadOnSelect)="onSelectListWorkLine($event, index+1)"-->
+<!--                             class="input-sm form-control w-xxs inline v-middle"/>-->
+<!--                      <input type="hidden" formControlName="product_workline_id_{{index+1}}"-->
+<!--                             id="product_workline_id_{{index+1}}"/>-->
+<!--                    </td>-->
                     <td>
                       <div style="display: flex">
                         <button *ngIf="chkViewAddBtn(index+1)" (click)="addMaterialRow()"
