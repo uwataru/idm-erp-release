@@ -196,7 +196,7 @@ export class ProductsComponent implements OnInit {
 
   onSelectListMaterials(event: TypeaheadMatch, index): void {
     // console.log('onSelectListMaterials', event.item, index);
-    this.inputForm.controls['material_price_' + index].setValue(event.item.price);
+    this.inputForm.controls['material_price_' + index].setValue(this.utils.addComma(event.item.price));
     this.inputForm.controls['material_base_price_' + index].setValue(event.item.price);
     this.inputForm.controls['material_id_' + index].setValue(event.item.id);
     if(this.inputForm.controls['id_' + index] == null)
@@ -269,8 +269,8 @@ export class ProductsComponent implements OnInit {
             this.inputForm.controls['sch_materials_' + i].setValue(matierialInfo.name);
             this.inputForm.controls['id_' + i].setValue(this.formData['materials'][i-1].id);
             this.inputForm.controls['material_id_' + i].setValue(this.formData['materials'][i-1].material_id);
-            this.inputForm.controls['material_qty_' + i].setValue(this.formData['materials'][i-1].qty);
-            this.inputForm.controls['material_price_' + i].setValue(this.formData['materials'][i-1].price);
+            this.inputForm.controls['material_qty_' + i].setValue(this.utils.addComma(this.formData['materials'][i-1].qty));
+            this.inputForm.controls['material_price_' + i].setValue(this.utils.addComma(this.formData['materials'][i-1].price));
             this.inputForm.controls['material_base_price_' + i].setValue(matierialInfo.price);
           }
 
@@ -318,8 +318,8 @@ export class ProductsComponent implements OnInit {
         let material = {
           id: id,
           material_id: formData['material_id_' + i],
-          qty: parseInt(formData['material_qty_' + i]),
-          price: formData['material_price_' + i],
+          qty: parseInt(this.utils.removeComma(formData['material_qty_' + i])),
+          price: parseInt(this.utils.removeComma(formData['material_price_' + i])),
           state: state
         }
         formData.materials.push(material);
@@ -524,7 +524,7 @@ export class ProductsComponent implements OnInit {
     let mPrice = Number(formData['material_base_price_'+index]) * 1;
 
     let result = mQty * mPrice;
-    this.inputForm.controls['material_price_'+index].setValue(result);
+    this.inputForm.controls['material_price_'+index].setValue(this.utils.addComma(result));
     // console.log('calculatePrice', this.inputForm.value);
   }
 
