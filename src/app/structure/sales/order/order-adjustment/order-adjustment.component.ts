@@ -24,23 +24,17 @@ export class OrderAdjustmentComponent implements OnInit {
     panelTitle: string;
     inputFormTitle: string;
     isLoadingProgress: boolean = false;
-    isEditMode: boolean = false;
 
     searchForm: FormGroup;
-
     selectedId: number;
     listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     listSltdPaCode: number = 0;
-    searchValue: string;
     filteredPartners: any[] = [];
     sch_product_name: string;
-    sch_st: number;
-    st: number;
     rows = [];
     temp = [];
-    delId = [];
     selected = [];
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
@@ -50,15 +44,10 @@ export class OrderAdjustmentComponent implements OnInit {
     productionLines: any[] = this.globals.configs['productionLine'];
     productList: any[] = this.globals.configs['productList'];
     correctionReasonList: any[] = this.globals.configs['correctionReasonList'];
-    prodTypeStr: string;
-    combiTypeStr: string;
+    beforeProductQty: number;
     product_price: number;
     isTmpPrice: boolean;
-    order_qty: number;
-    editData: Item;
     data: Date;
-
-    productDataCnt:number;
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
@@ -126,8 +115,6 @@ export class OrderAdjustmentComponent implements OnInit {
         this.panelTitle = '수주 조정';
         this.inputFormTitle = '수주 조정';
 
-        this.productDataCnt = 1;
-
         this.getAll();
 
         $(document).ready(function () {
@@ -147,8 +134,8 @@ export class OrderAdjustmentComponent implements OnInit {
 
         let params = {
             partner_code: this.listSltdPaCode,
-            sortby: ['order_no'],
-            order: ['asc']
+            // sortby: ['order_no'],
+            // order: ['asc']
             // maxResultCount: 10000
         };
 
@@ -246,16 +233,28 @@ export class OrderAdjustmentComponent implements OnInit {
 
     Save() {
         let inputData = this.inputForm.value;
+        let afterProductQty = parseInt(this.utils.removeComma(inputData.product_qty));
+        switch (inputData.correction_reason_id) {
+            case 2:
+                if(this.beforeProductQty < afterProductQty){
+                    alert('이전 수주량보다 많습니다.');
+                    return false;
+                }
+                break;
+            case 3:
+                if(this.beforeProductQty > afterProductQty){
+                    alert('이전 수주량 보다 작습니다.');
+                    return false;
+                }
+                break;
+        }
+
         let formData = {
             'correction_reason_id': inputData.correction_reason_id,
             'promised_date': this.datePipe.transform(inputData.promised_date, 'yyyy-MM-dd'),
-            'product_qty': parseInt(this.utils.removeComma(inputData.product_qty)),
+            'product_qty': afterProductQty,
             'product_price': parseInt(this.utils.removeComma(inputData.product_price))
         };
-        // if (this.isEditMode == true && !formData.modi_reason) {
-        //   alert('정정사유를 선택해주세요!');
-        //   return false;
-        // }
 
         console.log('save', this.selectedId, formData);
         this.Modify(formData);
@@ -306,6 +305,7 @@ export class OrderAdjustmentComponent implements OnInit {
                         this.inputForm.controls['order_type'].setValue(data['data']['order_type']);
                         this.inputForm.controls['demand_date'].setValue(data['data']['demand_date']);
                         this.inputForm.controls['product_qty'].setValue(this.utils.addComma(data['data']['product_qty']));
+                        this.beforeProductQty = data['data']['product_qty'];
                         this.inputForm.controls['price'].setValue(this.utils.addComma(data['data']['price']));
                         this.inputForm.controls['product_price'].setValue(this.utils.addComma(data['data']['product_price']));
                         // this.inputForm.controls['input_date'].setValue(data['data']['input_date']);
