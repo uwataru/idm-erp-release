@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
@@ -8,7 +8,8 @@ import {OutsourcingAssemblyWorkService} from './outsourcing-assembly-work.servic
 import {AppGlobals} from '../../../../app.globals';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
-import {Item, matlReceivingItem} from './outsourcing-assembly-work.item';
+import {Item} from './outsourcing-assembly-work.item';
+declare var $: any;
 
 @Component({
   selector: 'app-page',
@@ -19,74 +20,46 @@ import {Item, matlReceivingItem} from './outsourcing-assembly-work.item';
 export class OutsourcingAssemblyWorkComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
+  inputFormTitle: string;
+  lossFormTitle: string;
   isLoadingProgress: boolean = false;
   isEditMode: boolean = false;
 
+  searchForm: FormGroup;
+
+  listData: Item[];
   formData: Item['data'];
-  ppId: number;
-  inputForm: FormGroup;
-  inputPartners: any[] = this.globals.configs['type4Partners'];
-  inputMakers: any[] = this.globals.configs['maker'];
-  totalWeight: number;
-  product_price: number;
-  isTmpPrice: boolean;
-  order_qty: number;
-  selectedId: string;
+  sch_partner_name: string;
+  //listPartners = [];
+  listPartners: any[] = this.globals.configs['partnerList'];
+  listSltdPaCode: number = 0;
+  searchValue: string;
+  filteredPartners: any[] = [];
+  sch_material: string;
+  sch_st: number;
+  st: number;
+  rows = [];
   materialRows = [];
-  materialData: matlReceivingItem[];
   selectedRcvItems = [];
-  usedRcvItems: string;
+
+  temp = [];
+  delId = [];
+  selected = [];
+  selectedId: string;
+  selectedCnt: number;
+  gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
-  // 절단작업지시서
-  viewModalHeight: number = window.innerHeight - 70;
-  cuttingWorkAllocationTitle: string;
-  cuttingWorkAllocationToday: number;
-  pocNo: string;
+  inputForm: FormGroup;
+  lossForm: FormGroup;
+  inputPartners: any[] = this.globals.configs['partnerList'];
+  locationPartners: any[] = this.globals.configs['partnerList'];
 
-  title = 'app';
-  elementType = 'svg';
-  cuttingValue = 'C2016120301';
-  forgingValue = 'P2016120301';
-  format = 'CODE39';
-  lineColor = '#000000';
-  width = 1;
-  height = 50;
-  displayValue = true;
-  fontOptions = '';
-  font = 'monospace';
-  textAlign = 'center';
-  textPosition = 'bottom';
-  textMargin = 2;
-  fontSize = 14;
-  background = '#ffffff';
-  margin = 0;
-  marginTop = 0;
-  marginBottom = 0;
-  marginLeft = 0;
-  marginRight = 0;
-
-  v_input_date: string;
-  v_poc_no: string;
-  v_order_no: string;
-  v_product_code: string;
-  v_product_name: string;
-  v_partner_code: number;
-  v_partner_name: string;
-  v_product_type: string;
-  v_assembly_qty: number;
-  v_order_qty: number;
-  v_material: string;
-  v_size: string;
-  v_material_weight: number;
-  v_product_price: number;
-  v_production_line: string;
-  v_working_stime: string;
-  v_production_time: number;
-  v_assembly_partner_code: number;
-  v_assembly_partner_name: string;
-  v_release_type: number;
-  v_outs_partner_name: string;
+  inputMakers: any[] = this.globals.configs['maker'];
+  product_price: number;
+  isTmpPrice: boolean;
+  editData: Item;
+  data: Date;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -96,10 +69,12 @@ export class OutsourcingAssemblyWorkComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
 
-  @ViewChild('CuttingOrderModal') CuttingOrderModal: ModalDirective;
+  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
+  @ViewChild('LossFormModal') lossFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
+    private router: Router,
     private datePipe: DatePipe,
     private dataService: OutsourcingAssemblyWorkService,
     private globals: AppGlobals,
@@ -120,92 +95,220 @@ export class OutsourcingAssemblyWorkComponent implements OnInit {
       }
     }
 
+    this.searchForm = fb.group({
+      sch_partner_name: '',
+    });
     this.inputForm = fb.group({
-      order_date: ['', Validators.required],
-      // poc_no: ['', Validators.required],
-      outs_partner_code: '',
-      outs_partner_name: ['', Validators.required],
-      partner_code: '',
-      partner_name: ['', Validators.required],
-      product_code: '',
-      product_name: ['', Validators.required],
-      material: '',
+      material_id: '',
+      input_date: ['', Validators.required],
+      name: '',
+      price: '',
       size: '',
-      order_qty: ['', Validators.required],
-      rcv_req_date: ['', Validators.required],
-      used_rcv_items: ''
+      order_price: ['', Validators.required],
+      partner_name: '',
+      promised_date: ['', Validators.required],
+      order_qty: '',
+      receiving_location: '',
+      receiving_location_id: ['', Validators.required],
     });
 
-    if (this.inputPartners.filter(v => v.Code == 0).length < 1) {
-      this.inputPartners.unshift({Code: 0, Name: '자가', Alias: '자가'});
-    }
+    this.lossForm = fb.group({
+      material_code: '',
+      material_name: '',
+      material_size: '',
+      material_maker_name: '',
+      material_maker: '',
+      partner_name: '',
+      partner_code: '',
+      price_per_unit: '',
+      weight_used: ['', Validators.required],
+      input_date: ['', Validators.required]
+    });
+
+    // if (this.locationPartners.filter(v => v.id == 0).length < 1) {
+    //   this.locationPartners.unshift({id: 0, name: '자가', alias: '자가'});
+    // }
 
   }
+
 
   ngOnInit() {
     this.panelTitle = '외주발주';
 
     // 입력일
-    this.inputForm.controls['order_date'].setValue(this.tDate);
+    this.inputFormTitle = '외주발주';
+    this.lossFormTitle = 'LOSS처리';
 
-    // poc_no 체크 (외주절단지시에서 넘어온 경우)
-    this.route.params.subscribe(params => {
-      if (Object.keys(params).indexOf('id') !== -1) {
-        this.inputForm.patchValue({
-          outs_partner_name: params['outs_name'],
-          outs_partner_code: params['outs_code']
-        });
-        this.GetPlanningInfo(params['id'], params['outs_name']);
-        this.ppId = params['id'];
-      }
+    this.getAll();
+
+    $(document).ready(function () {
+      let modalContent: any = $('.modal-content');
+      let modalHeader = $('.modal-header');
+      modalHeader.addClass('cursor-all-scroll');
+      modalContent.draggable({
+        handle: '.modal-header'
+      });
     });
   }
 
-  onSelectInputPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.inputForm.controls['outs_partner_code'].setValue(0);
-    } else {
-      this.inputForm.controls['outs_partner_code'].setValue(event.item.Code);
+  getAll(): void {
+    this.selectedCnt = 0;
+    this.selectedId = '';
+    this.selected = [];
+
+    let formData = this.searchForm.value;
+    let params = {
+      partner_name: formData.sch_partner_name,
+      st: 1,
+      //sortby: ['material_name','size'],
+      sortby: ['partner_name', 'material_name', 'size'],
+      order: ['asc', 'asc'],
+      maxResultCount: 10000
+    };
+    if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+      params['partner_id'] = this.listSltdPaCode;
     }
+    this.isLoadingProgress = true;
+    this.dataService.GetAll(params).subscribe(
+      listData => {
+        this.listData = listData;
+        this.temp = listData['data'];
+        this.rows = listData['data'];
+        this.isLoadingProgress = false;
+      }
+    );
+  }
+
+  onSelectListPartner(event: TypeaheadMatch): void {
+    if (event.item['id'] == '') {
+      this.listSltdPaCode = 0;
+    } else {
+      this.listSltdPaCode = event.item['id'];
+    }
+
+    const val = this.listSltdPaCode;
+  }
+
+  // onSelectInputPartner(event: TypeaheadMatch): void {
+  //   if (event.item == '') {
+  //     this.inputForm.controls['partner_code'].setValue(0);
+  //   } else {
+  //     this.inputForm.controls['partner_code'].setValue(event.item.id);
+  //   }
+  // }
+
+
+  updateFilter(event) {
+    const val = event.target.value;
+
+    // filter data
+    const temp = this.temp.filter(function (d) {
+      return d.material.indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.rows = temp;
+    // 필터 변경될때마다 항상 첫 페이지로 이동.
+    //this.table.offset = 0;
+  }
+
+  CalculOrderAmount(event): void {
+    let formData = this.inputForm.value;
+    let f = event.target.id.replace('order_qty', 'order_price');
+    let q = this.utils.removeComma(event.target.value) * 1;
+    let p = formData.price * 1;
+    let dp = this.utils.addComma(q * p);
+    this.inputForm.controls[f].setValue(dp);
+  }
+
+  onValueChange(value: Date): void {
+    this.inputForm.patchValue({promised_date: value});
+  }
+
+
+  loadMaterial() {
+    let formData = this.lossForm.value;
+    let params = {
+      name: formData.name,
+      size: formData.size,
+    };
+    this.isLoadingProgress = true;
+    setTimeout(() => {
+      this.dataService.GetMaterialsReceiving(params).subscribe(
+        listData => {
+          //합계뺀다
+          this.materialRows = listData['data'].filter(v => v.id != 0);
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 100);
+  }
+
+
+  lossSave() {
+    let formData = this.lossForm.value;
+    let params = {
+      material_code: formData.material_code,
+      weight_used: formData.weight_used * 1,
+      input_date: this.datePipe.transform(formData.input_date, 'yyyy-MM-dd'),
+      inventory_id: this.selectedRcvItems[0].id
+    };
+    this.dataService.LossSave(params)
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.inputForm.reset();
+            this.getAll();
+            this.messageService.add(this.addOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.lossFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
+
   }
 
   Save() {
-    // 실행권한
-    if (this.isExecutable == false) {
-      alert(this.globals.isNotExecutable);
-      return false;
-    }
+    let formModel = this.inputForm.value;
 
-    if (!this.ppId) {
-      alert('수주번호가 존재하지 않습니다.');
-      return false;
-    }
+    let rowData = [];
+      // let colData = [];
 
-    let formData = this.inputForm.value;
-    if (!formData.outs_partner_name) {
-      alert('절단업체를 선택해주세요!');
-      return false;
-    }
-    if (!this.usedRcvItems) {
-      alert('재고를 선택해주세요!');
-      return false;
-    }
+      let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
 
-    formData.order_qty = this.utils.removeComma(formData.order_qty) * 1;
+      let order_qty = this.utils.removeComma(formModel['order_qty']) * 1;
 
-    formData.order_date = this.datePipe.transform(formData.order_date, 'yyyy-MM-dd');
-    formData.rcv_req_date = this.datePipe.transform(formData.rcv_req_date, 'yyyy-MM-dd');
+      let order_price = this.utils.removeComma(formModel['order_price']) * 1;
 
-    formData.used_rcv_items = this.usedRcvItems;
+      let promised_date = this.datePipe.transform(formModel['promised_date'], 'yyyy-MM-dd');
 
-    formData.pp_id = this.ppId * 1;
-    formData.size = formData.size * 1;
+      // colData.push(formModel['rcv_location_id']);
+
+      // rowData.push(colData.join(':#:'));
+
+    let formData = {
+      order_type: false,
+      receiving_date: input_date,
+      input_date: input_date,
+      order_qty: order_qty,
+      order_price: order_price,
+      material_id: formModel.material_id,
+      // order_price: order_price,
+      promised_date: promised_date,
+      receiving_location_id: formModel.receiving_location_id,
+      // id: formModel.id,
+      // name: formModel.name,
+      // size: formModel.size * 1,
+      // partner_name: formModel.partner_name,
+      // price_per_unit: this.utils.removeComma(formModel.price_per_unit) * 1,
+      // material_order: rowData.join('=||='),
+      // 재고수량 추가
+      // remaining_weight: formModel.remaining_weight
+    };
 
     this.Create(formData);
-  }
-
-  Reset() {
-    this.inputForm.reset();
   }
 
   Create(data): void {
@@ -213,194 +316,85 @@ export class OutsourcingAssemblyWorkComponent implements OnInit {
       .subscribe(
         data => {
           if (data['result'] == 'success') {
-            this.messageService.add(this.addOkMsg);
             this.inputForm.reset();
-
-            // 원자재 재고현황 reload
-            this.getMaterialsReceiving(data['data']['material'], data['data']['size'], data['data']['partner_name']);
-
-            // 절단작업지시서 발행
-            this.openCreateCuttingOrderModal(data['pocNo']);
+            this.getAll();
+            this.messageService.add(this.addOkMsg);
           } else {
             this.messageService.add(data['errorMessage']);
           }
+          this.inputFormModal.hide();
         },
         error => this.errorMessage = <any>error
       );
   }
 
-  private openCreateCuttingOrderModal(pocNo): void {
-    this.cuttingWorkAllocationTitle = '절 단 작 업 지 시 서';
-    this.cuttingWorkAllocationToday = Date.now();
-
-    this.dataService.GetCuttingWorkAllocation(pocNo).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          let data = editData['data'];
-          this.v_input_date = data.input_date;
-          this.v_poc_no = data.poc_no;
-          this.v_order_no = data.order_no;
-          this.v_product_code = data.product_code;
-          this.v_product_name = data.product_name;
-          this.v_partner_code = data.partner_code;
-          this.v_partner_name = data.partner_name;
-          this.v_product_type = data.product_type;
-          this.v_order_qty = data.order_qty;
-          this.v_material = data.material;
-          this.v_size = data.size;
-          this.v_material_weight = data.material_weight;
-          this.v_product_price = data.product_price;
-          this.v_production_line = data.production_line;
-          this.v_working_stime = data.working_stime;
-          this.v_production_time = data.production_time;
-          this.v_assembly_partner_code = data.assembly_partner_code;
-          this.v_assembly_partner_name = data.assembly_partner_name;
-          this.v_release_type = data.release_type;
-          this.v_outs_partner_name = (data.release_type == 2) ? data.outs_partner_name : '자가';
-
-          this.CuttingOrderModal.show();
-        }
-      }
-    );
-  }
-
-  // loadInfo(event) {
-  //     let PocNo = event.target.value;
-  //     if ( ! PocNo ) {
-  //         return false;
-  //     }
-  //     this.GetForgingDataByPocNo(PocNo);
-  // }
-
-  // GetForgingDataByPocNo (pocNo): void {
-  GetPlanningInfo(id, outs_name): void {
-    // 단조품정보
-    // this.dataService.GetById(pocNo).subscribe(
-    this.dataService.GetPlanningInfo(id).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.formData = editData['data'];
-
-          this.inputForm.patchValue({
-            product_code: this.formData.product_code,
-            product_name: this.formData.product_name,
-            partner_code: this.formData.partner_code,
-            partner_name: this.formData.partner_name,
-            material: this.formData.material,
-            size: this.formData.size,
-            order_qty: this.utils.addComma(this.formData.order_qty),
-          });
-          this.calculForwardingWeight();
-
-          // 원자재 재고현황
-          this.getMaterialsReceiving(this.formData.material, this.formData.size, outs_name);
-        }
-      }
-    );
-  }
-
-  getMaterialsReceiving(material, size, partner_name): void {
-    let params = {
-      partner_name: partner_name,
-      material: material,
-      size: size,
-      st: 0,
-      sortby: ['material', 'size', 'steel_maker', 'rcv_date'],
-      order: ['asc', 'asc', 'asc', 'asc'],
-      maxResultCount: 1000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.GetMaterialsReceiving(params).subscribe(
-      listData => {
-        this.materialData = listData;
-        this.materialRows = listData['data'];
-        this.totalWeight = listData['totalWeight'];
-
-        this.isLoadingProgress = false;
-      }
-    );
-  }
-
-
-  loadMaterial(event) {
-    let formData = this.inputForm.value;
-    let partner_name = formData.outs_partner_name;
-    let material = formData.material;
-    let size = formData.size;
-
-    if (!partner_name || !material || !size) {
-      this.messageService.add('지시재질 또는 규격을 입력하세요.');
-      return false;
-    } else if (isNaN(size)) {
-      this.messageService.add('지시규격은 숫자로만 입력하세요.');
+  openModal(type) {
+    // 실행권한
+    if (this.isExecutable == false) {
+      alert(this.globals.isNotExecutable);
       return false;
     }
 
-    this.getMaterialsReceiving(material, size, partner_name);
-  }
+    let myForm: FormGroup;
+    if (type == 'order') {
+      this.inputFormModal.show();
+      this.inputForm.reset();
+      this.inputForm.controls['input_date'].setValue(this.tDate);
+      myForm = this.inputForm;
+    } else if (type == 'loss') {
+      this.lossFormModal.show();
+      this.lossForm.reset();
+      myForm = this.lossForm;
+    }
 
+    this.dataService.GetMaterialInfo(this.selectedId).subscribe(
+      editData => {
+        if (editData['result'] == 'success') {
+          this.editData = editData;
+          this.formData = editData['data'];
+          // let price_per_unit = this.utils.addComma(this.formData.order_price);
+
+
+          myForm.patchValue({
+            name: this.formData.name,
+            price: this.formData.price,
+            size: this.formData.size,
+            partner_name: this.formData.partner_name,
+            order_type: this.formData.order_type,
+            order_price: this.formData.order_price,
+            material_id: this.formData.id,
+            order_qty: this.formData.order_qty,
+            receiving_qty: this.formData.receiving_qty,
+            promised_date: this.formData.promised_date,
+            receiving_location_id: this.formData.receiving_location_id,
+            // order_price: this.formData.order_price,
+            input_date: this.formData.input_date
+          });
+
+          if (type == 'loss') {
+            this.loadMaterial();
+          }
+        }
+      }
+    );
+  }
 
   onSelect({selected}) {
-    this.selectedId = selected[0].product_code;
-  }
-
-  calculForwardingWeight() {
-    let formData = this.inputForm.value;
-    let order_qty = this.utils.removeComma(formData.order_qty * 1) * 1;
-    let input_weight = this.utils.removeComma(formData.input_weight) * 1;
-    let forwardingWeight: number = Math.round(order_qty * input_weight * 10) * 0.1;
-    if (forwardingWeight > 0) {
-      this.inputForm.patchValue({forwarding_weight: this.utils.addComma(forwardingWeight)});
+    //this.selectedId = selected[0].material_code;
+    this.selectedCnt = selected.length;
+    if (this.selectedCnt == 1) {
+      this.selectedId = selected[0].id;
+      this.inputForm.controls['material_id'].setValue(this.selectedId);
+      console.log(this.inputForm.value['material_id']);
     }
   }
 
-  onSelectRcvItems({selected}) {
-    this.selectedRcvItems.splice(0, this.selectedRcvItems.length);
-    this.selectedRcvItems.push(...selected);
 
-    if (this.selectedRcvItems.length > 0) {
-      this.calculRemainingQuantity(this.selectedRcvItems);
+  onSelectLocationPartner(event: TypeaheadMatch): void {
+    if (event.item == '') {
+      this.inputForm.controls['receiving_location_id'].setValue('');
+    } else {
+      this.inputForm.controls['receiving_location_id'].setValue(event.item.id);
     }
-  }
-
-  calculRemainingQuantity(selectedRcvItems) {
-    if (selectedRcvItems.length < 1) {
-      this.usedRcvItems = '';
-      return false;
-    }
-    let formData = this.inputForm.value;
-
-    let usedItemArr = [];
-    let usedQuantity: number;
-    let forwardingWeight: number;
-
-    usedQuantity = 0;
-    this.selectedRcvItems.forEach((e: any) => {
-
-      this.inputForm.patchValue({
-        steel_maker: e.steel_maker,
-        storage: e.storage,
-        ms_no: e.ms_no
-      });
-
-      if (forwardingWeight > 0) {
-        forwardingWeight = forwardingWeight - e.remaining_weight;
-
-        let usedQty: number;
-        if (forwardingWeight >= 0) {
-          usedQty = e.remaining_weight;
-        } else {
-          usedQty = e.remaining_weight + forwardingWeight;
-        }
-
-        usedQuantity = usedQuantity + usedQty;
-        usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
-      }
-      let usedQty: number;
-      usedQty = e.remaining_weight;
-      usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
-    });
-    this.usedRcvItems = usedItemArr.join(',');
-    console.log(this.usedRcvItems);
   }
 }

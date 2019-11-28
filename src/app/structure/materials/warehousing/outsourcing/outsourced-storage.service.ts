@@ -14,36 +14,36 @@ export class OutsourcedStorageService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/outsourcing/orders';
+    private url = this.globals.serverUrl + '/materials-orders';
 
-    GetAll (): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url);
+    GetAll (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url+'/receiving-processing-list/N');
     }
 
-    GetById (pocNo:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+pocNo);
+    GetInventory (id): Observable<Item> {
+        return this.http.get<Item>(this.url + '/' + id);
     }
 
-    GetPricePerUnit (partner:number, process:string): Observable<Item> {
-        return this.http.get<Item>(this.url + '/price-per-unit/' + partner + '/' + process);
+    GetById (id): Observable<Item> {
+        return this.http.get<Item>(this.url + '/' + id);
     }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
-    Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url + '/receiving', data, httpOptions).pipe(
+    Create (id,data:Item): Observable<Item> {
+        return this.http.put<Item>(this.url+'/receiving-processing/'+id, data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
     }
-
-    GetOutsReceiving (id:string): Observable<Item> {
-        return this.http.get<Item>(this.url + '/receiving-by-outsid/' + id);
+    
+    Delete (id): Observable<Item> {
+        return this.http.put<Item>(this.url+'/receiving-cancel/'+id, httpOptions);
+    }
+    UploadExcelFile (data) {
+        return this.http.post(this.url + '/excelupload', data, httpOptions)
     }
 
-    Delete (id, data) {
-        return this.http.put(this.url+'/delete/'+id, data);
-    }
 
    /**
     * 실패한 Http 작업 처리

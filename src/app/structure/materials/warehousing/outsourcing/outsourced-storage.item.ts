@@ -3,21 +3,27 @@ export class Item {
     totalCount: number;
     data: {
         id: number;
-
-        poc_no: string;
-        line_code: string;
-        product_code: string;
-        drawing_no: string;
-        product_name: string;
+        order_type: boolean;
+        rcv_date: string;
+        receiving_type: number;
+        order_price: number;
+        material_id: number;
+        order_qty: number;
+        promised_date: string;
+        receiving_qty: number;
+        receiving_price: number;
+        receiving_date: string;
+        receiving_location_id: number;
         input_date: string;
-        production_qty: number;
+        is_type: boolean;
+        name: string;
+        partner_id: number;
+        size: string;
+        price: number;
+        current_qty: number;
+        partner_name: string;
+        receiving_location_name: string;
 
-        outs_id: number;
-        rcv_date: string,
-        order_type: string,
-        order_qty: number,
-        partner_code: number,
-        partner_name: string,
     };
     maxResultCount: number;
     result: string;
