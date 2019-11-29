@@ -9,6 +9,7 @@ import { MessageService } from '../../../message.service';
 
 import { PersonnelService } from './personnel.service';
 import { Item } from './personnel.item';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 
 declare var $: any;
 
@@ -16,21 +17,23 @@ declare var $: any;
   selector: 'app-personnel',
   templateUrl: './personnel.component.html',
   styleUrls: ['./personnel.component.scss'],
-  providers: [PersonnelService]
+  providers: [PersonnelService, DatePipe]
 })
 export class PersonnelComponent implements OnInit {
+    tDate = this.globals.tDate;
 
-    // InputDate = this.globals.tDate;
     panelTitle: string;
     inputFormTitle: string;
     editFormTitle: string;
     deleteFormTitle: string;
+    worktimeFormTitle: string;
     deleteConfirmMsg: string;
 
     isLoadingProgress: boolean = false;
     isEditMode: boolean = false;
     selectedId: string;
     listData : Item[];
+    enumData: Item;
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
 
@@ -40,8 +43,13 @@ export class PersonnelComponent implements OnInit {
     rows = [];
     delId = [];
     selected = [];
+    searchForm: FormGroup;
     inputForm: FormGroup;
     editForm: FormGroup;
+    inputWorktimeForm: FormGroup;
+
+    affiliationList: any[] = this.globals.configs['affiliationList'];
+    listSltdAfilId: number = 0;
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
@@ -51,8 +59,13 @@ export class PersonnelComponent implements OnInit {
     editOkMsg = '수정이 완료되었습니다.';
     delOkMsg = '삭제되었습니다.';
 
+    workHistoryDataCnt: number;
+    name: string;
+    employee_num: string;
+
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
+    @ViewChild('WorkTimeFormModal') workTimeFormModal: ModalDirective;
 
     constructor(
       @Inject(FormBuilder) fb: FormBuilder,
@@ -77,13 +90,19 @@ export class PersonnelComponent implements OnInit {
     //   }
 
       this.inputForm = fb.group({
-        group: ['', [Validators.required]],
+        group_name: ['', [Validators.required]],
+        group_id: ['', [Validators.required]],
         name: ['', [Validators.required]],
         employee_num: ['', [Validators.required]],
         phone: ['', [Validators.required]],
         addr: ['', [Validators.required]],
+        input_date: ['', [Validators.required]],
         specialnote: ''
         
+      });
+      this.searchForm = fb.group({
+        sch_affiliation_name: '',
+        sch_group_id: ''
       });
 
   }
@@ -93,7 +112,10 @@ export class PersonnelComponent implements OnInit {
     this.inputFormTitle = '생산인력 등록';
     this.editFormTitle = '생산인력 수정';
     this.deleteFormTitle = '생산인력 삭제';
+    this.worktimeFormTitle = '근무시간 산출';
     this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+
+    this.workHistoryDataCnt = 1;
 
     this.getAll();
 
@@ -110,29 +132,22 @@ export class PersonnelComponent implements OnInit {
   }
 
   onSelect({ selected }) {
-    // console.log('Select Event', selected, this.selected);
-
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
+    this.selectedCnt = selected.length;
+    if (this.selectedCnt == 1) {
+      this.selectedId = selected[0].id;
+    //   this.inputForm.controls['id'].setValue(this.selectedId);
+    }
 }
 
 getAll(): void {
-    // this.dataService.GetAll().subscribe(
-    //     listData =>
-    //     {
-    //         this.listData = listData;
-    //         this.rows = listData['data'];
-    //     }
-    // );
 
     this.selectedId = '';
     this.selected = [];
 
     let params = {
-        sortby: ['id'],
-        order: ['asc'],
-        maxResultCount: 10000
+        group_id: this.searchForm.value['sch_group_id'],
     }
+    console.log(this.searchForm.value['sch_group_id']);
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
         listData =>
@@ -154,11 +169,13 @@ Edit (id) {
                 this.editData = editData;
                 this.formData = editData['data'];
                 this.inputForm.patchValue({
-                    group: this.formData.group,
+                    group_name: this.formData.group_name,
+                    group_id: this.formData.group_id,
                     name: this.formData.name,
                     employee_num: this.formData.employee_num,
                     phone: this.formData.phone,
                     addr: this.formData.addr,
+                    input_date: this.formData.input_date,
                     specialnote: this.formData.specialnote,
                 });
             } else {
@@ -169,11 +186,35 @@ Edit (id) {
 }
 
 Save () {
-     let formData = this.inputForm.value;
+    let formModel = this.inputForm.value;
+
+
+      let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+
 
      if (this.isEditMode == true) {
+        let formData = {
+            input_date: input_date,
+            group_id: formModel.group_id,
+            name: formModel.name,
+            work_skill: formModel.work_skill,
+            employee_num: formModel.employee_num,
+            phone: formModel.phone,
+            addr: formModel.addr,
+            specialnote:"",
+          };
          this.Update(this.selectedId, formData);
      } else {
+        let formData = {
+            input_date: input_date,
+            group_id: formModel.group_id,
+            name: formModel.name,
+            work_skill: "",
+            employee_num: formModel.employee_num,
+            phone: formModel.phone,
+            addr: formModel.addr,
+            specialnote:"",
+          };
          this.Create(formData);
      }
 }
@@ -228,6 +269,22 @@ Delete (id): void {
         );
 }
 
+getWorkHistory (id): void {
+    this.dataService.GetWorkHistory(id)
+        .subscribe(
+            data => {
+                if (data['result'] == "success") {
+                    console.log(data);
+                    this.name = data['data']['name'];
+                    this.employee_num = data['data']['employee_num'];
+                } else {
+                    this.messageService.add(data['errorMessage']);
+                }
+                this.deleteFormModal.hide();
+            }
+        )
+}
+
 openModal(method, id) {
     // 실행권한
     // if (this.isExecutable == true) {
@@ -235,6 +292,11 @@ openModal(method, id) {
             this.deleteFormModal.show();
         } else if (method == 'write') {
             this.inputFormModal.show();
+            this.inputForm.controls['input_date'].setValue(this.tDate);
+
+        } else if (method == 'worktime'){
+            this.workTimeFormModal.show();
+            this.getWorkHistory(id);
         }
     // } else {
         // alert(this.globals.isNotExecutable);
@@ -258,33 +320,57 @@ openModal(method, id) {
             this.Edit(id);
         } else {
             this.inputForm.reset();
-            this.isEditMode = false;
+            this.inputForm.controls['input_date'].setValue(this.tDate);
+            this.getEmployeeNum();
+
         }
     }
 }
 
+getEmployeeNum(){
+    this.dataService.GetEmployeeNum().subscribe(
+        enumData =>
+        {
+            this.enumData = enumData;
+            console.log(enumData);
 
-//   getAll(): void {
-//     this.selectedId = '';
-//     this.selected = [];
-
-//     let params = {
-//         sortby: ['id'],
-//         order: ['asc'],
-//         maxResultCount: 10000
-//     }
-//     this.isLoadingProgress = true;
-//     this.dataService.GetAll(params).subscribe(
-//         listData =>
-//         {
-//             this.listData = listData;
-//             this.rows = listData['data'];
+            this.inputForm.controls['employee_num'].setValue(enumData['employee_num']);
 
 
-//             this.isLoadingProgress = false;
-//         }
-//     );
-// }
+            this.isLoadingProgress = false;
+        }
+    );
+    this.isEditMode = false;
+}
+
+onSearchAffiliationList(event: TypeaheadMatch): void {
+    console.log(event);
+    let id = event.item['id'];
+    if (id == '') {
+        this.listSltdAfilId = 0;
+    } else {
+        this.listSltdAfilId = id;
+        this.searchForm.controls['sch_group_id'].setValue(this.listSltdAfilId);
+    }
+
+    const val = this.listSltdAfilId;
+
+    this.getAll();
+}
+InputAffiliationList(event: TypeaheadMatch): void {
+    console.log(event);
+    let id = event.item['id'];
+    if (id == '') {
+        this.listSltdAfilId = 0;
+    } else {
+        this.listSltdAfilId = id;
+        this.inputForm.controls['group_id'].setValue(this.listSltdAfilId);
+    }
+
+
+}
+
+
 
 // // onValueChange(value: Date): void {
 // //     this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');

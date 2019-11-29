@@ -23,6 +23,12 @@ export class PersonnelService {
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }
+    GetEmployeeNum(): Observable<Item> {
+        return this.http.get<Item>(this.url+'/newEmployeeNum');
+    }
+    GetWorkHistory(id:number): Observable<Item> {
+        return this.http.get<Item>(this.url+'/workhistory/'+id);
+    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */

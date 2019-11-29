@@ -5,10 +5,20 @@
             <span class="h4 block">{{ panelTitle }}</span>
         </div>
         <div class="row">
-            <div class="col-sm-6 text-right" style="float: right;">
-                <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
-                    <i class="glyphicon glyphicon-plus"></i>등록
-                </button>
+            <div class="col-sm-8 m-b-xs pos-rlt">
+              <form [formGroup]="searchForm">
+                <input formControlName="sch_affiliation_name"
+                       [typeahead]="affiliationList"
+                       typeaheadOptionField="set_value"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="onSearchAffiliationList($event)"
+                       placeholder="소속"
+                       class="input-sm form-control w-sm inline v-middle"/>
+                <input type="hidden" formControlName="sch_group_id" id="sch_group_id"/>
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+              </form>
             </div>
         </div>
     </div>
@@ -20,16 +30,39 @@
             [columnMode]="'force'"
             [headerHeight]="30"
             [rowHeight]="30"
+            (select)='onSelect($event)'
             [scrollbarV]="true"
             [scrollbarH]="false"
             [selected]="selected"
+            [selectionType]="'checkbox'"
             [selectAllRowsOnPage]="false">
-            <ngx-datatable-column prop="group" name="소속" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="group_name" name="소속" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="name" name="성명" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="employee_num" name="사원번호" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="phone" name="연락처" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="addr" name="주소" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="specialnote" name="특이사항" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="input_date" name="최초등록일" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="id" cellClass="text-center">
+                <ng-template ngx-datatable-header-template>
+                    작업시간
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <button (click)="openModal('worktime',value)" class="btn btn-xs btn-primary">
+                        근무시간
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column prop="id" name="수정&middot삭제" cellClass="text-center">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
@@ -42,6 +75,17 @@
             </ngx-datatable-column>
         </ngx-datatable>
     </div>
+    <footer class="panel-footer">
+      <div class="row">
+        <div class="col-sm-6 hidden-xs">
+        </div>
+        <div class="col-sm-6 text-right text-center-xs">
+            <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
+                <i class="glyphicon glyphicon-plus"></i>신규등록
+            </button>
+        </div>
+      </div>
+    </footer>
   </div>
   
   <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -58,18 +102,21 @@
                   <table>
                   <tr>
                     <th width="100px">
-                        <label for="group">소속</label>
+                        <label for="group_name">소속</label>
                         <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                         <!-- <input type="text" formControlName="group" id="group" required onReturn class="form-control input-sm w-xs" /> -->
-                        <select formControlName="group" id="group" class="input-sm form-control w-xs inline v-middle">                        
-                            <option value=""></option>
-                            <option value="">자체계약</option>
-                            <option value="">용역업체1</option>
-                            <option value="">용역업체2</option>
-                            <option value="">용역업체3</option>
-                        </select>
+                    <input formControlName="group_name"
+                       [typeahead]="affiliationList"
+                       typeaheadOptionField="set_value"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="InputAffiliationList($event)"
+                       placeholder="소속"
+                       class="input-sm form-control w-sm inline v-middle"/>
+                        <input type="hidden" formControlName="group_id" id="group_id">
                     </td>
 
                   </tr>
@@ -85,10 +132,9 @@
                   <tr>
                     <th width="100px">
                         <label for="employee_num">사원번호</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
-                        <input type="text" formControlName="employee_num" id="employee_num" required class="form-control input-sm w-xs" />
+                        <input readonly type="text" formControlName="employee_num" id="employee_num" required class="form-control input-sm w-xs" />
                     </td>
                   </tr>
                   <tr>
@@ -111,10 +157,13 @@
                   </tr>
                   <tr>
                       <th width="100px">
-                          <label for="specialnote">특이사항</label>
-                      </th>
+                        <label for="input_date">등록일</label>
+                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </th>
                       <td>
-                          <input type="text" formControlName="specialnote" id="specialnote" class="form-control input-sm w-xs" />
+                          <input type="text" formControlName="input_date" id="input_date" bsDatepicker
+                          placement="bottom left" class="form-control input-sm w-sm" />
+                          <input type="hidden" formControlName="specialnote" id="specialnote"/>
                       </td>
                   </tr>
                   </table>
@@ -150,6 +199,72 @@
                       <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
                   </div>
               </div>
+          </div>
+      </div>
+  </div>
+
+  <div bsModal #WorkTimeFormModal="bs-modal" id="workTimeFormModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <form [formGroup]="inputWorktimeForm">
+              <div class="modal-header">
+                  <button type="button" class="close" (click)="WorkTimeFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">{{ worktimeFormTitle }}</h4>
+              </div>
+              <div class="modal-body">
+  
+                    <table class="table table-bordered view">
+                        <tr>
+                            <th>성명</th>
+                            <td width="130px"><span>{{ name }}</span></td>
+                            <th width="150px">사원번호</th>
+                            <td width="130px"><span>{{ employee_num }}</span></td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered view">
+                        <thead>
+                            <tr>
+                                <th width="100px">
+                                    <label>근무일</label>
+                                </th>
+                                <th width="100px">
+                                    <label>근무시간</label>
+                                </th>
+                                <th width="100px">
+                                    <label>시급</label>
+                                </th>
+                                <th width="100px">
+                                    <label>일급여</label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor='let work_history of [].constructor(workHistoryDataCnt); let index = index;'>
+                                <td>
+                                    <input type="text" formControlName="work_date" id="work_date" class="form-control input-sm w-sm"/>
+                                </td>
+                                <td>
+                                    <input type="text" formControlName="work_time" id="work_time" class="form-control input-sm w-xs"/>
+                                </td>
+                                <td>
+                                    <input type="text" formControlName="hourly_wage" id="hourly_wage" class="form-control input-sm w-xs"/>
+                                </td>
+                                <td>
+                                    <input type="text" formControlName="day_wage" id="day_wage" class="form-control input-sm w-xs"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            
+    
+                </div>
+              <div class="modal-footer">
+                  <div class="text-center">
+                      <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                      <button type="button" class="btn btn-primary btn-cancel" (click)="WorkTimeFormModal.hide()">취소</button>
+                  </div>
+              </div>
+            </form>
           </div>
       </div>
   </div>
