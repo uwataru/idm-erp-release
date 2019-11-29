@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppGlobals } from '../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,7 @@ import { MessageService } from '../../../message.service';
 import { PersonnelService } from './personnel.service';
 import { Item } from './personnel.item';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import {UtilsService} from "../../../utils.service";
 
 declare var $: any;
 
@@ -68,13 +69,14 @@ export class PersonnelComponent implements OnInit {
     @ViewChild('WorkTimeFormModal') workTimeFormModal: ModalDirective;
 
     constructor(
-      @Inject(FormBuilder) fb: FormBuilder,
+      @Inject(FormBuilder) public fb: FormBuilder,
       private datePipe: DatePipe,
       private dataService: PersonnelService,
       private globals: AppGlobals,
       private route: ActivatedRoute,
       private configService: ConfigService,
-      private messageService: MessageService
+      private messageService: MessageService,
+      private utils: UtilsService
     ) {
       // 접근권한 체크
     //   if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
@@ -104,7 +106,15 @@ export class PersonnelComponent implements OnInit {
         sch_affiliation_name: '',
         sch_group_id: ''
       });
-
+  }
+  buildInputWorktimeForm(){
+      this.inputWorktimeForm = this.fb.group({
+          id_1: '',
+          work_date_1: ['', [Validators.required]],
+          work_time_1: ['', [Validators.required]],
+          hourly_wage_1: ['', [Validators.required]],
+          day_wage_1: ['', [Validators.required]],
+      });
   }
 
   ngOnInit() {
@@ -116,7 +126,7 @@ export class PersonnelComponent implements OnInit {
     this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
     this.workHistoryDataCnt = 1;
-
+    this.buildInputWorktimeForm();
     this.getAll();
 
     // this.inputForm.controls['input_date'].setValue(this.InputDate);
@@ -139,368 +149,394 @@ export class PersonnelComponent implements OnInit {
     }
 }
 
-getAll(): void {
+    getAll(): void {
 
-    this.selectedId = '';
-    this.selected = [];
+        this.selectedId = '';
+        this.selected = [];
 
-    let params = {
-        group_id: this.searchForm.value['sch_group_id'],
-    }
-    console.log(this.searchForm.value['sch_group_id']);
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-        listData =>
-        {
-            this.listData = listData;
-            this.rows = listData['data'];
-
-
-            this.isLoadingProgress = false;
+        let params = {
+            group_id: this.searchForm.value['sch_group_id'],
         }
-    );
-}
+        console.log(this.searchForm.value['sch_group_id']);
+        this.isLoadingProgress = true;
+        this.dataService.GetAll(params).subscribe(
+            listData =>
+            {
+                this.listData = listData;
+                this.rows = listData['data'];
 
-Edit (id) {
-    this.dataService.GetById(id).subscribe(
-        editData =>
-        {
-            if (editData['result'] == "success") {
-                this.editData = editData;
-                this.formData = editData['data'];
-                this.inputForm.patchValue({
-                    group_name: this.formData.group_name,
-                    group_id: this.formData.group_id,
-                    name: this.formData.name,
-                    employee_num: this.formData.employee_num,
-                    phone: this.formData.phone,
-                    addr: this.formData.addr,
-                    input_date: this.formData.input_date,
-                    specialnote: this.formData.specialnote,
-                });
-            } else {
-                this.messageService.add(editData['errorMessage']);
+
+                this.isLoadingProgress = false;
             }
-        }
-    );
-}
-
-Save () {
-    let formModel = this.inputForm.value;
-
-
-      let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
-
-
-     if (this.isEditMode == true) {
-        let formData = {
-            input_date: input_date,
-            group_id: formModel.group_id,
-            name: formModel.name,
-            work_skill: formModel.work_skill,
-            employee_num: formModel.employee_num,
-            phone: formModel.phone,
-            addr: formModel.addr,
-            specialnote:"",
-          };
-         this.Update(this.selectedId, formData);
-     } else {
-        let formData = {
-            input_date: input_date,
-            group_id: formModel.group_id,
-            name: formModel.name,
-            work_skill: "",
-            employee_num: formModel.employee_num,
-            phone: formModel.phone,
-            addr: formModel.addr,
-            specialnote:"",
-          };
-         this.Create(formData);
-     }
-}
-
-Create (data): void {
-    this.dataService.Create(data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.addOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
         );
-}
-
-Update (id, data): void {
-    this.dataService.Update(id, data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
-
-Delete (id): void {
-    this.dataService.Delete(id)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.getAll();
-                    this.messageService.add(this.delOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.deleteFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
-
-getWorkHistory (id): void {
-    this.dataService.GetWorkHistory(id)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    console.log(data);
-                    this.name = data['data']['name'];
-                    this.employee_num = data['data']['employee_num'];
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.deleteFormModal.hide();
-            }
-        )
-}
-
-openModal(method, id) {
-    // 실행권한
-    // if (this.isExecutable == true) {
-        if (method == 'delete') {
-            this.deleteFormModal.show();
-        } else if (method == 'write') {
-            this.inputFormModal.show();
-            this.inputForm.controls['input_date'].setValue(this.tDate);
-
-        } else if (method == 'worktime'){
-            this.workTimeFormModal.show();
-            this.getWorkHistory(id);
-        }
-    // } else {
-        // alert(this.globals.isNotExecutable);
-        // return false;
-    // }
-
-    if (id) {
-        if (id == 'selected') {
-            let idArr = [];
-            this.selected.forEach((e:any) => {
-                idArr.push(e.id);
-            });
-            this.selectedId = idArr.join(',');
-        } else {
-            this.selectedId = id;
-        }
     }
-    if (method == 'write') {
+
+    Edit (id) {
+        this.dataService.GetById(id).subscribe(
+            editData =>
+            {
+                if (editData['result'] == "success") {
+                    this.editData = editData;
+                    this.formData = editData['data'];
+                    this.inputForm.patchValue({
+                        group_name: this.formData.group_name,
+                        group_id: this.formData.group_id,
+                        name: this.formData.name,
+                        employee_num: this.formData.employee_num,
+                        phone: this.formData.phone,
+                        addr: this.formData.addr,
+                        input_date: this.formData.input_date,
+                        specialnote: this.formData.specialnote,
+                    });
+                } else {
+                    this.messageService.add(editData['errorMessage']);
+                }
+            }
+        );
+    }
+
+    Save () {
+        let formModel = this.inputForm.value;
+
+
+          let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+
+
+         if (this.isEditMode == true) {
+            let formData = {
+                input_date: input_date,
+                group_id: formModel.group_id,
+                name: formModel.name,
+                work_skill: formModel.work_skill,
+                employee_num: formModel.employee_num,
+                phone: formModel.phone,
+                addr: formModel.addr,
+                specialnote:"",
+              };
+             this.Update(this.selectedId, formData);
+         } else {
+            let formData = {
+                input_date: input_date,
+                group_id: formModel.group_id,
+                name: formModel.name,
+                work_skill: "",
+                employee_num: formModel.employee_num,
+                phone: formModel.phone,
+                addr: formModel.addr,
+                specialnote:"",
+              };
+             this.Create(formData);
+         }
+    }
+
+    Create (data): void {
+        this.dataService.Create(data)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.inputForm.reset();
+                        this.getAll();
+                        this.messageService.add(this.addOkMsg);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.inputFormModal.hide();
+                },
+                error => this.errorMessage = <any>error
+            );
+    }
+
+    Update (id, data): void {
+        this.dataService.Update(id, data)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.inputForm.reset();
+                        this.getAll();
+                        this.messageService.add(this.editOkMsg);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.inputFormModal.hide();
+                },
+                error => this.errorMessage = <any>error
+            );
+    }
+
+    Delete (id): void {
+        this.dataService.Delete(id)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.getAll();
+                        this.messageService.add(this.delOkMsg);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.deleteFormModal.hide();
+                },
+                error => this.errorMessage = <any>error
+            );
+    }
+
+    getWorkHistory (id): void {
+        this.workHistoryDataCnt = 1;
+        this.dataService.GetWorkHistory(id)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        console.log(data);
+                        console.log(this.inputWorktimeForm);
+                        this.name = data['data']['name'];
+                        this.employee_num = data['data']['employee_num'];
+
+                        let workData = data['data']['work_history'];
+                        let len = workData.length;
+                        for(let i = 1; i<=len; i++){
+                            // console.error(workData[i]);
+                            if(i != 1) {
+                                this.addWorkTimeRow();
+                            }
+                            this.inputWorktimeForm.controls['id_' + i].setValue(workData[i-1].id);
+                            this.inputWorktimeForm.controls['work_date_' + i].setValue(workData[i-1].work_date);
+                            this.inputWorktimeForm.controls['work_time_' + i].setValue(workData[i-1].work_time);
+                            this.inputWorktimeForm.controls['hourly_wage_' + i].setValue(this.utils.addComma(workData[i-1].hourly_wage));
+                            this.calculateDayWage('', i);
+                        }
+                        console.log(this.inputWorktimeForm)
+
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.deleteFormModal.hide();
+                }
+            )
+    }
+
+    openModal(method, id) {
+        // 실행권한
+        // if (this.isExecutable == true) {
+            if (method == 'delete') {
+                this.deleteFormModal.show();
+            } else if (method == 'write') {
+                this.inputFormModal.show();
+                this.inputForm.controls['input_date'].setValue(this.tDate);
+
+            } else if (method == 'worktime'){
+                this.workTimeFormModal.show();
+                this.getWorkHistory(id);
+            }
+        // } else {
+            // alert(this.globals.isNotExecutable);
+            // return false;
+        // }
+
         if (id) {
-            this.isEditMode = true;
-            this.Edit(id);
+            if (id == 'selected') {
+                let idArr = [];
+                this.selected.forEach((e:any) => {
+                    idArr.push(e.id);
+                });
+                this.selectedId = idArr.join(',');
+            } else {
+                this.selectedId = id;
+            }
+        }
+        if (method == 'write') {
+            if (id) {
+                this.isEditMode = true;
+                this.Edit(id);
+            } else {
+                this.inputForm.reset();
+                this.inputForm.controls['input_date'].setValue(this.tDate);
+                this.getEmployeeNum();
+
+            }
+        }
+    }
+
+    getEmployeeNum(){
+        this.dataService.GetEmployeeNum().subscribe(
+            enumData =>
+            {
+                this.enumData = enumData;
+                console.log(enumData);
+
+                this.inputForm.controls['employee_num'].setValue(enumData['employee_num']);
+
+
+                this.isLoadingProgress = false;
+            }
+        );
+        this.isEditMode = false;
+    }
+
+    onSearchAffiliationList(event: TypeaheadMatch): void {
+        console.log(event);
+        let id = event.item['id'];
+        if (id == '') {
+            this.listSltdAfilId = 0;
         } else {
-            this.inputForm.reset();
-            this.inputForm.controls['input_date'].setValue(this.tDate);
-            this.getEmployeeNum();
-
+            this.listSltdAfilId = id;
+            this.searchForm.controls['sch_group_id'].setValue(this.listSltdAfilId);
         }
+
+        const val = this.listSltdAfilId;
+
+        this.getAll();
     }
-}
-
-getEmployeeNum(){
-    this.dataService.GetEmployeeNum().subscribe(
-        enumData =>
-        {
-            this.enumData = enumData;
-            console.log(enumData);
-
-            this.inputForm.controls['employee_num'].setValue(enumData['employee_num']);
-
-
-            this.isLoadingProgress = false;
+    InputAffiliationList(event: TypeaheadMatch): void {
+        console.log(event);
+        let id = event.item['id'];
+        if (id == '') {
+            this.listSltdAfilId = 0;
+        } else {
+            this.listSltdAfilId = id;
+            this.inputForm.controls['group_id'].setValue(this.listSltdAfilId);
         }
-    );
-    this.isEditMode = false;
-}
 
-onSearchAffiliationList(event: TypeaheadMatch): void {
-    console.log(event);
-    let id = event.item['id'];
-    if (id == '') {
-        this.listSltdAfilId = 0;
-    } else {
-        this.listSltdAfilId = id;
-        this.searchForm.controls['sch_group_id'].setValue(this.listSltdAfilId);
+
     }
 
-    const val = this.listSltdAfilId;
+    addWorkTimeRow() {
+        // console.log('addMaterialRow', index);
+        this.workHistoryDataCnt++;
+        let index = this.workHistoryDataCnt;
 
-    this.getAll();
-}
-InputAffiliationList(event: TypeaheadMatch): void {
-    console.log(event);
-    let id = event.item['id'];
-    if (id == '') {
-        this.listSltdAfilId = 0;
-    } else {
-        this.listSltdAfilId = id;
-        this.inputForm.controls['group_id'].setValue(this.listSltdAfilId);
+        this.inputWorktimeForm.addControl('id_' + index, new FormControl(''));
+        this.inputWorktimeForm.addControl('work_date_' + index, new FormControl('', Validators.required));
+        this.inputWorktimeForm.addControl('work_time_' + index, new FormControl('', Validators.required));
+        this.inputWorktimeForm.addControl('hourly_wage_' + index, new FormControl('', Validators.required));
+        this.inputWorktimeForm.addControl('day_wage_' + index, new FormControl('', Validators.required));
+    }
+    removeMaterialRow(index) {
+        console.log('removeMaterialRow', index);
+        this.inputWorktimeForm.controls['work_time_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+        this.inputWorktimeForm.controls['work_date_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+        this.inputWorktimeForm.controls['hourly_wage_' + index].setValue(-1);
+        this.inputWorktimeForm.controls['day_wage_' + index].setValue(-1);
     }
 
+    calculateDayWage(event, index) {
+        // console.log('calculatePrice', index);
+        let formData = this.inputWorktimeForm.value;
 
-}
+        // console.log(formData['work_time_'+index], formData['hourly_wage_'+index]);
+        let mQty = Number(formData['work_time_'+index]) * 1;
+        let mPrice = Number(this.utils.removeComma(formData['hourly_wage_'+index])) * 1;
 
+        let result = mQty * mPrice;
+        this.inputWorktimeForm.controls['day_wage_'+index].setValue(this.utils.addComma(result));
+        // console.log('calculatePrice', result, this.inputWorktimeForm.controls['day_wage_'+index]);
 
+        if(event != '')
+            this.AddComma(event);
+    }
 
-// // onValueChange(value: Date): void {
-// //     this.InputDate = this.datePipe.transform(value, 'yyyy-MM-dd');
-// // }
+    chkViewAddBtn(index) {
+        let len = this.workHistoryDataCnt;
+        let unVisibleItemCnt = 0;
+        for (let i = index + 1; i <= len; i++) {
+            if (this.inputWorktimeForm.value['work_time_' + i] == -1) {
+                unVisibleItemCnt++;
+            }
+        }
+        // console.log(index, len , upItemCnt);
+        if((len - unVisibleItemCnt) == index){
+            return true;
+        }
+        return false;
 
+    }
 
-//   Edit (id) {
-//     this.dataService.GetById(id).subscribe(
-//         editData =>
-//         {
-//             if (editData['result'] == "success") {
-//                 this.editData = editData;
-//                 this.formData = editData['data'];
-//                 this.editForm.patchValue({
-//                   group: this.formData.group,
-//                   name: this.formData.name,
-//                   employee_num: this.formData.employee_num,
-//                   phone: this.formData.phone,
-//                   addr: this.formData.addr,
-//                   specialnote: this.formData.specialnote
-//                 });
-//             } else {
-//                 this.messageService.add(editData['errorMessage']);
-//             }
-//         }
-//     );
-//   }
+    chkViewRemoveBtn(index){
+        let len = this.workHistoryDataCnt;
+        let unVisibleItemCnt = 0;
+        for (let i = 1; i <= len; i++) {
+            if (this.inputWorktimeForm.value['work_time_' + i] == -1) {
+                unVisibleItemCnt++;
+            }
+        }
+        if(len - unVisibleItemCnt > 1){
+            return true;
+        }
+        return false;
+    }
 
-//   Save () {
-//      //disabled="!inputForm.valid"
-//     //  let formData
+    saveWorkTime(){
+        let formData = this.inputWorktimeForm.value;
 
-//      if (this.isEditMode == true) {
-//          let formData = this.editForm.value;
-//          console.log(formData.working_time)
-//          this.Update(this.selectedId, formData);
-//      } else {
-//         let formData = this.inputForm.value;
+        formData.work_history = [];
 
-//         this.Create(formData);
-//      }
-//   }
+        let state = 1;
+        let id = '';
+        for(let i=1; i<=this.workHistoryDataCnt; i++){
+            id = formData['id_'+i];
+            if(id != '' && formData['work_time_'+i] == -1) {
+                state = 3; //삭제
+            } else{
+                if(id == '') {
+                    state = 1; //추가
+                } else{
+                    state = 2; //수정
+                }
+            }
+            // console.log(state);
+            if(state == 1 || ((state == 2 || state == 3) && id != "") ){
+                console.log(id, state, i, formData);
+                formData.work_history.push( this.makeTimeTable(id, state, i, formData) );
+            }
 
-//   Create (data): void {
-//     this.dataService.Create(data)
-//         .subscribe(
-//             data => {
-//                 if (data['result'] == "success") {
-//                     this.inputForm.reset();
-//                     this.getAll();
-//                     // this.configService.load();
-//                     this.messageService.add(this.addOkMsg);
-//                 } else {
-//                     this.messageService.add(data['errorMessage']);
-//                 }
-//                 this.inputFormModal.hide();
-//                 console.log(this.formData);
-//             },
-//             error => this.errorMessage = <any>error
-//             );
-//   }
+            delete formData['work_time_'+i];
+            delete formData['work_date_'+i];
+            delete formData['hourly_wage_'+i];
+            delete formData['day_wage_'+i];
+            delete formData['id_'+i];
+        }
 
-//   Update (id, data): void {
-//       console.log(data);
-//     this.dataService.Update(id, data)
-//         .subscribe(
-//             data => {
-//                 if (data.result == "success") {
-//                     // this.inputForm.reset();
-//                     this.getAll();
-//                     // this.configService.load();
-//                     this.messageService.add(this.editOkMsg);
-//                 } else {
-//                     this.messageService.add(data['errorMessage']);
-//                 }
-//                 this.inputFormModal.hide();
-//                 // console.log(this.formData);
-//             },
-//             error => this.errorMessage = <any>error
-//         );
-//   }
+        console.log('save', this.selectedId, formData);
+    }
 
-//   Delete (id): void {
-//     this.dataService.Delete(id)
-//         .subscribe(
-//             data => {
-//                 if (data.result == "success") {
-//                     this.getAll();
-//                     // this.configService.load();
-//                     this.messageService.add(this.delOkMsg);
-//                 } else {
-//                     this.messageService.add(data['errorMessage']);
-//                 }
-//                 this.deleteFormModal.hide();
-//             },
-//             error => this.errorMessage = <any>error
-//         );
-//   }
+    makeTimeTable(id, state, index, formData){
+        let timeTable = {
+            id: id,
+            work_time: formData['work_time_' + index],
+            work_date: formData['work_date_' + index],
+            hourly_wage: parseInt(this.utils.removeComma(formData['hourly_wage_' + index])),
+            day_wage: parseInt(this.utils.removeComma(formData['day_wage_' + index])),
+            state: state
+        }
+        return timeTable;
+    }
 
-//   openModal(method, id) {
-//     // 실행권한
-//     // if (this.isExecutable == true) {
-//         if (method == 'delete') {
-//             this.deleteFormModal.show();
-//         } else if (method == 'write') {
-//             this.inputFormModal.show();
-//             this.isEditMode = false;
-//         } else if (method == 'edit') {
-//             this.inputFormModal.show();
-//             this.Edit(id);
-//             // this.editForm.controls['input_date'].setValue(this.InputDate);
-//             this.isEditMode = true;
-//         }
-//     // } else {
-//     //     alert(this.globals.isNotExecutable);
-//     //     return false;
-//     // }
+    AddComma(event) {
+        var valArray = event.target.value.split('.');
+        for (var i = 0; i < valArray.length; ++i) {
+            valArray[i] = valArray[i].replace(/\D/g, '');
+        }
 
-//     if (id) {
-//         if (id == 'selected') {
-//             let idArr = [];
-//             this.selected.forEach((e:any) => {
-//                 idArr.push(e.id);
-//             });
-//             this.selectedId = idArr.join(',');
-//         } else {
-//             this.selectedId = id;
-//         }
-//     }
+        var newVal: string;
 
-//   }
+        if (valArray.length === 0) {
+            newVal = '0';
+        } else {
+            let matches = valArray[0].match(/[0-9]{3}/mig);
+
+            if (matches !== null && valArray[0].length > 3) {
+                let commaGroups = Array.from(Array.from(valArray[0]).reverse().join('').match(/[0-9]{3}/mig).join()).reverse().join('');
+                let replacement = valArray[0].replace(commaGroups.replace(/\D/g, ''), '');
+
+                newVal = (replacement.length > 0 ? replacement + ',' : '') + commaGroups;
+            } else {
+                newVal = valArray[0];
+            }
+
+            if (valArray.length > 1) {
+                newVal += '.' + valArray[1].substring(0, 2);
+            }
+        }
+        this.inputWorktimeForm.controls[event.target.id].setValue(this.utils.addComma(newVal));
+        //this.inputForm.patchValue({'combi_product_price' : this.utils.addComma(newVal)});
+    }
 
 }

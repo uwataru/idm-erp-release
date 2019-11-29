@@ -205,7 +205,7 @@
 
   <div bsModal #WorkTimeFormModal="bs-modal" id="workTimeFormModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-md">
-          <div class="modal-content">
+          <div class="modal-content" style="width: 700px !important;">
             <form [formGroup]="inputWorktimeForm">
               <div class="modal-header">
                   <button type="button" class="close" (click)="WorkTimeFormModal.hide()"><span aria-hidden="true">&times;</span></button>
@@ -222,7 +222,7 @@
                         </tr>
                     </table>
                     <table class="table table-bordered view">
-                        <thead>
+<!--                        <thead>-->
                             <tr>
                                 <th width="100px">
                                     <label>근무일</label>
@@ -237,30 +237,55 @@
                                     <label>일급여</label>
                                 </th>
                             </tr>
-                        </thead>
-                        <tbody>
+<!--                        </thead>-->
+<!--                        <tbody>-->
                             <tr *ngFor='let work_history of [].constructor(workHistoryDataCnt); let index = index;'>
+                              <div *ngIf="inputWorktimeForm.value['work_time_'+(index+1)] != -1" style="display: contents"
+                                   id="material_wrap_{{index+1}}">
+                                <input type="hidden" formControlName="id_{{index+1}}" id="id_{{index+1}}"/>
                                 <td>
-                                    <input type="text" formControlName="work_date" id="work_date" class="form-control input-sm w-sm"/>
+                                    <input type="text" formControlName="work_date_{{index+1}}"
+                                           id="work_date_{{index+1}}"
+                                           class="form-control input-sm w-sm"/>
                                 </td>
                                 <td>
-                                    <input type="text" formControlName="work_time" id="work_time" class="form-control input-sm w-xs"/>
+                                    <input type="text" formControlName="work_time_{{index+1}}" id="work_time_{{index+1}}"
+                                           class="form-control input-sm w-xs"
+                                           (keyup)="calculateDayWage($event,index+1);"/>
                                 </td>
                                 <td>
-                                    <input type="text" formControlName="hourly_wage" id="hourly_wage" class="form-control input-sm w-xs"/>
+                                    <input type="text" formControlName="hourly_wage_{{index+1}}" id="hourly_wage_{{index+1}}"
+                                           class="form-control input-sm w-xs"
+                                           (keyup)="calculateDayWage($event, index+1);"/>
                                 </td>
                                 <td>
-                                    <input type="text" formControlName="day_wage" id="day_wage" class="form-control input-sm w-xs"/>
+                                    <input type="text" formControlName="day_wage_{{index+1}}" id="day_wage_{{index+1}}" class="form-control input-sm w-xs"/>
                                 </td>
+                              <td>
+                                <div style="display: flex">
+                                  <button *ngIf="chkViewAddBtn(index+1)" (click)="addWorkTimeRow()"
+                                          [disabled]="!inputWorktimeForm.valid"
+                                          id="material_add_btn_{{index+1}}"
+                                          class="btn btn-sm btn-info btn-addon" style="margin-right: 5px">추가
+                                  </button>
+                                  <button *ngIf="chkViewRemoveBtn(index+1)"
+                                          (click)="removeMaterialRow(index+1)"
+                                          id="material_remove_btn_{{index+1}}"
+                                          class="btn btn-sm btn-danger btn-addon">삭제
+                                  </button>
+                                </div>
+                              </td>
+                              </div>
                             </tr>
-                        </tbody>
+<!--                        </tbody>-->
                     </table>
             
     
                 </div>
               <div class="modal-footer">
                   <div class="text-center">
-                      <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
+                      <button type="button" (click)="saveWorkTime(selectedId)" class="btn btn-danger btn-save">완료
+                      </button>
                       <button type="button" class="btn btn-primary btn-cancel" (click)="WorkTimeFormModal.hide()">취소</button>
                   </div>
               </div>
