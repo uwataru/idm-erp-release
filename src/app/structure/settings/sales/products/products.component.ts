@@ -314,15 +314,15 @@ export class ProductsComponent implements OnInit {
           }
         }
       }
-      if(formData['material_id_'+i] != -1 || this.isEditMode == true) {  //-1 은 삭제된 행
-        let material = {
-          id: id,
-          material_id: formData['material_id_' + i],
-          qty: parseInt(this.utils.removeComma(formData['material_qty_' + i])),
-          price: parseInt(this.utils.removeComma(formData['material_price_' + i])),
-          state: state
+
+      if(this.isEditMode == false){
+        if(formData['material_id_'+i] != -1){
+          formData.materials.push( this.makeMaterial(id, state, i, formData) );
         }
-        formData.materials.push(material);
+      } else{
+        if(state == 1 || ((state == 2 || state == 3) && id != "") ){
+          formData.materials.push( this.makeMaterial(id, state, i, formData) );
+        }
       }
 
       delete formData['material_id_'+i];
@@ -339,6 +339,17 @@ export class ProductsComponent implements OnInit {
     } else {
       this.Create(formData);
     }
+  }
+
+  makeMaterial(id, state, index, formData){
+    let material = {
+      id: id,
+      material_id: formData['material_id_' + index],
+      qty: parseInt(this.utils.removeComma(formData['material_qty_' + index])),
+      price: parseInt(this.utils.removeComma(formData['material_price_' + index])),
+      state: state
+    }
+    return material;
   }
 
   Create(data): void {
@@ -508,11 +519,9 @@ export class ProductsComponent implements OnInit {
   removeMaterialRow(index) {
     console.log('removeMaterialRow', index);
     this.inputForm.controls['material_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
-    if (this.isEditMode == false) {
-      this.inputForm.controls['sch_materials_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
-      this.inputForm.controls['material_qty_' + index].setValue(-1);
-      this.inputForm.controls['material_price_' + index].setValue(-1);
-    }
+    this.inputForm.controls['sch_materials_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+    this.inputForm.controls['material_qty_' + index].setValue(-1);
+    this.inputForm.controls['material_price_' + index].setValue(-1);
   }
 
   calculatePrice(event, index) {
