@@ -199,7 +199,7 @@ export class ProductsComponent implements OnInit {
     this.inputForm.controls['material_price_' + index].setValue(this.utils.addComma(event.item.price));
     this.inputForm.controls['material_base_price_' + index].setValue(event.item.price);
     this.inputForm.controls['material_id_' + index].setValue(event.item.id);
-    if(this.inputForm.controls['id_' + index] == null)
+    if(this.inputForm.controls['id_' + index] == null)  //신규등록시 공백값으로 전달함.
       this.inputForm.controls['id_' + index].setValue('');
   }
 
