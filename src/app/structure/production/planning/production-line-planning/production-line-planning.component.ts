@@ -52,7 +52,7 @@ export class ProductionLinePlanningComponent implements OnInit {
   product_price: number;
   isTmpPrice: boolean;
   editData: Item;
-  data: Date;
+  // data: Date;
 
   // batchInsertForm: FormGroup;
 
@@ -63,6 +63,10 @@ export class ProductionLinePlanningComponent implements OnInit {
   addOkMsg = '등록이 완료되었습니다.';
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
+
+  selectedIndex: number = -1;
+  initHour: number = 8;
+  initMinute: number = 0;
 
   // @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
   // @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
@@ -129,10 +133,10 @@ export class ProductionLinePlanningComponent implements OnInit {
     }
 
     let params = {
-      sch_yearmonth: this.convertYearMonth(yearmonth),
-      sch_prdline: formData.sch_prdline,
-      sortby: ['working_date'],
-      order: ['asc']
+      // sch_yearmonth: this.convertYearMonth(yearmonth),
+      // sch_prdline: formData.sch_prdline,
+      // sortby: ['working_date'],
+      // order: ['asc']
     };
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
@@ -141,6 +145,17 @@ export class ProductionLinePlanningComponent implements OnInit {
         this.temp = listData['data'];
         this.rows = listData['data'];
         this.lastDay = listData['lastDay'];
+
+        //temp
+        for(let i = 0; i<this.rows.length; i++) {
+          let startDate: Date = new Date();
+          if(this.rows[i].start_time == "" || this.rows[i].start_time == null) {
+            startDate.setHours(this.initHour, this.initMinute, 0);
+            this.rows[i].start_time = startDate;
+          } else{
+
+          }
+        }
 
         this.isLoadingProgress = false;
       }
@@ -248,29 +263,35 @@ export class ProductionLinePlanningComponent implements OnInit {
       return false;
     }
 
-    let planDada = [];
-    this.rows.forEach((e) => {
-      if (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id) != null) {
-        if ((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value != '') {
-          let dayData = [];
-          dayData.push(e.id);
-          dayData.push((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent);
-          planDada.push(dayData.join(':#:'));
-        }
-      }
-    });
+    for(let i = 0; i<this.rows.length; i++) {
+      console.log(this.rows[i]);
+    }
+
+    // let planDada = [];
+    // this.rows.forEach((e) => {
+      // if (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id) != null) {
+      //   if ((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value != '') {
+      //     let dayData = [];
+      //     dayData.push(e.id);
+      //     dayData.push((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value);
+      //     dayData.push((<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent);
+      //     dayData.push((<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent);
+      //     dayData.push((<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent);
+      //     planDada.push(dayData.join(':#:'));
+      //   }
+      // }
+    // });
 
     const saveData = {
       yearmonth: this.convertYearMonth(formData.sch_yearmonth),
       line_code: formData.sch_prdline,
-      plan_data: planDada.join('=||=')
+    //   plan_data: planDada.join('=||=')
     };
 
-    // console.log(saveData);
-    this.Create(saveData);
+    this.selectedIndex = -1;
+
+    console.log(saveData);
+    // this.Create(saveData);
   }
 
   Create(data): void {
@@ -353,6 +374,32 @@ export class ProductionLinePlanningComponent implements OnInit {
     // }
   }
   onSelect({selected}) {
-    this.selectedId = selected[0].sales_order_detail_id;
+    console.log('onSelected', selected[0].id);
+    this.selectedId = selected[0].id;
   }
+
+  isEditTime(index){
+    // console.log('isEditTime', index);
+    return index == this.selectedIndex;
+  }
+
+  runEditMode(index, row){
+    console.log('runEditMode', index, row);
+    this.selectedIndex = index;
+  }
+
+  runDeleteMode(index){
+    console.log('runDeleteMode', index);
+    let startDate: Date = new Date();
+    startDate.setHours(this.initHour, this.initMinute, 0);
+    this.rows[index].start_time = startDate;
+  }
+
+  makeTimeToString(src){
+    if(src == ""){
+      return "";
+    }
+    return this.datePipe.transform(src, 'HH : mm');
+  }
+
 }

@@ -35,28 +35,39 @@
             [rows]="rows"
             [columnMode]="'force'"
             [headerHeight]="30"
-            [rowHeight]="30"
+            [rowHeight]="'100%'"
             [scrollbarV]="true"
             [scrollbarH]="false"
+            [virtualization]="false"
             [selected]="selected"
             [selectionType]="'single'"
             (select)='onSelect($event)'
             [messages]="messages">
-      <ngx-datatable-column prop="order_no" name="작업일자" [width]="50" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="요일" [width]="50" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="demand_date" name="시작시간" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="promised_date" name="종료시간" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_name" name="하루작업시간계" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="id" name="수정&middot;삭제" [width]="80" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="work_date" name="작업일자" [width]="50" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="week_day" name="요일" [width]="50" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="start_time" name="시작시간" [sortable]="false" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div *ngIf="isEditTime(rowIndex)">
+            <timepicker class="custom_time_picker text-center"
+                        [(ngModel)]="row.start_time"
+                        [showMeridian]="false"
+                        [minuteStep]="10"></timepicker>
+          </div>
+          <div *ngIf="!isEditTime(rowIndex)">{{makeTimeToString(row.start_time)}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="end_time" name="종료시간" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="total_work_time" name="하루작업시간계" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false" [resizeable]="false"
                             [sortable]="false"
                             cellClass="text-center">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div>
-            <button (click)="openModal(row)" class="btn btn-xs btn-primary">
+            <button (click)="runEditMode(rowIndex, row)" class="btn btn-xs btn-primary">
               <i class="glyphicon glyphicon-edit"></i>
             </button>
-            <button (click)="openModal(row)" class="btn btn-xs btn-danger">
-              <i class="glyphicon glyphicon-trash"></i>
+            <button (click)="runDeleteMode(rowIndex)" class="btn btn-xs btn-danger">
+              <i class="glyphicon glyphicon-refresh"></i>
             </button>
           </div>
         </ng-template>

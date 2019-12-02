@@ -4,6 +4,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {TypeaheadModule} from 'ngx-bootstrap/typeahead';
 import {BsDatepickerConfig, BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import {TimepickerModule} from "ngx-bootstrap/timepicker";
 import {defineLocale} from 'ngx-bootstrap/chronos';
 import {koLocale} from 'ngx-bootstrap/locale';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -70,6 +71,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ModalModule.forRoot(),
     TypeaheadModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    TimepickerModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
