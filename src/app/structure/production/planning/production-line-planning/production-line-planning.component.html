@@ -13,194 +13,193 @@
           <label for="sch_prdline" class="m-l">작업라인</label>
           <select formControlName="sch_prdline" id="sch_prdline" (change)="getAll()"
                   class="input-sm form-control w-sm inline v-middle">
-            <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
-              -{{ line.EquipmentName }}</option>
+            <option *ngFor="let line of productionLines" value="{{ line.id }}">{{ line.line_no }}</option>
           </select>
         </form>
       </div>
-      <div class="col-sm-4 text-right hidden-print">
-        <button (click)="openModal('batchInsert')" class="btn btn-sm btn-success btn-addon">
-          <i class="glyphicon glyphicon-upload "></i>일괄입력
-        </button>
-        <!-- 버튼추가 -->
-        <button (click)="openModal('deleteAll')" class="btn btn-sm btn-danger btn-addon">
-          <i class="glyphicon glyphicon-trash"></i>일괄삭제
-        </button>
-      </div>
+<!--      <div class="col-sm-4 text-right hidden-print">-->
+<!--        <button (click)="openModal('batchInsert')" class="btn btn-sm btn-success btn-addon">-->
+<!--          <i class="glyphicon glyphicon-upload "></i>일괄입력-->
+<!--        </button>-->
+<!--        <button (click)="openModal('deleteAll')" class="btn btn-sm btn-danger btn-addon">-->
+<!--          <i class="glyphicon glyphicon-trash"></i>일괄삭제-->
+<!--        </button>-->
+<!--      </div>-->
     </div>
   </div>
   <!-- 제목항상고정 -->
   <div class="panel-body">
-    <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0"
-           id="panel-body-head">
-      <colgroup>
-        <col width="14%">
-        <col width="10%">
-        <col width="14%">
-        <col width="14%">
-        <col width="14%">
-        <col width="14%">
-      </colgroup>
-      <thead>
-      <tr>
-        <th>작업일자</th>
-        <th>요일</th>
-        <th>근무패턴</th>
-        <th>시작시간</th>
-        <th>종료시간</th>
-        <th>하루작업시간계</th>
-      </tr>
-      </thead>
-    </table>
-  </div>
-  <!-- 요소 스크롤 -->
-  <div class="tbody-scroll">
-    <table class="table table-bordered table-condensed b-light" id="panel-body-body">
-      <colgroup>
-        <col width="14%">
-        <col width="10%">
-        <col width="14%">
-        <col width="14%">
-        <col width="14%">
-        <col width="14%">
-      </colgroup>
-      <tbody>
-      <tr *ngFor="let row of rows">
-        <td class="text-center">{{ row.working_date }}</td>
-        <td class="text-center">
-          <span *ngIf="row.weekday == '토'" class="text-info">{{ row.weekday }}</span>
-          <span *ngIf="row.weekday == '일'" class="text-danger">{{ row.weekday }}</span>
-          <span *ngIf="row.weekday != '토' && row.weekday != '일'">{{ row.weekday }}</span>
-        </td>
-        <td class="text-center">
-          <select name="pattern_code_{{row.id}}" id="pattern_code_{{row.id}}" (change)="insert_time($event, row.id)"
-                  class="input-sm form-control inline v-middle">
-            <option value=""></option>
-            <option *ngFor="let wp of productionWorkingPattern" value="{{ wp.PatternCode }}"
-                    [selected]="wp.PatternCode == row.pattern_code">{{ wp.PatternCode }}</option>
-          </select>
-        </td>
-        <td id="working_stime_{{row.id}}" class="text-center">{{ row.working_stime }}</td>
-        <td id="working_etime_{{row.id}}" class="text-center">{{ row.working_etime }}</td>
-        <td id="working_time_per_day_{{row.id}}" class="text-center">{{ row.working_time_per_day }}</td>
-      </tr>
-      <tr *ngIf="is_selected_prdline == false">
-        <td colspan="8" class="no-data">
-          <div class="no-data">
-            작업라인을 선택해주세요!
+    <ngx-datatable
+            [style.height.px]=gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'single'"
+            (select)='onSelect($event)'
+            [messages]="messages">
+      <ngx-datatable-column prop="order_no" name="작업일자" [width]="50" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="요일" [width]="50" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="demand_date" name="시작시간" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="promised_date" name="종료시간" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="하루작업시간계" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="id" name="수정&middot;삭제" [width]="80" [canAutoResize]="false" [resizeable]="false"
+                            [sortable]="false"
+                            cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div>
+            <button (click)="openModal(row)" class="btn btn-xs btn-primary">
+              <i class="glyphicon glyphicon-edit"></i>
+            </button>
+            <button (click)="openModal(row)" class="btn btn-xs btn-danger">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
           </div>
-        </td>
-      </tr>
-      <tr *ngIf="!rows">
-        <td colspan="8" class="no-data">
-          검색된 데이터가 없습니다.
-        </td>
-      </tr>
-      </tbody>
-    </table>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+<!--    <table class="table table-bordered table-condensed b-light" id="panel-body-body">-->
+<!--      <colgroup>-->
+<!--        <col width="14%">-->
+<!--        <col width="10%">-->
+<!--        <col width="14%">-->
+<!--        <col width="14%">-->
+<!--        <col width="14%">-->
+<!--        <col width="14%">-->
+<!--      </colgroup>-->
+<!--      <tbody>-->
+<!--      <tr *ngFor="let row of rows">-->
+<!--        <td class="text-center">{{ row.working_date }}</td>-->
+<!--        <td class="text-center">-->
+<!--          <span *ngIf="row.weekday == '토'" class="text-info">{{ row.weekday }}</span>-->
+<!--          <span *ngIf="row.weekday == '일'" class="text-danger">{{ row.weekday }}</span>-->
+<!--          <span *ngIf="row.weekday != '토' && row.weekday != '일'">{{ row.weekday }}</span>-->
+<!--        </td>-->
+<!--        <td id="working_stime_{{row.id}}" class="text-center">{{ row.working_stime }}</td>-->
+<!--        <td id="working_etime_{{row.id}}" class="text-center">{{ row.working_etime }}</td>-->
+<!--        <td id="working_time_per_day_{{row.id}}" class="text-center">{{ row.working_time_per_day }}</td>-->
+<!--      </tr>-->
+<!--      <tr *ngIf="is_selected_prdline == false">-->
+<!--        <td colspan="8" class="no-data">-->
+<!--          <div class="no-data">-->
+<!--            작업라인을 선택해주세요!-->
+<!--          </div>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      <tr *ngIf="!rows">-->
+<!--        <td colspan="8" class="no-data">-->
+<!--          검색된 데이터가 없습니다.-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
   </div>
 
   <footer class="panel-footer text-right hidden-print">
     <button (click)="Save()" class="btn btn-sm btn-primary btn-addon">
       <i class="glyphicon glyphicon-plus"></i>저장
     </button>
-    <button (click)="openModal('delete')" class="btn btn-sm btn-danger btn-addon">
-      <i class="glyphicon glyphicon-trash"></i>삭제
-    </button>
-    <button class="btn btn-sm btn-info btn-addon"
-            (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER)">
-      <i class="glyphicon glyphicon-print"></i>인쇄
-    </button>
-    <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a>
+<!--    <button (click)="openModal('delete')" class="btn btn-sm btn-danger btn-addon">-->
+<!--      <i class="glyphicon glyphicon-trash"></i>삭제-->
+<!--    </button>-->
+<!--    <button class="btn btn-sm btn-info btn-addon"-->
+<!--            (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER)">-->
+<!--      <i class="glyphicon glyphicon-print"></i>인쇄-->
+<!--    </button>-->
+<!--    <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a>-->
   </footer>
 </div>
 
-<div bsModal #BatchInsertFormModal="bs-modal" id="batch-insert-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <form [formGroup]="batchInsertForm">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" (click)="BatchInsertFormModal.hide()"
-                  aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">{{ batchInsertTitle }}</h4>
-        </div>
-        <div class="modal-body">
-          <div class="text-center padder-v">
-                    <span class="text-center">
-                        {{ batchInsertMsg }}
-                    </span>
-            <select formControlName="pattern_code" id="pattern_code" class="input-sm form-control inline v-middle">
-              <option value=""></option>
-              <option *ngFor="let wp of productionWorkingPattern"
-                      value="{{ wp.PatternCode }}">{{ wp.PatternCode }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="text-center">
-            <button type="button" (click)="BatchInsert()" class="btn btn-danger btn-save">적용</button>
-            <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal"
-                    (click)="BatchInsertFormModal.hide()" aria-label="Close">취소
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<!-- DeleteAllFormModal 추가 -->
-<div bsModal #DeleteAllFormModal="bs-modal" id="delete-all-form" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="DeleteAllFormModal.hide()" aria-label="Close"><span
-          aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{ deleteAllTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-                    <span class="text-center">
-                        {{ deleteAllMsg }}
-                    </span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" (click)="DeleteAll()" class="btn btn-danger btn-save">삭제</button>
-          <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteAllFormModal.hide()"
-                  aria-label="Close">취소
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!--<div bsModal #BatchInsertFormModal="bs-modal" id="batch-insert-form" class="modal fade" tabindex="-1" role="dialog"-->
+<!--     aria-hidden="true">-->
+<!--  <div class="modal-dialog modal-sm">-->
+<!--    <div class="modal-content">-->
+<!--      <form [formGroup]="batchInsertForm">-->
+<!--        <div class="modal-header">-->
+<!--          <button type="button" class="close" data-dismiss="modal" (click)="BatchInsertFormModal.hide()"-->
+<!--                  aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--          <h4 class="modal-title">{{ batchInsertTitle }}</h4>-->
+<!--        </div>-->
+<!--        <div class="modal-body">-->
+<!--          <div class="text-center padder-v">-->
+<!--                    <span class="text-center">-->
+<!--                        {{ batchInsertMsg }}-->
+<!--                    </span>-->
+<!--            <select formControlName="pattern_code" id="pattern_code" class="input-sm form-control inline v-middle">-->
+<!--              <option value=""></option>-->
+<!--              <option *ngFor="let wp of productionWorkingPattern"-->
+<!--                      value="{{ wp.PatternCode }}">{{ wp.PatternCode }}</option>-->
+<!--            </select>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="modal-footer">-->
+<!--          <div class="text-center">-->
+<!--            <button type="button" (click)="BatchInsert()" class="btn btn-danger btn-save">적용</button>-->
+<!--            <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal"-->
+<!--                    (click)="BatchInsertFormModal.hide()" aria-label="Close">취소-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; DeleteAllFormModal 추가 &ndash;&gt;-->
+<!--<div bsModal #DeleteAllFormModal="bs-modal" id="delete-all-form" class="modal fade" tabindex="-1" role="dialog"-->
+<!--     aria-hidden="true">-->
+<!--  <div class="modal-dialog modal-sm">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <button type="button" class="close" (click)="DeleteAllFormModal.hide()" aria-label="Close"><span-->
+<!--          aria-hidden="true">&times;</span></button>-->
+<!--        <h4 class="modal-title">{{ deleteAllTitle }}</h4>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <div class="text-center padder-v">-->
+<!--                    <span class="text-center">-->
+<!--                        {{ deleteAllMsg }}-->
+<!--                    </span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <div class="text-center">-->
+<!--          <button type="button" (click)="DeleteAll()" class="btn btn-danger btn-save">삭제</button>-->
+<!--          <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteAllFormModal.hide()"-->
+<!--                  aria-label="Close">취소-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
-<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{ deleteConfirmTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center padder-v">
-          {{ deleteConfirmMsg }}
-        </div>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" (click)="Delete()" class="btn btn-danger btn-save">삭제</button>
-          <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!--<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog"-->
+<!--     aria-hidden="true">-->
+<!--  <div class="modal-dialog">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+<!--        <h4 class="modal-title">{{ deleteConfirmTitle }}</h4>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <div class="text-center padder-v">-->
+<!--          {{ deleteConfirmMsg }}-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <div class="text-center">-->
+<!--          <button type="button" (click)="Delete()" class="btn btn-danger btn-save">삭제</button>-->
+<!--          <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
 

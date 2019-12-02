@@ -20,13 +20,13 @@ export class ProductionLinePlanningComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
   isLoadingProgress: boolean = false;
-  deleteAllTitle: string;
-  deleteAllMsg: string;
-  deleteConfirmTitle: string;
-  deleteConfirmMsg: string;
+  // deleteAllTitle: string;
+  // deleteAllMsg: string;
+  // deleteConfirmTitle: string;
+  // deleteConfirmMsg: string;
   batchInsertTitle: string;
   batchInsertMsg: string;
-  isEditMode: boolean = false;
+  // isEditMode: boolean = false;
 
   searchForm: FormGroup;
 
@@ -41,11 +41,12 @@ export class ProductionLinePlanningComponent implements OnInit {
   temp = [];
   delId = [];
   selected = [];
+  gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
   is_selected_prdline: boolean = false;
 
   productionLines: any[] = this.globals.configs['productionLine'];
-  productionWorkingPattern: any[] = this.globals.configs['productionWorkingPattern'];
+  // productionWorkingPattern: any[] = this.globals.configs['productionWorkingPattern'];
   productionLineWorkers: any[] = this.globals.configs['productionLineWorkers'];
   lastDay: number;
   product_price: number;
@@ -53,7 +54,7 @@ export class ProductionLinePlanningComponent implements OnInit {
   editData: Item;
   data: Date;
 
-  batchInsertForm: FormGroup;
+  // batchInsertForm: FormGroup;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -63,9 +64,9 @@ export class ProductionLinePlanningComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
 
-  @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
-  @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
-  @ViewChild('DeleteAllFormModal') deleteAllFormModal: ModalDirective;
+  // @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
+  // @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
+  // @ViewChild('DeleteAllFormModal') deleteAllFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -95,14 +96,14 @@ export class ProductionLinePlanningComponent implements OnInit {
       sch_prdline: ''
     });
 
-    this.batchInsertForm = fb.group({
-      pattern_code: ''
-    });
+    // this.batchInsertForm = fb.group({
+    //   pattern_code: ''
+    // });
   }
 
   ngOnInit() {
     this.panelTitle = '라인별 가동 계획';
-    this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+    // this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
     this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g, '').substring(0, 6));
     this.getAll();
@@ -152,62 +153,62 @@ export class ProductionLinePlanningComponent implements OnInit {
     return yy + '-' + mm;
   }
 
-  insert_time(event, id) {
-    const val = event.target.value;
-    if (!val) {
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = '';
-    } else {
-      let t = this.get_time_from_pattern_code(val);
+  // insert_time(event, id) {
+  //   const val = event.target.value;
+  //   if (!val) {
+  //     (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = '';
+  //     (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = '';
+  //     (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = '';
+  //   } else {
+  //     let t = this.get_time_from_pattern_code(val);
+  //
+  //     (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = t.Group1Stime;
+  //     (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = t.Group1Etime;
+  //     (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = t.WorkingTimePerDay;
+  //   }
+  // }
 
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = t.Group1Stime;
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = t.Group1Etime;
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = t.WorkingTimePerDay;
-    }
-  }
+  // get_time_from_pattern_code(code) {
+  //   var filtered = this.productionWorkingPattern.filter(function (e) {
+  //     return e.PatternCode === code;
+  //   });
+  //   return filtered[0];
+  // }
 
-  get_time_from_pattern_code(code) {
-    var filtered = this.productionWorkingPattern.filter(function (e) {
-      return e.PatternCode === code;
-    });
-    return filtered[0];
-  }
+  // get_groupcode_from_lineworkers(code) {
+  //   var filtered = this.productionLineWorkers.filter(function (e) {
+  //     return e.LineCode === code;
+  //   });
+  //   return filtered[0];
+  // }
 
-  get_groupcode_from_lineworkers(code) {
-    var filtered = this.productionLineWorkers.filter(function (e) {
-      return e.LineCode === code;
-    });
-    return filtered[0];
-  }
+  // BatchInsert() {
+  //   let searchFormData = this.searchForm.value;
+  //   let batchInsertFormData = this.batchInsertForm.value;
+  //   this.rows.forEach((e: any) => {
+  //     let t = this.get_time_from_pattern_code(batchInsertFormData.pattern_code);
+  //     console.log(e.id);
+  //     (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value = batchInsertFormData.pattern_code;
+  //     (<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent = t.Group1Stime;
+  //     (<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent = t.Group1Etime;
+  //     (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent = t.WorkingTimePerDay;
+  //   });
+  //   // this.batchInsertFormModal.hide();
+  // }
 
-  BatchInsert() {
-    let searchFormData = this.searchForm.value;
-    let batchInsertFormData = this.batchInsertForm.value;
-    this.rows.forEach((e: any) => {
-      let t = this.get_time_from_pattern_code(batchInsertFormData.pattern_code);
-      console.log(e.id);
-      (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value = batchInsertFormData.pattern_code;
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent = t.Group1Stime;
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent = t.Group1Etime;
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent = t.WorkingTimePerDay;
-    });
-    this.batchInsertFormModal.hide();
-  }
-
-  DeleteAll() {
-    for (let i = 0; i < this.rows.length; i++) {
-      this.rows[i].pattern_code = '';
-      this.rows[i].working_stime = '';
-      this.rows[i].working_etime = '';
-      this.rows[i].working_time_per_day = '';
-      this.rows[i].group1 = '';
-      this.rows[i].group2 = '';
-      this.rows[i].group3 = '';
-
-    }
-    this.deleteAllFormModal.hide();
-  }
+  // DeleteAll() {
+  //   for (let i = 0; i < this.rows.length; i++) {
+  //     this.rows[i].pattern_code = '';
+  //     this.rows[i].working_stime = '';
+  //     this.rows[i].working_etime = '';
+  //     this.rows[i].working_time_per_day = '';
+  //     this.rows[i].group1 = '';
+  //     this.rows[i].group2 = '';
+  //     this.rows[i].group3 = '';
+  //
+  //   }
+  //   // this.deleteAllFormModal.hide();
+  // }
 
   updateFilter(event) {
     const val = event.target.value;
@@ -315,7 +316,7 @@ export class ProductionLinePlanningComponent implements OnInit {
             this.messageService.add(data['errorMessage']);
           }
 
-          this.deleteFormModal.hide();
+          // this.deleteFormModal.hide();
         },
         error => this.errorMessage = <any>error
       );
@@ -325,46 +326,33 @@ export class ProductionLinePlanningComponent implements OnInit {
     // 실행권한
     if (this.isExecutable == true) {
       if (method == 'batchInsert') {
-        this.batchInsertFormModal.show();
+        // this.batchInsertFormModal.show();
       } else if (method == 'delete') {
-        this.deleteFormModal.show();
+        // this.deleteFormModal.show();
       } else if (method == 'deleteAll') {
-        this.deleteAllFormModal.show();
+        // this.deleteAllFormModal.show();
       }
     } else {
       alert(this.globals.isNotExecutable);
       return false;
     }
 
-    switch (method) {
-      case 'deleteAll':
-        this.deleteAllTitle = '일괄삭제';
-        this.deleteAllMsg = '전체삭제하시겠습니까?';
-        break;
-      case 'delete':
-        this.deleteConfirmTitle = '라인별 가동계획 삭제';
-        this.deleteConfirmMsg = '선택하신 라인별 가동계획을 삭제하시겠습니까?';
-        break;
-      case 'batchInsert':
-        this.batchInsertTitle = '일괄입력';
-        this.batchInsertMsg = '근무패턴을 선택해주세요?';
-        break;
-    }
+    // switch (method) {
+      // case 'deleteAll':
+      //   this.deleteAllTitle = '일괄삭제';
+      //   this.deleteAllMsg = '전체삭제하시겠습니까?';
+      //   break;
+      // case 'delete':
+      //   this.deleteConfirmTitle = '라인별 가동계획 삭제';
+      //   this.deleteConfirmMsg = '선택하신 라인별 가동계획을 삭제하시겠습니까?';
+      //   break;
+      // case 'batchInsert':
+      //   this.batchInsertTitle = '일괄입력';
+      //   this.batchInsertMsg = '근무패턴을 선택해주세요?';
+      //   break;
+    // }
   }
-
-  excelDown(): void {
-    this.dataService.GetExcelFile().subscribe(
-      blob => {
-        if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-          window.navigator.msSaveBlob(blob, 'Report.xlsx');
-        } else { // for chrome and firfox
-          var link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'Report.xlsx';
-          link.click();
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+  onSelect({selected}) {
+    this.selectedId = selected[0].sales_order_detail_id;
   }
 }
