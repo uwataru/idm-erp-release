@@ -323,6 +323,7 @@ export class PersonnelComponent implements OnInit {
                 this.inputForm.controls['input_date'].setValue(this.tDate);
 
             } else if (method == 'worktime'){
+                this.buildInputWorktimeForm();
                 this.workTimeFormModal.show();
                 this.getWorkHistory(id);
             }

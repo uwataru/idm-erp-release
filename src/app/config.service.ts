@@ -23,6 +23,7 @@ export class ConfigService {
     private productAPI = this.globals.serverUrl+'/products/search';
     private workLineAPI = this.globals.serverUrl+'/production/worklines/search';
     private correctionReasonAPI = this.globals.serverUrl+'/settings/search/correction_reason';
+    private affiliationAPI = this.globals.serverUrl+'/settings/search/affiliation';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -48,6 +49,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.productAPI, 'productList'))
             .then(() => this.getConfigData(this.workLineAPI, 'productionLine'))
             .then(() => this.getConfigData(this.correctionReasonAPI, 'correctionReasonList'))
+            .then(() => this.getConfigData(this.affiliationAPI, 'affiliationList'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);
