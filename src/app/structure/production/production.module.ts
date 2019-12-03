@@ -21,7 +21,7 @@ import {ProductionPlanningComponent} from './planning/production-planning/produc
 import {MaterialsPlanningComponent} from './planning/materials-planning/materials-planning.component';
 import {AssemblyWorksComponent} from './results/assembly-works/assembly-works.component';
 import {ForgingWorksComponent} from './results/forging-works/forging-works.component';
-import {ForgingWorkTimeComponent} from './aggregation/forging-work-time/forging-work-time.component';
+import {AssemblyWorkTimeComponent} from './aggregation/assembly-work-time/assembly-work-time.component';
 import {AssemblyWorkComponent} from './record/assembly-work/assembly-work.component';
 import {ProductivityAnalysisComponent} from './record/productivity-analysis/productivity-analysis.component';
 import {ProductionPerformanceChartComponent} from './chart/production-performance-chart/production-performance-chart.component';
@@ -41,7 +41,7 @@ export const routes: Routes = [
   {path: 'assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 35}, canActivate: [AuthGuard]},
   {path: 'assembly-performance', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 36}, canActivate: [AuthGuard]},
   {path: 'record/assembly-personnel-performance', component: AssemblyResultComponent, data: {title: '생산 > 조립작업실적서', id: 37}, canActivate: [AuthGuard]},
-  {path: 'record/chart-assembly-performance', component: ForgingWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 38}, canActivate: [AuthGuard]},
+  {path: 'record/chart-assembly-performance', component: AssemblyWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 38}, canActivate: [AuthGuard]},
   {path: 'record/assembly-performance-statement', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 39}, canActivate: [AuthGuard]},
   {path: 'record/productivity-analysis', component: ProductivityAnalysisComponent, data: {title: '생산 > 생산성분석서', id: 40}, canActivate: [AuthGuard]},
   {path: 'chart/record/chart-production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 41}, canActivate: [AuthGuard]},
@@ -87,7 +87,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     MaterialsPlanningComponent,
     AssemblyWorksComponent,
     ForgingWorksComponent,
-    ForgingWorkTimeComponent,
+    AssemblyWorkTimeComponent,
     PersonnelManagementComponent,
     AssemblyWorkComponent,
     AssemblyResultComponent,

@@ -3,19 +3,19 @@ import { ElectronService } from '../../../../providers/electron.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
-import { ForgingWorkTimeService } from './forging-work-time.service';
+import { AssemblyWorkTimeService } from './assembly-work-time.service';
 import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
-import { Item } from './forging-work-time.item';
+import { Item } from './assembly-work-time.item';
 
 @Component({
   selector: 'app-page',
-  templateUrl: './forging-work-time.component.html',
-  styleUrls: ['./forging-work-time.component.scss'],
-  providers: [ForgingWorkTimeService, DatePipe]
+  templateUrl: './assembly-work-time.component.html',
+  styleUrls: ['./assembly-work-time.component.scss'],
+  providers: [AssemblyWorkTimeService, DatePipe]
 })
-export class ForgingWorkTimeComponent implements OnInit {
+export class AssemblyWorkTimeComponent implements OnInit {
     tDate = this.globals.tDate;
     panelTitle: string;
     isLoadingProgress: boolean = false;
@@ -51,7 +51,7 @@ export class ForgingWorkTimeComponent implements OnInit {
         @Inject(FormBuilder) fb: FormBuilder,
         private datePipe: DatePipe,
         public electronService: ElectronService,
-        private dataService: ForgingWorkTimeService,
+        private dataService: AssemblyWorkTimeService,
         private globals: AppGlobals,
         private utils: UtilsService,
         private messageService: MessageService

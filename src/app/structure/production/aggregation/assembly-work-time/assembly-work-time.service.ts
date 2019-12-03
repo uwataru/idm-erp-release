@@ -6,7 +6,7 @@ import { Item } from './forging-work-time.item';
 import { AppGlobals } from '../../../../app.globals';
 
 @Injectable()
-export class ForgingWorkTimeService {
+export class AssemblyWorkTimeService {
 
     constructor(
         private http: HttpClient,
