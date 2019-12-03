@@ -49,14 +49,16 @@
           {{row.remindQty}}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="id" cellClass="text-center" width="110px">
+        <ngx-datatable-column prop="id" cellClass="text-center" width="120px">
             <ng-template ngx-datatable-header-template>
                 진행율
             </ng-template>
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-                <div style="border:solid 1px #ddd;margin:5px;padding:3px; width: 110px" >
+                <div style="border:solid 1px #ddd;margin:5px;padding:3px; width: 100px" >
                   <div style="background:#999;height:10px" [style.width]="row.remindPrecent + '%'"></div>
                 </div>
+                <span style="float: right;margin-top:-20px;padding:-13px; font-size: x-small;">{{row.remindPrecent}}%</span>
+                <!-- <span style="float: right;margin-top:-20px;padding:-13px; font-size: x-small;">%</span> -->
             </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="start_date" name="생산시작일" cellClass="text-center"></ngx-datatable-column>
