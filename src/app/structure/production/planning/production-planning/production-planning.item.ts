@@ -4,18 +4,15 @@ export class Item {
     data: {
         id: number;
         order_no: string;
-        delivery_no: number;
-        product_code: string;
-        product_name: string;
-        partner_code: number;
         partner_name: string;
-        poc_no: string;
-        sales_qty: number;
-        product_price: number;
-        sales_price: number;
-        sales_date: string;
-        delivery_date: string;
-        st: number;
+        product_name: string;
+        product_type: string;
+        line_no: string;
+        qty: number;
+        Production_qty: number;
+        promised_date: string;
+        start_date: string;
+        end_date: string;
     };
     maxResultCount: number;
     result: string;

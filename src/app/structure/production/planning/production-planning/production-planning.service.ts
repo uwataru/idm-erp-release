@@ -12,12 +12,12 @@ export class ProductionPlanningService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/planning';
+    private url = this.globals.serverUrl + '/production/plan';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
+        return this.http.get<Item[]>(this.url);
     }
 
     GetPlanningDate () {
