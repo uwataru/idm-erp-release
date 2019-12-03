@@ -43,24 +43,51 @@
             [selectionType]="'single'"
             (select)='onSelect($event)'
             [messages]="messages">
-      <ngx-datatable-column prop="work_date" name="작업일자" [width]="50" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="week_day" name="요일" [width]="50" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="start_time" name="시작시간" [sortable]="false" cellClass="text-center">
+      <ngx-datatable-column prop="working_date" name="작업일자" [width]="80" [sortable]="false" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="weekday" name="요일" [width]="50" [sortable]="false" cellClass="text-center">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div *ngIf="isEditTime(rowIndex)">
-            <timepicker class="custom_time_picker text-center"
-                        [(ngModel)]="row.start_time"
-                        [showMeridian]="false"
-                        [minuteStep]="10"></timepicker>
-          </div>
-          <div *ngIf="!isEditTime(rowIndex)">{{makeTimeToString(row.start_time)}}</div>
+          <span *ngIf="row.weekday == '토'" class="text-info">{{ row.weekday }}</span>
+          <span *ngIf="row.weekday == '일'" class="text-danger">{{ row.weekday }}</span>
+          <span *ngIf="row.weekday != '토' && row.weekday != '일'">{{ row.weekday }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="end_time" name="종료시간" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="total_work_time" name="하루작업시간계" [sortable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                            [sortable]="false"
-                            cellClass="text-center">
+      <ngx-datatable-column prop="working_stime" name="시작시간" [sortable]="false" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div *ngIf="isEditTime(rowIndex)" style="margin-top: 5px">
+            <timepicker class="custom_time_picker text-center"
+                        [(ngModel)]="row.working_stime"
+                        (ngModelChange)="calWorkTime(row)"
+                        (focusout)="timePickerFocusOut($event)"
+                        [showMeridian]="false" [showSpinners]="false"
+                        [minuteStep]="10"></timepicker>
+          </div>
+          <div *ngIf="!isEditTime(rowIndex)">{{makeTimeToString(row.working_stime)}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="working_etime" name="종료시간" [sortable]="false" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div *ngIf="isEditTime(rowIndex)" style="margin-top: 5px">
+            <timepicker class="custom_time_picker text-center"
+                        [(ngModel)]="row.working_etime"
+                        (ngModelChange)="calWorkTime(row)"
+                        (focusout)="timePickerFocusOut($event)"
+                        [showMeridian]="false" [showSpinners]="false"
+                        [minuteStep]="10"></timepicker>
+          </div>
+          <div *ngIf="!isEditTime(rowIndex)">{{makeTimeToString(row.working_etime)}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="working_total_time" name="하루작업시간계" [sortable]="false" cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div *ngIf="isEditTime(rowIndex)">
+            <input type="text" id="working_total_time{{rowIndex+1}}" style="margin-top: 5px" value="{{row.total_work_time}}"
+                   (focusout)="totalWorkTimeFocusOut($event, row, value)" />
+          </div>
+          <div *ngIf="!isEditTime(rowIndex)">{{row.working_total_time}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="id" name="수정&middot;삭제" cellClass="text-center"
+                            [width]="100" [canAutoResize]="false" [resizeable]="false" [sortable]="false">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div>
             <button (click)="runEditMode(rowIndex, row)" class="btn btn-xs btn-primary">
@@ -73,41 +100,6 @@
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-<!--    <table class="table table-bordered table-condensed b-light" id="panel-body-body">-->
-<!--      <colgroup>-->
-<!--        <col width="14%">-->
-<!--        <col width="10%">-->
-<!--        <col width="14%">-->
-<!--        <col width="14%">-->
-<!--        <col width="14%">-->
-<!--        <col width="14%">-->
-<!--      </colgroup>-->
-<!--      <tbody>-->
-<!--      <tr *ngFor="let row of rows">-->
-<!--        <td class="text-center">{{ row.working_date }}</td>-->
-<!--        <td class="text-center">-->
-<!--          <span *ngIf="row.weekday == '토'" class="text-info">{{ row.weekday }}</span>-->
-<!--          <span *ngIf="row.weekday == '일'" class="text-danger">{{ row.weekday }}</span>-->
-<!--          <span *ngIf="row.weekday != '토' && row.weekday != '일'">{{ row.weekday }}</span>-->
-<!--        </td>-->
-<!--        <td id="working_stime_{{row.id}}" class="text-center">{{ row.working_stime }}</td>-->
-<!--        <td id="working_etime_{{row.id}}" class="text-center">{{ row.working_etime }}</td>-->
-<!--        <td id="working_time_per_day_{{row.id}}" class="text-center">{{ row.working_time_per_day }}</td>-->
-<!--      </tr>-->
-<!--      <tr *ngIf="is_selected_prdline == false">-->
-<!--        <td colspan="8" class="no-data">-->
-<!--          <div class="no-data">-->
-<!--            작업라인을 선택해주세요!-->
-<!--          </div>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--      <tr *ngIf="!rows">-->
-<!--        <td colspan="8" class="no-data">-->
-<!--          검색된 데이터가 없습니다.-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
   </div>
 
   <footer class="panel-footer text-right hidden-print">
@@ -124,93 +116,6 @@
 <!--    <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a>-->
   </footer>
 </div>
-
-<!--<div bsModal #BatchInsertFormModal="bs-modal" id="batch-insert-form" class="modal fade" tabindex="-1" role="dialog"-->
-<!--     aria-hidden="true">-->
-<!--  <div class="modal-dialog modal-sm">-->
-<!--    <div class="modal-content">-->
-<!--      <form [formGroup]="batchInsertForm">-->
-<!--        <div class="modal-header">-->
-<!--          <button type="button" class="close" data-dismiss="modal" (click)="BatchInsertFormModal.hide()"-->
-<!--                  aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-<!--          <h4 class="modal-title">{{ batchInsertTitle }}</h4>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="text-center padder-v">-->
-<!--                    <span class="text-center">-->
-<!--                        {{ batchInsertMsg }}-->
-<!--                    </span>-->
-<!--            <select formControlName="pattern_code" id="pattern_code" class="input-sm form-control inline v-middle">-->
-<!--              <option value=""></option>-->
-<!--              <option *ngFor="let wp of productionWorkingPattern"-->
-<!--                      value="{{ wp.PatternCode }}">{{ wp.PatternCode }}</option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="modal-footer">-->
-<!--          <div class="text-center">-->
-<!--            <button type="button" (click)="BatchInsert()" class="btn btn-danger btn-save">적용</button>-->
-<!--            <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal"-->
-<!--                    (click)="BatchInsertFormModal.hide()" aria-label="Close">취소-->
-<!--            </button>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-<!--&lt;!&ndash; DeleteAllFormModal 추가 &ndash;&gt;-->
-<!--<div bsModal #DeleteAllFormModal="bs-modal" id="delete-all-form" class="modal fade" tabindex="-1" role="dialog"-->
-<!--     aria-hidden="true">-->
-<!--  <div class="modal-dialog modal-sm">-->
-<!--    <div class="modal-content">-->
-<!--      <div class="modal-header">-->
-<!--        <button type="button" class="close" (click)="DeleteAllFormModal.hide()" aria-label="Close"><span-->
-<!--          aria-hidden="true">&times;</span></button>-->
-<!--        <h4 class="modal-title">{{ deleteAllTitle }}</h4>-->
-<!--      </div>-->
-<!--      <div class="modal-body">-->
-<!--        <div class="text-center padder-v">-->
-<!--                    <span class="text-center">-->
-<!--                        {{ deleteAllMsg }}-->
-<!--                    </span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="modal-footer">-->
-<!--        <div class="text-center">-->
-<!--          <button type="button" (click)="DeleteAll()" class="btn btn-danger btn-save">삭제</button>-->
-<!--          <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteAllFormModal.hide()"-->
-<!--                  aria-label="Close">취소-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog"-->
-<!--     aria-hidden="true">-->
-<!--  <div class="modal-dialog">-->
-<!--    <div class="modal-content">-->
-<!--      <div class="modal-header">-->
-<!--        <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span>-->
-<!--        </button>-->
-<!--        <h4 class="modal-title">{{ deleteConfirmTitle }}</h4>-->
-<!--      </div>-->
-<!--      <div class="modal-body">-->
-<!--        <div class="text-center padder-v">-->
-<!--          {{ deleteConfirmMsg }}-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="modal-footer">-->
-<!--        <div class="text-center">-->
-<!--          <button type="button" (click)="Delete()" class="btn btn-danger btn-save">삭제</button>-->
-<!--          <button type="button" (click)="DeleteFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
 
