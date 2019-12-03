@@ -12,38 +12,11 @@ export class MaterialsPlanningService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/materials-planning';
+    private url = this.globals.serverUrl + '/production/plan/materials';
 
     /** GET data from the server */
-    GetAll (params): Observable<Item[]> {
-        let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
-    }
-    
-    GetExcelFile () {
-        let myHeaders = new HttpHeaders();
-        myHeaders.append('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        return this.http.get(this.url + '/exceldown', {headers: myHeaders, responseType: 'blob'}).pipe(
-            tap((data: Blob) => console.log(data)),
-            catchError(this.handleError<Blob>('Create'))
-        );
-    }
-
-    GetPlanningDate () {
-        let currTime = (new Date()).getTime();
-        return this.http.get(this.globals.serverUrl + '/production/planning/get-plan-date?t=' + currTime);
-    }
-
-    changePlanningDate (data) {
-        return this.http.post(this.url + '/change-plan-date', data).pipe(
-            tap((data: Item) => this.log(`added data w/ id=${data}`)),
-            catchError(this.handleError<Item>('Create'))
-        );
-    }
-
-    /** 순서 변경 */
-    changeSeqNo (line, data) {
-        return this.http.get(this.url + '/' + line + '/' + data);
+    GetAll (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url);
     }
 
    /**

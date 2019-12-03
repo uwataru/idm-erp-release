@@ -7,11 +7,13 @@
     <div class="row">
       <div class="col-sm-8 m-b-xs">
         <form [formGroup]="searchForm">
-          <label for="sch_sdate" class="control-label text-sm">기간설정:</label>
+          <label for="sch_order_no" class="control-label text-sm">수주번호</label>
+          <input type="text" formControlName="sch_order_no" id="sch_order_no" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle"/>
+          <!-- <label for="sch_sdate" class="control-label text-sm">기간설정:</label>
           <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
                  class="input-sm form-control w-xs inline v-middle"/> ~
           <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
-                 class="input-sm form-control w-xs inline v-middle"/>
+                 class="input-sm form-control w-xs inline v-middle"/> -->
           <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
         </form>
       </div>
@@ -26,59 +28,42 @@
   </div>
 
   <div class="panel-body">
-    <div id="dnd_head" class="dnd_head">
-      <div class="dnd-row">
-        <div class="cell production_line">라인</div>
-        <div class="cell material">재질</div>
-        <div class="cell size">규격</div>
-        <div class="cell work_date">작업일자</div>
-        <div class="cell product_code">제품번호</div>
-        <div class="cell product_name">품명</div>
-        <div class="cell order_qty">수량(EA)</div>
-      </div>
-    </div>
-    <div class="dnd_body">
-      <div *ngFor="let subrows of rows">
-        <div *ngFor="let row of subrows.subData" class="dnd-row">
-          <div class="cell production_line text-center">&nbsp; {{ row.production_line }} &nbsp;</div>
-          <div class="cell material text-center">&nbsp; {{ row.material }} &nbsp;</div>
-          <div class="cell size text-center">&nbsp; {{ row.size }} &nbsp;</div>
-          <div class="cell work_date text-center">&nbsp; {{ row.working_date }} &nbsp;</div>
-          <div class="cell product_code text-center">&nbsp; {{ row.product_code }} &nbsp;</div>
-          <div class="cell product_name">&nbsp; {{ row.product_name }} &nbsp;</div>
-          <div class="cell order_qty text-right">&nbsp; {{ row.order_qty > 0 ? (row.order_qty | numberFormat) : '' }} &nbsp;</div>
-        </div>
-        <div *ngIf="subrows.subTotal" class="sum dnd-row">
-          <div class="cell production_line text-center">&nbsp; 계 &nbsp;</div>
-          <div class="cell material text-center">&nbsp; &nbsp;</div>
-          <div class="cell size text-center">&nbsp; &nbsp;</div>
-          <div class="cell work_date text-center">&nbsp; &nbsp;</div>
-          <div class="cell product_code text-center">&nbsp; &nbsp;</div>
-          <div class="cell product_name">&nbsp; &nbsp;</div>
-          <div class="cell order_qty text-right">&nbsp;&nbsp; {{ subrows.subTotal.order_qty | numberFormat }} &nbsp;</div>
-        </div>
-      </div>
-    </div>
-    <!--
-    <div class="table-responsive">
-        <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-        <tbody>
-        <tr>
-            <td width="100px" class="text-center">합계</td>
-            <td width="150px" class="text-right"></td>
-            <td width="120px" class="text-right"></td>
-            <td width="120px" class="text-right"></td>
-            <td></td>
-            <td width="150px" class="text-right"></td>
-            <td width="70px" class="text-right"></td>
-            <td width="70px" class="text-right">12,345</td>
-            <td width="90px" class="text-right"></td>
-            <td width="110px" class="text-right">12,345,678</td>
-        </tr>
-        </tbody>
-        </table>
-    </div>
-    -->
+    <ngx-datatable
+      [style.height.px]=gridHeight
+      class="bootstrap"
+      [rows]="rows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="calRowHeight"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [selected]="selected"
+      [selectionType]="'checkbox'"
+      [selectAllRowsOnPage]="false"
+      (select)="onSelect($event)"
+      [messages]="messages">
+      <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column name="자재" prop="" cellClass="text-center">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+              <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+              '2px' : '0px' }">{{item.name}}</div>
+          </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Qty" prop="" cellClass="text-center">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+            <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+              '2px' : '0px' }">{{item.qty}}</div>
+          </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="단가" prop="" cellClass="text-center">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+            <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+              '2px' : '0px' }">{{item.price}}</div>
+          </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
 
   <footer class="panel-footer hidden-print">
