@@ -10,12 +10,12 @@ export class MaterialsInOutService {
 
     constructor(private http: HttpClient, private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl  + '/materials/history/materials-in-out';
+    private url = this.globals.serverUrl  + '/materials/record';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
+        return this.http.get<Item[]>(this.url + '/receiving-statement', {params: params});
     }
 
     GetDetails (params): Observable<Item[]> {

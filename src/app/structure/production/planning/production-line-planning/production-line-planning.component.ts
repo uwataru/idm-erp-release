@@ -20,13 +20,13 @@ export class ProductionLinePlanningComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
   isLoadingProgress: boolean = false;
-  deleteAllTitle: string;
-  deleteAllMsg: string;
-  deleteConfirmTitle: string;
-  deleteConfirmMsg: string;
+  // deleteAllTitle: string;
+  // deleteAllMsg: string;
+  // deleteConfirmTitle: string;
+  // deleteConfirmMsg: string;
   batchInsertTitle: string;
   batchInsertMsg: string;
-  isEditMode: boolean = false;
+  // isEditMode: boolean = false;
 
   searchForm: FormGroup;
 
@@ -41,19 +41,20 @@ export class ProductionLinePlanningComponent implements OnInit {
   temp = [];
   delId = [];
   selected = [];
+  gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
   is_selected_prdline: boolean = false;
 
   productionLines: any[] = this.globals.configs['productionLine'];
-  productionWorkingPattern: any[] = this.globals.configs['productionWorkingPattern'];
+  // productionWorkingPattern: any[] = this.globals.configs['productionWorkingPattern'];
   productionLineWorkers: any[] = this.globals.configs['productionLineWorkers'];
   lastDay: number;
   product_price: number;
   isTmpPrice: boolean;
   editData: Item;
-  data: Date;
+  // data: Date;
 
-  batchInsertForm: FormGroup;
+  // batchInsertForm: FormGroup;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -63,9 +64,13 @@ export class ProductionLinePlanningComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
 
-  @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
-  @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
-  @ViewChild('DeleteAllFormModal') deleteAllFormModal: ModalDirective;
+  selectedIndex: number = -1;
+  initHour: number = 9;
+  initMinute: number = 0;
+
+  // @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
+  // @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
+  // @ViewChild('DeleteAllFormModal') deleteAllFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -95,14 +100,14 @@ export class ProductionLinePlanningComponent implements OnInit {
       sch_prdline: ''
     });
 
-    this.batchInsertForm = fb.group({
-      pattern_code: ''
-    });
+    // this.batchInsertForm = fb.group({
+    //   pattern_code: ''
+    // });
   }
 
   ngOnInit() {
     this.panelTitle = '라인별 가동 계획';
-    this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+    // this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
     this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g, '').substring(0, 6));
     this.getAll();
@@ -129,9 +134,9 @@ export class ProductionLinePlanningComponent implements OnInit {
 
     let params = {
       sch_yearmonth: this.convertYearMonth(yearmonth),
-      sch_prdline: formData.sch_prdline,
-      sortby: ['working_date'],
-      order: ['asc']
+      production_work_lines_id: formData.sch_prdline,
+      // sortby: ['working_date'],
+      // order: ['asc']
     };
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
@@ -140,6 +145,24 @@ export class ProductionLinePlanningComponent implements OnInit {
         this.temp = listData['data'];
         this.rows = listData['data'];
         this.lastDay = listData['lastDay'];
+
+        //temp
+        let startDate: Date;
+        let splitTime;
+        for(let i = 0; i<this.rows.length; i++) {
+          if(this.rows[i].working_stime != "") {
+            startDate = new Date();
+            splitTime = this.rows[i].working_stime.split(":");
+            startDate.setHours(parseInt(splitTime[0]), parseInt(splitTime[1]), 0);
+            this.rows[i].working_stime = startDate;
+          }
+          if(this.rows[i].working_etime != "") {
+            startDate = new Date();
+            splitTime = this.rows[i].working_etime.split(":");
+            startDate.setHours(parseInt(splitTime[0]), parseInt(splitTime[1]), 0);
+            this.rows[i].working_etime = startDate;
+          }
+        }
 
         this.isLoadingProgress = false;
       }
@@ -150,63 +173,6 @@ export class ProductionLinePlanningComponent implements OnInit {
     let yy = ym.substring(0, 4);
     let mm = ym.substring(4, 6);
     return yy + '-' + mm;
-  }
-
-  insert_time(event, id) {
-    const val = event.target.value;
-    if (!val) {
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = '';
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = '';
-    } else {
-      let t = this.get_time_from_pattern_code(val);
-
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + id)).textContent = t.Group1Stime;
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + id)).textContent = t.Group1Etime;
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + id)).textContent = t.WorkingTimePerDay;
-    }
-  }
-
-  get_time_from_pattern_code(code) {
-    var filtered = this.productionWorkingPattern.filter(function (e) {
-      return e.PatternCode === code;
-    });
-    return filtered[0];
-  }
-
-  get_groupcode_from_lineworkers(code) {
-    var filtered = this.productionLineWorkers.filter(function (e) {
-      return e.LineCode === code;
-    });
-    return filtered[0];
-  }
-
-  BatchInsert() {
-    let searchFormData = this.searchForm.value;
-    let batchInsertFormData = this.batchInsertForm.value;
-    this.rows.forEach((e: any) => {
-      let t = this.get_time_from_pattern_code(batchInsertFormData.pattern_code);
-      console.log(e.id);
-      (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value = batchInsertFormData.pattern_code;
-      (<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent = t.Group1Stime;
-      (<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent = t.Group1Etime;
-      (<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent = t.WorkingTimePerDay;
-    });
-    this.batchInsertFormModal.hide();
-  }
-
-  DeleteAll() {
-    for (let i = 0; i < this.rows.length; i++) {
-      this.rows[i].pattern_code = '';
-      this.rows[i].working_stime = '';
-      this.rows[i].working_etime = '';
-      this.rows[i].working_time_per_day = '';
-      this.rows[i].group1 = '';
-      this.rows[i].group2 = '';
-      this.rows[i].group3 = '';
-
-    }
-    this.deleteAllFormModal.hide();
   }
 
   updateFilter(event) {
@@ -247,28 +213,28 @@ export class ProductionLinePlanningComponent implements OnInit {
       return false;
     }
 
-    let planDada = [];
-    this.rows.forEach((e) => {
-      if (<HTMLSelectElement>document.getElementById('pattern_code_' + e.id) != null) {
-        if ((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value != '') {
-          let dayData = [];
-          dayData.push(e.id);
-          dayData.push((<HTMLSelectElement>document.getElementById('pattern_code_' + e.id)).value);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_stime_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_etime_' + e.id)).textContent);
-          dayData.push((<HTMLTableDataCellElement>document.getElementById('working_time_per_day_' + e.id)).textContent);
-          planDada.push(dayData.join(':#:'));
-        }
+    let len = this.rows.length;
+    let timePlanData = [];
+    let sTimeStr, eTimeStr;
+    for(let i=0; i<len; i++) {
+      if(this.rows[i].working_stime != "" && this.rows[i].working_etime != "" && this.rows[i].working_total_time != 0 ){
+        sTimeStr = this.makeTimeToString(this.rows[i].working_stime, false);
+        eTimeStr = this.makeTimeToString(this.rows[i].working_etime, false);
+        timePlanData.push(
+            this.rows[i].id + ":#:" + sTimeStr + ":#:" + eTimeStr  + ":#:" + this.rows[i].working_total_time
+        )
       }
-    });
+    }
 
     const saveData = {
       yearmonth: this.convertYearMonth(formData.sch_yearmonth),
-      line_code: formData.sch_prdline,
-      plan_data: planDada.join('=||=')
+      production_work_lines_id: parseInt(formData.sch_prdline),
+      plan_data: timePlanData.join('=||=')
     };
 
-    // console.log(saveData);
+    this.selectedIndex = -1;
+
+    console.log(saveData);
     this.Create(saveData);
   }
 
@@ -287,84 +253,96 @@ export class ProductionLinePlanningComponent implements OnInit {
       );
   }
 
-  Delete() {
-    let formData = this.searchForm.value;
-    if (!formData.sch_yearmonth) {
-      this.messageService.add('작업년월을 입력해주세요!');
-      return false;
-    }
-
-    let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
-    if (yearmonth.length != 6) {
-      this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
-      return false;
-    }
-
-    if (!formData.sch_prdline) {
-      this.messageService.add('작업라인을 선택해주세요!');
-      return false;
-    }
-
-    this.dataService.Delete(this.convertYearMonth(yearmonth), formData.sch_prdline)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.getAll();
-            this.messageService.add(this.delOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-
-          this.deleteFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
 
   openModal(method) {
     // 실행권한
     if (this.isExecutable == true) {
       if (method == 'batchInsert') {
-        this.batchInsertFormModal.show();
+        // this.batchInsertFormModal.show();
       } else if (method == 'delete') {
-        this.deleteFormModal.show();
+        // this.deleteFormModal.show();
       } else if (method == 'deleteAll') {
-        this.deleteAllFormModal.show();
+        // this.deleteAllFormModal.show();
       }
     } else {
       alert(this.globals.isNotExecutable);
       return false;
     }
+  }
+  onSelect({selected}) {
+    // console.log('onSelected', selected[0].id);
+    this.selectedId = selected[0].id;
+  }
 
-    switch (method) {
-      case 'deleteAll':
-        this.deleteAllTitle = '일괄삭제';
-        this.deleteAllMsg = '전체삭제하시겠습니까?';
-        break;
-      case 'delete':
-        this.deleteConfirmTitle = '라인별 가동계획 삭제';
-        this.deleteConfirmMsg = '선택하신 라인별 가동계획을 삭제하시겠습니까?';
-        break;
-      case 'batchInsert':
-        this.batchInsertTitle = '일괄입력';
-        this.batchInsertMsg = '근무패턴을 선택해주세요?';
-        break;
+  isEditTime(index){
+    // console.log('isEditTime', index);
+    return index == this.selectedIndex;
+  }
+
+  runEditMode(index, row){
+    // console.log('runEditMode', index, row);
+    if(this.selectedIndex == index){
+      this.selectedIndex = -1;
+    } else {
+      if(this.rows[index].working_stime == "" || this.rows[index].working_stime == null) {
+        let startDate: Date = new Date();
+        startDate.setHours(this.initHour, this.initMinute, 0);
+        this.rows[index].working_stime = startDate;
+      }
+      if(this.rows[index].working_etime == "" || this.rows[index].working_etime == null) {
+        let endDate: Date = new Date();
+        endDate.setHours(this.initHour + 1, this.initMinute, 0);
+        this.rows[index].working_etime = endDate;
+      }
+
+      this.selectedIndex = index;
     }
   }
 
-  excelDown(): void {
-    this.dataService.GetExcelFile().subscribe(
-      blob => {
-        if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
-          window.navigator.msSaveBlob(blob, 'Report.xlsx');
-        } else { // for chrome and firfox
-          var link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'Report.xlsx';
-          link.click();
-        }
-      },
-      error => this.errorMessage = <any>error
-    );
+  runDeleteMode(index){
+    // console.log('runDeleteMode', index);
+    this.rows[index].working_stime = "";
+    this.rows[index].working_etime = "";
+    this.rows[index].working_total_time = 0;
   }
+
+  makeTimeToString(src, space=true){
+    if(src == ""){
+      return "";
+    }
+    let format;
+    if (space){
+      format = 'HH : mm';
+    } else{
+      format = 'HH:mm';
+    }
+    return this.datePipe.transform(src, format);
+  }
+
+  calWorkTime(row){
+    // console.log('calWorkTime', row);
+    // row.working_total_time = row.working_stime.getHours();
+  }
+
+  timePickerFocusOut(event){
+    // console.log('timePickerFocusOut', event.target);
+    if(event.target.placeholder == 'HH'){
+      if(event.target.value > 24){
+        alert('잘못된 시간입니다');
+      }
+    }
+
+    if(event.target.placeholder == 'MM'){
+      if(event.target.value > 60){
+        alert('잘못된 시간입니다');
+      }
+    }
+    // this.selectedIndex = -1;
+  }
+
+  totalWorkTimeFocusOut(event, row, value){
+    // console.log('totalWorkTimeFocusOut', event, row, value);
+    row.working_total_time = event.target.value;
+  }
+
 }
