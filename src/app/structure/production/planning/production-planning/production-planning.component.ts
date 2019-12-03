@@ -138,11 +138,9 @@ export class ProductionPlanningComponent implements OnInit {
 
   getAll(): void {
     let formData = this.searchForm.value;
-    let params = {
-      sch_order_no: formData.sch_order_no,
-    };
+
     this.isLoadingProgress = true;
-      this.dataService.GetAll(params).subscribe(
+      this.dataService.GetAll().subscribe(
         listData => {
           this.listData = listData;
           this.rows = listData['data'];
