@@ -2,21 +2,21 @@ import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} fro
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
-import { ForgingResultService } from './forging-result.service';
+import { AssemblyResultService } from './assembly-result.service';
 import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
-import { Item } from './forging-result.item';
+import { Item } from './assembly-result.item';
 import { saveAs as importedSaveAs } from "file-saver";
 import {ElectronService} from "../../../../providers/electron.service";
 
 @Component({
   selector: 'app-page',
-  templateUrl: './forging-result.component.html',
-  styleUrls: ['./forging-result.component.scss'],
-  providers: [ForgingResultService, DatePipe]
+  templateUrl: './assembly-result.component.html',
+  styleUrls: ['./assembly-result.component.scss'],
+  providers: [AssemblyResultService, DatePipe]
 })
-export class ForgingResultComponent implements OnInit {
+export class AssemblyResultComponent implements OnInit {
     tDate = this.globals.tDate;
     panelTitle: string;
     isLoadingProgress: boolean = false;
@@ -37,6 +37,7 @@ export class ForgingResultComponent implements OnInit {
     rows = [];
     totalQuantity: number;
     totalSalesPrice: number;
+    gridHeight = this.globals.gridHeight;
 
     messages = this.globals.datatableMessages;
 
@@ -51,7 +52,7 @@ export class ForgingResultComponent implements OnInit {
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
         private datePipe: DatePipe,
-        private dataService: ForgingResultService,
+        private dataService: AssemblyResultService,
         private globals: AppGlobals,
         private utils: UtilsService,
         private messageService: MessageService,
@@ -60,7 +61,7 @@ export class ForgingResultComponent implements OnInit {
         this.searchForm = fb.group({
             sch_sdate: '',
             sch_edate: '',
-            production_line: ''
+            sch_prdline: ''
         });
     }
 
@@ -74,12 +75,12 @@ export class ForgingResultComponent implements OnInit {
     getAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            sch_prdline: formData.production_line,
+            sch_prdline: formData.sch_prdline,
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sortby: ['sales_date'],
-            order: ['asc'],
-            maxResultCount: 10000
+            // sortby: ['sales_date'],
+            // order: ['asc'],
+            // maxResultCount: 10000
         };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
@@ -88,14 +89,10 @@ export class ForgingResultComponent implements OnInit {
                 this.listData = listData;
                 this.rows = listData['data'];
 
-
-                this.rows.sort(function(a,b) {
-                    return a.dateKey > b.dateKey ? 1 : -1;
-                });
+                let price: number;
                 for (let i=0; i < this.rows.length; i++) {
-                    this.rows[i].dateData.sort(function(a,b) {
-                        return a.lineKey.localeCompare(b.lineKey)
-                    })
+                   price = this.rows[i].qty * this.rows[i].product_price;
+                   this.rows[i].price = price;
                 }
 
                 this.isLoadingProgress = false;

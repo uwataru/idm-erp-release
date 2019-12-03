@@ -21,7 +21,7 @@
                            (typeaheadOnSelect)="onSelectListPartner($event)"
                            placeholder="자재명"
                            class="input-sm form-control w-sm inline v-middle" />
-                    <input type="text" formControlName="sch_size" placeholder="규격"
+                    <input type="text" formControlName="sch_size" placeholder="규격" (keyup)="updateFilterSize($event)"
                            class="input-sm form-control w-xs inline v-middle" id="sch_size" />
                     <input formControlName="sch_partner_name"
                            [typeahead]="listPartners"
@@ -63,7 +63,7 @@
                                   cellClass="text-right"></ngx-datatable-column>
             <ngx-datatable-column prop="size" name="규격" [width]="120" [canAutoResize]="true" [resizeable]="false"
                                   cellClass="text-right"></ngx-datatable-column>
-            <ngx-datatable-column prop="size" name="거래처" [width]="120" [canAutoResize]="true" [resizeable]="false"
+            <ngx-datatable-column prop="partner" name="거래처" [width]="120" [canAutoResize]="true" [resizeable]="false"
                                   cellClass="text-right"></ngx-datatable-column>
             <ngx-datatable-column prop="transfer_qty" name="전기이월수량" [width]="80" [canAutoResize]="false"
                                   [resizeable]="false" cellClass="text-right">

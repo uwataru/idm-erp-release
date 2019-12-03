@@ -1,0 +1,80 @@
+<div class="panel panel-default" id="print-main-list">
+
+    <div class="panel-heading">
+      <div class="text-center">
+        <span class="h4 block m-b-sm print-margin-top">{{ panelTitle }}</span>
+      </div>
+      <div class="m-l-xs">
+        <form [formGroup]="searchForm">
+          <label for="sch_sdate" class="control-label text-sm">기간</label>
+          <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+                 class="input-sm form-control w-xs inline v-middle"/> ~
+          <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+                 class="input-sm form-control w-xs inline v-middle"/>
+          <label for="sch_prdline" class="m-l">작업라인</label>
+          <select formControlName="sch_prdline" id="sch_prdline" (change)="getAll()"
+                  class="input-sm form-control w-sm inline v-middle">
+            <option *ngFor="let line of productionLines" value="{{ line.id }}">{{ line.line_no }}</option>
+          </select>
+          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+        </form>
+      </div>
+    </div>
+  
+    <div class="panel-body">
+      <ngx-datatable
+              [style.height.px] = gridHeight
+              class="bootstrap"
+              [rows]="rows"
+              [columnMode]="'force'"
+              [headerHeight]="30"
+              [rowHeight]="30"
+              [scrollbarV]="true"
+              [scrollbarH]="false"
+              [messages]="messages">
+        <ngx-datatable-column prop="production_date" name="일자"></ngx-datatable-column>
+        <ngx-datatable-column prop="work_line" name="작업라인" [width]="150" [canAutoResize]="false"
+                              [resizeable]="false"></ngx-datatable-column>
+        <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                              [resizeable]="false"></ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                              cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="product_name" name="제품명" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                              cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="qty" name="수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                              cellClass="text-right">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="product_price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                              cellClass="text-right">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="price" name="금액" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                              cellClass="text-right">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  
+    <footer class="panel-footer hidden-print">
+      <div class="row">
+        <div class="col-sm-6 hidden-xs">
+        </div>
+        <div class="col-sm-6 text-right">
+          <button class="btn btn-sm btn-info btn-addon"
+                  (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
+            <i class="glyphicon glyphicon-print"></i>인쇄
+          </button>
+          <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works/result','조립작업실적서.xlsx')"><i
+            class="glyphicon glyphicon-download-alt"></i>엑셀
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>

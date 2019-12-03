@@ -146,4 +146,15 @@ export class MaterialsInOutComponent implements OnInit {
 
         const val = this.listSltdPaCode;
     }
+
+    updateFilterSize(event) {
+        const val = event.target.value;
+        // filter data
+        let tempArr = this.temp.map(x => Object.assign({}, x));
+        let temp = tempArr.filter(function (d) {
+            return d.size.indexOf(val) !== -1 || !val;
+        });
+
+        this.rows = temp;
+    }
 }

@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './forging-result.item';
+import { Item } from './assembly-result.item';
 import { AppGlobals } from '../../../../app.globals';
 
 @Injectable()
-export class ForgingResultService {
+export class AssemblyResultService {
 
     constructor(
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/assembly-works/result';
+    private url = this.globals.serverUrl + '/assembly-performance/statement';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
