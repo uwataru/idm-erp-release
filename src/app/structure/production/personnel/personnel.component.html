@@ -246,23 +246,25 @@
                                 <td>
                                     <input type="text" formControlName="work_date_{{index+1}}"
                                            id="work_date_{{index+1}}"
+                                           bsDatepicker
+                                           placement="bottom left"
                                            class="form-control input-sm w-sm"/>
                                 </td>
                                 <td>
                                     <input type="text" formControlName="work_time_{{index+1}}" id="work_time_{{index+1}}"
                                            class="form-control input-sm w-xs"
-                                           (keyup)="calculateDayWage($event,index+1);"/>
+                                           (blur)="calculateDayWage($event,index+1);"/>
                                 </td>
                                 <td>
                                     <input type="text" formControlName="hourly_wage_{{index+1}}" id="hourly_wage_{{index+1}}"
                                            class="form-control input-sm w-xs"
-                                           (keyup)="calculateDayWage($event, index+1);"/>
+                                           (blur)="calculateDayWage($event, index+1);"/>
                                 </td>
                                 <td>
                                     <input type="text" formControlName="day_wage_{{index+1}}" id="day_wage_{{index+1}}" class="form-control input-sm w-xs"/>
                                 </td>
-                              <!-- <td width="90px"> -->
-                                <div style="display: flex; width: 80px;">
+                              <td width="50px" style="border:0px;">
+                                <div style="display: flex;">
                                   <button *ngIf="chkViewAddBtn(index+1)" (click)="addWorkTimeRow()"
                                           [disabled]="!inputWorktimeForm.valid"
                                           id="material_add_btn_{{index+1}}"
@@ -274,8 +276,22 @@
                                           class="btn btn-sm btn-danger btn-addon">삭제
                                   </button>
                                 </div>
-                              <!-- </td> -->
+                              </td>
                               </div>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>합계</span>
+                                </td>
+                                <td>
+                                    {{allTime}}
+                                </td>
+                                <td>
+                                    {{allWage}}
+                                </td>
+                                <td>
+                                    {{allResult}}
+                                </td>
                             </tr>
 <!--                        </tbody>-->
                     </table>

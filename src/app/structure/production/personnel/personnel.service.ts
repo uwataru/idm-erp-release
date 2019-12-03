@@ -39,6 +39,13 @@ export class PersonnelService {
             catchError(this.handleError<Item>('Create'))
         );
     }
+    CreateWorkHistory (id:number, data:Item): Observable<Item> {
+        console.log(data);
+        return this.http.post<Item>(this.url+'/workhistory/'+id, data, httpOptions).pipe(
+            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Create'))
+        );
+    }
     private extractData(res: Response) {
 	    let body = res.json();
         return body || {};

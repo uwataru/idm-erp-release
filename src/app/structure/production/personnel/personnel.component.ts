@@ -64,6 +64,14 @@ export class PersonnelComponent implements OnInit {
     name: string;
     employee_num: string;
 
+    tmpTime: number[] = new Array();
+    tmpWage: number[] = new Array();
+    tmpResult: number[] = new Array();
+
+    allWage: number;
+    allTime: number;
+    allResult: number;
+
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
     @ViewChild('WorkTimeFormModal') workTimeFormModal: ModalDirective;
@@ -313,6 +321,7 @@ export class PersonnelComponent implements OnInit {
             )
     }
 
+
     openModal(method, id) {
         // 실행권한
         // if (this.isExecutable == true) {
@@ -323,9 +332,13 @@ export class PersonnelComponent implements OnInit {
                 this.inputForm.controls['input_date'].setValue(this.tDate);
 
             } else if (method == 'worktime'){
+                this.allResult = 0;
+                this.allTime = 0;
+                this.allWage = 0;
                 this.buildInputWorktimeForm();
                 this.workTimeFormModal.show();
                 this.getWorkHistory(id);
+                
             }
         // } else {
             // alert(this.globals.isNotExecutable);
@@ -421,14 +434,42 @@ export class PersonnelComponent implements OnInit {
     calculateDayWage(event, index) {
         // console.log('calculatePrice', index);
         let formData = this.inputWorktimeForm.value;
+        var tmpTime = 0;
+        var tmpWage = 0;
+        var tmpResult = 0;
 
         // console.log(formData['work_time_'+index], formData['hourly_wage_'+index]);
-        let mQty = Number(formData['work_time_'+index]) * 1;
-        let mPrice = Number(this.utils.removeComma(formData['hourly_wage_'+index])) * 1;
+        let mWtime = Number(formData['work_time_'+index]) * 1;
+        this.tmpTime[index-1] = mWtime;
+        
+        
+        let mHwage = Number(this.utils.removeComma(formData['hourly_wage_'+index])) * 1;
+        this.tmpWage[index-1] = mHwage;
 
-        let result = mQty * mPrice;
+        let result = mWtime * mHwage;
+        this.tmpResult[index-1] = result;
+        
         this.inputWorktimeForm.controls['day_wage_'+index].setValue(this.utils.addComma(result));
-        // console.log('calculatePrice', result, this.inputWorktimeForm.controls['day_wage_'+index]);
+
+        for(let i=0; i<index; i++){
+            tmpTime += this.tmpTime[i];
+            tmpWage += this.tmpWage[i];
+            tmpResult += this.tmpResult[i];
+        }
+        this.allTime  = this.utils.addComma(tmpTime);
+        this.allWage  = this.utils.addComma(tmpWage);
+        this.allResult  = this.utils.addComma(tmpResult);
+
+
+        console.log(tmpTime);
+        console.log(tmpWage);
+        console.log(tmpResult);
+        // console.log('Time', this.tmpTime[index-1], index);
+        // console.log('Time', this.tmpTime, index);
+        // console.log('Price', this.tmpWage[index-1], index);
+        // console.log('Price', this.tmpWage, index);
+        // console.log('Re', this.tmpResult,index);
+
 
         if(event != '')
             this.AddComma(event);
@@ -466,9 +507,8 @@ export class PersonnelComponent implements OnInit {
 
     saveWorkTime(){
         let formData = this.inputWorktimeForm.value;
-
         formData.work_history = [];
-
+        
         let state = 1;
         let id = '';
         for(let i=1; i<=this.workHistoryDataCnt; i++){
@@ -496,13 +536,30 @@ export class PersonnelComponent implements OnInit {
         }
 
         console.log('save', this.selectedId, formData);
+        this.CreateWroktime(this.selectedId, formData);
+    }
+
+    CreateWroktime (id, data): void {
+        this.dataService.CreateWorkHistory(id, data)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.getAll();
+                        this.messageService.add(this.addOkMsg);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.workTimeFormModal.hide();
+                },
+                error => this.errorMessage = <any>error
+            );
     }
 
     makeTimeTable(id, state, index, formData){
         let timeTable = {
             id: id,
-            work_time: formData['work_time_' + index],
-            work_date: formData['work_date_' + index],
+            work_time: parseInt(this.utils.removeComma(formData['work_time_' + index])),
+            work_date: this.datePipe.transform(formData['work_date_' + index], 'yyyy-MM-dd'),
             hourly_wage: parseInt(this.utils.removeComma(formData['hourly_wage_' + index])),
             day_wage: parseInt(this.utils.removeComma(formData['day_wage_' + index])),
             state: state
