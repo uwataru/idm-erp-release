@@ -24,31 +24,32 @@
       [selectionType]="'single'"
       (select)='onSelect($event)'
       [messages]="messages">
-      <ngx-datatable-column prop="material" name="재질" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="release_type" name="출고구분" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span *ngIf='value == 1'>자가</span>
-          <span *ngIf='value == 2'>외주</span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="투입수량" cellClass="text-right">
+      <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="구분" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="qty" name="수주수량" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="assembly_qty" name="조립수량" cellClass="text-right">
+      <ngx-datatable-column prop="Production_qty" name="생산수량" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span *ngIf='value >= 0'>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="remind_qty" name="잔여수량" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span *ngIf='value > 0'>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column prop="line_no" name="작업라인" cellClass="text-center"></ngx-datatable-column>
     </ngx-datatable>
   </div>
 
   <div class="panel-footer hidden-print">
     <div class="text-right text-center-xs">
-      <button (click)="openModal('write')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+      <button (click)="getQtyCheck(selectedId)" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
         <i class="glyphicon glyphicon-plus"></i>입력
       </button>
       <button type="button" class="btn btn-sm btn-info btn-addon"
@@ -62,14 +63,14 @@
   </div>
 </div>
 
-<div bsModal #InputFormModal="bs-modal" style="width:2060px;" id="input-form" class="modal modal-xl-center fade"
+<div bsModal #InputFormModal="bs-modal"  id="input-form" class="modal modal-xl-center fade"
      tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-xl-center">
     <div class="modal-content modal-xl">
 
       <form [formGroup]="inputForm">
-        <input type="hidden" formControlName="order_no"/>
-        <input type="hidden" formControlName="production_line"/>
+        <!-- <input type="hidden" formControlName="order_no"/> -->
+        <!-- <input type="hidden" formControlName="production_line"/> -->
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
           </button>
@@ -78,54 +79,26 @@
         <div class="modal-body">
 
           <div class="row">
-            <div class="col-lg-5">
+            <div class="col-lg-4">
 
               <div class="form-group">
                 <div class="row">
-                  <label for="input_date" class="col-lg-4 control-label">
-                    작업일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  <label for="order_no" class="col-lg-4 control-label">
+                    수주번호
                   </label>
                   <div class="col-lg-8">
-                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left"
-                           class="form-control input-sm w-sm"/>
+                    <input readonly type="text" formControlName="order_no" id="order_no" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="row">
-                  <label for="poc_no" class="col-lg-4 control-label">
-                    POC No <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  <label for="partner_name" class="col-lg-4 control-label">
+                    거래처
                   </label>
                   <div class="col-lg-8">
-                    <input type="text" formControlName="poc_no" id="poc_no" class="form-control input-sm w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="release_type" class="col-lg-4 control-label">
-                    출고구분 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-8">
-                    <select formControlName="release_type" id="release_type"
-                            class="form-control input-sm w-sm inline v-middle">
-                      <option value="1">자가출고</option>
-                      <option value="2">외주출고</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="product_code" class="col-lg-4 control-label">
-                    제품번호
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="product_code" id="product_code"
-                           class="form-control input-sm w-sm"/>
+                    <input readonly type="text" formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
@@ -135,185 +108,125 @@
                   <label for="product_name" class="col-lg-4 control-label">
                     제품명
                   </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="product_name" id="product_name"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                  <label class="col-lg-2 control-label">조립수량</label>
-                  <div class="col-lg-2 text-right">
-                    <label *ngIf="assembly_total != 0" class="control-label">{{ assembly_total | numberFormat }}</label>
-                    <label *ngIf="assembly_total == 0">0</label>&nbsp;
+                  <div class="col-lg-8">
+                    <input readonly type="text" formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="row">
-                  <label for="material" class="col-lg-4 control-label">
-                    지시 재질
+                  <label for="product_type" class="col-lg-4 control-label">
+                    규격
                   </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="order_material" id="order_material"
-                           class="form-control input-sm w-sm"/>
-                  </div>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="material" id="material" nextFocus="size"
-                           class="form-control input-sm w-sm"/>
+                  <div class="col-lg-8">
+                    <input readonly type="text" formControlName="product_type" id="product_type" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="row">
-                  <label for="assembly_qty" class="col-lg-4 control-label">
-                    지시 수량
+                  <label for="line_no" class="col-lg-4 control-label">
+                    작업라인 
                   </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="order_assembly_qty" id="order_assembly_qty"
-                           class="form-control input-sm w-sm text-right"/>
-                  </div>
-                  <div class="col-lg-4">
-                    <input type="text" decimal [(ngModel)]="assembly_qty" formControlName="assembly_qty"
-                           id="assembly_qty"
-                           (blur)="calculInputWeightTotal()" nextFocus="material"
-                           class="form-control input-sm w-sm text-right"/>
+                  <div class="col-lg-8">
+                    <input type="text"
+                        readonly 
+                        formControlName="line_no"
+                        id="line_no"
+                        class="input-sm form-control w-sm inline v-middle" />
                   </div>
                 </div>
               </div>
 
-
               <div class="form-group">
                 <div class="row">
-                  <label for="size" class="col-lg-4 control-label">
-                    지시 규격
+                  <label for="promised_date" class="col-lg-4 control-label">
+                    약속일자
                   </label>
-                  <div class="col-lg-4">
-                    <div class="input-group">
-                      <input type="text" formControlName="order_size" id="order_size"
-                             class="form-control input-sm w-sm text-right"/>
-                      <span class="input-group-btn">
-                                              <button class="btn btn-sm btn-primary" type="button"
-                                                      (click)="loadMaterial($event)">검색</button>
-                                          </span>
-                    </div>
-                  </div>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="size" id="size" nextFocus="steel_maker"
-                           class="form-control input-sm w-sm text-right"/>
+                  <div class="col-lg-8">
+                    <input readonly type="text" formControlName="promised_date" id="promised_date" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="row">
-                  <div class="col-lg-4"></div>
-                  <label for="remaining_qty" class="col-lg-4 text-right control-label">
-                    잔량
+                  <label for="qty" class="col-lg-4 control-label">
+                    수량
                   </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="remaining_qty" id="remaining_qty"
-                           class="form-control input-sm w-sm text-right"/>
-                    <input type="hidden" formControlName="used_rcv_items"/>
+                  <div class="col-lg-8">
+                    <input readonly type="text" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
                   </div>
                 </div>
               </div>
 
+
               <div class="form-group">
                 <div class="row">
-                  <div class="col-lg-4"></div>
-                  <label class="col-lg-4 text-right control-label">조립완료</label>
-                  <div class="col-lg-1 text-left"><input type="checkbox" formControlName="st" id="st"
-                                                         class="form-control input-xs"/></div>
-                  <div class="col-lg-3"></div>
+                  <label for="start_date" class="col-lg-4 control-label">
+                    조립시작일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="start_date" id="start_date" bsDatepicker
+                    placement="bottom left" class="form-control input-sm w-sm"/>
+                  </div>
                 </div>
               </div>
-
-            </div>
-
-            <div class="col-lg-7">
-
-              <div class="row m">
-                <div class="col-lg-6">
-                  <span class="h5 font-bold">원자재재고현황</span>
-                </div>
-                <div class="text-right">
-                    <span><input type="checkbox" formControlName="is_all_checked"
-                                 (click)="chkAll($event.target.checked)"/>전체</span>
-                </div>
-              </div>
-
-              <ngx-datatable
-                [style.height.px]="300"
-                class="bootstrap"
-                [rows]="materialRows"
-                [columnMode]="'force'"
-                [headerHeight]="30"
-                [rowHeight]="30"
-                [scrollbarV]="true"
-                [scrollbarH]="false"
-                [selected]="selectedRcvItems"
-                [selectionType]="'checkbox'"
-                [selectAllRowsOnPage]="false"
-                (select)='onSelectRcvItems($event)'
-                [messages]="messages"
-              >
-                <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"
-                                      [draggable]="false" [resizeable]="false" headerClass="checkAll"
-                                      cellClass="text-center">
-                  <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                               let-selectFn="selectFn">
-                    <label class="i-checks i-checks-sm m-b-none">
-                      <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"
-                             [disabled]="!assembly_qty || inputForm.value.is_all_checked"/><i></i>
-                    </label>
-                  </ng-template>
-                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected"
-                               let-onCheckboxChangeFn="onCheckboxChangeFn">
-                    <label class="i-checks i-checks-sm m-b-none">
-                      <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"
-                             [disabled]="!assembly_qty || (row.material != inputForm.value.order_material || row.size != inputForm.value.order_size)"/><i></i>
-                    </label>
-                  </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column prop="material_code" name="자재코드" [width]="1" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="material" name="재질" [width]="130" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="size" name="규격" [width]="60" [canAutoResize]="false" [resizeable]="false"
-                                      cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="rcv_date" name="입고일" [width]="100" [canAutoResize]="false"
-                                      [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="remaining_weight" name="재고" [width]="70" [canAutoResize]="false"
-                                      [resizeable]="false" cellClass="text-right">
-                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                  </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column prop="order_amount" name="금액" [width]="100" [canAutoResize]="false"
-                                      [resizeable]="false" cellClass="text-right">
-                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                  </ng-template>
-                </ngx-datatable-column>
-              </ngx-datatable>
-
-
-              <div class="inventory_status_message">
-                <span *ngIf="!inputWeightTotal">재고현황에서 자재를 선택하세요</span>
-                <div *ngIf="usedDetailArr.length > 0">
-                  <table class="details">
-                    <tr>
-                      <th>재고사용량</th>
-                      <th>사용후잔량</th>
-                    </tr>
-                    <tr *ngFor="let row of usedDetailArr">
-                      <td><span>{{ row.inven_weight | numberFormat }}</span></td>
-                      <td><span>{{ row.remaining_weight | numberFormat }}</span></td>
-                    </tr>
-                  </table>
+              <div class="form-group">
+                <div class="row">
+                  <label for="end_date" class="col-lg-4 control-label">
+                    조립종료일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input type="text" formControlName="end_date" id="end_date" bsDatepicker
+                    placement="bottom left" class="form-control input-sm w-sm"/>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-4">
+    
+              <div class="form-group">
+                <div *ngFor='let production_personnel of [].constructor(personnelDataCnt); let index = index;' class="row">
+                  <div *ngIf="inputForm.value['personnel_id_'+(index+1)] != -1" style="display: contents"
+                  id="personnel_wrap_{{index+1}}">
+                  <label for="personnel" class="col-lg-4 control-label">
+                    조립인력 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                  </label>
+                  <div class="col-lg-8">
+                    <input
+                        formControlName="personnel_{{index+1}}"
+                        id="personnel_{{index+1}}"
+                        [typeahead]="personnelList"
+                        typeaheadOptionField="name"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectPersonnel($event, index+1)"
+                        class="input-sm form-control w-sm inline v-middle" />
+                    <input type="hidden" formControlName="personnel_id_{{index+1}}" id="personnel_id_{{index+1}}" class="input-sm form-control w-xs inline v-middle print-input">
+                  </div>
+                  <div style="display: flex;">
+                    <button *ngIf="chkViewAddBtn(index+1)" (click)="addPersonnelRow()"
+                            [disabled]="!inputForm.valid"
+                            id="material_add_btn_{{index+1}}"
+                            class="btn btn-sm btn-info btn-addon" style="margin-right: 5px">추가
+                    </button>
+                    <button *ngIf="chkViewRemoveBtn(index+1)"
+                            (click)="removePersonnelRow(index+1)"
+                            id="material_remove_btn_{{index+1}}"
+                            class="btn btn-sm btn-danger btn-addon">삭제
+                    </button>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              
+
+          </div>
           </div>
         </div>
 

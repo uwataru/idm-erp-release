@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ElectronService} from '../../../../providers/electron.service';
 import {saveAs as importedSaveAs} from 'file-saver';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {DatePipe} from '@angular/common';
 import {AssemblyWorksService} from './assembly-works.service';
@@ -35,14 +35,11 @@ export class AssemblyWorksComponent implements OnInit {
   materialRows = [];
   delId = [];
   selected = [];
-  selectedRcvItems = [];
-  usedRcvItems: string;
-  usedDetailArr = [];
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  productionLines: any[] = this.globals.configs['productionLine'];
+  personnelList: any[] = this.globals.configs['personnelList'];
   totalWeight: number;
   assembly_total: number;
   product_price: number;
@@ -58,6 +55,8 @@ export class AssemblyWorksComponent implements OnInit {
   editData: Item;
   data: Date;
 
+  personnelDataCnt: number;
+
   isExecutable: boolean = false;
   isPrintable: boolean = false;
 
@@ -72,7 +71,7 @@ export class AssemblyWorksComponent implements OnInit {
 
   constructor(
     public elSrv: ElectronService,
-    @Inject(FormBuilder) fb: FormBuilder,
+    @Inject(FormBuilder) public fb: FormBuilder,
     private datePipe: DatePipe,
     private dataService: AssemblyWorksService,
     private globals: AppGlobals,
@@ -93,28 +92,21 @@ export class AssemblyWorksComponent implements OnInit {
       }
     }
 
-    this.inputForm = fb.group({
-      input_date: ['', Validators.required],
+    this.buildInputFormGroup();
+  }
+  buildInputFormGroup(){
+    this.inputForm = this.fb.group({
       order_no: ['', Validators.required],
-      poc_no: ['', Validators.required],
-      release_type: ['', Validators.required],
-      product_code: '',
-      product_name: '',
-      production_line: '',
-      drawing_no: '',
-      order_assembly_qty: '',
-      order_material: '',
-      order_size: '',
-      order_input_weight: '',
-      order_input_weight_total: '',
-      assembly_qty: ['', Validators.required],
-      material: ['', Validators.required],
-      size: ['', Validators.required],
-      input_weight: '',
-      input_weight_total: '',
-      remaining_qty: '',
-      used_rcv_items: '',
-      st: '',
+      partner_name: ['', Validators.required],
+      product_name: ['', Validators.required],
+      product_type: ['', Validators.required],
+      line_no: '',
+      promised_date: '',
+      qty: '',
+      start_date: '',
+      end_date: '',
+      personnel_1: '',
+      personnel_id_1: '',
       is_all_checked: false
     });
   }
@@ -125,6 +117,7 @@ export class AssemblyWorksComponent implements OnInit {
     this.uploadFormTitle = '조립재고 엑셀업로드';
 
     this.getAll();
+    this.personnelDataCnt = 1;
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -138,7 +131,7 @@ export class AssemblyWorksComponent implements OnInit {
 
   getAll(): void {
     let params = {
-      sortby: ['working_stime'],
+      sortby: ['order_no'],
       order: ['asc'],
       maxResultCount: 10000
     };
@@ -147,6 +140,11 @@ export class AssemblyWorksComponent implements OnInit {
       listData => {
         this.listData = listData;
         this.rows = listData['data'];
+        for(let i=0; i<this.rows.length; i++){
+          let qty = parseInt(this.rows[i]['qty']);
+          let production_qty = parseInt(this.rows[i]['Production_qty']);
+          this.rows[i].remind_qty = qty-production_qty;
+        }
 
         this.isLoadingProgress = false;
       }
@@ -154,24 +152,40 @@ export class AssemblyWorksComponent implements OnInit {
   }
 
   Save() {
-    let formData = this.inputForm.value;
-    if (!formData.release_type) {
-      alert('출고구분을 선택해주세요!');
-      return false;
+    // let formData = this.inputForm.value;
+    let formModel = this.inputForm.value;
+    
+    let formData = {
+      start_date: this.datePipe.transform(formModel['start_date'], 'yyyy-MM-dd'),
+      end_date: this.datePipe.transform(formModel['end_date'], 'yyyy-MM-dd'),
+      production_personnel: []
+    };
+
+
+    // formData.
+
+    for(let i=1; i<=this.personnelDataCnt; i++){
+
+      formData.production_personnel.push( this.makePersonnels(i, formModel) );
+
+      delete formData['personnel_id_'+i];
+      // delete formData['personnel_'+i];
     }
 
-    formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
-    formData.assembly_qty = this.utils.removeComma(formData.assembly_qty) * 1;
-    formData.size = this.utils.removeComma(formData.size) * 1;
-    formData.input_weight = this.utils.removeComma(formData.input_weight) * 1;
-    formData.remaining_qty = this.utils.removeComma(formData.remaining_qty) * 1;
-    formData.used_rcv_items = this.usedRcvItems;
+    console.log('save', formData);
 
-    this.Create(formData);
+    this.Create(this.selectedId,formData);
   }
 
-  Create(data): void {
-    this.dataService.Create(data)
+  makePersonnels(index, formModel){
+    let production_personnel = {
+      id: formModel['personnel_id_' + index],
+    }
+    return production_personnel;
+  }
+
+  Create(id, data): void {
+    this.dataService.Create(id, data)
       .subscribe(
         data => {
           if (data['result'] == 'success') {
@@ -187,58 +201,21 @@ export class AssemblyWorksComponent implements OnInit {
       );
   }
 
-
-  loadMaterial(event) {
-
-    this.selectedRcvItems = [];
-
-    let formData = this.inputForm.value;
-    this.inputForm.patchValue({is_all_checked: false});
-
-    let order_material = formData.order_material;
-    let order_size = formData.order_size;
-
-    if (order_material == '' || order_size == '') {
-      this.messageService.add('지시재질 또는 규격을 입력하세요.');
-      return false;
-    } else if (isNaN(order_size)) {
-      this.messageService.add('지시규격은' + this.isNotNumberMsg);
-      return false;
-    }
-
-    let params = {
-      material: order_material,
-      size: order_size,
-      st: 0,
-      sortby: ['material', 'size', 'steel_maker', 'rcv_date'],
-      order: ['asc', 'asc', 'asc', 'asc'],
-      maxResultCount: 1000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.GetMaterialsReceiving(params).subscribe(
-      listData => {
-        this.materialData = listData;
-        this.materialRows = listData['data'];
-        this.totalWeight = listData['totalWeight'];
-        this.isLoadingProgress = false;
-
-        if (order_material != this.origin_material || order_size != this.origin_size) {
-          (<HTMLInputElement>document.getElementById('order_material')).style.border = 'solid 1px #FF3300';
-          (<HTMLInputElement>document.getElementById('order_size')).style.border = 'solid 1px #FF3300';
+  
+  getQtyCheck(id){
+    this.dataService.GetQtyCheck(id).subscribe(
+      data => {
+        if (data['result'] == 'success') {
+          this.openModal('write');
         } else {
-          (<HTMLInputElement>document.getElementById('order_material')).style.border = '';
-          (<HTMLInputElement>document.getElementById('order_size')).style.border = '';
+          this.messageService.add(data['errorMessage']);
         }
-      }
+      },
+      error => this.errorMessage = <any>error
     );
   }
 
-
   openModal(method) {
-
-    (<HTMLInputElement>document.getElementById('order_material')).style.border = '';
-    (<HTMLInputElement>document.getElementById('order_size')).style.border = '';
-
     // 실행권한
     if (this.isExecutable == true) {
       if (method == 'write') {
@@ -257,8 +234,7 @@ export class AssemblyWorksComponent implements OnInit {
       // 입력폼 리셋
       this.inputForm.reset();
 
-      this.selectedRcvItems = [];
-
+      this.personnelDataCnt = 1;
 
       // 절단작업지시 내용
       this.dataService.GetById(this.selectedId).subscribe(
@@ -267,55 +243,22 @@ export class AssemblyWorksComponent implements OnInit {
             this.editData = editData;
             this.formData = editData['data'];
 
-            this.origin_material = this.formData.material;
-            this.origin_size = this.formData.size;
+            console.log('!!!!!!!' ,this.formData);
 
-            this.assembly_total = this.formData.assembly_qty * 1;
-
-            let order_assembly_qty = this.formData.order_qty * 1;
-            let order_input_weight = this.formData.input_weight * 1;
-            let order_input_weight_total = Math.round(order_assembly_qty * order_input_weight * 10) * 0.1;
             this.inputForm.patchValue({
-              input_date: this.tDate,
+              start_date: this.tDate,
+              end_date: this.tDate,
+              // qty: this.formData.qty,
               order_no: this.formData.order_no,
-              poc_no: this.formData.poc_no,
-              release_type: this.formData.release_type,
-              product_code: this.formData.product_code,
+              partner_name: this.formData.partner_name,
               product_name: this.formData.product_name,
-              production_line: this.formData.production_line,
-              order_assembly_qty: this.utils.addComma(order_assembly_qty),
-              assembly_qty: this.utils.addComma(order_assembly_qty - this.assembly_total),
-              order_material: this.formData.material,
-              order_size: this.formData.size,
-              order_input_weight: this.utils.addComma(order_input_weight),
-              order_input_weight_total: this.utils.addComma(order_input_weight_total),
-              st: true
+              product_type: this.formData.product_type,
+              line_no: this.formData.line_no,
+              promised_date: this.formData.promised_date,
+              qty: this.utils.addComma(this.formData.qty),
             });
 
 
-            // 원자재 재고현황
-            this.usedDetailArr = [];
-            let params = {
-              material: this.formData.material,
-              size: this.formData.size,
-              st: 0,
-              sortby: ['material', 'size', 'steel_maker', 'rcv_date'],
-              order: ['asc', 'asc', 'asc', 'asc'],
-              maxResultCount: 1000
-            };
-
-            setTimeout(() => {
-              this.isLoadingProgress = true;
-              this.dataService.GetMaterialsReceiving(params).subscribe(
-                listData => {
-                  this.materialData = listData;
-                  this.materialRows = listData['data'];
-                  this.totalWeight = listData['totalWeight'];
-
-                  this.isLoadingProgress = false;
-                }
-              );
-            }, 100);
 
           }
         }
@@ -324,9 +267,57 @@ export class AssemblyWorksComponent implements OnInit {
   }
 
   onSelect(event) {
-    this.selectedId = event.selected[0].poc_no;
+    console.log(event);
+    this.selectedId = event.selected[0].id;
   }
 
+  addPersonnelRow() {
+    // console.log('addMaterialRow', index);
+    this.personnelDataCnt++;
+    let index = this.personnelDataCnt;
+
+    this.inputForm.addControl('personnel_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('personnel_id_' + index, new FormControl('', Validators.required));
+  }
+  removePersonnelRow(index) {
+    console.log('removePersonnelRow', index);
+    this.inputForm.controls['personnel_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    this.inputForm.controls['personnel_id_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+  }
+
+  chkViewAddBtn(index) {
+    let len = this.personnelDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = index + 1; i <= len; i++) {
+      if (this.inputForm.value['personnel_id_' + i] == -1) {
+        unVisibleItemCnt++;
+      }
+    }
+    // console.log(index, len , upItemCnt);
+    if((len - unVisibleItemCnt) == index){
+      return true;
+    }
+    return false;
+
+  }
+
+  chkViewRemoveBtn(index){
+    let len = this.personnelDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = 1; i <= len; i++) {
+      if (this.inputForm.value['personnel_id_' + i] == -1) {
+        unVisibleItemCnt++;
+      }
+    }
+    if(len - unVisibleItemCnt > 1){
+      return true;
+    }
+    return false;
+  }
+
+  onSelectPersonnel(event, index){
+    this.inputForm.controls['personnel_id_' + index].setValue(event.item.id);
+  }
   calculInputWeightTotal() {
     let formData = this.inputForm.value;
     let order_assembly_qty = this.utils.removeComma(formData.order_assembly_qty) * 1;
@@ -352,90 +343,90 @@ export class AssemblyWorksComponent implements OnInit {
     this.inputWeightTotal = event.target.value;
   }
 
-  onSelectRcvItems({selected}) {
+  // onSelectRcvItems({selected}) {
 
-    this.selectedRcvItems.splice(0, this.selectedRcvItems.length);
-    this.selectedRcvItems.push(...selected);
+  //   this.selectedRcvItems.splice(0, this.selectedRcvItems.length);
+  //   this.selectedRcvItems.push(...selected);
 
-    //if (this.selectedRcvItems.length > 0) {
-    this.calculRemainingQty(this.selectedRcvItems);
-    //}
-  }
+  //   //if (this.selectedRcvItems.length > 0) {
+  //   this.calculRemainingQty(this.selectedRcvItems);
+  //   //}
+  // }
 
-  calculRemainingQty(selectedRcvItems) {
+  // calculRemainingQty(selectedRcvItems) {
 
-    // if (selectedRcvItems.length < 1) {
-    //     this.usedRcvItems = '';
-    //     return false;
-    // }
-    let formData = this.inputForm.value;
-    let inputWeightTotal: number;
+  //   // if (selectedRcvItems.length < 1) {
+  //   //     this.usedRcvItems = '';
+  //   //     return false;
+  //   // }
+  //   let formData = this.inputForm.value;
+  //   let inputWeightTotal: number;
 
-    // 투입중량을 입력안한 경우 단위중량을 복사한 후 수량을 곱하여 계산한다.
-    // if (!formData.input_weight_total || formData.input_weight_total == '') {
-    //   if (!formData.order_input_weight) {
-    //     alert('투입중량을 입력해주세요');
-    //     return false;
-    //   }
-    //   let inputWeight = this.utils.addComma(formData.order_input_weight);
-    //   let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
-    //   let assemblyQty = this.utils.removeComma(formData.assembly_qty) * 1;
-    //   inputWeightTotal = orderInputWeight * assemblyQty;
-    //   this.inputForm.patchValue({
-    //     input_weight: this.utils.addComma(inputWeight),
-    //     input_weight_total: this.utils.addComma(inputWeightTotal)
-    //   });
-    // } else {
-    //   inputWeightTotal = this.utils.removeComma(formData.input_weight_total) * 1;
-    // }
-    inputWeightTotal = this.utils.removeComma(formData.assembly_qty) * 1;
+  //   // 투입중량을 입력안한 경우 단위중량을 복사한 후 수량을 곱하여 계산한다.
+  //   // if (!formData.input_weight_total || formData.input_weight_total == '') {
+  //   //   if (!formData.order_input_weight) {
+  //   //     alert('투입중량을 입력해주세요');
+  //   //     return false;
+  //   //   }
+  //   //   let inputWeight = this.utils.addComma(formData.order_input_weight);
+  //   //   let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
+  //   //   let assemblyQty = this.utils.removeComma(formData.assembly_qty) * 1;
+  //   //   inputWeightTotal = orderInputWeight * assemblyQty;
+  //   //   this.inputForm.patchValue({
+  //   //     input_weight: this.utils.addComma(inputWeight),
+  //   //     input_weight_total: this.utils.addComma(inputWeightTotal)
+  //   //   });
+  //   // } else {
+  //   //   inputWeightTotal = this.utils.removeComma(formData.input_weight_total) * 1;
+  //   // }
+  //   inputWeightTotal = this.utils.removeComma(formData.assembly_qty) * 1;
 
-    this.usedDetailArr = [];    // 초기화
-    let usedItemArr = [];
-    let usedQty: number;
+  //   this.usedDetailArr = [];    // 초기화
+  //   let usedItemArr = [];
+  //   let usedQty: number;
 
-    this.inputWeightTotal = inputWeightTotal;
-    usedQty = 0;
-    let material = '';
-    let size = '';
-    this.selectedRcvItems.forEach((e: any) => {
-      if (inputWeightTotal > 0) {
+  //   this.inputWeightTotal = inputWeightTotal;
+  //   usedQty = 0;
+  //   let material = '';
+  //   let size = '';
+  //   this.selectedRcvItems.forEach((e: any) => {
+  //     if (inputWeightTotal > 0) {
 
-        // 재고 클릭시 재고사용내역에 보여줄 데이터 구성 (투입중량 - 재고 - 잔량)
-        let usedData = {
-          'input_weight_total': inputWeightTotal,
-          'inven_weight': e.remaining_weight,
-          'remaining_weight': e.remaining_weight - inputWeightTotal
-        };
-        this.usedDetailArr.push(usedData);
+  //       // 재고 클릭시 재고사용내역에 보여줄 데이터 구성 (투입중량 - 재고 - 잔량)
+  //       let usedData = {
+  //         'input_weight_total': inputWeightTotal,
+  //         'inven_weight': e.remaining_weight,
+  //         'remaining_weight': e.remaining_weight - inputWeightTotal
+  //       };
+  //       this.usedDetailArr.push(usedData);
 
-        inputWeightTotal = inputWeightTotal - e.remaining_weight;
+  //       inputWeightTotal = inputWeightTotal - e.remaining_weight;
 
-        let usedQty: number;
-        if (inputWeightTotal >= 0) {
-          usedQty = e.remaining_weight;
-        } else {
-          usedQty = e.remaining_weight + inputWeightTotal;
-        }
+  //       let usedQty: number;
+  //       if (inputWeightTotal >= 0) {
+  //         usedQty = e.remaining_weight;
+  //       } else {
+  //         usedQty = e.remaining_weight + inputWeightTotal;
+  //       }
 
-        //usedQty = usedQty + usedQty;
-        usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
+  //       //usedQty = usedQty + usedQty;
+  //       usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
 
-        material = e.material;
-        size = e.size;
-      }
-    });
-    this.usedRcvItems = usedItemArr.join(',');
+  //       material = e.material;
+  //       size = e.size;
+  //     }
+  //   });
+  //   this.usedRcvItems = usedItemArr.join(',');
 
-    let remainingQty = this.totalWeight - usedQty;
-    remainingQty = this.utils.addComma(remainingQty);
+  //   let remainingQty = this.totalWeight - usedQty;
+  //   remainingQty = this.utils.addComma(remainingQty);
 
-    this.inputForm.patchValue({
-      material: material,
-      size: size,
-      remaining_qty: remainingQty
-    });
-  }
+  //   this.inputForm.patchValue({
+  //     material: material,
+  //     size: size,
+  //     remaining_qty: remainingQty
+  //   });
+  // }
 
  
   fileSelected(event) {
@@ -466,28 +457,28 @@ export class AssemblyWorksComponent implements OnInit {
     );
   }
 
-  chkAll(isChecked) {
-    let formData = this.inputForm.value;
-    let params = {};
-    if (!isChecked) {
-      params = {
-        material: formData.order_material,
-        size: formData.order_size,
-        st: 0,
-        sortby: ['material', 'size', 'steel_maker', 'rcv_date'],
-        order: ['asc', 'asc', 'asc', 'asc'],
-        maxResultCount: 1000
-      };
-    }
+  // chkAll(isChecked) {
+  //   let formData = this.inputForm.value;
+  //   let params = {};
+  //   if (!isChecked) {
+  //     params = {
+  //       material: formData.order_material,
+  //       size: formData.order_size,
+  //       st: 0,
+  //       sortby: ['material', 'size', 'steel_maker', 'rcv_date'],
+  //       order: ['asc', 'asc', 'asc', 'asc'],
+  //       maxResultCount: 1000
+  //     };
+  //   }
 
-    this.isLoadingProgress = true;
-    this.dataService.GetMaterialsReceiving(params).subscribe(
-      listData => {
-        this.materialRows = listData['data'];
-        this.isLoadingProgress = false;
-      });
+  //   this.isLoadingProgress = true;
+  //   this.dataService.GetMaterialsReceiving(params).subscribe(
+  //     listData => {
+  //       this.materialRows = listData['data'];
+  //       this.isLoadingProgress = false;
+  //     });
 
-  }
+  // }
 
 
 }

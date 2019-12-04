@@ -15,7 +15,7 @@ export class AssemblyWorksService {
     private globals: AppGlobals) {
   }
 
-  private url = this.globals.serverUrl + '/production/assembly-works';
+  private url = this.globals.serverUrl + '/production/plan';
 
   GetAll(params): Observable<Item[]> {
     return this.http.get<Item[]>(this.url, {params: params});
@@ -23,6 +23,9 @@ export class AssemblyWorksService {
 
   GetById(id: string): Observable<Item> {
     return this.http.get<Item>(this.url + '/' + id);
+  }
+  GetQtyCheck(id: string): Observable<Item> {
+    return this.http.get<Item>(this.url + '/qty-check/' + id);
   }
 
   GetMaterialsReceiving(params): Observable<matlReceivingItem[]> {
@@ -32,8 +35,8 @@ export class AssemblyWorksService {
 
   //======= 저장 =======//
   /** POST: 데이터 추가 */
-  Create(data: Item): Observable<Item> {
-    return this.http.post<Item>(this.url, data, httpOptions).pipe(
+  Create(id: number, data: Item): Observable<Item> {
+    return this.http.put<Item>(this.url+'/'+id, data, httpOptions).pipe(
       tap((data: Item) => this.log(`added data w/ id=${data}`)),
       catchError(this.handleError<Item>('Create'))
     );

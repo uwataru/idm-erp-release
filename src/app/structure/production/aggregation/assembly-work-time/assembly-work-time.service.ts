@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './forging-work-time.item';
+import { Item } from './assembly-work-time.item';
 import { AppGlobals } from '../../../../app.globals';
 
 @Injectable()
