@@ -152,7 +152,6 @@ export class AssemblyWorksComponent implements OnInit {
   }
 
   Save() {
-    // let formData = this.inputForm.value;
     let formModel = this.inputForm.value;
     
     let formData = {
@@ -162,13 +161,14 @@ export class AssemblyWorksComponent implements OnInit {
     };
 
 
-    // formData.
 
     for(let i=1; i<=this.personnelDataCnt; i++){
-
-      formData.production_personnel.push( this.makePersonnels(i, formModel) );
+      if(formModel['personnel_id_'+i] != -1){
+        formData.production_personnel.push( this.makePersonnels(i, formModel) );
+      }
 
       delete formData['personnel_id_'+i];
+      delete formData['personnel_'+i];
       // delete formData['personnel_'+i];
     }
 
@@ -342,91 +342,6 @@ export class AssemblyWorksComponent implements OnInit {
   checkInputWeightTotal(event): void {
     this.inputWeightTotal = event.target.value;
   }
-
-  // onSelectRcvItems({selected}) {
-
-  //   this.selectedRcvItems.splice(0, this.selectedRcvItems.length);
-  //   this.selectedRcvItems.push(...selected);
-
-  //   //if (this.selectedRcvItems.length > 0) {
-  //   this.calculRemainingQty(this.selectedRcvItems);
-  //   //}
-  // }
-
-  // calculRemainingQty(selectedRcvItems) {
-
-  //   // if (selectedRcvItems.length < 1) {
-  //   //     this.usedRcvItems = '';
-  //   //     return false;
-  //   // }
-  //   let formData = this.inputForm.value;
-  //   let inputWeightTotal: number;
-
-  //   // 투입중량을 입력안한 경우 단위중량을 복사한 후 수량을 곱하여 계산한다.
-  //   // if (!formData.input_weight_total || formData.input_weight_total == '') {
-  //   //   if (!formData.order_input_weight) {
-  //   //     alert('투입중량을 입력해주세요');
-  //   //     return false;
-  //   //   }
-  //   //   let inputWeight = this.utils.addComma(formData.order_input_weight);
-  //   //   let orderInputWeight = this.utils.removeComma(formData.order_input_weight) * 1;
-  //   //   let assemblyQty = this.utils.removeComma(formData.assembly_qty) * 1;
-  //   //   inputWeightTotal = orderInputWeight * assemblyQty;
-  //   //   this.inputForm.patchValue({
-  //   //     input_weight: this.utils.addComma(inputWeight),
-  //   //     input_weight_total: this.utils.addComma(inputWeightTotal)
-  //   //   });
-  //   // } else {
-  //   //   inputWeightTotal = this.utils.removeComma(formData.input_weight_total) * 1;
-  //   // }
-  //   inputWeightTotal = this.utils.removeComma(formData.assembly_qty) * 1;
-
-  //   this.usedDetailArr = [];    // 초기화
-  //   let usedItemArr = [];
-  //   let usedQty: number;
-
-  //   this.inputWeightTotal = inputWeightTotal;
-  //   usedQty = 0;
-  //   let material = '';
-  //   let size = '';
-  //   this.selectedRcvItems.forEach((e: any) => {
-  //     if (inputWeightTotal > 0) {
-
-  //       // 재고 클릭시 재고사용내역에 보여줄 데이터 구성 (투입중량 - 재고 - 잔량)
-  //       let usedData = {
-  //         'input_weight_total': inputWeightTotal,
-  //         'inven_weight': e.remaining_weight,
-  //         'remaining_weight': e.remaining_weight - inputWeightTotal
-  //       };
-  //       this.usedDetailArr.push(usedData);
-
-  //       inputWeightTotal = inputWeightTotal - e.remaining_weight;
-
-  //       let usedQty: number;
-  //       if (inputWeightTotal >= 0) {
-  //         usedQty = e.remaining_weight;
-  //       } else {
-  //         usedQty = e.remaining_weight + inputWeightTotal;
-  //       }
-
-  //       //usedQty = usedQty + usedQty;
-  //       usedItemArr.push(e.id + ':' + e.material_code + ':' + usedQty + ':' + (e.remaining_weight - usedQty));
-
-  //       material = e.material;
-  //       size = e.size;
-  //     }
-  //   });
-  //   this.usedRcvItems = usedItemArr.join(',');
-
-  //   let remainingQty = this.totalWeight - usedQty;
-  //   remainingQty = this.utils.addComma(remainingQty);
-
-  //   this.inputForm.patchValue({
-  //     material: material,
-  //     size: size,
-  //     remaining_qty: remainingQty
-  //   });
-  // }
 
  
   fileSelected(event) {
