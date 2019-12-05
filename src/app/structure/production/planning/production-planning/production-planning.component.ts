@@ -25,8 +25,8 @@ declare var $: any;
 })
 export class ProductionPlanningComponent implements OnInit {
   tDate = this.globals.tDate;
-  nativeWindow: any;
-  panelTitle: string = '생산계획관리';
+  // nativeWindow: any;
+  panelTitle: string;
   orderType: string;
   printViewTitle: string;
 
@@ -91,8 +91,8 @@ export class ProductionPlanningComponent implements OnInit {
   errorMessage: string;
 
 
-  @ViewChild('PrintViewModal') printViewModal: ModalDirective;
-  @ViewChild('ProductionPlanningPrintViewModal') productionPlanningPrintViewModal: ModalDirective;
+  // @ViewChild('PrintViewModal') printViewModal: ModalDirective;
+  // @ViewChild('ProductionPlanningPrintViewModal') productionPlanningPrintViewModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -121,18 +121,15 @@ export class ProductionPlanningComponent implements OnInit {
       }
     }
 
-    this.nativeWindow = winRef.getNativeWindow();
+    // this.nativeWindow = winRef.getNativeWindow();
 
     this.searchForm = fb.group({
       sch_order_no: ''
     });
-
-
-
   }
 
   ngOnInit() {
-    console.log(process.versions);
+    this.panelTitle = '생산계획관리';
     this.getAll();
   }
 
@@ -149,14 +146,14 @@ export class ProductionPlanningComponent implements OnInit {
           for(let i=0; i<this.rows.length; i++){
             let qty = Number(this.rows[i]['qty'])*1;
             let productionQty = Number(this.rows[i]['Production_qty'])*1;
-            console.log(i, qty, productionQty);
-            let remindQty = qty-productionQty;
-            this.rows[i].remindQty = remindQty;
-            
-            this.rows[i].remindPrecent = (productionQty/qty)*100;
-            console.log(this.rows[i].remindPrecent);
+            // console.log(i, qty, productionQty);
+            let remainQty = qty - productionQty;
+            this.rows[i].remainQty = remainQty;
+
+            this.rows[i].remainPrecent = (productionQty / qty) * 100;
+            // console.log(this.rows[i].remainPrecent);
           }
-          
+
           this.isLoadingProgress = false;
         }
       );

@@ -11,24 +11,26 @@ export class OutsourcingInOutService {
 
     constructor(private http: HttpClient, private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl +  '/materials/history/outsourcing-in-out';
+    private url = this.globals.serverUrl  + '/materials/record';
 
     /** GET data from the server */
-    GetAll (): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url);
+    GetAll (params): Observable<Item[]> {
+        let currTime = (new Date()).getTime();
+        return this.http.get<Item[]>(this.url + '/receiving-statement', {params: params});
     }
 
     GetDetails (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '/details' , {params: params});
+        return this.http.get<Item[]>(this.url + '/details?t=' + currTime, {params: params});
     }
 
-   /**
-    * Handle Http operation that failed.
-    * Let the app continue.
-    * @param operation - name of the operation that failed
-    * @param result - optional value to return as the observable result
-    */
+
+    /**
+     * Handle Http operation that failed.
+     * Let the app continue.
+     * @param operation - name of the operation that failed
+     * @param result - optional value to return as the observable result
+     */
     private handleError<T> (operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
 
