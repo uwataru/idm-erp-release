@@ -28,8 +28,6 @@ import {ProductionPerformanceChartComponent} from './chart/production-performanc
 import {ForgingWorkComponent} from './record/forging-work/forging-work.component';
 import {TotalInventorySituationComponent} from './record/total-inventory-situation/total-inventory-situation.component';
 import {LotTrackerComponent} from './record/lot-tracker/lot-tracker.component';
-import { PersonnelComponent } from './personnel/personnel.component';
-import { PersonnelManagementComponent } from './personnel-management/personnel-management.component';
 import {AssemblyResultComponent} from "./record/assembly-result/assembly-result.component";
 
 
@@ -48,9 +46,6 @@ export const routes: Routes = [
   {path: 'record/forging-work', component: ForgingWorkComponent, data: {title: '생산 > 단조작업명세서', id: 125}, canActivate: [AuthGuard]},
   {path: 'record/total-inventory-situation', component: TotalInventorySituationComponent, data: {title: '생산 > 종합재고상황판', id: 42}, canActivate: [AuthGuard]},
   {path: 'record/lot-tracker', component: LotTrackerComponent, data: {title: '생산 > LOT추적표', id: 43}, canActivate: [AuthGuard]},
-  {path: 'personnel', redirectTo: 'personnel', pathMatch: 'full', canActivate: [AuthGuard]},
-  {path: 'personnel', component: PersonnelComponent, data: { title: '생산>생산인력등록', id: 45}},
-  {path: 'personnel-management', component: PersonnelManagementComponent, data: { title: '생산>생산인력관리', id: 46}}
 ];
 
 // Datepicker Config
@@ -88,7 +83,6 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     AssemblyWorksComponent,
     ForgingWorksComponent,
     AssemblyWorkTimeComponent,
-    PersonnelManagementComponent,
     AssemblyWorkComponent,
     AssemblyResultComponent,
     ProductivityAnalysisComponent,
@@ -96,7 +90,6 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ForgingWorkComponent,
     TotalInventorySituationComponent,
     LotTrackerComponent,
-    PersonnelComponent
   ],
   providers: [
     {provide: BsDatepickerConfig, useFactory: getDatepickerConfig}

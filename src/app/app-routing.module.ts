@@ -28,7 +28,7 @@ const routes: Routes = [
             },
             {
                 path: 'personnel',
-                loadChildren: './structure/production/production.module#ProductionModule'
+                loadChildren: './structure/personnel/personnel.module#PersonnelModule'
             },
             {
                 path: 'materials',
