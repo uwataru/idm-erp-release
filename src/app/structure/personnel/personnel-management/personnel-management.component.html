@@ -13,7 +13,7 @@
                class="input-sm form-control w-xs inline v-middle"/>
         <label for="sch_worker_name" class="m-l">작업자</label>
         <input type="text" formControlName="sch_worker_name" id="sch_worker_name" (keyup)="updateFilter($event)"
-               class="input-sm form-control w-sm inline v-middle" placeholder="제품명"/>
+               class="input-sm form-control w-sm inline v-middle" placeholder="작업자"/>
         <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
       </form>
     </div>
@@ -34,24 +34,35 @@
           [summaryPosition]="'bottom'"
           [summaryHeight]="45"
           [messages]="messages">
-          <ngx-datatable-column prop="working_date" name="작업일자" cellClass="text-center" [width]="120" [sortable]="false"
-                                [summaryTemplate]="total_label">
+          <ngx-datatable-column prop="working_date" name="작업일자" cellClass="text-center" [width]="120"
+                                [canAutoResize]="false" [summaryTemplate]="total_label">
             <ng-template #total_label let-row="row" let-value="value">
               <div style="margin-top: 10px; text-align: center"><span><b>총 계</b></span></div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                                cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-left"></ngx-datatable-column>
+          <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-left"></ngx-datatable-column>
           <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="" name="작업자" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="product_qty" name="생산수량" cellClass="text-right" [sortable]="false"
-                                [summaryTemplate]="product_qty_total">
+          <ngx-datatable-column prop="" name="작업자" [width]="120" [canAutoResize]="false"
+                                cellClass="text-left"></ngx-datatable-column>
+          <ngx-datatable-column prop="product_qty" name="생산수량" cellClass="text-right" [width]="100"
+                                [canAutoResize]="false" [summaryTemplate]="product_qty_total">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
               <span>{{ value | numberFormat }}</span>
             </ng-template>
             <ng-template #product_qty_total let-row="row" let-value="value">
               <span style="margin-top: 10px"><b>{{ totalProductQty() }}</b></span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="work_time" name="작업시간" cellClass="text-right" [width]="100"
+                                [canAutoResize]="false" [summaryTemplate]="work_time_total">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+            <ng-template #work_time_total let-row="row" let-value="value">
+              <span style="margin-top: 10px"><b>{{ totalWorkTime() }}</b></span>
             </ng-template>
           </ngx-datatable-column>
       </ngx-datatable>

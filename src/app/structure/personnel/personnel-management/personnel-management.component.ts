@@ -130,4 +130,12 @@ export class PersonnelManagementComponent implements OnInit {
         }
         return this.utils.addComma(totalVal);
     }
+
+    totalWorkTime(){
+        let totalVal = 0;
+        for(let i in this.rows){
+            totalVal += parseInt(this.rows[i].work_time);
+        }
+        return this.utils.addComma(totalVal);
+    }
 }
