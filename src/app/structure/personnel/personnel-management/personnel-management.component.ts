@@ -9,6 +9,7 @@ import { MessageService } from '../../../message.service';
 
 import { Item } from './personnel-management.item';
 import { PersonnelManagementService } from './personnel-management.service';
+import {UtilsService} from "../../../utils.service";
 
 declare var $: any;
 
@@ -19,16 +20,9 @@ declare var $: any;
   providers: [PersonnelManagementService]
 })
 export class PersonnelManagementComponent implements OnInit {
-
-  InputDate = this.globals.tDate;
   panelTitle: string;
-  inputFormTitle: string;
-  editFormTitle: string;
-  deleteFormTitle: string;
-  deleteConfirmMsg: string;
 
   isLoadingProgress: boolean = false;
-  isEditMode: boolean = false;
   selectedId: string;
   listData : Item[];
   gridHeight = this.globals.gridHeight;
@@ -38,23 +32,13 @@ export class PersonnelManagementComponent implements OnInit {
   editData: Item;
   formData: Item['data'];
   rows = [];
+  temp = [];
   delId = [];
   selected = [];
-  inputForm: FormGroup;
-  editForm: FormGroup;
-
-  // isExecutable: boolean = false;
-  // isPrintable: boolean = false;
+  searchForm: FormGroup;
+  tDate = this.globals.tDate;
 
   errorMessage: string;
-  addOkMsg = '등록이 완료되었습니다.';
-  editOkMsg = '수정이 완료되었습니다.';
-  delOkMsg = '삭제되었습니다.';
-
-  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-  @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
-
-
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -63,29 +47,21 @@ export class PersonnelManagementComponent implements OnInit {
     private globals: AppGlobals,
     private route: ActivatedRoute,
     private configService: ConfigService,
-    private messageService: MessageService
+    private utils: UtilsService,
   ) {
-    this.inputForm = fb.group({
-      group: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      input_process: ['', Validators.required],
-      work_skill: ['', Validators.required],
-      input_date: ['', [Validators.required]],
-      working_time: ['', Validators.required]
-      
-    });
+      this.searchForm = fb.group({
+          sch_sdate: '',
+          sch_edate: '',
+          sch_worker_name: ''
+      });
    }
 
   ngOnInit() {
-    this.panelTitle = '생산인력관리';
-    this.inputFormTitle = '생산인력관리추가';
-    this.editFormTitle = '생산인력 수정';
-    this.deleteFormTitle = '생산인력 삭제';
-    this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
-
+    this.panelTitle = '생산인력투입기록';
     this.getAll();
 
-    this.inputForm.controls['input_date'].setValue(this.InputDate);
+    this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
+    this.searchForm.controls['sch_edate'].setValue(this.tDate);
 
     $(document).ready(function(){
         let modalContent: any = $('.modal-content');
@@ -104,151 +80,62 @@ export class PersonnelManagementComponent implements OnInit {
     this.selected.push(...selected);
 }
 
-getAll(): void {
-    // this.dataService.GetAll().subscribe(
-    //     listData =>
-    //     {
-    //         this.listData = listData;
-    //         this.rows = listData['data'];
-    //     }
-    // );
+    getAll(): void {
+        // this.dataService.GetAll().subscribe(
+        //     listData =>
+        //     {
+        //         this.listData = listData;
+        //         this.rows = listData['data'];
+        //     }
+        // );
 
-    this.selectedId = '';
-    this.selected = [];
+        this.selectedId = '';
+        this.selected = [];
 
-    let params = {
-        sortby: ['id'],
-        order: ['asc'],
-        maxResultCount: 10000
-    }
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-        listData =>
-        {
-            this.listData = listData;
-            this.rows = listData['data'];
-
-
-            this.isLoadingProgress = false;
+        let params = {
+            sortby: ['id'],
+            order: ['asc'],
+            maxResultCount: 10000
         }
-    );
-}
+        this.isLoadingProgress = true;
+        this.dataService.GetAll(params).subscribe(
+            listData =>
+            {
+                this.listData = listData;
+                this.temp = listData['data'];
+                this.rows = listData['data'];
 
-Edit (id) {
-    this.dataService.GetById(id).subscribe(
-        editData =>
-        {
-            if (editData['result'] == "success") {
-                this.editData = editData;
-                this.formData = editData['data'];
-                this.inputForm.patchValue({
-                    group: this.formData.group,
-                    name: this.formData.name,
-                    input_process: this.formData.input_process,
-                    work_skill: this.formData.work_skill,
-                    input_date: this.formData.input_date,
-                    working_time: this.formData.working_time,
-                });
-            } else {
-                this.messageService.add(editData['errorMessage']);
+                this.isLoadingProgress = false;
             }
-        }
-    );
-}
-
-Save () {
-     let formData = this.inputForm.value;
-
-     if (this.isEditMode == true) {
-         this.Update(this.selectedId, formData);
-     } else {
-         this.Create(formData);
-     }
-}
-
-Create (data): void {
-    this.dataService.Create(data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.addOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
         );
-}
-
-Update (id, data): void {
-    this.dataService.Update(id, data)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
-
-Delete (id): void {
-    this.dataService.Delete(id)
-        .subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.getAll();
-                    this.messageService.add(this.delOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.deleteFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-}
-
-openModal(method, id) {
-    // 실행권한
-    // if (this.isExecutable == true) {
-        if (method == 'delete') {
-            this.deleteFormModal.show();
-        } else if (method == 'write') {
-            this.inputFormModal.show();
-        }
-    // } else {
-        // alert(this.globals.isNotExecutable);
-        // return false;
-    // }
-
-    if (id) {
-        if (id == 'selected') {
-            let idArr = [];
-            this.selected.forEach((e:any) => {
-                idArr.push(e.id);
-            });
-            this.selectedId = idArr.join(',');
-        } else {
-            this.selectedId = id;
-        }
     }
-    if (method == 'write') {
-        if (id) {
-            this.isEditMode = true;
-            this.Edit(id);
-        } else {
-            this.inputForm.reset();
-            this.isEditMode = false;
-        }
-    }
-}
 
+    updateFilter(event) {
+        // let partner_code = this.listSltdPaCode;
+        const val = event.target.value;
+        // filter data
+        const temp = this.temp.filter(function (d) {
+            // console.log(d);
+            return (d.name!=null &&  d.name.indexOf(val) !== -1) || !val;
+        });
+
+        // update the rows
+        this.rows = temp;
+    }
+
+    totalProductQty(){
+        let totalVal = 0;
+        for(let i in this.rows){
+            totalVal += parseInt(this.rows[i].product_qty);
+        }
+        return this.utils.addComma(totalVal);
+    }
+
+    totalWorkTime(){
+        let totalVal = 0;
+        for(let i in this.rows){
+            totalVal += parseInt(this.rows[i].work_time);
+        }
+        return this.utils.addComma(totalVal);
+    }
 }

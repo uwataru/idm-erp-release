@@ -1,17 +1,24 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-      <div class="text-center">
-          <span class="h4 block">{{ panelTitle }}</span>
-      </div>
-      <div class="row">
-          <div class="col-sm-6 text-right" style="float: right;">
-              <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
-                  <i class="glyphicon glyphicon-plus"></i>등록
-              </button>
-          </div>
-      </div>
+    <div class="text-center">
+      <span class="h4 block m-b-sm print-margin-top">{{ panelTitle }}</span>
+    </div>
+    <div class="m-l-xs">
+      <form [formGroup]="searchForm">
+        <label for="sch_sdate" class="control-label text-sm">기간</label>
+        <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/> ~
+        <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+               class="input-sm form-control w-xs inline v-middle"/>
+        <label for="sch_worker_name" class="m-l">작업자</label>
+        <input type="text" formControlName="sch_worker_name" id="sch_worker_name" (keyup)="updateFilter($event)"
+               class="input-sm form-control w-sm inline v-middle" placeholder="작업자"/>
+        <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+      </form>
+    </div>
   </div>
+
   <div class="panel-body">
       <ngx-datatable
           [style.height.px] = gridHeight
@@ -23,133 +30,41 @@
           [scrollbarV]="true"
           [scrollbarH]="false"
           [selected]="selected"
-          [selectAllRowsOnPage]="false">
-          <ngx-datatable-column prop="group" name="소속" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="name" name="성명" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="input_process" name="투입공정" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="work_skill" name="작업숙련도" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="input_date" name="투입일" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="working_time" name="작업시간" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="id" name="수정&middot삭제" cellClass="text-center">
-              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-                  <button (click)="openModal('write',value)" class="btn btn-xs btn-primary">
-                      <i class="glyphicon glyphicon-edit"></i>
-                  </button>
-                  <button (click)="openModal('delete',value)" class="btn btn-xs btn-danger">
-                      <i class="glyphicon glyphicon-trash"></i>
-                  </button>
-              </ng-template>
+          [summaryRow]="true"
+          [summaryPosition]="'bottom'"
+          [summaryHeight]="45"
+          [messages]="messages">
+          <ngx-datatable-column prop="working_date" name="작업일자" cellClass="text-center" [width]="120"
+                                [canAutoResize]="false" [summaryTemplate]="total_label">
+            <ng-template #total_label let-row="row" let-value="value">
+              <div style="margin-top: 10px; text-align: center"><span><b>총 계</b></span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                                cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-left"></ngx-datatable-column>
+          <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-left"></ngx-datatable-column>
+          <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="" name="작업자" [width]="120" [canAutoResize]="false"
+                                cellClass="text-left"></ngx-datatable-column>
+          <ngx-datatable-column prop="product_qty" name="생산수량" cellClass="text-right" [width]="100"
+                                [canAutoResize]="false" [summaryTemplate]="product_qty_total">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+            <ng-template #product_qty_total let-row="row" let-value="value">
+              <span style="margin-top: 10px"><b>{{ totalProductQty() }}</b></span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="work_time" name="작업시간" cellClass="text-right" [width]="100"
+                                [canAutoResize]="false" [summaryTemplate]="work_time_total">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+              <span>{{ value | numberFormat }}</span>
+            </ng-template>
+            <ng-template #work_time_total let-row="row" let-value="value">
+              <span style="margin-top: 10px"><b>{{ totalWorkTime() }}</b></span>
+            </ng-template>
           </ngx-datatable-column>
       </ngx-datatable>
   </div>
-</div>
-
-<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <form [formGroup]="inputForm">
-            <div class="modal-header">
-                <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ inputFormTitle }}</h4>
-            </div>
-            <div class="modal-body">
-
-                <table>
-                <tr>
-                    <th width="100px">
-                        <label for="group">소속</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td>
-                      <!-- <input type="text" formControlName="group" id="group" required onReturn class="form-control input-sm w-xs" /> -->
-                      <select formControlName="group" id="group" class="input-sm form-control w-xs inline v-middle">                        
-                        <option value=""></option>
-                        <option value="">자체계약</option>
-                        <option value="">용역업체1</option>
-                        <option value="">용역업체2</option>
-                        <option value="">용역업체3</option>
-                      </select>
-                    </td>
-                </tr>
-                <tr>
-                  <th width="100px">
-                      <label for="name">성명</label>
-                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </th>
-                  <td>
-                      <input type="text" formControlName="name" id="name" required onReturn class="form-control input-sm w-sm" />
-                  </td>
-                </tr>
-                <tr>
-                  <th width="100px">
-                      <label for="input_process">투입공정</label>
-                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </th>
-                  <td>
-                      <input type="text" formControlName="input_process" id="input_process" required class="form-control input-sm w-xs" />
-                  </td>
-                </tr>
-                <tr>
-                  <th width="100px">
-                      <label for="work_skill">작업숙련도</label>
-                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </th>
-                  <td>
-                      <input type="text" formControlName="work_skill" id="work_skill" required class="form-control input-sm w-xs" />
-                  </td>
-                </tr>
-                <tr>
-                  <th width="100px">
-                      <label for="input_date">투입일</label>
-                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </th>
-                  <td>
-                      <input type="text" formControlName="input_date" id="input_date" required class="form-control input-sm w-xs" />
-                  </td>
-                </tr>
-                <tr>
-                    <th width="100px">
-                        <label for="working_time">작업시간</label>
-                        <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </th>
-                    <td>
-                        <input type="text" formControlName="working_time" id="working_time" class="form-control input-sm w-xs" />
-                    </td>
-                </tr>
-                </table>
-
-            </div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">취소</button>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div bsModal #DeleteFormModal="bs-modal" id="delete-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" (click)="DeleteFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ deleteFormTitle }}</h4>
-            </div>
-            <div class="modal-body">
-                <div class="text-center padder-v">
-                    {{ deleteConfirmMsg }}
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" (click)="Delete(selectedId)" class="btn btn-danger btn-save">삭제</button>
-                    <button type="button" class="btn btn-primary btn-cancel" (click)="DeleteFormModal.hide()">취소</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
