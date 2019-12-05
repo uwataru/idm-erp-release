@@ -32,6 +32,9 @@ export class MaterialsPlanningComponent implements OnInit {
     totalSalesPrice: number;
     isInitPlanDate: boolean = false;
 
+    selected = [];
+    selectedId: string;
+    gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
 
     errorMessage: string;
@@ -131,9 +134,9 @@ export class MaterialsPlanningComponent implements OnInit {
         //this.table.offset = 0;
     }
 
-
-
-
-
+    onSelect({selected}) {
+        // console.log('onSelected', selected[0].id);
+        this.selectedId = selected[0].id;
+    }
 
 }
