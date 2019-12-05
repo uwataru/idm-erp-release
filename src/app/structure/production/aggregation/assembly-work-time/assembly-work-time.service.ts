@@ -12,7 +12,7 @@ export class AssemblyWorkTimeService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/assembly-works/working-time-aggregation';
+    private url = this.globals.serverUrl + '/assembly-performance/time-table';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
