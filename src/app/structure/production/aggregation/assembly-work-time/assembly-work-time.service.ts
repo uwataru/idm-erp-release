@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './forging-work-time.item';
+import { Item } from './assembly-work-time.item';
 import { AppGlobals } from '../../../../app.globals';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AssemblyWorkTimeService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/assembly-works/working-time-aggregation';
+    private url = this.globals.serverUrl + '/assembly-performance/time-table';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
