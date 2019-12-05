@@ -1,223 +1,299 @@
-<div class="panel panel-default" id="print-target-oio-comp">
+<div class="panel panel-default" id="print-target-mio-comp">
 
   <div class="panel-heading">
     <div class="text-center">
       <span class="h4 block m-b-sm">{{ panelTitle }}</span>
     </div>
-
     <div class="row">
-      <div class="col-sm-8 m-b-xs">
+      <div class="col-sm-7 m-b-xs">
         <form [formGroup]="searchForm">
-          <input formControlName="sch_partner_name"
-                 [typeahead]="listPartners"
-                 typeaheadOptionField="Alias"
+          <label for="sch_sdate" class="control-label text-sm m-l">검색기간</label>
+          <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate" /> ~
+          <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+          &nbsp;&nbsp;
+
+          <input formControlName="sch_material"
+                 [typeahead]="listMaterials"
+                 typeaheadOptionField="name"
                  [typeaheadOptionsLimit]="50"
                  [typeaheadScrollable]="true"
                  [typeaheadMinLength]="0"
                  (typeaheadOnSelect)="onSelectListPartner($event)"
-                 placeholder="거래처명"
-                 class="input-sm form-control w-sm inline v-middle"
-                 id="listPartners"/>
-          <input type="hidden" formControlName="outs_partner_code" id="outs_partner_code"/>
-          <label for="sch_sdate" class="control-label text-sm m-l">검색기간</label>
-          <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
-                 class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
-          <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
-                 class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
-          <input id="order_type_text" type="text" class="text-center input-sm form-control w-sm v-middle">
-          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print" id="search_btn">검색</button>
+                 placeholder="자재명"
+                 class="input-sm form-control w-sm inline v-middle" />
+          <input type="text" formControlName="sch_size" placeholder="규격" (keyup)="updateFilterSize($event)"
+                 class="input-sm form-control w-xs inline v-middle" id="sch_size" />
+          <input formControlName="sch_partner_name"
+                 [typeahead]="listPartners"
+                 typeaheadOptionField="name"
+                 [typeaheadOptionsLimit]="50"
+                 [typeaheadScrollable]="true"
+                 [typeaheadMinLength]="0"
+                 (typeaheadOnSelect)="onSelectListPartner($event)"
+                 placeholder="거래처"
+                 class="input-sm form-control w-sm inline v-middle" />
+          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
         </form>
       </div>
 
-      <div class="col-sm-4 text-right">
-        <!--
-        <button class="btn btn-sm btn-success btn-addon">
-        <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button>
-        -->
-      </div>
+      <!--<div class="col-sm-6 text-right">
+
+         <button class="btn btn-sm btn-success btn-addon">
+         <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+         </button>
+
+     </div>-->
     </div>
   </div>
 
   <div class="panel-body">
     <ngx-datatable
-      [style.height.px]=630
-      class="bootstrap"
-      [scrollbarH]="false"
-      [scrollbarV]="true"
-      [virtualization]="false"
-      [rows]="rows"
-      [columnMode]="'force'"
-      [headerHeight]="30"
-      [rowHeight]="30"
-      [messages]="messages">
-      <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <!--            <ngx-datatable-column prop="drawing_no" name="도번" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>-->
-      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="delivery_date" name="전기이월" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="발주" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right">
+            style="height:450px;"
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [scrollbarV]="true"
+            [virtualization]="false"
+            [rowHeight]="30"
+            [messages]="messages">
+      <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="name" name="자재명" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="transfer_qty" name="전기이월수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="rcv_qty" name="입고" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right">
+      <ngx-datatable-column prop="receiving_qty" name="입고수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="return_quantity" name="불량" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_price" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_price" name="LUCRE" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right"></ngx-datatable-column>
-      <ngx-datatable-column prop="sale_price" name="기말재고" [width]="90" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right"></ngx-datatable-column>
-      <ngx-datatable-column prop="is_completed" name="내역" id="row_search" [width]="50" [canAutoResize]="false"
-                            [resizeable]="false" cellClass="text-center hidden-print">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.id)"
-                  class="btn btn-xs btn-primary">내역
-          </button>
+      <ngx-datatable-column prop="insert_qty" name="투입수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="retrun_qty" name="기타반출수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="current_qty" name="재고수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-    <div class="table-responsive">
-      <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-        <tbody>
-        <tr>
-          <td width="150px" class="text-center">합계</td>
-          <td width="120px" class="text-right"></td>
-          <td width="150px" class="text-right"></td>
-          <td></td>
-          <td width="80px" class="text-right"></td>
-          <td width="80px" class="text-right">
-            <span>{{ totalOrderQty | numberFormat }}</span>
-          </td>
-          <td width="80px" class="text-right">
-            <span>{{ totalRcvQty | numberFormat }}</span>
-          </td>
-          <td width="80px" class="text-right"></td>
-          <td width="80px" class="text-right"></td>
-          <td width="80px" class="text-right"></td>
-          <td width="90px" class="text-right"></td>
-          <td width="65px" class="text-right"></td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <!--        <div class="table-responsive print-table">-->
+    <!--            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">-->
+    <!--            <tbody>-->
+    <!--            <tr>-->
+    <!--                <td class="text-center">계</td>-->
+    <!--                <td [width]="80"></td>-->
+    <!--                <td [width]="150" class="text-right">&lt;!&ndash; 총전기이월 &ndash;&gt;-->
+    <!--                    <span>{{ totalBalance | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="150" class="text-right">&lt;!&ndash; 총전기이월금액 &ndash;&gt;-->
+    <!--                    <span>{{ totalBalanceAmount | numberFormat }}</span>-->
+    <!--                </td>-->
 
-  <footer class="panel-footer hidden-print">
-    <div class="row">
-      <div class="col-sm-6 hidden-xs">
-      </div>
-      <div class="col-sm-6 text-right">
-        <button class="btn btn-sm btn-info btn-addon"
-                (click)="electronService.readyPrint('print-target-oio-comp', '', electronService.PRINT_OPT.LANDSCAPE)">
-          <i class="glyphicon glyphicon-print"></i>인쇄
-        </button>
-        <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/materials/history/outsourcing-in-out','외주수불명세서.xlsx')"><i
-          class="glyphicon glyphicon-download-alt"></i>엑셀
-        </button>
-      </div>
-    </div>
-  </footer>
-</div>
+    <!--                <td [width]="120" class="text-right">&lt;!&ndash; 총입고중량 &ndash;&gt;-->
+    <!--                    <span>{{ totalRcvWeight | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="120" class="text-right"> &lt;!&ndash; 총입고금액 &ndash;&gt;-->
+    <!--                    <span>{{ totalOrderAmount | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="120" class="text-right">&lt;!&ndash; 총투입중량 &ndash;&gt;-->
+    <!--                    <span>{{ totalUsedWeight | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="120" class="text-right">&lt;!&ndash; 총투입금액 &ndash;&gt;-->
+    <!--                    <span>{{ totalUsedAmount | numberFormat }}</span>-->
+    <!--                </td>-->
 
-<div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-xl-center">
-    <div class="modal-content modal-xl">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-          aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{ inputFormTitle }}</h4>
-      </div>
-      <div class="modal-body">
+    <!--                <td [width]="150"></td> &lt;!&ndash; 기타반출 &ndash;&gt;-->
+    <!--                <td [width]="150"></td> &lt;!&ndash; 기타반출금액 &ndash;&gt;-->
 
-        <input type="hidden" id="reservation_id" name="reservation_id"/>
-        <input type="hidden" id="goods_name" name="goods_name"/>
-        <input type="hidden" id="fare_per_person" name="fare_per_person"/>
+    <!--                <td [width]="100" class="text-right">&lt;!&ndash; 총재고중량 &ndash;&gt;-->
+    <!--                    <span>{{ totalWeight | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="120" class="text-right"> &lt;!&ndash; 총재고금액 &ndash;&gt;-->
+    <!--                    <span>{{ totalRemaingAmount | numberFormat }}</span>-->
+    <!--                </td>-->
+    <!--                <td [width]="76"></td>-->
+    <!--            </tr>-->
+    <!--            </tbody>-->
+    <!--            </table>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
-
-        <table class="table table-bordered view" style="text-align: center">
-          <tr>
-            <th>거래처</th>
-            <td width="120px"><span>{{ detail_partner_name }}</span></td>
-            <th>조회기간</th>
-            <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
-            <th>제품번호</th>
-            <td width="120px"><span>{{ detail_product_code }}</span></td>
-            <th>제품명</th>
-            <td width="120px"><span>{{ detail_product_name }}</span></td>
-          </tr>
-        </table>
-
-        <ngx-datatable
-          style="min-height:120px;max-height:420px;"
-          class="bootstrap"
-          [rows]="detailrows"
-          [columnMode]="'force'"
-          [headerHeight]="30"
-          [rowHeight]="30">
-          <ngx-datatable-column prop="process_date" name="일자" [width]="200" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="poc_no" name="POC NO" [width]="130" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="order_qty" name="발주" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-              <span>{{ value | numberFormat }}</span>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="rcv_qty" name="입고" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-              <span>{{ value | numberFormat }}</span>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="return_quantity" name="불량" cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="quantity" name="LOSS" cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="quantity" name="LUCRE" cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="quantity" name="기말재고" [width]="150" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="sale_price" name=" "></ngx-datatable-column>
-        </ngx-datatable>
-
-        <div class="table-responsive">
-          <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-            <tbody>
-            <tr>
-              <td width="200px" class="text-center">계</td>
-              <td width="130px" class="text-right"></td>
-              <td width="100px" class="text-right">{{ detailsums_total_order_qty | numberFormat }}</td>
-              <td width="100px" class="text-right">{{ detailsums_total_rcv_qty | numberFormat }}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td width="150px"></td>
-              <td></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" class="btn btn-info">인쇄</button>
-          <button type="button" class="btn btn-success">엑셀</button>
-          <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
+    <footer class="panel-footer hidden-print">
+      <div class="row">
+        <div class="col-sm-6 hidden-xs"></div>
+        <div class="col-sm-6 text-right">
+          <!--                <button class="btn btn-sm btn-info btn-addon"(click)="electronService.readyPrint('print-target-mio-comp', '', electronService.PRINT_OPT.LANDSCAPE)">-->
+          <!--                    <i class="glyphicon glyphicon-print"></i>인쇄-->
+          <!--                </button>-->
+          <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/materials/history/materials-in-out','원자재수불명세서.xlsx')"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
         </div>
       </div>
-
-    </div>
+    </footer>
   </div>
 </div>
+
+<!--<div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">-->
+<!--	<div class="modal-dialog modal-xl modal-xl-center">-->
+<!--        -->
+<!--		<div class="modal-content modal-xl">-->
+
+<!--        <div id="print-target-material-inout" style="padding:20px;">-->
+<!--			<div class="modal-header">-->
+<!--				<button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--				<h4 class="modal-title">{{ inputFormTitle }}</h4>-->
+<!--			</div>-->
+<!--			<div class="modal-body">-->
+
+<!--				<input type="hidden" id="reservation_id" name="reservation_id" />-->
+<!--				<input type="hidden" id="goods_name" name="goods_name" />-->
+<!--				<input type="hidden" id="fare_per_person" name="fare_per_person" />-->
+
+
+<!--                <form [formGroup]="historyForm">-->
+<!--                <table class="table table-bordered view" style="text-align: center">-->
+<!--                    <tr>-->
+<!--                        <th>재질</th>-->
+<!--                        <td width="120px"><span >{{ detail_material }}</span></td>-->
+<!--                        <th>규격</th>-->
+<!--                        <td width="120px"><span>{{ detail_size }}</span></td>-->
+<!--                        <th>메이커</th>-->
+<!--                        <td width="120px">-->
+<!--                            <span>-->
+<!--                                <input formControlName="sch_maker_name"-->
+<!--                                [typeahead]="listMakers"-->
+<!--                                typeaheadOptionField="CfgName"-->
+<!--                                [typeaheadOptionsLimit]="50"-->
+<!--                                [typeaheadScrollable]="true"-->
+<!--                                [typeaheadMinLength]="0"-->
+<!--                                (typeaheadOnSelect)="onSelectListMaker($event)"-->
+<!--                                placeholder="메이커명"-->
+<!--                                class="input-sm form-control w-sm inline v-middle" />-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                        <th>공급처</th>-->
+<!--                        <td class="hidden-print">-->
+<!--                            <span>-->
+<!--                                <input formControlName="sch_partner_name"-->
+<!--                                [typeahead]="listPartners"-->
+<!--                                typeaheadOptionField="Alias"-->
+<!--                                [typeaheadOptionsLimit]="50"-->
+<!--                                [typeaheadScrollable]="true"-->
+<!--                                [typeaheadMinLength]="0"-->
+<!--                                (typeaheadOnSelect)="onSelectListPartner($event)"-->
+<!--                                placeholder="거래처명"-->
+<!--                                class="input-sm form-control w-sm inline v-middle" />-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                        <th>조회기간</th>-->
+<!--                        <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--                </form>-->
+<!--    -->
+
+<!--                <ngx-datatable-->
+<!--                    style="min-height:120px;max-height:420px;"-->
+<!--                    class="bootstrap"-->
+<!--                    [rows]="detailrows"-->
+<!--                    [columnMode]="'force'"-->
+<!--                    [headerHeight]="30"-->
+<!--                    [rowHeight]="30"-->
+<!--                    [messages]="messages">-->
+<!--                    <ngx-datatable-column prop="process_date" name="일자" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="material" name="재질" [width]="75" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="size" name="규격" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="steel_maker" name="메이커"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="partner_name" name="공급처"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="ms_no" name="M.S No" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--                    &lt;!&ndash;<ngx-datatable-column prop="order_no" name="전기이월" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>&ndash;&gt;-->
+<!--                    <ngx-datatable-column prop="rcv_weight" name="입고중량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span *ngIf='value > 0'>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="loss_weight" name="기타반출" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span *ngIf='value > 0'>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="used_weight" name="투입(절단)중량" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="product_code" name="제품번호" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="quantity" name="제품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span *ngIf='value > 0'>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="poc_no" name="POC No" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>-->
+<!--                    <ngx-datatable-column prop="remaining_weight" name="재고중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
+<!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--                            <span *ngIf='value > 0'>{{ value | numberFormat }}</span>-->
+<!--                        </ng-template>-->
+<!--                    </ngx-datatable-column>-->
+<!--                </ngx-datatable>-->
+<!--                -->
+<!--                <div class="table-responsive">-->
+<!--            		<table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0" >-->
+<!--            		<tbody>-->
+<!--            		<tr>-->
+<!--                        <td width="240px" class="text-center" >계</td>-->
+<!--                        <td></td>-->
+<!--                        <td width="71px;"></td>-->
+<!--                        <td width="71px;"></td>-->
+<!--                        <td width="71px" class="text-right" style="padding-right: 10px"  >-->
+<!--                            <span>{{ detailsums_total_rcv_weight | numberFormat }}</span>-->
+<!--                        </td>-->
+<!--                        <td width="71px" class="text-right" style="padding-right: 10px">-->
+<!--                            <span>{{ detailsums_total_loss_weight | numberFormat }}</span>-->
+<!--                        </td>-->
+<!--                        <td width="88px" class="text-right" style="padding-right: 10px">-->
+<!--                            <span>{{ detailsums_total_used_weight | numberFormat }}</span>-->
+<!--                        </td>-->
+<!--                        <td width="88px" class="text-right"></td>-->
+<!--                        <td width="71px"></td>-->
+<!--                        <td width="71px"></td>-->
+<!--                        <td width="98px" class="text-right" style="padding-right: 10px">-->
+<!--                            <span>{{ detailsums_total_remaining_weight | numberFormat }}</span>-->
+<!--                        </td>-->
+<!--            		</tr>-->
+<!--            		</tbody>-->
+<!--            		</table>-->
+<!--            	</div>-->
+<!--            </div>-->
+<!--            -->
+<!--            </div>-->
+
+<!--            <div class="modal-footer">-->
+<!--				<div class="text-center">-->
+<!--                    <button type="button" class="btn btn-info" (click)="electronService.readyPrint('print-target-material-inout', '', electronService.PRINT_OPT.LANDSCAPE)">인쇄</button>-->
+<!--                    <button type="button" class="btn btn-success">엑셀</button>-->
+<!--                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>-->
+<!--				</div>-->
+<!--            </div>-->
+
+<!--		</div>-->
+<!--	</div>-->
+<!--</div>-->

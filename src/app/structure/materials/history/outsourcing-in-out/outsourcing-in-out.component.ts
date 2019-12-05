@@ -23,37 +23,38 @@ declare var $: any;
 export class OutsourcingInOutComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
-  isLoadingProgress: boolean = false;
   inputFormTitle: string;
-  isEditMode: boolean = false;
-  listData: Item[ ];
-
   searchForm: FormGroup;
+  historyForm: FormGroup;
+
+  isEditMode: boolean = false;
+  isLoadingProgress: boolean = false;
 
   formData: Item[];
-
-  rcvDate = this.globals.tDate;
+  searchValue: string;
   rows: Item['rowData'][];
-  sch_partner_name: string;
-  listPartners: any = [''];
+  temp = [];
+  listSltdPaCode: number = 0;
+  listPartners: any[] = this.globals.configs['partnerList'];
+  listMaterials: any[] = this.globals.configs['schMaterials'];
 
-  detail_partner_name: string;
+
+  totalBalance: number;
+  totalBalanceAmount: number;
+
+  totalOrderAmount: number;
+  totalRcvWeight: number;
+  totalUsedWeight: number;
+  totalUsedAmount: number;
+  totalWeight: number;
+  totalRemaingAmount: number;
+
   detail_sch_sdate: string;
   detail_sch_edate: string;
-  detail_product_code: string;
-  detail_product_name: string;
-  errorMessage: string;
-
-  detailrows: Item['detailsData'];
-
-  detailsums_total_order_qty: number;
-  detailsums_total_rcv_qty: number;
-  detailsums_total_count: number;
-
-  totalOrderQty: number;
-  totalRcvQty: number;
 
   messages = this.globals.datatableMessages;
+
+  errorMessage: string;
 
   constructor(
     public elSrv: ElectronService,
@@ -66,23 +67,33 @@ export class OutsourcingInOutComponent implements OnInit {
     private utils: UtilsService,
     private messageService: MessageService
   ) {
+    this.historyForm = fb.group({
+      sch_maker_name: '',
+      sch_partner_name: ''
+    });
+
     this.searchForm = fb.group({
       sch_sdate: '',
       sch_edate: '',
+      sch_material: '',
+      sch_size: '',
       sch_partner_name: '',
-      outs_partner_code: ''
     });
+
+    // if( this.listPartners.filter(v => v.Code == 0).length < 1 ) {
+    //     this.listPartners.unshift({Code:0, Name:'전체', name:'전체'});
+    // }
   }
 
   ngOnInit() {
     this.panelTitle = '외주수불명세서';
-    this.inputFormTitle = '외주수불내역서';
+    // this.inputFormTitle = '외주수불내역서';
 
     this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
     this.searchForm.controls['sch_edate'].setValue(this.tDate);
     this.getAll();
 
-    $(document).ready(function () {
+    $(document).ready(function(){
       let modalContent: any = $('.modal-content');
       let modalHeader = $('.modal-header');
       modalHeader.addClass('cursor-all-scroll');
@@ -92,88 +103,60 @@ export class OutsourcingInOutComponent implements OnInit {
     });
   }
 
-  onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item == '') {
-      this.searchForm.controls['outs_partner_code'].setValue('');
-    } else {
-      this.searchForm.controls['outs_partner_code'].setValue(event.item.Code);
-    }
-  }
-
-
   getAll(): void {
     let formData = this.searchForm.value;
-    if ((event.target as Element).id != 'search_btn') {
-      this.searchForm.controls['outs_partner_code'].setValue('');
-      this.searchForm.controls['sch_partner_name'].setValue('');
-    }
 
     let params = {
       sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
       sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      partner_code: this.searchForm.controls['outs_partner_code'].value,
-      sortby: ['rcv_date'],
-      order: ['asc'],
-      maxResultCount: 10000
-    };
-
+      sch_material: formData.sch_material,
+      sch_size: formData.sch_size,
+      sch_partner_name: formData.sch_partner_name,
+      // sortby: ['rcv_date'],
+      // order: ['asc'],
+      // maxResultCount: 10000
+    }
     this.isLoadingProgress = true;
-    this.dataService.GetAll().subscribe(
-      listData => {
-        this.listData = listData;
-        this.rows = listData['data'];
 
-        this.totalOrderQty = listData['totalOrderQty'];
-        this.totalRcvQty = listData['totalRcvQty'];
+    this.dataService.GetAll(params).subscribe(
+        data =>
+        {
+          this.rows = data['data'];
+          this.temp = data['data'];
 
-        this.isLoadingProgress = false;
-      }
+          // this.totalBalance = data['totalBalance'];
+          // this.totalBalanceAmount = data['totalBalanceAmount'];
+          //
+          // this.totalOrderAmount = data['totalOrderAmount'];
+          // this.totalRcvWeight = data['totalRcvWeight'];
+          // this.totalUsedWeight = data['totalUsedWeight'];
+          // this.totalUsedAmount = data['totalUsedAmount'];
+          // this.totalWeight = data['totalWeight'];
+          // this.totalRemaingAmount = data['totalRemaingAmount'];
+
+          this.isLoadingProgress = false;
+        }
     );
-
-
   }
 
-  openModal(id) {
-    let formData = this.searchForm.value;
-
-    let findRow: Item['rowData'];
-    for (var i = 0; i < this.rows.length; i++) {
-      if (this.rows[i].id == id) {
-        findRow = this.rows[i];
-      }
+  onSelectListPartner(event: TypeaheadMatch): void {
+    if (event.item['id'] == '') {
+      this.listSltdPaCode = 0;
+    } else {
+      this.listSltdPaCode = event.item['id'];
     }
 
+    const val = this.listSltdPaCode;
+  }
 
-    let params = {
+  updateFilterSize(event) {
+    const val = event.target.value;
+    // filter data
+    let tempArr = this.temp.map(x => Object.assign({}, x));
+    let temp = tempArr.filter(function (d) {
+      return d.size.indexOf(val) !== -1 || !val;
+    });
 
-      id: id,
-      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      product_code: findRow.product_code,
-      partner_code: findRow.partner_code,
-      maxResultCount: 10000
-    };
-    this.isLoadingProgress = true;
-
-    this.dataService.GetDetails(params).subscribe(
-      data => {
-        this.detailrows = data['data'];
-
-        this.detailsums_total_order_qty = data['totalOrderQty'];
-        this.detailsums_total_rcv_qty = data['totalRcvQty'];
-        this.detailsums_total_count = data['totalCount'];
-
-        this.isLoadingProgress = false;
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 250);
-      }
-    );
-
-    this.detail_partner_name = findRow.partner_name;
-    this.detail_sch_sdate = this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd');
-    this.detail_sch_edate = this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd');
-    this.detail_product_code = findRow.product_code;
-    this.detail_product_name = findRow.product_name;
+    this.rows = temp;
   }
 }
