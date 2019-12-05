@@ -16,7 +16,7 @@ export class OutsourcingInOutService {
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '/receiving-statement', {params: params});
+        return this.http.get<Item[]>(this.url + '/outsourcing-receiving-statement', {params: params});
     }
 
     GetDetails (params): Observable<Item[]> {
