@@ -29,40 +29,35 @@
         [columnMode]="'force'"
         [headerHeight]="30"
         [rowHeight]="30"
-        (select)='onSelect($event)'
         [scrollbarV]="true"
         [scrollbarH]="false"
-        [selected]="selected"
-        [selectionType]="'checkbox'"
-        [selectAllRowsOnPage]="false">
-        <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="promised_date" name="약속일자" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="qty"  name="수량" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="Production_qty"  name="완료수량" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="id"  cellClass="text-center">
-          <ng-template ngx-datatable-header-template>
-              잔량
-          </ng-template>
+        [messages]="messages">
+        <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                              cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="product_name" name="제품명" [width]="150" cellClass="text-left"></ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처"  [width]="150" cellClass="text-left"></ngx-datatable-column>
+        <ngx-datatable-column prop="promised_date" name="약속일자" [width]="120" [canAutoResize]="false"
+                              cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="qty" name="수량" [width]="100" [canAutoResize]="false"
+                              cellClass="text-right"></ngx-datatable-column>
+        <ngx-datatable-column prop="Production_qty" name="완료수량" [width]="100" [canAutoResize]="false"
+                              cellClass="text-right"></ngx-datatable-column>
+        <ngx-datatable-column prop="id" name="잔량" [width]="100" [canAutoResize]="false" cellClass="text-center">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          {{row.remindQty}}
+          {{row.remainQty}}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="id" cellClass="text-center" width="120px">
-            <ng-template ngx-datatable-header-template>
-                진행율
-            </ng-template>
+        <ngx-datatable-column prop="id" name="진행율" [width]="140" [canAutoResize]="false" cellClass="text-center">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                 <div style="border:solid 1px #ddd;margin:5px;padding:3px; width: 100px" >
-                  <div style="background:#999;height:10px" [style.width]="row.remindPrecent + '%'"></div>
+                  <div style="background:#999;height:10px" [style.width]="row.remainPrecent + '%'"></div>
                 </div>
-                <span style="float: right;margin-top:-20px;padding:-13px; font-size: x-small;">{{row.remindPrecent}}%</span>
+                <span style="float: right;margin-top:-20px;padding:-13px; font-size: x-small;">{{row.remainPrecent}}%</span>
                 <!-- <span style="float: right;margin-top:-20px;padding:-13px; font-size: x-small;">%</span> -->
             </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="start_date" name="생산시작일" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="end_date" name="생산종료일" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="start_date" name="생산시작일" [width]="120" [canAutoResize]="false" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="end_date" name="생산종료일" [width]="120" [canAutoResize]="false" cellClass="text-center"></ngx-datatable-column>
     </ngx-datatable>
 </div>
   <footer class="panel-footer hidden-print">
@@ -72,20 +67,14 @@
       </div>
 
       <div class="col-sm-8 text-right">
-        <!-- <button (click)="openModal('cutting', '')" [disabled]="!selectedId" class="btn btn-sm btn-primary">
-          조립지시서
-        </button>
-        <button (click)="openModal('line-change', '')" [disabled]="!selectedId" class="btn btn-sm btn-danger">
-          라인변경
-        </button> -->
         <!--                <button type="button" appPopupWindow popWinURL="/print/production/planning/production-planning" popWinOptions="width=auto,height=auto,top=auto,left=auto" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</button>-->
-        <button type="button" class="btn btn-sm btn-info btn-addon"
-                (click)="openModal('print-view', '')">
-          <i class="glyphicon glyphicon-print"></i>인쇄
-        </button>
-        <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/planning','생산계획.xlsx')"><i
-          class="glyphicon glyphicon-download-alt"></i>엑셀
-        </button>
+<!--        <button type="button" class="btn btn-sm btn-info btn-addon"-->
+<!--                (click)="openModal('print-view', '')">-->
+<!--          <i class="glyphicon glyphicon-print"></i>인쇄-->
+<!--        </button>-->
+<!--        <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/planning','생산계획.xlsx')"><i-->
+<!--          class="glyphicon glyphicon-download-alt"></i>엑셀-->
+<!--        </button>-->
       </div>
     </div>
   </footer>
