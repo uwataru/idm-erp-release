@@ -14,20 +14,23 @@ export class ForgingWorksService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/assembly-works';
+    private url = this.globals.serverUrl + '/assembly-performance';
 
-    GetById (pocNo:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/write/'+pocNo);
+    GetAll (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url);
+    }
+    GetById (id:number): Observable<Item> {
+        return this.http.get<Item>(this.url+'/'+id);
     }
 
-    GetWorkingTime (data:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/get-working-time/'+data);
-    }
+    // GetWorkingTime (data:string): Observable<Item> {
+    //     return this.http.get<Item>(this.url+'/get-working-time/'+data);
+    // }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
-    Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url + '/result', data, httpOptions).pipe(
+    Create (id:number,data:Item): Observable<Item> {
+        return this.http.put<Item>(this.url + '/'+id, data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

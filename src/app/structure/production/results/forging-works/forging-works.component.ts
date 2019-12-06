@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ElectronService} from '../../../../providers/electron.service';
 import {saveAs as importedSaveAs} from 'file-saver';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {DatePipe} from '@angular/common';
 import {ForgingWorksService} from './forging-works.service';
@@ -10,7 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './forging-works.item';
-
+declare var $: any;
 @Component({
   selector: 'app-page',
   templateUrl: './forging-works.component.html',
@@ -19,42 +19,38 @@ import {Item} from './forging-works.item';
 })
 export class ForgingWorksComponent implements OnInit {
   tDate = this.globals.tDate;
+  gridHeight = this.globals.gridHeight;
   panelTitle: string;
+  inputFormTitle: string;
   uploadFormTitle: string;
   isLoadingProgress: boolean = false;
 
   inputForm: FormGroup;
   formData: Item['data'];
-  productionLines: any[] = this.globals.configs['productionLine'];
   defectiveClassification: any[] = this.globals.configs['defectiveClassification'];
+  personnel: any[] = this.globals.configs['personnelList'];
 
-  defective_qty: number;
-  loss_qty: number;
-  lucre_qty: number;
-  order_qty: number;
-  assembly_qty: number;
+  selectedId: string;
+  personnelDataCnt: number;
+  materialDataCnt: number;
 
-  assembly_sum: number;
-  defective_sum: number;
-  loss_sum: number;
-  lucre_sum: number;
-  more_less_qty: number;
-  orig_assembly_sum: number;
-  orig_defective_sum: number;
-  orig_loss_sum: number;
-  orig_lucre_sum: number;
-
+  listData: Item[];
   editData: Item;
+  selected = [];
+  rows = [];
+  temp = [];
   data: Date;
-  radioDisabled: boolean = false;
+  remindQty: number;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
-
+  messages = this.globals.datatableMessages;
+  
   errorMessage: string;
   addOkMsg = '등록이 완료되었습니다.';
   editOkMsg = '수정이 완료되었습니다.';
 
+  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
   @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
@@ -82,43 +78,62 @@ export class ForgingWorksComponent implements OnInit {
     }
 
     this.inputForm = fb.group({
-      input_date: ['', Validators.required],
-      poc_no: ['', Validators.required],
-      production_line: ['', Validators.required],
-      working_group: ['', Validators.required],
-      product_code: ['', Validators.required],
+      id: ['', Validators.required],
+      production_date: ['', Validators.required],
+      order_no: ['', Validators.required],
+      partner_name: ['', Validators.required],
+      line_no: ['', Validators.required],
       product_name: ['', Validators.required],
-      material: '',
-      size: '',
-      defective_qty: ['', Validators.required],
-      defective_classification: '',
-      loss_qty: ['', Validators.required],
-      lucre_qty: ['', Validators.required],
-      order_qty: ['', Validators.required],
-      assembly_qty: ['', Validators.required],
-      assembly_sum: '',
-      defective_sum: '',
-      loss_sum: '',
-      lucre_sum: '',
-      more_less_qty: '',
-      working_sday: '',
-      working_shour: '',
-      working_smin: '',
-      working_eday: '',
-      working_ehour: '',
-      working_emin: '',
-      working_time: '',
-      preparation_time: '',
-      meal_time: '',
-      failure_time: '',
-      stop_time: '',
-      real_working_time: ''
+      product_type: ['', Validators.required],
+      qty: ['', Validators.required],
+      add_production_qty: ['', Validators.required],
+      personnel_1: ['', Validators.required],
+      personnel_id_1: ['', Validators.required],
+      work_time_1: ['', Validators.required],
+      material_name_1: ['', Validators.required],
+      material_qty_1: ['', Validators.required],
     });
   }
 
   ngOnInit() {
-    this.panelTitle = '조립작업실적 입력';
-    this.inputForm.controls['input_date'].setValue(this.tDate);
+    this.panelTitle = '조립작업 지시현황';
+    this.inputFormTitle = '조립작업실적 입력';
+
+    this.inputForm.controls['production_date'].setValue(this.tDate);
+    this.getAll();
+    this.personnelDataCnt = 1;
+    this.materialDataCnt = 1;
+
+    $(document).ready(function(){
+      let modalContent: any = $('.modal-content');
+      let modalHeader = $('.modal-header');
+      modalHeader.addClass('cursor-all-scroll');
+      modalContent.draggable({
+          handle: '.modal-header'
+      });
+  });
+
+  }
+
+  getAll(): void {
+    // this.selected = [];
+
+    this.isLoadingProgress = true;
+    this.dataService.GetAll().subscribe(
+      listData => {
+        this.listData = listData;
+        this.temp = listData['data'];
+        this.rows = listData['data'];
+
+        for(let i=0; i<this.rows.length; i++){
+          let qty = parseInt(this.rows[i]['qty']);
+          let production_qty = parseInt(this.rows[i]['Production_qty']);
+          this.rows[i].remind_qty = qty-production_qty;
+        }
+        
+      }
+      );
+      this.isLoadingProgress = false;
   }
 
   onValueChange(value: Date): void {
@@ -126,260 +141,203 @@ export class ForgingWorksComponent implements OnInit {
   }
 
   Save() {
-    if (this.isExecutable == false) {
-      alert(this.globals.isNotExecutable);
-      return false;
-    }
+    let formModel = this.inputForm.value;
 
-    let f = this.inputForm.value;
-    if (!f.production_line) {
-      alert('작업라인을 선택해주세요!');
-      return false;
-    }
+    let add_production_qty = parseInt(formModel['add_production_qty']);
+    if(add_production_qty> this.remindQty){
+      alert('생산수량이 수주수량을 초과했습니다. 잔여수량을 확인하세요');
+    }else{
+      let formData = {
+        qty: add_production_qty,
+        production_date: this.datePipe.transform(formModel['production_date'], 'yyyy-MM-dd'),
+        production_personnel_performance: []
+      };
 
-    f.input_date = this.datePipe.transform(f.input_date, 'yyyy-MM-dd');
 
-    // 불량일 경우 불량내용 체크
-    f.defective_classification = f.defective_classification * 1;
-    if (f.result_classification == 'DEFECTIVE' && f.defective_classification == 0) {
-      alert('불량내용을 선택해주세요!');
-      return false;
-    }
 
-    // 정상일 경우 시간 입력됬는지 체크
-    if (f.result_classification == 'NORMAL') {
-      if (f.working_sday == '' || f.working_shour == '' || f.working_smin == '') {
-        alert('시작시간을 입력해주세요!');
-        return false;
+      for(let i=1; i<=this.personnelDataCnt; i++){
+        if(formModel['personnel_id_'+i] != -1){
+          formData.production_personnel_performance.push( this.makePersonnels(i, formModel) );
+        }
+
+        delete formData['personnel_id_'+i];
+        delete formData['personnel_'+i];
+        delete formData['work_time_'+i];
       }
-      if (f.working_eday == '' || f.working_ehour == '' || f.working_emin == '') {
-        alert('종료시간을 입력해주세요!');
-        return false;
+
+      for(let i=1; i<=this.materialDataCnt; i++){
+
+        delete formData['material_name_'+i];
+        delete formData['material_qty_'+i];
       }
-      f.working_stime = this.datePipe.transform(f.working_sday, 'yyyy-MM-dd') + ' ' + f.working_shour + ':' + f.working_smin + ':00';
-      f.working_etime = this.datePipe.transform(f.working_eday, 'yyyy-MM-dd') + ' ' + f.working_ehour + ':' + f.working_emin + ':00';
-    } else {
-      f.working_stime = this.datePipe.transform(f.working_sday, 'yyyy-MM-dd') + ' 00:00:00';
-      f.working_etime = this.datePipe.transform(f.working_eday, 'yyyy-MM-dd') + ' 00:00:00';
+
+      console.log('save', formData);
+
+      this.Create(this.selectedId,formData);
     }
-
-    f.defective_qty = this.utils.removeComma(f.defective_qty) * 1;
-    f.loss_qty = this.utils.removeComma(f.loss_qty) * 1;
-    f.lucre_qty = this.utils.removeComma(f.lucre_qty) * 1;
-    f.order_qty = this.utils.removeComma(f.order_qty) * 1;
-    f.assembly_qty = this.utils.removeComma(f.assembly_qty) * 1;
-    console.log("AAAAAAAAAAAA");
-    console.log(f.assembly_qty);
-    console.log("AAAAAAAAAAAA");
-    f.assembly_sum = this.utils.removeComma(f.assembly_sum) * 1;
-    f.defective_sum = this.utils.removeComma(f.defective_sum) * 1;
-    f.loss_sum = this.utils.removeComma(f.loss_sum) * 1;
-    f.lucre_sum = this.utils.removeComma(f.lucre_sum) * 1;
-    f.more_less_qty = f.assembly_qty - f.assembly_sum - f.loss_sum + f.lucre_sum;
-
-    f.working_time = f.working_time * 1;
-    f.preparation_time = f.preparation_time * 1;
-    f.meal_time = f.meal_time * 1;
-    f.failure_time = f.failure_time * 1;
-    f.stop_time = f.stop_time * 1;
-    f.real_working_time = f.real_working_time * 1;
-
-    this.Create(f);
+    
   }
 
-  Reset() {
-    this.inputForm.reset();
+  makePersonnels(index, formModel){
+    let production_personnel_performance = {
+      id: formModel['personnel_id_' + index],
+      work_time: parseInt(formModel['work_time_' + index]),
+    }
+    return production_personnel_performance;
   }
 
-  Create(data): void {
+
+  Create(id, data): void {
     console.log(data);
-    this.dataService.Create(data)
+    this.dataService.Create(id, data)
       .subscribe(
         data => {
           if (data['result'] == 'success') {
             this.inputForm.reset();
-            this.inputForm.controls['input_date'].setValue(this.tDate);
             this.messageService.add(this.addOkMsg);
           } else {
             this.messageService.add(data['errorMessage']);
           }
+          this.inputFormModal.hide();
+          this.getAll();
         },
         error => this.errorMessage = <any>error
       );
   }
 
-  openModal(method) {
+  openModal(method,id) {
     // 실행권한
-    if (this.isExecutable == true && method == 'upload') {
-      this.uploadFormModal.show();
-    } else {
-      alert(this.globals.isNotExecutable);
-      return false;
-    }
-  }
+    if(method == 'row') {
+      this.inputFormModal.show();
+      this.inputForm.reset();
+      this.inputForm.controls['production_date'].setValue(this.tDate);
 
-  loadInfo(event) {
-    let PocNo = event.target.value;
-    if (!PocNo) {
-      return false;
-    }
+      this.personnelDataCnt = 1;
+      this.materialDataCnt = 1;
+      this.selectedId = id;
+      console.log('selectedId',this.selectedId);
+      this.dataService.GetById(id).subscribe(
+        editData => {
+          if (editData['result'] == 'success') {
+            this.editData = editData;
+            this.formData = editData['data'];
+            let workData = editData['data']['assembly_work_personnel'];
+            let materialData = editData['data']['material'];
+            this.remindQty = this.formData.qty - this.formData.Production_qty;
+            console.log('remindqty!!!', this.remindQty);
+            console.log('!!!!!!!' ,this.formData);
 
-    this.dataService.GetById(PocNo).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
+            this.inputForm.patchValue({
+              id: this.selectedId,
+              order_no: this.formData.order_no,
+              partner_name: this.formData.partner_name,
+              product_name: this.formData.product_name,
+              product_type: this.formData.product_type,
+              line_no: this.formData.line_no,
+              promised_date: this.formData.promised_date,
+              qty: this.utils.addComma(this.formData.qty),
+            });
+            let len = workData.length;
+            for(let i = 1; i<=len; i++){
+                // console.error(workData[i]);
+                if(i != 1) {
+                    this.addPersonnelRow();
+                }
+                this.inputForm.controls['personnel_' + i].setValue(workData[i-1].personnel_name);
+                this.inputForm.controls['personnel_id_' + i].setValue(workData[i-1].personnel_id);
+            }
+            let len2 = materialData.length;
+            for(let i = 1; i<=len2; i++){
+              // console.error(workData[i]);
+              if(i != 1) {
+                  this.addMaterialRow();
+              }
+              this.inputForm.controls['material_name_' + i].setValue(materialData[i-1].name);
+          }
+            console.log(this.inputForm);
 
-          this.orig_defective_sum = this.formData.defective_sum;
-          this.orig_loss_sum = this.formData.loss_sum;
-          this.orig_lucre_sum = this.formData.lucre_sum;
 
-          let order_qty = this.utils.addComma(this.formData.order_qty);
-          let assembly_qty = this.utils.addComma(this.formData.assembly_qty);
-          let assembly_sum = this.utils.addComma(this.formData.assembly_sum);
-          let defective_sum = this.utils.addComma(this.formData.defective_sum);
-          let loss_sum = this.utils.addComma(this.formData.loss_sum);
-          let lucre_sum = this.utils.addComma(this.formData.lucre_sum);
 
-          let more_less_sum = this.formData.assembly_qty - this.formData.assembly_sum - this.formData.defective_sum - this.formData.loss_sum + this.formData.lucre_sum;
-
-          this.inputForm.patchValue({
-            production_line: this.formData.production_line,
-            product_code: this.formData.product_code,
-            product_name: this.formData.product_name,
-            order_qty: order_qty,
-            assembly_qty: assembly_qty,
-            assembly_sum: assembly_sum,
-            defective_sum: defective_sum,
-            loss_sum: loss_sum,
-            lucre_sum: lucre_sum,
-            more_less_qty: this.utils.addComma(more_less_sum)
-          });
+          }
         }
+      );
+
+    }else{
+      if (this.isExecutable == true && method == 'upload') {
+        this.uploadFormModal.show();
+      } else {
+        alert(this.globals.isNotExecutable);
+        return false;
       }
-    );
+    }
+  }
+  
+  onSelectPersonnel (event, index): void{
+    console.log('onSelectPersonnel', event.item, index);
+    this.inputForm.controls['personnel_id_' + index].setValue(event.item.id);
   }
 
-  CalculSum(): void {
-    let f = this.inputForm.value;
+  addPersonnelRow() {
+    // console.log('addMaterialRow', index);
+    this.personnelDataCnt++;
+    let index = this.personnelDataCnt;
 
-    let defective_qty = this.utils.removeComma(f.defective_qty) * 1;
-    let loss_qty = this.utils.removeComma(f.loss_qty) * 1;
-    let lucre_qty = this.utils.removeComma(f.lucre_qty) * 1;
-
-    let order_qty = this.utils.removeComma(f.order_qty) * 1;
-    let assembly_qty = this.utils.removeComma(f.assembly_qty) * 1;
-
-    let assembly_sum = this.orig_assembly_sum + assembly_qty;
-    let defective_sum = this.orig_defective_sum + defective_qty;
-    let loss_sum = this.orig_loss_sum + loss_qty;
-    let lucre_sum = this.orig_lucre_sum + lucre_qty;
-
-    let more_less_qty = assembly_qty - assembly_sum - defective_sum - loss_sum + lucre_sum;
-
-    this.inputForm.patchValue({
-      assembly_sum: this.utils.addComma(assembly_sum),
-      defective_sum: this.utils.addComma(defective_sum),
-      loss_sum: this.utils.addComma(loss_sum),
-      lucre_sum: this.utils.addComma(lucre_sum),
-      more_less_qty: this.utils.addComma(more_less_qty)
-    });
+    this.inputForm.addControl('personnel_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('personnel_id_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('work_time_' + index, new FormControl('', Validators.required));
   }
 
-  GetWorkingTime(groupNo) {
-    let formData = this.inputForm.value;
-    if (!formData.input_date) {
-      alert('작업일자를 입력해주세요!');
-      return false;
-    }
-    if (!formData.production_line) {
-      alert('작업라인을 선택해주세요!');
-      return false;
-    }
-    if (!formData.product_code) {
-      alert('제품코드를 입력해주세요!');
-      return false;
-    }
-    let data = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd') + '::' + formData.production_line + '::' + groupNo + '::' + formData.product_code;
-    // 제품정보
-    this.dataService.GetWorkingTime(data).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
+  addMaterialRow() {
+    // console.log('addMaterialRow', index);
+    this.materialDataCnt++;
+    let index = this.materialDataCnt;
 
-          let st = this.formData.working_stime.split(':');
-          let et = this.formData.working_etime.split(':');
+    this.inputForm.addControl('material_name_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('material_qty_' + index, new FormControl('', Validators.required));
+  }
+  
+  removePersonnelRow(index) {
+    console.log('removePersonnelRow', index);
+    this.inputForm.controls['personnel_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    this.inputForm.controls['personnel_id_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+  }
 
-          //let working_time = this.CalculWorkingTime(this.formData.working_sday, st[0], st[1], this.formData.working_eday, et[0], et[1]);
-          //let real_working_time = working_time - this.formData.preparation_time - this.formData.meal_time;
-
-          this.inputForm.patchValue({
-            working_sday: this.formData.working_sday,
-            // working_sday: this.formData.working_sday,
-            // working_shour: st[0],
-            // working_smin: st[1],
-            working_eday: this.formData.working_sday,
-            // working_eday: this.formData.working_eday,
-            // working_ehour: et[0],
-            // working_emin: et[1],
-            //working_time: working_time,
-            preparation_time: this.formData.preparation_time,
-            meal_time: this.formData.meal_time,
-            failure_time: 0,
-            stop_time: 0//,
-            //real_working_time: real_working_time
-          });
-        }
+  chkViewAddBtn(index) {
+    let len = this.personnelDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = index + 1; i <= len; i++) {
+      if (this.inputForm.value['personnel_id_' + i] == -1) {
+        unVisibleItemCnt++;
       }
-    );
-  }
-
-  CalculWorkingTime(sday, shour, smin, eday, ehour, emin) {
-    if (!sday || !shour || !smin || !eday || !ehour || !emin) {
-      return 0;
     }
-    let ssec = this.DateToTime(sday, shour, smin);
-    let esec = this.DateToTime(eday, ehour, emin);
-    let result = (esec - ssec) / 60; // sec(초)를 min(분)으로 환산
-    if (result > 1440) {
-      // 1일 이상 차이나면 종료시간을 수정한 것으로 간주함.
-      // 근무패턴등록에 1일 이상 차이나는 경우는 없음.
-      result = result - 1440;
+    // console.log(index, len , upItemCnt);
+    if((len - unVisibleItemCnt) == index){
+      return true;
     }
-    return result;
+    return false;
+
   }
 
-  DateToTime(d, h, m) {
-    let dArr = d.split('-');
-    let dt = new Date(Number(dArr[0]), Number(dArr[1]), Number(dArr[2]), h, m);
-    return new Date(dt).getTime() / 1000;
-  }
-
-  CalculRealWorkingTime(): void {
-    let f = this.inputForm.value;
-    let working_time = this.CalculWorkingTime(this.datePipe.transform(f.working_sday, 'yyyy-MM-dd'), f.working_shour, f.working_smin, this.datePipe.transform(f.working_eday, 'yyyy-MM-dd'), f.working_ehour, f.working_emin);
-    let real_working_time = working_time - f.preparation_time - f.meal_time - f.failure_time - f.stop_time;
-    this.inputForm.patchValue({
-      working_time: working_time,
-      real_working_time: real_working_time
-    });
-  }
-
-  IsNeedWorkingTime(resultClassification) {
-    if (resultClassification == 'NORMAL') {
-      let formData = this.inputForm.value;
-      this.GetWorkingTime(formData.working_group);
-    } else {
-      this.inputForm.patchValue({
-        working_time: '',
-        preparation_time: '',
-        meal_time: '',
-        failure_time: '',
-        stop_time: '',
-        real_working_time: ''
-      });
+  chkViewRemoveBtn(index){
+    let len = this.personnelDataCnt;
+    let unVisibleItemCnt = 0;
+    for (let i = 1; i <= len; i++) {
+      if (this.inputForm.value['personnel_id_' + i] == -1) {
+        unVisibleItemCnt++;
+      }
     }
+    if(len - unVisibleItemCnt > 1){
+      return true;
+    }
+    return false;
+  }
+  writeQty(event){
+    let len = this.materialDataCnt;
+    for(let i = 1; i<=len; i++){
+      // console.error(workData[i]);
+      this.inputForm.controls['material_qty_' + i].setValue(event.target.value);
+  }
+
   }
 
 
