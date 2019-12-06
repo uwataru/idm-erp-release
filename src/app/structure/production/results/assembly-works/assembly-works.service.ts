@@ -18,7 +18,7 @@ export class AssemblyWorksService {
   private url = this.globals.serverUrl + '/production/plan';
 
   GetAll(params): Observable<Item[]> {
-    return this.http.get<Item[]>(this.url, {params: params});
+    return this.http.get<Item[]>(this.url+'/operation-instruction', {params: params});
   }
 
   GetById(id: string): Observable<Item> {
