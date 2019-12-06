@@ -124,7 +124,7 @@ export class MaterialsInOutComponent implements OnInit {
 
                 let len = this.rows.length;
                 for(let i=0; i<len; i++){
-                    this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].retrun_qty;
+                    this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
                 }
 
                 // this.totalBalance = data['totalBalance'];
