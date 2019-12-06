@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './forging-works.item';
+import { Item } from './assembly-worked.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
