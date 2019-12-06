@@ -127,7 +127,7 @@ export class ForgingWorksComponent implements OnInit {
 
         for(let i=0; i<this.rows.length; i++){
           let qty = parseInt(this.rows[i]['qty']);
-          let production_qty = parseInt(this.rows[i]['Production_qty']);
+          let production_qty = parseInt(this.rows[i]['production_qty']);
           this.rows[i].remind_qty = qty-production_qty;
         }
         
@@ -223,7 +223,7 @@ export class ForgingWorksComponent implements OnInit {
             this.formData = editData['data'];
             let workData = editData['data']['assembly_work_personnel'];
             let materialData = editData['data']['material'];
-            this.remindQty = this.formData.qty - this.formData.Production_qty;
+            this.remindQty = this.formData.qty - this.formData.production_qty;
             console.log('remindqty!!!', this.remindQty);
             console.log('!!!!!!!' ,this.formData);
 

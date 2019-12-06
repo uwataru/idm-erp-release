@@ -29,7 +29,7 @@
         <ngx-datatable-column prop="product_name" name="제품명" [sortable]="false"></ngx-datatable-column>
         <ngx-datatable-column prop="product_type" name="구분" [sortable]="false"></ngx-datatable-column>
         <ngx-datatable-column prop="qty" name="수주수량" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column prop="Production_qty" name="생산수량" cellClass="text-center" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column prop="production_qty" name="생산수량" cellClass="text-center" [sortable]="false"></ngx-datatable-column>
         <ngx-datatable-column prop="remind_qty" name="잔여수량" cellClass="text-center" [sortable]="false">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
             <span>{{ value | numberFormat }}</span>

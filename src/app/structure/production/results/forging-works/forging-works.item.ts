@@ -11,7 +11,7 @@ export class Item {
     promised_date: string;
     start_date: string;
     qty: number;
-    Production_qty: number;
+    production_qty: number;
     production_date: string;
   };
   maxResultCount: number;
