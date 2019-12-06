@@ -20,7 +20,7 @@ import {ProductionLinePlanningComponent} from './planning/production-line-planni
 import {ProductionPlanningComponent} from './planning/production-planning/production-planning.component';
 import {MaterialsPlanningComponent} from './planning/materials-planning/materials-planning.component';
 import {AssemblyWorksComponent} from './results/assembly-works/assembly-works.component';
-import {ForgingWorksComponent} from './results/forging-works/forging-works.component';
+import {AssemblyWorkedComponent} from './results/assembly-worked/assembly-worked.component';
 import {AssemblyWorkTimeComponent} from './aggregation/assembly-work-time/assembly-work-time.component';
 import {AssemblyWorkComponent} from './record/assembly-work/assembly-work.component';
 import {ProductivityAnalysisComponent} from './record/productivity-analysis/productivity-analysis.component';
@@ -37,7 +37,7 @@ export const routes: Routes = [
   {path: 'planning/production-planning', component: ProductionPlanningComponent, data: {title: '생산 > 생산계획관리', id: 33}, canActivate: [AuthGuard]},
   {path: 'planning/materials-planning', component: MaterialsPlanningComponent, data: {title: '생산 > 자재계획', id: 34}, canActivate: [AuthGuard]},
   {path: 'assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 35}, canActivate: [AuthGuard]},
-  {path: 'assembly-performance', component: ForgingWorksComponent, data: {title: '생산 > 조립작업실적입력', id: 36}, canActivate: [AuthGuard]},
+  {path: 'assembly-performance', component: AssemblyWorkedComponent, data: {title: '생산 > 조립작업실적입력', id: 36}, canActivate: [AuthGuard]},
   {path: 'record/assembly-personnel-performance', component: AssemblyResultComponent, data: {title: '생산 > 조립작업실적서', id: 37}, canActivate: [AuthGuard]},
   {path: 'record/chart-assembly-performance', component: AssemblyWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 38}, canActivate: [AuthGuard]},
   {path: 'record/assembly-performance-statement', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 39}, canActivate: [AuthGuard]},
@@ -81,7 +81,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
     ProductionPlanningComponent,
     MaterialsPlanningComponent,
     AssemblyWorksComponent,
-    ForgingWorksComponent,
+    AssemblyWorkedComponent,
     AssemblyWorkTimeComponent,
     AssemblyWorkComponent,
     AssemblyResultComponent,

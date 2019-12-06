@@ -4,20 +4,20 @@ import {saveAs as importedSaveAs} from 'file-saver';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {DatePipe} from '@angular/common';
-import {ForgingWorksService} from './forging-works.service';
+import {AssemblyWorkedService} from './assembly-worked.service';
 import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
-import {Item} from './forging-works.item';
+import {Item} from './assembly-worked.item';
 declare var $: any;
 @Component({
   selector: 'app-page',
-  templateUrl: './forging-works.component.html',
-  styleUrls: ['./forging-works.component.scss'],
-  providers: [ForgingWorksService, DatePipe]
+  templateUrl: './assembly-worked.component.html',
+  styleUrls: ['./assembly-worked.component.scss'],
+  providers: [AssemblyWorkedService, DatePipe]
 })
-export class ForgingWorksComponent implements OnInit {
+export class AssemblyWorkedComponent implements OnInit {
   tDate = this.globals.tDate;
   gridHeight = this.globals.gridHeight;
   panelTitle: string;
@@ -55,7 +55,7 @@ export class ForgingWorksComponent implements OnInit {
     public electronService: ElectronService,
     @Inject(FormBuilder) fb: FormBuilder,
     private datePipe: DatePipe,
-    private dataService: ForgingWorksService,
+    private dataService: AssemblyWorkedService,
     private globals: AppGlobals,
     private route: ActivatedRoute,
     private utils: UtilsService,

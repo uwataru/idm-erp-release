@@ -8,7 +8,7 @@ import { AppGlobals } from '../../../../app.globals';
 const httpOptions = {};
 
 @Injectable()
-export class ForgingWorksService {
+export class AssemblyWorkedService {
 
     constructor(
         private http: HttpClient,
