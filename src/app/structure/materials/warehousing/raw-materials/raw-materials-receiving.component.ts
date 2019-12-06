@@ -28,7 +28,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
     inputFormTitle: string;
     statusFormTitle: string;
     statusConfirmMsg: string;
-    uploadFormTitle: string;
     isLoadingProgress: boolean = false;
     isEditMode: boolean = false;
 
@@ -72,8 +71,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
     @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
-    @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
-    @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
 
     constructor(
         public electronService: ElectronService,
@@ -131,7 +128,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
     ngOnInit() {
         this.panelTitle = '원자재발주현황';
         this.inputFormTitle = '원자재입고처리';
-        this.uploadFormTitle = '원자재 재고 엑셀업로드';
 
         this.getAll();
 
@@ -288,8 +284,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
             if (method == 'receiving') {
                 this.inputFormModal.show();
 
-            } else if (method == 'upload') {
-                this.uploadFormModal.show();
             } else if (method == 'cancel') {
 
                 //입고가 있으면 리턴
@@ -312,9 +306,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
             return false;
         }
 
-        if (method == 'upload') {
-
-        } else if(method == 'cancel') {
+         if(method == 'cancel') {
             this.statusFormTitle = '입고 취소';
             this.statusConfirmMsg = '선택하신 데이터를 취소하시겠습니까?';
         } else {
@@ -375,31 +367,5 @@ export class RawMaterialsReceivingComponent implements OnInit {
     //     return event.id > 0 ? true : false;
     // }
 
-    fileSelected (event) {
-        let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
-            let file: File = fileList[0];
-            let formData:FormData = new FormData();
-            formData.append('uploadFile', file, file.name);
 
-            this.excelUpload(formData);
-        }
-    }
-
-    excelUpload (data): void {
-        this.isLoadingProgress = true;
-        this.dataService.UploadExcelFile(data).subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.uploadFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }

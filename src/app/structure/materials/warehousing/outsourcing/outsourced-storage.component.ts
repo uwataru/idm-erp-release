@@ -27,7 +27,6 @@ export class OutsourcedStorageComponent implements OnInit {
   inputFormTitle: string;
   statusFormTitle: string;
   statusConfirmMsg: string;
-  uploadFormTitle: string;
   isLoadingProgress: boolean = false;
   isEditMode: boolean = false;
 
@@ -71,7 +70,6 @@ export class OutsourcedStorageComponent implements OnInit {
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
-  @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
   @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
@@ -130,7 +128,6 @@ export class OutsourcedStorageComponent implements OnInit {
   ngOnInit() {
       this.panelTitle = '외주발주현황';
       this.inputFormTitle = '외주입고처리';
-      this.uploadFormTitle = '외주 재고 엑셀업로드';
 
       this.getAll();
 
@@ -287,8 +284,6 @@ export class OutsourcedStorageComponent implements OnInit {
           if (method == 'receiving') {
               this.inputFormModal.show();
 
-          } else if (method == 'upload') {
-              this.uploadFormModal.show();
           } else if (method == 'cancel') {
 
               //입고가 있으면 리턴
@@ -311,12 +306,10 @@ export class OutsourcedStorageComponent implements OnInit {
           return false;
       }
 
-      if (method == 'upload') {
-
-      } else if(method == 'cancel') {
+        if(method == 'cancel') {
           this.statusFormTitle = '입고 취소';
           this.statusConfirmMsg = '선택하신 데이터를 취소하시겠습니까?';
-      } else {
+         } else {
 
           // 입력폼 리셋
           this.inputForm.reset();
@@ -374,31 +367,5 @@ export class OutsourcedStorageComponent implements OnInit {
   //     return event.id > 0 ? true : false;
   // }
 
-  fileSelected (event) {
-      let fileList: FileList = event.target.files;
-      if(fileList.length > 0) {
-          let file: File = fileList[0];
-          let formData:FormData = new FormData();
-          formData.append('uploadFile', file, file.name);
 
-          this.excelUpload(formData);
-      }
-  }
-
-  excelUpload (data): void {
-      this.isLoadingProgress = true;
-      this.dataService.UploadExcelFile(data).subscribe(
-          data => {
-              if (data['result'] == "success") {
-                  this.inputForm.reset();
-                  this.getAll();
-                  this.messageService.add(this.editOkMsg);
-              } else {
-                  this.messageService.add(data['errorMessage']);
-              }
-              this.uploadFormModal.hide();
-          },
-          error => this.errorMessage = <any>error
-      );
-  }
 }
