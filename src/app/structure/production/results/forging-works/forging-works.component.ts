@@ -22,7 +22,6 @@ export class ForgingWorksComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   panelTitle: string;
   inputFormTitle: string;
-  uploadFormTitle: string;
   isLoadingProgress: boolean = false;
 
   inputForm: FormGroup;
@@ -51,8 +50,6 @@ export class ForgingWorksComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-  @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
-  @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
     public electronService: ElectronService,
@@ -262,14 +259,10 @@ export class ForgingWorksComponent implements OnInit {
         }
       );
 
-    }else{
-      if (this.isExecutable == true && method == 'upload') {
-        this.uploadFormModal.show();
-      } else {
+    }else {
         alert(this.globals.isNotExecutable);
         return false;
       }
-    }
   }
   
   onSelectPersonnel (event, index): void{
@@ -340,32 +333,4 @@ export class ForgingWorksComponent implements OnInit {
 
   }
 
-
-  fileSelected(event) {
-    let fileList: FileList = event.target.files;
-    if (fileList.length > 0) {
-      let file: File = fileList[0];
-      let formData: FormData = new FormData();
-      formData.append('uploadFile', file, file.name);
-
-      this.excelUpload(formData);
-    }
-  }
-
-  excelUpload(data): void {
-    this.isLoadingProgress = true;
-    this.dataService.UploadExcelFile(data).subscribe(
-      data => {
-        if (data['result'] == 'success') {
-          this.inputForm.reset();
-          this.isLoadingProgress = false;
-          this.messageService.add(this.addOkMsg);
-        } else {
-          this.messageService.add(data['errorMessage']);
-        }
-        this.uploadFormModal.hide();
-      },
-      error => this.errorMessage = <any>error
-    );
-  }
 }

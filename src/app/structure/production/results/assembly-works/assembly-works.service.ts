@@ -42,9 +42,6 @@ export class AssemblyWorksService {
     );
   }
 
-  UploadExcelFile(data) {
-    return this.http.post(this.url + '/excelupload', data, httpOptions);
-  }
 
   /**
    * 실패한 Http 작업 처리

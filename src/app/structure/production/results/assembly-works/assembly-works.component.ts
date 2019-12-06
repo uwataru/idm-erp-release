@@ -23,7 +23,6 @@ export class AssemblyWorksComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
   inputFormTitle: string;
-  uploadFormTitle: string;
   isLoadingProgress: boolean = false;
   isEditMode: boolean = false;
 
@@ -67,8 +66,6 @@ export class AssemblyWorksComponent implements OnInit {
   isNotNumberMsg = '숫자로만 입력하세요.';
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-  @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
-  @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
     public elSrv: ElectronService,
@@ -116,7 +113,6 @@ export class AssemblyWorksComponent implements OnInit {
   ngOnInit() {
     this.panelTitle = '조립작업 지시 현황';
     this.inputFormTitle = '조립작업입력';
-    this.uploadFormTitle = '조립재고 엑셀업로드';
 
     this.getAll();
     this.personnelDataCnt = 1;
@@ -223,17 +219,12 @@ export class AssemblyWorksComponent implements OnInit {
     if (this.isExecutable == true) {
       if (method == 'write') {
         this.inputFormModal.show();
-      } else if (method == 'upload') {
-        this.uploadFormModal.show();
       }
     } else {
       alert(this.globals.isNotExecutable);
       return false;
     }
 
-    if (method == 'upload') {
-
-    } else {
       // 입력폼 리셋
       this.inputForm.reset();
 
@@ -267,7 +258,6 @@ export class AssemblyWorksComponent implements OnInit {
           }
         }
       );
-    }
   }
 
   onSelect(event) {
@@ -353,33 +343,6 @@ export class AssemblyWorksComponent implements OnInit {
   }
 
  
-  fileSelected(event) {
-    let fileList: FileList = event.target.files;
-    if (fileList.length > 0) {
-      let file: File = fileList[0];
-      let formData: FormData = new FormData();
-      formData.append('uploadFile', file, file.name);
-
-      this.excelUpload(formData);
-    }
-  }
-
-  excelUpload(data): void {
-    this.isLoadingProgress = true;
-    this.dataService.UploadExcelFile(data).subscribe(
-      data => {
-        if (data['result'] == 'success') {
-          this.inputForm.reset();
-          this.getAll();
-          this.messageService.add(this.editOkMsg);
-        } else {
-          this.messageService.add(data['errorMessage']);
-        }
-        this.uploadFormModal.hide();
-      },
-      error => this.errorMessage = <any>error
-    );
-  }
 
   // chkAll(isChecked) {
   //   let formData = this.inputForm.value;
