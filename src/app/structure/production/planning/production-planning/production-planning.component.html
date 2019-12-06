@@ -44,7 +44,7 @@
                               cellClass="text-right"></ngx-datatable-column>
         <ngx-datatable-column prop="id" name="잔량" [width]="100" [canAutoResize]="false" cellClass="text-center">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          {{row.remainQty}}
+          <span>{{row.remainQty}}</span>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="id" name="진행율" [width]="150" [canAutoResize]="false" cellClass="text-center">
