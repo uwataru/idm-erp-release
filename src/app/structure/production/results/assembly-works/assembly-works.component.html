@@ -131,11 +131,18 @@
                     작업라인 
                   </label>
                   <div class="col-lg-8">
-                    <input type="text"
-                        readonly 
+                    <input
                         formControlName="line_no"
                         id="line_no"
+                        [typeahead]="productionLine"
+                        typeaheadOptionField="line_no"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectLines($event)"
+                        placeholder="계정과목"
                         class="input-sm form-control w-sm inline v-middle" />
+                    <input type="hidden" formControlName="production_work_line_id" id="production_work_line_id"/>
                   </div>
                 </div>
               </div>

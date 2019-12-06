@@ -40,6 +40,7 @@ export class AssemblyWorksComponent implements OnInit {
 
   inputForm: FormGroup;
   personnelList: any[] = this.globals.configs['personnelList'];
+  productionLine: any[] = this.globals.configs['productionLine'];
   totalWeight: number;
   assembly_total: number;
   product_price: number;
@@ -101,6 +102,7 @@ export class AssemblyWorksComponent implements OnInit {
       product_name: ['', Validators.required],
       product_type: ['', Validators.required],
       line_no: '',
+      production_work_line_id: ['', Validators.required],
       promised_date: '',
       qty: '',
       start_date: '',
@@ -157,6 +159,7 @@ export class AssemblyWorksComponent implements OnInit {
     let formData = {
       start_date: this.datePipe.transform(formModel['start_date'], 'yyyy-MM-dd'),
       end_date: this.datePipe.transform(formModel['end_date'], 'yyyy-MM-dd'),
+      production_work_line_id: parseInt(formModel['production_work_line_id']),
       production_personnel: []
     };
 
@@ -254,6 +257,7 @@ export class AssemblyWorksComponent implements OnInit {
               product_name: this.formData.product_name,
               product_type: this.formData.product_type,
               line_no: this.formData.line_no,
+              production_work_line_id: this.formData.production_work_line_id,
               promised_date: this.formData.promised_date,
               qty: this.utils.addComma(this.formData.qty),
             });
@@ -317,6 +321,11 @@ export class AssemblyWorksComponent implements OnInit {
 
   onSelectPersonnel(event, index){
     this.inputForm.controls['personnel_id_' + index].setValue(event.item.id);
+  }
+  onSelectLines(event){
+    console.log('Event', event);
+    this.inputForm.controls['production_work_line_id'].setValue(event.item.id);
+    console.log('line_id',this.inputForm.controls['production_work_line_id'].value );
   }
   calculInputWeightTotal() {
     let formData = this.inputForm.value;

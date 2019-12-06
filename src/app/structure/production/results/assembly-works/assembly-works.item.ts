@@ -8,6 +8,7 @@ export class Item {
     product_name: string;
     product_type: string;
     line_no: string;
+    production_work_line_id: string;
     promised_date: string;
     qty: number;
     start_date: string;
