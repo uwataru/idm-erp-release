@@ -18,7 +18,7 @@ export class RowData {
     transfer_qty: number;
     receiving_qty: number;
     insert_qty: number;
-    retrun_qty: number;
+    output_qty: number;
     remain_qty: number;
     sch_sdate: string;
     sch_edate: string;
