@@ -10,6 +10,7 @@ import { MessageService } from '../../../message.service';
 import { Item } from './personnel-management.item';
 import { PersonnelManagementService } from './personnel-management.service';
 import {UtilsService} from "../../../utils.service";
+import {ElectronService} from "../../../providers/electron.service";
 
 declare var $: any;
 
@@ -48,6 +49,7 @@ export class PersonnelManagementComponent implements OnInit {
     private route: ActivatedRoute,
     private configService: ConfigService,
     private utils: UtilsService,
+    public elSrv: ElectronService
   ) {
       this.searchForm = fb.group({
           sch_sdate: '',
@@ -81,22 +83,16 @@ export class PersonnelManagementComponent implements OnInit {
 }
 
     getAll(): void {
-        // this.dataService.GetAll().subscribe(
-        //     listData =>
-        //     {
-        //         this.listData = listData;
-        //         this.rows = listData['data'];
-        //     }
-        // );
+        let formData = this.searchForm.value;
 
         this.selectedId = '';
         this.selected = [];
 
         let params = {
-            sortby: ['id'],
-            order: ['asc'],
-            maxResultCount: 10000
-        }
+            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+            maxResultCount: 1000
+        };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
             listData =>
@@ -116,19 +112,11 @@ export class PersonnelManagementComponent implements OnInit {
         // filter data
         const temp = this.temp.filter(function (d) {
             // console.log(d);
-            return (d.name!=null &&  d.name.indexOf(val) !== -1) || !val;
+            return (d.personnel_name!=null &&  d.personnel_name.indexOf(val) !== -1) || !val;
         });
 
         // update the rows
         this.rows = temp;
-    }
-
-    totalProductQty(){
-        let totalVal = 0;
-        for(let i in this.rows){
-            totalVal += parseInt(this.rows[i].product_qty);
-        }
-        return this.utils.addComma(totalVal);
     }
 
     totalWorkTime(){

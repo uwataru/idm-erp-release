@@ -32,39 +32,45 @@
           [selected]="selected"
           [summaryRow]="true"
           [summaryPosition]="'bottom'"
-          [summaryHeight]="45"
+          [summaryHeight]="35"
           [messages]="messages">
-          <ngx-datatable-column prop="working_date" name="작업일자" cellClass="text-center" [width]="120"
+          <ngx-datatable-column prop="production_date" name="작업일자" cellClass="text-center" [width]="120"
                                 [canAutoResize]="false" [summaryTemplate]="total_label">
             <ng-template #total_label let-row="row" let-value="value">
-              <div style="margin-top: 10px; text-align: center"><span><b>총 계</b></span></div>
+              <div style="margin-top: 6px; text-align: center"><span><b>총 계</b></span></div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
                                 cellClass="text-center"></ngx-datatable-column>
           <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-left"></ngx-datatable-column>
           <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-left"></ngx-datatable-column>
-          <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="" name="작업자" [width]="120" [canAutoResize]="false"
+          <ngx-datatable-column prop="product_type" name="규격" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="personnel_name" name="작업자" [width]="120" [canAutoResize]="false"
                                 cellClass="text-left"></ngx-datatable-column>
-          <ngx-datatable-column prop="product_qty" name="생산수량" cellClass="text-right" [width]="100"
-                                [canAutoResize]="false" [summaryTemplate]="product_qty_total">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-              <span>{{ value | numberFormat }}</span>
-            </ng-template>
-            <ng-template #product_qty_total let-row="row" let-value="value">
-              <span style="margin-top: 10px"><b>{{ totalProductQty() }}</b></span>
-            </ng-template>
-          </ngx-datatable-column>
           <ngx-datatable-column prop="work_time" name="작업시간" cellClass="text-right" [width]="100"
                                 [canAutoResize]="false" [summaryTemplate]="work_time_total">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
               <span>{{ value | numberFormat }}</span>
             </ng-template>
             <ng-template #work_time_total let-row="row" let-value="value">
-              <span style="margin-top: 10px"><b>{{ totalWorkTime() }}</b></span>
+              <span style="margin-top: 6px"><b>{{ totalWorkTime() }}</b></span>
             </ng-template>
           </ngx-datatable-column>
       </ngx-datatable>
   </div>
+  <footer class="panel-footer hidden-print">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+      </div>
+      <div class="col-sm-6 text-right">
+<!--        <button class="btn btn-sm btn-info btn-addon"-->
+<!--                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">-->
+<!--          <i class="glyphicon glyphicon-print"></i>인쇄-->
+<!--        </button>-->
+        <button class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works/records','조립수불명세서.xlsx')"><i
+                class="glyphicon glyphicon-download-alt"></i>엑셀
+        </button>
+      </div>
+    </div>
+  </footer>
 </div>
