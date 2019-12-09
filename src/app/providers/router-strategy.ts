@@ -24,9 +24,9 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   private isTab :string;
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    console.log(`shouldDetach <${this.getSnapshotKey(route)}>`, route);
+    // console.log(`shouldDetach <${this.getSnapshotKey(route)}>`, route);
     const shouldDetach = !this.isToBeIgnored(route, 'shouldDetach');
-    console.log(`shouldDetach:`, shouldDetach ? 'YES' : 'NO');
+    // console.log(`shouldDetach:`, shouldDetach ? 'YES' : 'NO');
     return shouldDetach;
   }
 
@@ -37,7 +37,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     const key = this.getSnapshotKey(route);
     this.isTab = route.queryParams['tabs'];
 
-    console.log(`${detachedTree === null ? '(null) ' : ''}store <${key}>`, route, detachedTree);
+    // console.log(`<!--${detachedTree === null ? '(null) ' : ''}store <${key}>-->`, route, detachedTree);
 
     if (!detachedTree || this.isToBeIgnored(route, 'store')) {
       return;
@@ -46,11 +46,11 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     const previousStored = this.routeCache.get(key);
     if (previousStored) {
       if (previousStored.handle.componentRef === detachedTree.componentRef) {
-        console.log(
-          'store: previous componentRef === detachedTree.componentRef'
-        );
+        // console.log(
+        //   'store: previous componentRef === detachedTree.componentRef'
+        // );
       } else {
-        console.log('store: destroying previousStored');
+        // console.log('store: destroying previousStored');
         previousStored.handle.componentRef.destroy();
       }
     }
@@ -72,7 +72,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
       stored && stored.handle.componentRef.hostView.destroyed
     );
     const msgStatus = destroyed ? 'DESTROYED' : stored ? 'FOUND' : 'NOT FOUND';
-    console.log(`shouldAttach <${key}> ${msgStatus}`, route);
+    // console.log(`shouldAttach <${key}> ${msgStatus}`, route);
     const shouldAttach =
       !destroyed && !!stored && !this.isToBeIgnored(route, 'shouldAttach');
     if (shouldAttach) {
@@ -91,10 +91,10 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     const shouldBeRetrieved =
       !destroyed && !!stored && stored.shouldAttachCalled;
 
-    console.log(`retrieve <${key}>`, shouldBeRetrieved, route);
+    // console.log(`retrieve <${key}>`, shouldBeRetrieved, route);
 
     if (destroyed) {
-      console.log('%c' + `retrieve <${key}>: DESTROYED`, 'color: #0a0');
+      // console.log('%c' + `retrieve <${key}>: DESTROYED`, 'color: #0a0');
       this.routeCache.delete(key);
     }
 
@@ -120,7 +120,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     curr: ActivatedRouteSnapshot
   ): boolean {
     const result = future.routeConfig === curr.routeConfig; // from DefaultRouteReuseStrategy
-    console.log('shouldReuseRoute', result, curr, future);
+    // console.log('shouldReuseRoute', result, curr, future);
     return result;
   }
 
@@ -130,17 +130,17 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 
   private isToBeIgnored(route: ActivatedRouteSnapshot, msg: string) {
     if (!route.routeConfig) {
-      console.log(`${msg}: !route.routeConfig`);
+      // console.log(`${msg}: !route.routeConfig`);
       return true;
     }
 
     if (route.routeConfig.loadChildren) {
-      console.log(`${msg}: loadChildren`);
+      // console.log(`${msg}: loadChildren`);
       return true;
     }
 
     if (route.children.length) {
-      console.log(`${msg}: has children`);
+      // console.log(`${msg}: has children`);
       return true;
     }
 

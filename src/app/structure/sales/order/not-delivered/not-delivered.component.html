@@ -42,30 +42,34 @@
             [selectionType]="'single'"
             (select)='onSelect($event)'
             [messages]="messages">
-            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="partner_name" name="거래처" [width]="1" [canAutoResize]="false"
-                                  [resizeable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                                  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
             <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
             <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
-            <ngx-datatable-column prop="demand_date" name="요구일" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="promised_date" name="약속일자" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="demand_date" name="요구일" [width]="120" [canAutoResize]="false"
+                                  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="promised_date" name="약속일자" [width]="120" [canAutoResize]="false"
+                                  cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="order_qty" name="수주수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="80" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-right">
+                                  cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="80" [canAutoResize]="false"
+                                  cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="current_qty" name="제품재고" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="current_qty" name="제품재고" [width]="80" [canAutoResize]="false"
+                                  cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
