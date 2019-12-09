@@ -4,23 +4,20 @@ export class Item {
     data: {
         id: number;
         delivery_date: string;
-        partner_code: number;
         partner_name: string;
-        product_code: string;
         product_name: string;
+        product_type: string;
         order_qty: number;
+        current_qty: number;
         delivery_qty: number;
-        // production_qty: number;
-        normal_qty: number;
         product_price: number;
         delivery_price: string;
         delivered_qty: number;
         order_no: string;
-        poc_no: string;
-        ms_no: string;
         transport_vehicle: string;
         unload_place: string;
-        invoice_id: number;
+        unload_place_id: number;
+        sales_orders_detail_id: number;
     };
     maxResultCount: number;
     result: string;
