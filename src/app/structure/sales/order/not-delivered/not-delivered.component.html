@@ -101,7 +101,6 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form [formGroup]="inputForm">
-                <input type="hidden" formControlName="order_qty" id="order_qty" value=""/>
                 <div class="modal-header">
                     <button type="button" class="close" (click)="InputFormModal.hide()"><span
                             aria-hidden="true">&times;</span></button>
@@ -113,7 +112,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <label for="input_date" class="col-lg-4 control-label">
-                                        납품일자 <span class="text-xs"></span>
+                                        납품일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                     </label>
                                     <div class="col-lg-8">
                                         <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left"
