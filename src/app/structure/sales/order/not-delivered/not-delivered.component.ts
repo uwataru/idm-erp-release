@@ -32,6 +32,7 @@ export class OrderNotDeliveredComponent implements OnInit {
     searchForm: FormGroup;
 
     selectedId: string;
+    currentQty: number;
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
@@ -252,12 +253,14 @@ export class OrderNotDeliveredComponent implements OnInit {
                     alert(this.globals.isNotExecutable);
                     return false;
                 }
-                this.inputFormModal.show();
+                if(this.currentQty < 1) {
+                    this.messageService.add('해당 제품의 재고가 없습니다.');
+                    return false;
+                }
 
-                // 입력폼 리셋
+                this.inputFormModal.show();
                 this.inputForm.reset();
 
-                // 수주정보
                 this.dataService.GetById(this.selectedId).subscribe(
                     editData =>
                     {
@@ -299,6 +302,7 @@ export class OrderNotDeliveredComponent implements OnInit {
 
     onSelect({ selected }) {
         this.selectedId = selected[0].id;
+        this.currentQty = this.utils.removeComma(selected[0].current_qty) * 1;
     }
 
 }
