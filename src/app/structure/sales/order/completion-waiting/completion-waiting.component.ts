@@ -21,47 +21,34 @@ declare var $: any;
 export class CompletionWaitingComponent implements OnInit {
     tDate = this.globals.tDate;
     panelTitle: string;
-    salesCompletionTitle: string;
+    inputFormTitle: string;
     uploadFormTitle: string;
     isLoadingProgress: boolean = false;
     hideConfirmMsg: string;
     isEditMode: boolean = false;
-    gridHeight = this.globals.gridHeight - 15;
+    gridHeight = this.globals.gridHeight;
+    selectedId: string;
 
     searchForm: FormGroup;
 
-    selectedData: string;
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
-    //listPartners = [];
-    listPartners: any[] = this.globals.configs['type5Partners'];
+    partnerList: any[] = this.globals.configs['partnerList'];
+    saleTypeList: any[] = this.globals.configs['saleTypeList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
     sch_order_no: string;
-    sch_st: number;
-    st: number;
     rows = [];
     temp = [];
-    delId = [];
     selected = [];
-    selectedTotalPrice: number;
-    selectedTotalQty: number;
     messages = this.globals.datatableMessages;
-
-    checked_sales_date: string;
-    checkedInputForm: FormGroup;
 
     inputForm: FormGroup;
     partnerName: string;
     productCode: string;
     orderNo: string;
-    POCNO: string;
-    deliveryDate: string;
-
-    resultRows = Item['data'];
-    salesDate: string;
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
@@ -104,26 +91,23 @@ export class CompletionWaitingComponent implements OnInit {
         });
 
         this.inputForm = fb.group({
-            delivery_no: ['', Validators.required],
-            sales_date: ['', Validators.required],
-            sales_type: ['', Validators.required],
+            input_date: ['', Validators.required],
+            partner_name: '',
+            order_no: '',
+            product_name: '',
+            product_type: '',
+            delivery_qty: '',
             sales_qty: ['', Validators.required],
-            product_price: ['', Validators.required],
-            sales_price: ['', Validators.required]
-        });
-
-        this.checkedInputForm = fb.group({
-            checked_sales_date: ['', Validators.required],
-            //checked_sales_type: '',
-            checked_sales_price: '',
-            checked_sales_qty: ''
+            sales_type: ['', Validators.required],
+            product_price: '',
+            sale_price: '',
+            sales_orders_detail_id: '',
         });
     }
 
     ngOnInit() {
         this.panelTitle = '미판매(납품)현황';
-        this.salesCompletionTitle = '판매처리';
-        this.uploadFormTitle = '미판매재고 엑셀업로드';
+        this.inputFormTitle = '판매처리';
 
         this.getAll();
 
@@ -138,18 +122,14 @@ export class CompletionWaitingComponent implements OnInit {
     }
 
     getAll(): void {
-        this.selectedTotalPrice = 0;
-        this.selectedTotalQty = 0;
         this.selected = [];
 
         let formData = this.searchForm.value;
         let params = {
             partner_name: formData.sch_partner_name,
-            order_no: formData.sch_order_no,
-            st: this.sch_st,
-            sortby: ['product_code'],
-            order: ['asc'],
-            maxResultCount: 10000
+            // sortby: ['product_code'],
+            // order: ['asc'],
+            // maxResultCount: 10000
         };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_code'] = this.listSltdPaCode;
@@ -159,12 +139,14 @@ export class CompletionWaitingComponent implements OnInit {
             listData =>
             {
                 this.listData = listData;
+
+                for(let i in listData['data']){
+                    listData['data'][i].price = listData['data'][i].sales_qty * listData['data'][i].product_price;
+                    listData['data'][i].not_sales_qty = listData['data'][i].delivery_qty - listData['data'][i].sales_qty;
+                }
+
                 this.temp = listData['data'];
                 this.rows = listData['data'];
-
-                this.rows.forEach((e: any) => {
-                    e.sales_qty = e.delivery_qty;
-                });
 
                 this.isLoadingProgress = false;
             }
@@ -172,71 +154,40 @@ export class CompletionWaitingComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
+        if (event.item['id'] == '') {
             this.listSltdPaCode = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaCode = event.item['id'];
         }
-
-        const val = this.listSltdPaCode;
     }
 
     onSelect({ selected }) {
-        // console.log('Select Event', selected, this.selected);
-
-        if(selected === undefined){
-            return;
-        }
-
-        this.selected.splice(0, this.selected.length);
-        this.selected.push(...selected);
-        this.reCalcTotalPriceAndQty();
-    }
-
-    private reCalcTotalPriceAndQty() {
-        this.selectedTotalPrice = 0;
-        this.selectedTotalQty = 0;
-        this.selected.forEach((e: any) => {
-            this.selectedTotalPrice += Number(e.sales_price);
-            this.selectedTotalQty += Number(e.sales_qty);
-        });
-    }
-
-    changeQuantityPrice (rowIndex): void {
-        let dq = this.rows[rowIndex]['delivery_qty'];
-        let sq = this.utils.removeComma((<HTMLInputElement>document.getElementById('sales_qty_' + this.rows[rowIndex]['id'])).value) * 1;
-        let pp = this.utils.removeComma((<HTMLInputElement>document.getElementById('product_price_' + this.rows[rowIndex]['id'])).value) * 1;
-        (<HTMLInputElement>document.getElementById('sales_price_' + this.rows[rowIndex]['id'])).value = this.utils.addComma(sq * pp);
-        // 미판매수량 = 납품수량 - 판매수량
-        (<HTMLInputElement>document.getElementById('unsold_qty_' + this.rows[rowIndex]['id'])).value = this.utils.addComma(dq - sq);
-
-        this.rows[rowIndex]['sales_price'] = sq * pp;
-        this.rows[rowIndex]['sales_qty'] = sq;
-        this.rows[rowIndex]['product_price'] = pp;
-    }
-
-    onEnterSelectDeliveryQty (row, rowIndex): void{
-        // console.log('onEnterSelectDeliveryQty', row, rowIndex);
-        this.selected.forEach((e: any, index, object) => {
-            if(e.id == row.id){
-                object.splice(index, 1);
-            }
-        });
-        this.selected.push(row);
-
-        this.changeQuantityPrice(rowIndex);
-        this.reCalcTotalPriceAndQty();
+        this.selectedId = selected[0].id;
     }
 
     Save () {
-         let formData = this.inputForm.value;
-         formData.sales_date = this.datePipe.transform(formData.sales_date, 'yyyy-MM-dd');
-         formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-         formData.sales_qty = this.utils.removeComma(formData.sales_qty) * 1;
-         formData.sales_price = this.utils.removeComma(formData.sales_price) * 1;
+        let formData = this.inputForm.value;
 
-         formData.st = 1;
-         this.Create(formData);
+        let saleQty = this.utils.removeComma(formData.sales_qty) * 1;
+        let deliveryQty = this.utils.removeComma(formData.delivery_qty) * 1;
+        let notSaleQty = deliveryQty - saleQty;
+        if (saleQty < 1) {
+            alert('판매수량이 0 이상이어야 합니다');
+            return false;
+        }
+        if(saleQty > notSaleQty){
+            alert('판매수량이 미판매 수량보다 큽니다.');
+            return false;
+        }
+
+        let regData = {
+            sales_orders_detail_id: formData.sales_orders_detail_id,
+            settings_id: formData.sales_type * 1,
+            qty: this.utils.removeComma(formData.sales_qty) * 1,
+            input_date: this.datePipe.transform(formData.input_date, 'yyyy-MM-dd')
+        };
+        console.log(regData);
+        this.Create(regData);
     }
 
     Create (data): void {
@@ -256,149 +207,53 @@ export class CompletionWaitingComponent implements OnInit {
             );
     }
 
-    SaveChecked () {
-        // 실행권한
-        if (this.isExecutable == false) {
-            alert(this.globals.isNotExecutable);
-            return false;
-        }
-
-        let formData = this.checkedInputForm.value;
-        formData.checked_sales_date = this.datePipe.transform(formData.checked_sales_date, 'yyyy-MM-dd');
-        formData.checked_sales_price = this.selectedTotalPrice;
-        formData.checked_sales_qty = this.selectedTotalQty;
-
-        let salesCompletionsData = [];
-        this.selected.forEach((e:any) => {
-
-            if (<HTMLSelectElement>document.getElementById('sales_price_' + e.id) != null) {
-                if ((<HTMLSelectElement>document.getElementById('sales_price_' + e.id)).value != '') {
-                    let checkedData = [];
-                    let salesType = (<HTMLSelectElement>document.getElementById('sales_type_' + e.id)).value;
-                    let productPrice = (<HTMLSelectElement>document.getElementById('product_price_' + e.id)).value;
-                    let salesQty = (<HTMLSelectElement>document.getElementById('sales_qty_' + e.id)).value;
-                    let salesPrice = (<HTMLSelectElement>document.getElementById('sales_price_' + e.id)).value;
-
-                    checkedData.push(e.id);
-                    checkedData.push(this.utils.removeComma(salesType));
-                    checkedData.push(this.utils.removeComma(productPrice));
-                    checkedData.push(this.utils.removeComma(salesQty));
-                    checkedData.push(this.utils.removeComma(salesPrice));
-
-                    salesCompletionsData.push(checkedData.join(':#:'));
-                }
-            }
-        });
-
-        formData.sales_completions_data = salesCompletionsData.join('=||=');
-        this.createCheckedData(formData);
-    }
-
-    createCheckedData (data): void {
-        this.dataService.CreateCheckedData(data)
-            .subscribe(
-                data => {
-                    if (data['result'] == "success") {
-                        this.checkedInputForm.reset();
-                        this.initRowVal();
-                        this.selected = [];
-                        this.resultRows = data['data'];
-                        this.salesDate = data['sales_date'];
-                        this.PrintResultsModal.show();
-                        this.getAll();
-                        this.messageService.add(this.addOkMsg);
-                        console.log(this.resultRows);
-                    } else {
-                        this.messageService.add(data['errorMessage']);
-                    }
-                    this.inputFormModal.hide();
-                },
-                error => this.errorMessage = <any>error
-            );
-    }
-
     openModal(method, rowIndex) {
         // 실행권한
         if (this.isExecutable == true) {
-            if (method == 'upload') {
-                this.uploadFormModal.show();
-            } else {
-                this.inputFormModal.show();
-            }
+           this.inputFormModal.show();
         } else {
             alert(this.globals.isNotExecutable);
             return false;
         }
 
-        if (method == 'upload') {
+        this.inputFormModal.show();
 
-        } else {
+        // 입력폼 리셋
+        this.inputForm.reset();
 
-            let rowData = [];
-            if (rowIndex == 'checkedAll') {
-                this.selected.forEach((data) => {
-                    let colData = [];
-                    colData.push(this.rows[rowIndex]['id']);
-                    colData.push(this.rows[rowIndex]['sales_type']);
-                    colData.push(this.rows[rowIndex]['sales_price']);
-                    rowData.push(colData.join(':#:'))
-                });
+        // 수주정보
+        this.dataService.GetById(this.selectedId).subscribe(
+            editData =>
+            {
+                if (editData['result'] == "success") {
+                    this.formData = editData['data'];
 
-                this.selectedData = rowData.join('=||=');
-            } else {
-                this.partnerName = this.rows[rowIndex]['partner_name'];
-                this.productCode = this.rows[rowIndex]['product_code'];
-                this.orderNo = this.rows[rowIndex]['order_no'];
-                this.POCNO = this.rows[rowIndex]['poc_no'];
-                this.deliveryDate = this.rows[rowIndex]['delivery_date'];
+                    let not_sales_qty = this.formData.delivery_qty - this.formData.sales_qty;
+                    let price = not_sales_qty * this.formData.product_price;
 
-                this.inputForm.patchValue({
-                    sales_date: this.tDate, //this.formData.delivery_date,
-                    delivery_no: this.rows[rowIndex]['id'],
-                    sales_type: (<HTMLInputElement>document.getElementById('sales_type_' + this.rows[rowIndex]['id'])).value,
-                    sales_qty: (<HTMLInputElement>document.getElementById('sales_qty_' + this.rows[rowIndex]['id'])).value,
-                    product_price: (<HTMLInputElement>document.getElementById('product_price_' + this.rows[rowIndex]['id'])).value,
-                    sales_price: (<HTMLInputElement>document.getElementById('sales_price_' + this.rows[rowIndex]['id'])).value
-                });
-            }
-
-        }
-    }
-
-
-    fileSelected (event) {
-        let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
-            let file: File = fileList[0];
-            let formData:FormData = new FormData();
-            formData.append('uploadFile', file, file.name);
-
-            this.excelUpload(formData);
-        }
-    }
-
-    excelUpload (data): void {
-        this.isLoadingProgress = true;
-        this.dataService.UploadExcelFile(data).subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
+                    this.inputForm.patchValue({
+                        input_date: this.tDate,
+                        order_no: this.formData.order_no,
+                        partner_name: this.formData.partner_name,
+                        product_name: this.formData.product_name,
+                        product_type: this.formData.product_type,
+                        delivery_qty: this.utils.addComma(this.formData.delivery_qty),
+                        sales_qty: this.utils.addComma(not_sales_qty),
+                        product_price: this.utils.addComma(this.formData.product_price),
+                        sale_price: this.utils.addComma(price),
+                        sales_orders_detail_id: this.formData.id
+                    });
                 }
-                this.uploadFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
+            }
         );
     }
 
-    private initRowVal() {
-        this.rows.forEach((e: any) => {
-            let tEl = (<HTMLInputElement>document.getElementById('unsold_qty_' + e.id));
-            if(tEl)
-                (<HTMLInputElement>document.getElementById('unsold_qty_' + e.id)).value = '';
-        });
+    calculateSalePrice(){
+        let formData = this.inputForm.value;
+        let q = this.utils.removeComma(formData.sales_qty) * 1;
+        let p = this.utils.removeComma(formData.product_price) * 1;
+        let dp = this.utils.addComma(q * p)
+        this.inputForm.controls['sale_price'].setValue(dp);
     }
+
 }

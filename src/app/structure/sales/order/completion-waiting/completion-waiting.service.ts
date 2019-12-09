@@ -14,7 +14,7 @@ export class CompletionWaitingService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/completion-waiting';
+    private url = this.globals.serverUrl + '/sales/complete';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
@@ -22,8 +22,9 @@ export class CompletionWaitingService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
+    GetById (id:string): Observable<Item> {
+        let currTime = (new Date()).getTime();
+        return this.http.get<Item>(this.url + '/' + id + '?t=' + currTime);
     }
 
     //======= 저장 =======//
@@ -33,17 +34,6 @@ export class CompletionWaitingService {
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
-    }
-
-    CreateCheckedData (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url + '/create-checked-data', data, httpOptions).pipe(
-            tap((data: Item) => this.log(`added data w/ id=${data}`)),
-            catchError(this.handleError<Item>('Create'))
-        );
-    }
-
-    UploadExcelFile (data) {
-        return this.http.post(this.url + '/excelupload', data, httpOptions)
     }
 
     /**
