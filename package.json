@@ -1,6 +1,7 @@
 {
   "name": "IDM-ERP",
   "version": "0.6.2",
+  "webview_version": "0.6.2",
   "description": "IDM-ERP(PC)",
   "homepage": "http://IDM.innest.co.kr",
   "author": {
