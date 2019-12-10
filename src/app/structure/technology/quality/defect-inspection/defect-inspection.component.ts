@@ -199,7 +199,7 @@ export class DefectInspectionComponent implements OnInit {
 
       // filter data
       const temp = this.temp.filter(function(d){
-          return d.order_no.indexOf(val) !== -1 || d.poc_no.indexOf(val) !== -1 || !val;
+          return d.order_no.indexOf(val) !== -1 || !val;
       })
 
       // update the rows
