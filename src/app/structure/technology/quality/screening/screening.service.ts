@@ -14,7 +14,7 @@ export class ScreeningService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/technology/screening';
+    private url = this.globals.serverUrl + '/technology/screening-operation';
 
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
@@ -27,8 +27,8 @@ export class ScreeningService {
     //     );
     // }
 
-    GetById (pocNo:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+pocNo);
+    GetById (id:string): Observable<Item> {
+        return this.http.get<Item>(this.url+'/'+id);
     }
 
     //======= 저장 =======//
@@ -40,9 +40,9 @@ export class ScreeningService {
         );
     }
 
-    NoScreening (data) {
-        return this.http.get(this.url + '/no-screening/' + data)
-    }
+    // NoScreening (data) {
+    //     return this.http.get(this.url + '/no-screening/' + data)
+    // }
 
     UploadExcelFile (data) {
         return this.http.post(this.url + '/excelupload', data, httpOptions)
