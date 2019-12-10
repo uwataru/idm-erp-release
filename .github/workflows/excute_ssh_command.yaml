@@ -1,0 +1,24 @@
+name: action for webview app
+on:
+  push:
+    paths:
+      - 'package.json'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: |
+            cd /var/www/idm-erp-frontend/
+            sudo git checkout build-dist-for-webview
+            sudo git pull
+            sudo rm -rf ../${{secrets.PROJECT_DIR}}/*
+            sudo cp -R dist-webview/* ../${{secrets.PROJECT_DIR}}/
+            sudo chown -R root:root /var/www/${{secrets.PROJECT_DIR}}/
+            sudo chmod 755 /var/www/${{secrets.PROJECT_DIR}}/ -R
+            sudo chcon -R -t httpd_sys_content_t /var/www/${{secrets.PROJECT_DIR}}/
+          host: 34.85.87.121
+          username: github-action
+          privateKey: ${{secrets.SSH_PRIVATE_KEY}}
