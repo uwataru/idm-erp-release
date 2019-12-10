@@ -2,7 +2,7 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {ElectronService} from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
 import {saveAs as importedSaveAs} from 'file-saver';
 import {ProductsService} from './products.service';
 import {AppGlobals} from '../../../../app.globals';
@@ -11,7 +11,7 @@ import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './products.item';
 import { FormArray } from '@angular/forms';
-
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
 declare var $: any;
 
 @Component({
@@ -572,6 +572,80 @@ export class ProductsComponent implements OnInit {
       if(this.listMaterials[i].id == id){
         return this.listMaterials[i];
       }
+    }
+  }
+
+  exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+    if (this.electronService.checkExportExcel()) {
+      let data;
+      if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+        // data = this.dataService.GetMasterExcelData()['data'];
+      } else { //리스트는 기존 가져온 데이터로 생성
+        data = this.rows;
+
+        //
+        let tData = [];
+        for(let i in data){
+          for(let j in data[i].materials){
+            tData.push({
+              input_date: data[i].input_date,
+              name: data[i].name,
+              type: data[i].type,
+              product_price: data[i].product_price,
+              material_name: data[i].materials[j].name,
+              material_qty: data[i].materials[j].qty,
+            })
+          }
+        }
+        data = tData;
+      }
+
+      let workbook = new Workbook();
+      let worksheet = workbook.addWorksheet(this.panelTitle);
+
+      worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(2).width = 20;
+      worksheet.getColumn(3).width = 20;
+      worksheet.getColumn(4).width = 15;
+      worksheet.getColumn(5).width = 20;
+      worksheet.getColumn(6).width = 15;
+
+      const header = ["등록일자", "제품명", "규격", "단가", "소요자재", "Qty"];
+      let headerRow = worksheet.addRow(header);
+      headerRow.font = this.globals.headerFontStyle as Font;
+      headerRow.eachCell((cell, number) => {
+        cell.fill = this.globals.headerFillColor as Fill;
+        cell.border = this.globals.headerBorderStyle as Borders;
+        cell.alignment = this.globals.headerAlignment as Alignment;
+      });
+
+      let jsonValueToArray;
+      data.forEach(d => {
+            jsonValueToArray = [];
+            jsonValueToArray.push(d.input_date);
+            jsonValueToArray.push(d.name);
+            jsonValueToArray.push(d.type);
+            jsonValueToArray.push(d.product_price);
+            jsonValueToArray.push(d.material_name);
+            jsonValueToArray.push(d.material_qty * 1);
+            // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
+
+            let row = worksheet.addRow(jsonValueToArray);
+            row.font = this.globals.bodyFontStyle as Font;
+            row.getCell(1).alignment = {horizontal: "center"};
+            row.getCell(4).alignment = {horizontal: "right"};
+            row.getCell(6).alignment = {horizontal: "right"};
+            row.eachCell((cell, number) => {
+              cell.border = this.globals.bodyBorderStyle as Borders;
+            });
+          }
+      );
+
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        fileName = fileName == '' ? this.panelTitle : fileName;
+        importedSaveAs(blob, fileName + '.xlsx');
+      })
     }
   }
 }

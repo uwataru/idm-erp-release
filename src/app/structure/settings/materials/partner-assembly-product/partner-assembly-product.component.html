@@ -118,7 +118,7 @@
           <i class="glyphicon glyphicon-plus"></i>등록
         </button>
 <!--        <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>-->
-        <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/assembly-products','외주단조품.xlsx')">
+        <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(electronService.EXPORT_EXCEL_MODE.LIST)">
           <i class="glyphicon glyphicon-download-alt"></i>엑셀
         </button>
       </div>
