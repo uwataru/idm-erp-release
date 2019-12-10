@@ -31,7 +31,6 @@ import { AuthGuard } from './app.auth';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layout/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layout/auth/auth-layout.component';
-import { PrintLayoutComponent } from './layout/print/print-layout.component';
 
 // Shared Services
 import { SharedModule } from './structure/shared/shared.module';
@@ -56,7 +55,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent,
-        PrintLayoutComponent,
         WebviewDirective,
         PageNotFoundComponent
     ],
