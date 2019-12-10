@@ -22,32 +22,22 @@ export class InspectionItemComponent implements OnInit {
 
   InputDate = this.globals.tDate;
   panelTitle: string;
-  inputFormTitle: string;
-  editFormTitle: string;
-  deleteFormTitle: string;
-  deleteConfirmMsg: string;
+
+  searchForm: FormGroup;
+
   isLoadingProgress: boolean = false;
-  isEditMode: boolean = false;
-  selectedId: string;
   listData: Item[];
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
-  selectedCnt: number;
   editData: Item;
   formData: Item['data'];
   rows = [];
-  delId = [];
-  selected = [];
-  inputForm: FormGroup;
-  editForm: FormGroup;
   isExecutable: boolean = false;
   isPrintable: boolean = false;
   errorMessage: string;
   addOkMsg = '등록이 완료되었습니다.';
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
-  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-  @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -58,23 +48,17 @@ export class InspectionItemComponent implements OnInit {
     private configService: ConfigService,
     private messageService: MessageService
   ) {
-    this.inputForm = fb.group({
-      production_date: ['', [Validators.required]],
-      taken: '',
-      crack: '',
-      print_faulty: '',
-      color_faulty: '',
-      cosmetic_faulty: '',
-      etc: ''
-
-    });
+    this.searchForm = fb.group({
+      sch_sdate: ['', [Validators.required]],
+      sch_edate: ['', [Validators.required]],
+  });
   }
 
   ngOnInit() {
     this.panelTitle = '검사항목현황';
-    this.inputFormTitle = '검사항목 등록';
     this.getAll();
-    this.inputForm.controls['production_date'].setValue(this.InputDate);
+    this.searchForm.controls['sch_sdate'].setValue(this.InputDate);
+    this.searchForm.controls['sch_edate'].setValue(this.InputDate);
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
       let modalHeader = $('.modal-header');
@@ -85,20 +69,13 @@ export class InspectionItemComponent implements OnInit {
     });
   }
 
-  onSelect({selected}) {
-    // console.log('Select Event', selected, this.selected);
-
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-  }
 
   getAll(): void {
-    this.selectedId = '';
-    this.selected = [];
+    let formData = this.searchForm.value;
 
     let params = {
-      sortby: ['id'],
-      order: ['asc'],
+      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
       maxResultCount: 10000
     };
     this.isLoadingProgress = true;
@@ -111,109 +88,5 @@ export class InspectionItemComponent implements OnInit {
     );
   }
 
-  Edit(id) {
-    this.dataService.GetById(id).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          this.inputForm.patchValue({
-            production_date: this.formData.production_date,
-            taken: this.formData.taken,
-            crack: this.formData.crack,
-            print_faulty: this.formData.print_faulty,
-            color_faulty: this.formData.color_faulty,
-            cosmetic_faulty: this.formData.cosmetic_faulty,
-            etc: this.formData.etc,
-          });
-        } else {
-          this.messageService.add(editData['errorMessage']);
-        }
-      }
-    );
-  }
-
-  Save() {
-    let formData = this.inputForm.value;
-
-    if (this.isEditMode == true) {
-      this.Update(this.selectedId, formData);
-    } else {
-      this.Create(formData);
-    }
-  }
-
-  Create(data): void {
-    this.dataService.Create(data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.addOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  Update(id, data): void {
-    this.dataService.Update(id, data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.getAll();
-            this.messageService.add(this.editOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.inputFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  Delete(id): void {
-    this.dataService.Delete(id)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.getAll();
-            this.messageService.add(this.delOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.deleteFormModal.hide();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  openModal(method, id) {
-    // 실행권한
-    // if (this.isExecutable == true) {
-    if (method == 'delete') {
-      this.deleteFormModal.show();
-    } else if (method == 'write') {
-      this.inputFormModal.show();
-    }
-
-    if (id) {
-      if (id == 'selected') {
-        let idArr = [];
-        this.selected.forEach((e: any) => {
-          idArr.push(e.id);
-        });
-        this.selectedId = idArr.join(',');
-      } else {
-        this.selectedId = id;
-      }
-    }
-
-  }
 
 }
