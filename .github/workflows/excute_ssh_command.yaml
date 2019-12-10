@@ -12,7 +12,7 @@ jobs:
         with:
           command: |
             cd /var/www/idm-erp-frontend/
-            sudo git checkout build-dist-for-webview
+            sudo git checkout master
             sudo git pull
             sudo rm -rf ../${{secrets.PROJECT_DIR}}/*
             sudo cp -R dist-webview/* ../${{secrets.PROJECT_DIR}}/
