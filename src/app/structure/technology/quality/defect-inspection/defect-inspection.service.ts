@@ -14,16 +14,21 @@ export class DefectInspectionService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/technology/defect-inspection';
+    private url = this.globals.serverUrl + '/technology/defect';
 
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetById (orderNo:string): Observable<Item> {
-        return this.http.get<Item>(this.url+'/search/'+orderNo);
+    GetById (id:string): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl+'/technology/screening-operation/'+id);
     }
-
+    GetProductionDate (id:string): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/sales/orders/search/production-date/'+id);
+    }
+    GetInputMaterials (id:string): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/sales/orders/search/material/'+id);
+    }
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {

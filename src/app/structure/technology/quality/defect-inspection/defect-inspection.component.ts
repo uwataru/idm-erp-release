@@ -1,6 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import {DatePipe} from '@angular/common';
 import {DefectInspectionService} from './defect-inspection.service';
 import {AppGlobals} from '../../../../app.globals';
@@ -8,6 +9,7 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './defect-inspection.item';
+declare var $: any;
 
 @Component({
   selector: 'app-page',
@@ -19,228 +21,309 @@ export class DefectInspectionComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
   inputFormTitle: string;
+  statusFormTitle: string;
+  statusConfirmMsg: string;
+  statusConfirmBtn: string;
+  statusFormValue: number;
+  uploadFormTitle: string;
   isLoadingProgress: boolean = false;
+  deleteConfirmMsg: string;
+  hideConfirmMsg: string;
   isEditMode: boolean = false;
+  etcMode: boolean = false;
 
-  selectedCnt: number;
+  searchForm: FormGroup;
+
   selectedId: string;
-  listData: Item[];
+  listData : Item[];
   formData: Item['data'];
+  sch_partner_name: string;
+  //listPartners = [];
+  listPartners: any[] = this.globals.configs['type5Partners'];
+  listSltdPaCode: number = 0;
+  searchValue: string;
+  filteredPartners: any[] = [];
+  sch_order_no: string;
+  sch_st: number;
+  st: number;
   rows = [];
-  materialRows = [];
+  temp = [];
   delId = [];
   selected = [];
-  selectedRcvItems = [];
-  usedRcvItems: string;
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  screeningQty: number;
-  normalQty: number;
-  inputPartners: any[];
-  defectiveClassification: any[] = this.globals.configs['defectiveClassification'];
-  sltdInvenClass: number;
-  cuttingInvenQty: number;
-  assemblyInvenQty: number;
-  forgingInvenQty: number;
-  sltdOutsInvenClass: string;
-  outsInvenQty: number;
-  outsCuttingInvenQty: number;
-  outsAssemblyInvenQty: number;
-  outsForgingInvenQty: number;
-  outsHeatingInvenQty: number;
-  outsMachiningInvenQty: number;
-  prodInvenQty: number;
-  unsoldInvenQty: number;
-  totalWeight: number;
-  cutting_total: number;
-  assembly_total: number;
-  product_price: number;
-  isTmpPrice: boolean;
-  order_qty: number;
-  cutting_qty: number;
-  assembly_qty: number;
-  input_weight: number;
-  input_weight_total: number;
+  defectContent: any[] = this.globals.configs['defectList'];
+  productionDate: any[] = [];
+  inputMaterials: any[] = [];
   editData: Item;
-  data: Date;
+
+  qty: number[] = [];
+  material_name: string[] = [];
+  production_date: string[] = [];
+  set_value: string[] = [];
+  etc: string[] = [];
+
+  public isCorrect : boolean;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
 
   errorMessage: string;
   addOkMsg = '등록이 완료되었습니다.';
-  noScreeningOkMsg = '무선별 처리되었습니다.';
+  editOkMsg = '무선별 처리되었습니다.';
+  delOkMsg = '삭제되었습니다.';
+
+  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
+  @ViewChild('InvoiceModal') invoiceModal: ModalDirective;
 
   constructor(
-    @Inject(FormBuilder) fb: FormBuilder,
-    private datePipe: DatePipe,
-    private dataService: DefectInspectionService,
-    private globals: AppGlobals,
-    private route: ActivatedRoute,
-    private utils: UtilsService,
-    private messageService: MessageService
+      @Inject(FormBuilder) fb: FormBuilder,
+      private datePipe: DatePipe,
+      private dataService: DefectInspectionService,
+      private globals: AppGlobals,
+      private route: ActivatedRoute,
+      private utils: UtilsService,
+      private messageService: MessageService
   ) {
-    // 접근권한 체크
-    if (route.routeConfig.path && ('id' in route.routeConfig.data)) {
-      if (route.routeConfig.data.id in this.globals.userPermission) {
-        console.log(route.routeConfig.data.id);
-        if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
-          this.isExecutable = true;
-        }
-        if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
-          this.isPrintable = true;
-        }
+      // 접근권한 체크
+      if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+        if (route.routeConfig.data.id in this.globals.userPermission) {
+              console.log(route.routeConfig.data.id);
+              if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
+                  this.isExecutable = true;
+              }
+              if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
+                  this.isPrintable = true;
+              }
+          }
       }
-    }
 
-    this.inputForm = fb.group({
-      order_no: ['', Validators.required],
-      product_code: ['', Validators.required],
-      product_name: ['', Validators.required],
-      poc_no: '',
-      production_date: '',
-      production_qty: '',
-      inventory_classification: '',
-      outs_inven_type: '',
-      outs_partner_name: '',
-      outs_partner_code: '',
-      defective_qty: '',
-      defective_classification: ['', Validators.required],
-      refer_etc: '',
-      inspector: '',
-      inspection_date: '',
-      input_date: '',
-      normal_qty: ''
-    });
+      this.searchForm = fb.group({
+          sch_order_no: ''
+      });
+
+      this.inputForm = fb.group({
+        sales_orders_detail_id: ['', Validators.required],
+        production_date: ['', Validators.required],
+        assembly_performance_id: ['', Validators.required],
+        order_no: ['', Validators.required],
+        product_name: ['', Validators.required],
+        product_type: '',
+        material_name: '',
+        material_id: ['', Validators.required],
+        qty: '',
+        defect_content: '',
+        defect_content_id: '',
+        etc: '',
+      });
   }
 
   ngOnInit() {
-    this.panelTitle = '검사불량입력';
-    // this.inputForm.controls['input_date'].setValue(this.tDate);
-    //this.getAll();
-  }
+      this.panelTitle = '검사불량입력';
+      this.inputFormTitle = '불량등록';
 
-  // getAll(): void {
-  //     let params = {}
-  //     this.isLoadingProgress = true;
-  //     this.dataService.GetAll(params).subscribe(
-  //         listData =>
-  //         {
-  //             this.listData = listData;
-  //             this.rows = listData['data'];
-  //
-  //             this.isLoadingProgress = false;
-  //         }
-  //     );
-  // }
-  // loadInputPartners(code): void {
-  //   switch (code) {
-  //     case 'C':
-  //       this.inputPartners = this.globals.configs['type42Partners'];
-  //       break;
-  //     case 'F':
-  //       this.inputPartners = this.globals.configs['type41Partners'];
-  //       break;
-  //     case 'H':
-  //       this.inputPartners = this.globals.configs['type43Partners'];
-  //       break;
-  //     case 'M':
-  //       this.inputPartners = this.globals.configs['type44Partners'];
-  //       break;
-  //   }
-  //   //this.sltdOutsInvenClass = 'C';
-  // }
 
-  // onSelectInputPartner(event: TypeaheadMatch): void {
-  //   if (event.item == '') {
-  //     this.inputForm.controls['outs_partner_code'].setValue(0);
-  //   } else {
-  //     this.inputForm.controls['outs_partner_code'].setValue(event.item.Code);
-  //   }
-  // }
-
-  Save() {
-    // 실행권한
-    if (this.isExecutable == false) {
-      alert(this.globals.isNotExecutable);
-      return false;
-    }
-
-    let formData = this.inputForm.value;
-    // if (formData.inventory_classification == 3 && !formData.outs_partner_code) {
-    //   alert('거래처를 선택해주세요!');
-    //   return false;
-    // }
-
-    // formData.inventory_classification = formData.inventory_classification * 1;
-    formData.defective_classification = formData.defective_classification * 1;
-    formData.screening_qty = this.utils.removeComma(formData.screening_qty) * 1;
-    formData.defective_qty = this.utils.removeComma(formData.defective_qty) * 1;
-    // formData.inspection_date = this.datePipe.transform(formData.inspection_date, 'yyyy-MM-dd');
-    // formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
-
-    this.Create(formData);
-  }
-
-  Reset() {
-    this.inputForm.reset();
-    this.sltdInvenClass = 0;
-    this.cuttingInvenQty = 0;
-    this.forgingInvenQty = 0;
-    this.outsInvenQty = 0;
-    this.outsCuttingInvenQty = 0;
-    this.outsForgingInvenQty = 0;
-    this.outsHeatingInvenQty = 0;
-    this.outsMachiningInvenQty = 0;
-    // this.inputForm.controls['input_date'].setValue(this.tDate);
-  }
-
-  Create(data): void {
-    this.dataService.Create(data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.Reset();
-            //this.getAll();
-            this.messageService.add(this.addOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  loadInfo(event) {
-    let OrderNo = event.target.value;
-    if (!OrderNo) {
-      return false;
-    }
-
-    // 내용
-    this.dataService.GetById(OrderNo).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-
-          this.screeningQty = editData['screeningQty'] * 1;
-          console.log(this.formData.normal_qty);
-          this.inputForm.patchValue({
-            order_no: OrderNo,
-            production_date: this.formData.input_date,
-            product_name: this.formData.product_name,
-            product_code: this.formData.product_code,
-            production_qty: this.formData.screening_qty,
-            normal_qty: this.formData.normal_qty,
-            defective_qty: this.formData.defective_qty,
-            defective_classification: this.formData.defective_classification
+      $(document).ready(function(){
+          let modalContent: any = $('.modal-content');
+          let modalHeader = $('.modal-header');
+          modalHeader.addClass('cursor-all-scroll');
+          modalContent.draggable({
+              handle: '.modal-header'
           });
-        }
+      });
+
+      this.getAll();
+  }
+
+
+  getAll(): void {
+      this.selectedId = '';
+
+      let formData = this.searchForm.value;
+      let params = {
+          order_no: formData.sch_order_no,
+          sortby: ['order_no'],
+          order: ['asc'],
+          maxResultCount: 10000
       }
-    );
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+          listData =>
+          {
+              this.listData = listData;
+              this.temp = listData['data'];
+              this.rows = listData['data'];
+
+              for(let i=0; i<this.rows.length; i++){
+                let id = this.rows[i]['id'];
+                console.log(id,'~!~!~!~!~!~!');
+                    this.rows[i].qty = this.qty[id];
+                    this.rows[i].material_name = this.material_name[id];
+                    this.rows[i].production_date = this.production_date[id];
+                    this.rows[i].set_value = this.set_value[id];
+                    this.rows[i].etc = this.etc[id];
+              }
+
+            }
+            );
+            this.isLoadingProgress = false;
+  }
+
+  onSelectInputproductionDate(event: TypeaheadMatch): void {
+    this.inputForm.controls['assembly_performance_id'].setValue(event.item['assembly_performance_id']);
+    console.log(this.inputForm.controls['assembly_performance_id'].value);
+  }
+
+  onSelectInputMaterial(event: TypeaheadMatch): void {
+    this.inputForm.controls['material_id'].setValue(event.item['material_id']);
+    console.log(this.inputForm.controls['material_id'].value);
+  }
+
+  onSelectDefectContent(event: TypeaheadMatch): void {
+    this.inputForm.controls['defect_content_id'].setValue(event.item['id']);
+    console.log(this.inputForm.controls['defect_content_id'].value);
+    let id = this.inputForm.controls['defect_content_id'].value;
+    if(id == 12){
+        this.etcMode = true;
+    }else{
+        this.etcMode = false;
+        this.inputForm.controls['etc'].setValue('');
+    }
+    console.log(this.etcMode, this.inputForm.controls['etc'].value);
+  }
+
+  updateFilter(event) {
+      const val = event.target.value;
+
+      // filter data
+      const temp = this.temp.filter(function(d){
+          return d.order_no.indexOf(val) !== -1 || d.poc_no.indexOf(val) !== -1 || !val;
+      })
+
+      // update the rows
+      this.rows = temp;
+      // 필터 변경될때마다 항상 첫 페이지로 이동.
+      //this.table.offset = 0;
+  }
+
+  addCommaQty (): void {
+      let formData = this.inputForm.value;
+      this.inputForm.controls['qty'].setValue(this.utils.addComma(formData.qty));
+  }
+
+  save () {
+    let formModel = this.inputForm.value;
+    this.qty[this.selectedId] = this.utils.removeComma(formModel.qty)*1;
+    this.material_name[this.selectedId] = formModel.material_name;
+    this.production_date[this.selectedId] = this.datePipe.transform(formModel['production_date'], 'yyyy-MM-dd');
+    this.set_value[this.selectedId] = formModel.defect_content;
+    this.etc[this.selectedId] = formModel.etc;
+    
+      
+    let formData = {
+        qty: this.qty[this.selectedId],
+        assembly_performance_id: formModel.assembly_performance_id,
+        sales_orders_detail_id: formModel.sales_orders_detail_id,
+        materials_id: formModel.material_id,
+        settings_id: formModel.defect_content_id,
+        etc: this.etc[this.selectedId]
+
+      };
+    this.Create(formData);
+    console.log(formData);
+  }
+
+  Create (data): void {
+      this.dataService.Create(data)
+          .subscribe(
+              data => {
+                  if (data['result'] == "success") {
+                      this.getAll();
+                      this.messageService.add(this.addOkMsg);
+                    //   this.isInvoice = true;
+                    //   this.invoiceNo = data['last_id'];
+                  } else {
+                      this.messageService.add(data['errorMessage']);
+                  }
+                  this.inputFormModal.hide();
+              },
+              error => this.errorMessage = <any>error
+          );
+  }
+
+  openModal(action, id) {
+
+      switch (action) {
+          case 'create':
+              // 실행권한
+              if (this.isExecutable == false) {
+                  alert(this.globals.isNotExecutable);
+                  return false;
+              }
+              this.inputFormModal.show();
+
+              // 입력폼 리셋
+              this.inputForm.reset();
+
+              this.getProductionDate(this.selectedId);
+              this.getInputMaterials(this.selectedId);
+
+              this.dataService.GetById(this.selectedId).subscribe(
+                  editData =>
+                  {
+                      if (editData['result'] == "success") {
+                        this.editData = editData;
+                        this.formData = editData['data'];
+
+                        this.inputForm.patchValue({
+                            
+                            sales_orders_detail_id: this.selectedId,
+                            order_no: this.formData.order_no,
+                            product_name: this.formData.product_name,
+                            product_type: this.formData.product_type,
+                        });
+                        console.log(this.inputForm.controls['sales_orders_detail_id'].value);
+                      }
+                  }
+              );
+          break;
+      }
+
+  }
+
+  getProductionDate(id){
+        this.dataService.GetProductionDate(id).subscribe((responseData) => {
+
+            if(responseData['totalCount']>0){
+                this.productionDate = responseData['data'];
+            }
+            // else{
+            //     alert('아직 생산되지않은 제품입니다.');
+            // }
+
+        }, error => {
+            console.log(error);
+        });
+  }
+  getInputMaterials(id){
+        this.dataService.GetInputMaterials(id).subscribe((responseData) => {
+
+            if(responseData['totalCount']>0){
+                this.inputMaterials = responseData['data'];
+            }
+            // else{
+            //     alert('아직 생산되지않은 제품입니다.');
+            // }
+
+        }, error => {
+            console.log(error);
+        });
+  }
+  
+  onSelect({ selected }) {
+      this.selectedId = selected[0].id;
   }
 
 }

@@ -4,255 +4,225 @@
         <div class="text-center">
             <span class="h4 block m-b-sm">{{ panelTitle }}</span>
         </div>
+        <div class="row">
+            <div class="col-sm-8 m-b-xs pos-rlt">
+                <form [formGroup]="searchForm">
+                <input type="text" formControlName="sch_order_no" id="sch_order_no" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle" placeholder="수주번호" />
+                <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-4 text-right">
+                <!-- <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form" (click)="openModal('upload','')">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button> -->
+            </div>
+        </div>
     </div>
 
-    <form [formGroup]="inputForm">
     <div class="panel-body">
-        <div class="form-group">
-            <div class="row">
-                <label for="production_date" class="col-lg-2 control-label">
-                    생산일자
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="production_date" id="production_date" class="form-control w-sm" />
-                </div>
-                <label for="order_no" class="col-lg-2 control-label">
-                    수주번호<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-3">
-                        <!-- formControlName="order_no" -->
-                    <input type="text"  id="order_no" (blur)="loadInfo($event)" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <label for="product_code" class="col-lg-2 control-label">
-                    제품번호
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="product_code" id="product_code" nextFocus="poc_no" class="form-control w-sm" />
-                </div>
-                <label for="product_name" class="col-lg-2 control-label">
-                    제품명
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-
-        <!-- <div class="form-group">
-            <div class="row">
-                <label for="poc_no" class="col-lg-2 control-label">
-                    POC No <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-5">
-                    <input type="text" formControlName="poc_no" id="poc_no" (blur)="loadInfo()" nextFocus="defective_qty" class="form-control w-sm" />
-                </div>
-                <label for="drawing_no" class="col-lg-2 control-label">
-                    도번
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="drawing_no" id="drawing_no" class="form-control w-sm" />
-                </div>
-            </div>
-        </div> -->
-
-        <!-- <div class="form-group">
-            <div class="row">
-                <label for="inventory_classification" class="col-lg-2 control-label">
-                    불량구분 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-5">
-                    <div>
-                        <label class="i-checks">
-                            <span *ngIf="cuttingInvenQty > 0" class="badge up bg-info">{{ cuttingInvenQty }}</span>
-                            <input type="radio" formControlName="inventory_classification" [checked]="sltdInvenClass == 1" value=1 />
-                            <i></i>
-                            절단재고
-                        </label>
-                        <label class="i-checks">
-                            <span *ngIf="forgingInvenQty > 0" class="badge up bg-info">{{ forgingInvenQty }}</span>
-                            <input type="radio" formControlName="inventory_classification" [checked]="sltdInvenClass == 2" value=2 />
-                            <i></i>
-                            단조재고
-                        </label>
-                        <label class="i-checks">
-                            <span *ngIf="outsInvenQty > 0" class="badge up bg-info">{{ outsInvenQty }}</span>
-                            <input type="radio" formControlName="inventory_classification" [checked]="sltdInvenClass == 3" value=3 />
-                            <i></i>
-                            외주재고
-                        </label>
-                        <label class="i-checks">
-                            <span *ngIf="prodInvenQty > 0" class="badge up bg-info">{{ prodInvenQty }}</span>
-                            <input type="radio" formControlName="inventory_classification" [checked]="sltdInvenClass == 4" value=4 />
-                            <i></i>
-                            제품재고
-                        </label>
-                        <label class="i-checks">
-                            <span *ngIf="unsoldInvenQty > 0" class="badge up bg-info">{{ unsoldInvenQty }}</span>
-                            <input type="radio" formControlName="inventory_classification" [checked]="sltdInvenClass == 5" value=5 />
-                            <i></i>
-                            미판매재고
-                        </label>
-                    </div>
-                    <div *ngIf="inputForm.get('inventory_classification').value == '3'" class="outs_inven_type">
-                        <div class="left">
-                            <label class="i-checks">
-                                <span *ngIf="outsCuttingInvenQty > 0" class="badge up bg-info">{{ outsCuttingInvenQty }}</span>
-                                <input type="radio" formControlName="outs_inven_type" (click)="loadInputPartners('C')" [checked]="sltdOutsInvenClass == 'C'" value="C">
-                                <i></i>
-                                절단
-                            </label>
-                            <label class="i-checks">
-                                <span *ngIf="outsForgingInvenQty > 0" class="badge up bg-info">{{ outsForgingInvenQty }}</span>
-                                <input type="radio" formControlName="outs_inven_type" (click)="loadInputPartners('F')" [checked]="sltdOutsInvenClass == 'F'" value="F">
-                                <i></i>
-                                단조
-                            </label>
-                            <label class="i-checks">
-                                <span *ngIf="outsHeatingInvenQty > 0" class="badge up bg-info">{{ outsHeatingInvenQty }}</span>
-                                <input type="radio" formControlName="outs_inven_type" (click)="loadInputPartners('H')" [checked]="sltdOutsInvenClass == 'H'" value="H">
-                                <i></i>
-                                열처리
-                            </label>
-                            <label class="i-checks">
-                                <span *ngIf="outsMachiningInvenQty > 0" class="badge up bg-info">{{ outsMachiningInvenQty }}</span>
-                                <input type="radio" formControlName="outs_inven_type" (click)="loadInputPartners('M')" [checked]="sltdOutsInvenClass == 'M'" value="M">
-                                <i></i>
-                                가공
-                            </label>
-                        </div>
-                        <div class="left m-l-lg">
-                            <label for="partner_name">
-                                거래처
-                            </label>
-                            <input formControlName="outs_partner_name" id="outs_partner_name"
-                                [typeahead]="inputPartners"
-                                typeaheadOptionField="Alias"
-                                [typeaheadOptionsLimit]="50"
-                                [typeaheadScrollable]="true"
-                                [typeaheadMinLength]="0"
-                                (typeaheadOnSelect)="onSelectInputPartner($event)"
-                                placeholder="거래처명"
-                                class="input-sm form-control w-sm inline v-middle" />
-                            <input type="hidden" formControlName="outs_partner_code" id="outs_partner_code" />
-                        </div>
-                    </div>
-                </div>
-                <label for="production_date" class="col-lg-2 control-label">
-                    생산일자
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="production_date" id="production_date" class="form-control w-sm" />
-                </div>
-            </div>
-        </div> -->
-
-        <div class="form-group">
-            <div class="row">
-                <label for="production_qty" class="col-lg-2 control-label">
-                    총생산수량
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="production_qty" id="production_qty" class="form-control w-sm" />
-                </div>
-                <label for="normal_qty" class="col-lg-2 control-label">
-                    양품수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-5">
-                        <!-- formControlName="nomal_qty" -->
-                    <input type="text" formControlName="normal_qty"  id="normal_qty" nextFocus="normal_classification" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <label for="defective_qty" class="col-lg-2 control-label">
-                    불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="defective_qty" id="defective_qty" nextFocus="defective_classification" class="form-control w-sm" />
-                </div>
-                <label for="defective_classification" class="col-lg-2 control-label">
-                    불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-3">
-                    <select formControlName="defective_classification" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
-                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- <div class="form-group">
-            <div class="row">
-                <label for="defective_classification" class="col-lg-2 control-label">
-                    불량코드 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                </label>
-                <div class="col-lg-3">
-                    <select formControlName="defective_classification" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
-                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
-                    </select>
-                </div>
-            </div>
-        </div> -->
-
-        <div class="form-group">
-            <div class="row">
-                <label for="refer_etc" class="col-lg-2 control-label">
-                    기타내용
-                </label>
-                <div class="col-lg-10">
-                    <input type="text" formControlName="refer_etc" id="refer_etc" nextFocus="quantity" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <label for="quantity" class="col-lg-2 control-label">
-                    항목
-                </label>
-                <div class="col-lg-10">
-                        <!-- formControlName="quantity" -->
-                    <input type="text"  id="quantity" nextFocus="inspection_date" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-
-    <!--<div class="form-group">
-            <div class="row">
-                <label for="inspection_date" class="col-lg-2 control-label">
-                    검사/작업일
-                </label>
-                <div class="col-lg-10">
-                    <input type="text" formControlName="inspection_date" id="inspection_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <label for="input_date" class="col-lg-2 control-label">
-                    등록일
-                </label>
-                <div class="col-lg-10">
-                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control w-sm" />
-                </div>
-            </div>
-        </div> -->
-
+        <ngx-datatable
+            [style.height.px] = gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'single'"
+            (select)='onSelect($event)'
+            [messages]="messages">
+            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+            <ngx-datatable-column prop="material_name" name="자재명" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="production_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="qty" name="불량수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="set_value" name="불량내용" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="etc" name="기타" cellClass="text-center"></ngx-datatable-column>
+        </ngx-datatable>
     </div>
-    <div class="panel-footer text-right">
-        <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-        <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
-	</div>
-    </form>
 
+    <footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-6 hidden-xs">
+                <!-- <button class="btn btn-sm btn-danger btn-addon" data-toggle="modal" data-target="#change-status-confirm" (click)="openModal('delete','selected')">
+                    <i class="glyphicon glyphicon-trash"></i>삭제
+                </button> -->
+            </div>
+            <div class="col-sm-6 text-right text-center-xs">
+                <button (click)="openModal('create', '')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+                    <i class="glyphicon glyphicon-plus"></i>입력
+                </button>
+                <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
+    		</div>
+        </div>
+	</footer>
 </div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
+            <!-- <input type="hidden" formControlName="order_qty" id="order_qty" value="" /> -->
+			<div class="modal-header">
+				<button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
+			</div>
+			<div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-6">
+
+                        <div class="form-group">
+                            <div class="row">
+                                <input type="hidden" formControlName="sales_orders_detail_id" id="sales_orders_detail_id" />
+                                <label for="production_date" class="col-lg-4 control-label">
+                                    생산일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input formControlName="production_date" id="production_date"
+                                        [typeahead]="productionDate"
+                                        typeaheadOptionField="production_date"
+                                        [typeaheadOptionsLimit]="50"
+                                        [typeaheadScrollable]="true"
+                                        [typeaheadMinLength]="0"
+                                        (typeaheadOnSelect)="onSelectInputproductionDate($event)"
+                                        placeholder="생산일자"
+                                        class="input-sm form-control w-sm inline v-middle" />
+                                    <input type="hidden" formControlName="assembly_performance_id" id="assembly_performance_id" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="order_no" class="col-lg-4 control-label">
+                                    수주번호
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="order_no" id="order_no" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="product_name" class="col-lg-4 control-label">
+                                    제품명
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="product_type" class="col-lg-4 control-label">
+                                    규격
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" formControlName="product_type" id="product_type" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="material_name" class="col-lg-4 control-label">
+                                    자재명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input formControlName="material_name" id="material_name"
+                                    [typeahead]="inputMaterials"
+                                    typeaheadOptionField="material_name"
+                                    [typeaheadOptionsLimit]="50"
+                                    [typeaheadScrollable]="true"
+                                    [typeaheadMinLength]="0"
+                                    (typeaheadOnSelect)="onSelectInputMaterial($event)"
+                                    placeholder="자재명"
+                                    class="input-sm form-control w-sm inline v-middle" />
+                                <input type="hidden" formControlName="material_id" id="material_id" />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="qty" class="col-lg-4 control-label">
+                                    불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" (blur)="addCommaQty()" formControlName="qty" id="qty" class="form-control w-sm" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="defect_content" class="col-lg-4 control-label">
+                                    불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input formControlName="defect_content" id="defect_content"
+                                    [typeahead]="defectContent"
+                                    typeaheadOptionField="set_value"
+                                    [typeaheadOptionsLimit]="50"
+                                    [typeaheadScrollable]="true"
+                                    [typeaheadMinLength]="0"
+                                    (typeaheadOnSelect)="onSelectDefectContent($event)"
+                                    placeholder="불량내용"
+                                    class="input-sm form-control w-sm inline v-middle" />
+                                <input type="hidden" formControlName="defect_content_id" id="defect_content_id" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="etc" class="col-lg-4 control-label">
+                                    기타내용
+                                </label>
+                                <div class="col-lg-8" *ngIf="etcMode==true;else readonly">
+                                    <input type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                                </div>
+                                <ng-template #readonly>
+                                    <div class="col-lg-8"  >
+                                        <input readonly type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+			</div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">
+                        <span>취소</span>
+                    </button>
+				</div>
+            </div>
+            </form>
+
+		</div>
+	</div>
+</div>
+
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
 

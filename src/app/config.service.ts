@@ -25,6 +25,7 @@ export class ConfigService {
     private correctionReasonAPI = this.globals.serverUrl+'/settings/search/correction_reason';
     private affiliationAPI = this.globals.serverUrl+'/settings/search/affiliation';
     private personnelAPI = this.globals.serverUrl+'/production/personnel/search';
+    private defectAPI = this.globals.serverUrl+'/settings/search/defect_content';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -52,6 +53,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.correctionReasonAPI, 'correctionReasonList'))
             .then(() => this.getConfigData(this.affiliationAPI, 'affiliationList'))
             .then(() => this.getConfigData(this.personnelAPI, 'personnelList'))
+            .then(() => this.getConfigData(this.defectAPI, 'defectList'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);

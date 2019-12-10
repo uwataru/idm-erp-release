@@ -2,20 +2,19 @@ export class Item {
   //id: number;
   totalCount: number;
   data: {
-    order_no: string;
-    product_code: number;
-    product_name: string;
-    production_date: string;
-    production_qty: number;
-    normal_qty: number;
-    inspection_classification: number;
-    defective_qty: number;
-    defective_classification: number;
-    refer_etc: string;
-    inspector: string;
-    inspection_date: string;
-    input_date: string;
-    screening_qty: number;
+    id: number;
+    sales_orders_detail_id: number,
+    production_date: string,
+    assembly_performance_id: number,
+    order_no: number,
+    product_name: string,
+    product_type: string,
+    material_name: string,
+    material_id: number,
+    qty: number,
+    defect_content: string,
+    defect_content_id: number,
+    etc: string,
   };
   maxResultCount: number;
   result: string;
