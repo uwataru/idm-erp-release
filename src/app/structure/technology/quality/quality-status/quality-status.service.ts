@@ -20,9 +20,9 @@ export class QualityStatusService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    // GetById (id:number): Observable<Item> {
-    //     return this.http.get<Item>(this.url+'/'+id);
-    // }
+    GetById (id:number): Observable<Item> {
+        return this.http.get<Item>(this.url+'/'+id);
+    }
 
     // //======= 저장 =======//
     // /** POST: 데이터 추가 */

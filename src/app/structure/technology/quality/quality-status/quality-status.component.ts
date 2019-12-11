@@ -20,20 +20,31 @@ import { QualityStatusService } from './quality-status.service';
 export class QualityStatusComponent implements OnInit {
   
   panelTitle: string;
+  inputFormTitle: string;
   searchForm: FormGroup;
   tDate = this.globals.tDate;
-
   isLoadingProgress: boolean = false;
 
+  inputForm: FormGroup;
+  
+  editData: Item;
   listData : Item[];
   formData: Item['data'];
   sch_partner_name: string;
-  listPartners: any[] = this.globals.configs['type5Partners'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
   sch_product_name: string;
   rows = [];
+
+  qty_0 = 0;
+  qty_1 = 0;
+  qty_2 = 0;
+  qty_3 = 0;
+  qty_4 = 0;
+  qty_5 = 0;
+  qty_6 = 0;
+
   messages = this.globals.datatableMessages;
   errorMessage: string;
   gridHeight = this.globals.gridHeight;
@@ -42,6 +53,7 @@ export class QualityStatusComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
 
+  @ViewChild('InputFormModal') inputFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -52,30 +64,28 @@ export class QualityStatusComponent implements OnInit {
     private messageService: MessageService
   ) { 
     this.searchForm = fb.group({
-      sch_date: ''
-  });
+      sch_sdate: '',
+      sch_edate: '',
+    });
+
   }
 
   ngOnInit() {
     this.panelTitle = "품질현황";
+    this.inputFormTitle = '불량내역';
 
-    this.searchForm.controls['sch_date'].setValue(this.tDate);
+    this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
+    this.searchForm.controls['sch_edate'].setValue(this.tDate);
 
     this.getAll();
   }
 
   getAll(): void {
-    // this.dataService.GetAll().subscribe(
-    //     listData =>
-    //     {
-    //         this.listData = listData;
-    //         this.rows = listData['data'];
-    //     }
-    // );
     let formData = this.searchForm.value;
 
     let params = {
-        sch_date: this.datePipe.transform(formData.sch_date, 'yyyy-MM-dd'),
+        sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+        sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
         sortby: ['id'],
         order: ['asc'],
         maxResultCount: 10000
@@ -84,13 +94,43 @@ export class QualityStatusComponent implements OnInit {
     this.dataService.GetAll(params).subscribe(
         listData =>
         {
-            this.listData = listData;
-            this.rows = listData['data'];
+          this.listData = listData;
+          this.rows = listData['data'];
+        
+          for(let i=0; i<this.rows.length; i++){
+            let defect_qty = parseInt(this.rows[i]['defect_qty']);
+            let total_qty = parseInt(this.rows[i]['total_qty']);
+            
+            this.rows[i].defect_rate = (defect_qty/total_qty) * 100;
+            
+          }
 
-
-            this.isLoadingProgress = false;
+          this.isLoadingProgress = false;
         }
     );
-}
+  }
+
+  openModal(id){
+    this.inputFormModal.show();
+    // this.inputForm.reset();
+    this.dataService.GetById(id).subscribe(
+      editData => {
+        if (editData['result'] == 'success') {
+          this.editData = editData;
+          this.formData = editData['data'];
+          console.log('!!!!!!!' ,this.formData);
+        
+            this.qty_0 = this.formData[0].qty
+            this.qty_1 = this.formData[1].qty
+            this.qty_2 = this.formData[2].qty
+            this.qty_3 = this.formData[3].qty
+            this.qty_4 = this.formData[4].qty
+            this.qty_5 = this.formData[5].qty
+            this.qty_6 = this.formData[6].qty
+
+        }
+      }
+    );
+  }
 
 }
