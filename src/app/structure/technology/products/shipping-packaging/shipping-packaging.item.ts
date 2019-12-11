@@ -2,16 +2,25 @@ export class Item {
     //id: number;
     totalCount: number;
     data: {
-        sp_date: string;
+        id: number;
         order_no: string;
         partner_name: string;
-        partner_code: string;
-        product_code: string;
+        input_date: string;
         product_name: string;
-        qty: number;
+        product_type: string;
         product_price: number;
-        price: number;
-        type: string;
+    };
+    maxResultCount: number;
+    result: string;
+    errorMessage: string;
+}
+export class NoteItem {
+    //id: number;
+    totalCount: number;
+    data: {
+        input_date: string;
+        set_value: string;
+        qty: number;
     };
     maxResultCount: number;
     result: string;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-// import { Item } from './shipping-packaging.item';
+import { Item, NoteItem } from './shipping-packaging.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
@@ -14,24 +14,29 @@ export class ShippingPackagingService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/products/shipping-packaging';
+    private url = this.globals.serverUrl + '/technology/package-shipment';
 
-    // GetAll (params): Observable<Item[]> {
-    //     return this.http.get<Item[]>(this.url, {params: params});
-    // }
+    GetAll(params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url, {params: params});
+      }
 
-    // GetById (productCode:string): Observable<Item> {
-    //     return this.http.get<Item>(this.url+'/'+productCode);
-    // }
+    GetById (id:string): Observable<Item> {
+        return this.http.get<Item>(this.url+'/'+id);
+    }
+
+    GetNote (id:string): Observable<NoteItem[]> {
+        return this.http.get<NoteItem[]>(this.url+'/detail/'+id);
+    }
+
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
-    // Create (data:Item): Observable<Item> {
-    //     return this.http.post<Item>(this.url, data, httpOptions).pipe(
-    //         tap((data: Item) => this.log(`added data w/ id=${data}`)),
-    //         catchError(this.handleError<Item>('Create'))
-    //     );
-    // }
+    Create (data:Item): Observable<Item> {
+        return this.http.post<Item>(this.url, data, httpOptions).pipe(
+            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Create'))
+        );
+    }
 
    /**
     * 실패한 Http 작업 처리
