@@ -14,7 +14,7 @@ export class OrderNotDeliveredService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/not-delivered';
+    private url = this.globals.serverUrl + '/sales/delivery';
 
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();

@@ -4,7 +4,6 @@ import { AuthGuard } from './app.auth';
 
 import { AdminLayoutComponent } from './layout/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layout/auth/auth-layout.component';
-import { PrintLayoutComponent } from './layout/print/print-layout.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
@@ -59,11 +58,6 @@ const routes: Routes = [
             path: 'session',
             loadChildren: './structure/session/session.module#SessionModule'
         }]
-    },
-    {
-        path: 'print',
-        component: PrintLayoutComponent,
-        loadChildren: './structure/print/print.module#PrintModule'
     },
     {
         path: '**',

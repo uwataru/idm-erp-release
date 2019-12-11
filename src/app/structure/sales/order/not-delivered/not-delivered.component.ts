@@ -11,6 +11,7 @@ import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item, PartnerItem } from './not-delivered.item';
 import {AppConfig} from '../../../../../environments/environment';
+import {DatePipe} from "@angular/common";
 declare var $: any;
 @Component({
   selector: 'app-page',
@@ -25,78 +26,43 @@ export class OrderNotDeliveredComponent implements OnInit {
     statusFormTitle: string;
     statusConfirmMsg: string;
     statusConfirmBtn: string;
-    statusFormValue: number;
-    uploadFormTitle: string;
     isLoadingProgress: boolean = false;
-    deleteConfirmMsg: string;
-    hideConfirmMsg: string;
     isEditMode: boolean = false;
 
     searchForm: FormGroup;
 
     selectedId: string;
+    currentQty: number;
     listData : Item[];
     formData: Item['data'];
     sch_partner_name: string;
-    //listPartners = [];
-    listPartners: any[] = this.globals.configs['type5Partners'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
     sch_order_no: string;
-    sch_st: number;
-    st: number;
     rows = [];
     temp = [];
-    delId = [];
     selected = [];
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
-    inputPartners: any[] = this.globals.configs['type5Partners'];
+    partnerList: any[] = this.globals.configs['partnerList'];
     productionLines: any[] = this.globals.configs['productionLine'];
-    prev_delivery_qty: number;
     delivable_qty: number;
-    normal_qty: number;
     delivery_qty: number;
     product_price: number;
     order_qty: number;
+    current_qty: number;
     delivery_price: number;
-    editData: Item;
-    isInvoice: boolean = false;
-    invoiceNo: number;
-
-    // 송장(거래명세서)
-    viewModalHeight: number = window.innerHeight - 70;
-    panel1Title: string;
-    panel2Title: string;
-    orderNo: string;
-    pocNo: string;
-    productType: string;
-    drawingNo: string;
-    productName: string;
-    productPrice: number;
-    deliveryPrice: number;
-    deliveryQty: number;
-
-    partnerName: string;
-    partnerBizNo: string;
-    partnerCeo: string;
-    partnerAddr: string;
-    transportVehicle: string;
-    unloadPlace: string;
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
 
     errorMessage: string;
     addOkMsg = '납품처리가 완료되었습니다.';
-    editOkMsg = '수정이 완료되었습니다.';
-    delOkMsg = '삭제되었습니다.';
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
-    @ViewChild('InvoiceModal') invoiceModal: ModalDirective;
 
     constructor(
         public electronService: ElectronService,
@@ -105,6 +71,7 @@ export class OrderNotDeliveredComponent implements OnInit {
         private globals: AppGlobals,
         private route: ActivatedRoute,
         private utils: UtilsService,
+        private datePipe: DatePipe,
         private messageService: MessageService
     ) {
         // 접근권한 체크
@@ -126,29 +93,26 @@ export class OrderNotDeliveredComponent implements OnInit {
         });
 
         this.inputForm = fb.group({
-            delivery_date: ['', Validators.required],
-            partner_code: ['', Validators.required],
+            input_date: ['', Validators.required],
             partner_name: ['', Validators.required],
-            product_code: ['', Validators.required],
+            order_no: '',
             product_name: '',
+            product_type: '',
+            current_qty: '',
             order_qty: '',
             delivery_qty: ['', Validators.required],
             product_price: '',
             delivery_price: '',
-            order_no: '',
-            poc_no: '',
-            // ms_no: '',
             transport_vehicle: '',
-            unload_place: ''
+            unload_place: ['', Validators.required],
+            unload_place_id: '',
+            sales_orders_detail_id: ''
         });
     }
 
     ngOnInit() {
         this.panelTitle = '수주미납(등록)현황';
         this.inputFormTitle = '납품처리';
-        this.uploadFormTitle = '수주 엑셀업로드';
-        this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
-        this.hideConfirmMsg = '선택하신 데이터를 숨김처리하시겠습니까?';
 
         this.changeSubMenu(1);
 
@@ -163,7 +127,6 @@ export class OrderNotDeliveredComponent implements OnInit {
     }
 
     changeSubMenu(st): void {
-        this.sch_st = st;
         this.getAll();
     }
 
@@ -172,13 +135,11 @@ export class OrderNotDeliveredComponent implements OnInit {
 
         let formData = this.searchForm.value;
         let params = {
-            partner_name: formData.sch_partner_name,
-            order_no: formData.sch_order_no,
-            st: this.sch_st,
-            sortby: ['product_code'],
-            order: ['asc'],
+            // partner_name: formData.sch_partner_name,
+            // sortby: ['product_code'],
+            // order: ['asc'],
             maxResultCount: 10000
-        }
+        };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_code'] = this.listSltdPaCode;
         }
@@ -187,6 +148,10 @@ export class OrderNotDeliveredComponent implements OnInit {
             listData =>
             {
                 this.listData = listData;
+                for(let i in listData['data']){
+                    listData['data'][i].not_delivered_qty = listData['data'][i].order_qty - listData['data'][i].delivery_qty;
+                }
+
                 this.temp = listData['data'];
                 this.rows = listData['data'];
 
@@ -196,13 +161,14 @@ export class OrderNotDeliveredComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
+        if (event.item['id'] == '') {
             this.listSltdPaCode = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaCode = event.item['id'];
         }
-
-        const val = this.listSltdPaCode;
+    }
+    onSelectListUnloadPlace(event: TypeaheadMatch): void {
+        this.inputForm.controls['unload_place_id'].setValue(event.item['id']);
     }
 
     onSelectInputPartner(event: TypeaheadMatch): void {
@@ -218,8 +184,8 @@ export class OrderNotDeliveredComponent implements OnInit {
 
         // filter data
         const temp = this.temp.filter(function(d){
-            return d.order_no.indexOf(val) !== -1 || d.poc_no.indexOf(val) !== -1 || !val;
-        })
+            return d.order_no.indexOf(val) !== -1 || !val;
+        });
 
         // update the rows
         this.rows = temp;
@@ -237,21 +203,27 @@ export class OrderNotDeliveredComponent implements OnInit {
 
     deliveryCompletion () {
         let formData = this.inputForm.value;
-        if (formData.delivery_qty < 1) {
+        let deliveryQty = this.utils.removeComma(formData.delivery_qty);
+        if (deliveryQty < 1) {
             alert('납품수량이 0 이상이어야 합니다');
             return false;
         }
-        if (formData.delivery_qty > this.normal_qty) {
+
+        if (deliveryQty > this.current_qty) {
             alert('납품수량이 재고수량보다 큽니다');
             return false;
         }
-        formData.product_price = this.utils.removeComma(formData.product_price) * 1;
-        formData.delivery_qty = this.prev_delivery_qty + this.utils.removeComma(formData.delivery_qty) * 1;
-        formData.delivery_price = this.utils.removeComma(formData.delivery_price) * 1;
-        formData.not_delivered_qty = formData.order_qty - (formData.delivery_qty * 1);
 
-        formData.st = 1;
-        this.Create(formData);
+        let regData = {
+            sales_orders_detail_id: formData.sales_orders_detail_id,
+            unload_place_id: formData.unload_place_id,
+            transport_vehicle: formData.transport_vehicle,
+            qty: this.utils.removeComma(formData.delivery_qty) * 1,
+            input_date: this.datePipe.transform(formData.input_date, 'yyyy-MM-dd')
+        };
+
+        console.log(regData);
+        this.Create(regData);
     }
 
     Create (data): void {
@@ -259,21 +231,21 @@ export class OrderNotDeliveredComponent implements OnInit {
             .subscribe(
                 data => {
                     if (data['result'] == "success") {
+                        this.inputForm.reset();
                         this.getAll();
                         this.messageService.add(this.addOkMsg);
-                        this.isInvoice = true;
-                        this.invoiceNo = data['last_id'];
+                        // this.isInvoice = true;
+                        // this.invoiceNo = data['last_id'];
                     } else {
                         this.messageService.add(data['errorMessage']);
                     }
-                    //this.invoiceModal.show();
+                    this.inputFormModal.hide();
                 },
                 error => this.errorMessage = <any>error
             );
     }
 
     openModal(action, id) {
-
         switch (action) {
             case 'create':
                 // 실행권한
@@ -281,98 +253,56 @@ export class OrderNotDeliveredComponent implements OnInit {
                     alert(this.globals.isNotExecutable);
                     return false;
                 }
-                this.inputFormModal.show();
+                if(this.currentQty < 1) {
+                    this.messageService.add('해당 제품의 재고가 없습니다.');
+                    return false;
+                }
 
-                // 입력폼 리셋
+                this.inputFormModal.show();
                 this.inputForm.reset();
 
-                this.isInvoice = false;
-
-                // 수주정보
                 this.dataService.GetById(this.selectedId).subscribe(
                     editData =>
                     {
                         if (editData['result'] == "success") {
-                            this.editData = editData;
                             this.formData = editData['data'];
-
                             this.order_qty = this.formData.order_qty;
-                            let product_price = this.formData.product_price;
+                            this.current_qty = this.formData.current_qty;
+                            this.product_price = this.formData.product_price;
+                            this.delivery_qty = this.formData.delivery_qty;
 
-                            this.prev_delivery_qty = this.formData.delivery_qty*1;
-                            let delivery_qty = (this.formData.order_qty*1) - this.prev_delivery_qty;
-                            this.delivery_qty = delivery_qty;
-
-                            let delivery_price = product_price * delivery_qty;
-                            this.delivery_price = delivery_price;
-
-                            // 제품재고(생산수량)
-                            let normal_qty = this.formData.normal_qty; //this.formData.production_qty;
-                            this.normal_qty = normal_qty;
-
-                            // 납품가능수량
-                            let delivable_qty = delivery_qty;
-                            if (normal_qty < delivery_qty) {
-                                delivable_qty = normal_qty;
+                            let delivable_qty = this.order_qty - this.delivery_qty;
+                            if (this.current_qty < delivable_qty) {
+                                delivable_qty = this.current_qty;
                             }
 
+                            let delivery_price = this.formData.product_price * delivable_qty;
+                            this.delivery_price = delivery_price;
+
                             this.inputForm.patchValue({
-                                delivery_date: this.tDate,
-                                partner_code: this.formData.partner_code,
+                                input_date: this.tDate,
                                 partner_name: this.formData.partner_name,
-                                product_code: this.formData.product_code,
                                 product_name: this.formData.product_name,
+                                product_type: this.formData.product_type,
                                 order_qty: this.formData.order_qty,
+                                current_qty: this.formData.current_qty,
                                 delivery_qty: this.utils.addComma(delivable_qty),
-                                product_price: this.utils.addComma(product_price),
+                                product_price: this.utils.addComma(this.product_price),
                                 order_no: this.formData.order_no,
-                                poc_no: this.formData.poc_no,
-                                // ms_no: this.formData.ms_no,
                                 transport_vehicle: this.formData.transport_vehicle,
-                                unload_place: this.formData.unload_place,
-                                delivery_price: this.utils.addComma(delivery_price)
+                                delivery_price: this.utils.addComma(delivery_price),
+                                sales_orders_detail_id: this.formData.sales_orders_detail_id
                             });
                         }
                     }
                 );
-            break;
-
-            case 'view':
-                this.invoiceModal.show();
-                this.panel1Title = '거 래 명 세 서 (공급자용)';
-                this.panel2Title = '거 래 명 세 서 (공급받는자용)';
-                this.dataService.GetDeliveryView(id).subscribe(
-                    editData =>
-                    {
-                        if (editData['result'] == "success") {
-                            let data = editData['data'];
-                            this.invoiceNo = data.id;
-                            this.orderNo = data.order_no;
-                            this.pocNo = data.poc_no;
-                            this.productType = data.product_type;
-                            // this.drawingNo = data.drawing_no;
-                            this.productName = data.product_name;
-                            this.deliveryPrice = data.delivery_price;
-                            this.deliveryQty = data.delivery_qty;
-                            this.productPrice = data.product_price;
-
-                            this.partnerName = data.ptn_name;
-                            this.partnerBizNo = data.ptn_biz_no;
-                            this.partnerCeo = data.ptn_ceo;
-                            this.partnerAddr = data.ptn_addr;
-
-                            this.transportVehicle = data.transport_vehicle;
-                            this.unloadPlace = data.unload_place;
-                        }
-                    }
-                );
-            break;
+                break;
         }
-
     }
 
     onSelect({ selected }) {
-        this.selectedId = selected[0].order_no + ':' + selected[0].poc_no + ':' + selected[0].product_code;
+        this.selectedId = selected[0].id;
+        this.currentQty = this.utils.removeComma(selected[0].current_qty) * 1;
     }
 
 }

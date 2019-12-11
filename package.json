@@ -1,6 +1,7 @@
 {
   "name": "IDM-ERP",
-  "version": "0.6.2",
+  "version": "0.6.4",
+  "webview_version": "0.6.4",
   "description": "IDM-ERP(PC)",
   "homepage": "http://IDM.innest.co.kr",
   "author": {
@@ -39,8 +40,8 @@
     "e2e": "npm run postinstall:web && ng e2e",
     "publish": "build -p always",
     "publish_32bit": "npm run build:prod && npx electron-builder --ia32 --x64 -w -p always",
-    "pubilsh_app_win": "npm run postinstall:web && ng build --prod=true && git add . && git commit -m %npm_package_version% && git push",
-    "pubilsh_app_mac": "npm run postinstall:web && ng build --prod=true && git add . && git commit -m $npm_package_version && git push"
+    "pubilsh_app_win": "npm run postinstall:web && ng build --prod=true --outputPath=dist-webview && git add . && git commit -m %npm_package_version% && git push",
+    "pubilsh_app_mac": "npm run postinstall:web && ng build --prod=true --outputPath=dist-webview && git add . && git commit -m $npm_package_version && git push"
   },
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "^2.1.2",

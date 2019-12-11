@@ -9,7 +9,9 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './partner-assembly-product.item';
-import {ElectronService} from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import {saveAs as importedSaveAs} from "file-saver";
 
 declare var $: any;
 
@@ -381,6 +383,63 @@ export class PartnerAssemblyProductComponent implements OnInit {
       },
       error => this.errorMessage = <any>error
     );
+  }
+
+  exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+    if (this.electronService.checkExportExcel()) {
+      let data;
+      if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+        // data = this.dataService.GetMasterExcelData()['data'];
+      } else { //리스트는 기존 가져온 데이터로 생성
+        data = this.rows;
+      }
+
+      let workbook = new Workbook();
+      let worksheet = workbook.addWorksheet(this.panelTitle);
+
+      worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(2).width = 20;
+      worksheet.getColumn(3).width = 20;
+      worksheet.getColumn(4).width = 20;
+      worksheet.getColumn(5).width = 15;
+      worksheet.getColumn(6).width = 15;
+
+      const header = ["등록일자", "자재명", "규격", "거래처", "단가", "단가적용일"];
+      let headerRow = worksheet.addRow(header);
+      headerRow.font = this.globals.headerFontStyle as Font;
+      headerRow.eachCell((cell, number) => {
+        cell.fill = this.globals.headerFillColor as Fill;
+        cell.border = this.globals.headerBorderStyle as Borders;
+        cell.alignment = this.globals.headerAlignment as Alignment;
+      });
+
+      let jsonValueToArray;
+      data.forEach(d => {
+            jsonValueToArray = [];
+            jsonValueToArray.push(d.input_date);
+            jsonValueToArray.push(d.name);
+            jsonValueToArray.push(d.size);
+            jsonValueToArray.push(d.partner_name);
+            jsonValueToArray.push(d.price);
+            jsonValueToArray.push(d.price_date);
+
+            let row = worksheet.addRow(jsonValueToArray);
+            row.font = this.globals.bodyFontStyle as Font;
+            row.getCell(1).alignment = {horizontal: "center"};
+            row.getCell(6).alignment = {horizontal: "center"};
+            row.getCell(5).alignment = {horizontal: "right"};
+            row.eachCell((cell, number) => {
+              cell.border = this.globals.bodyBorderStyle as Borders;
+            });
+          }
+      );
+
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        fileName = fileName == '' ? this.panelTitle : fileName;
+        importedSaveAs(blob, fileName + '.xlsx');
+      })
+    }
   }
 
 }

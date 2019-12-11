@@ -19,8 +19,8 @@ import { routes as materials_routes } from '../../structure/materials/materials.
 import { routes as technology_routes } from '../../structure/technology/technology.module';
 import { routes as accounting_routes } from '../../structure/accounting/accounting.module';
 import { routes as settings_routes } from '../../structure/settings/settings.module';
+import { routes as personnel_routes } from '../../structure/personnel/personnel.module';
 import { NgbTabTitle } from '@ng-bootstrap/ng-bootstrap';
-
 
 @Component({
     selector: 'app-layout',
@@ -46,7 +46,6 @@ export class AdminLayoutComponent implements OnInit {
     isDevMode = !AppConfig.production;
     isDevIP = this.globals.isDevIP;
     serverHostName = this.globals.serverUrl.substring(7, this.globals.serverUrl.indexOf("."));
-  
 
     tabs: any[] = [];
     tmpTabs: any[] = [];
@@ -62,7 +61,6 @@ export class AdminLayoutComponent implements OnInit {
         private messageService: MessageService
     ) {}
 
-        
     removeTabHandler(tab: any): void {
         this.tmpTabs.splice(this.tmpTabs.indexOf(tab), 1);
     }
@@ -80,6 +78,7 @@ export class AdminLayoutComponent implements OnInit {
             this.removeTabHandler(this.tmpTabs[this.tmpTabs.length-1]);    
         }
 
+        // console.warn('existTabs= ', existTabs);
         if(existTabs == false) {
 
             let tabTitleLength = this.activatedRoute.snapshot.children[0].firstChild.data.title.split('>').length;
@@ -100,21 +99,19 @@ export class AdminLayoutComponent implements OnInit {
                     customClass: 'ngxTab tabSub',
                     active : parseInt(i) == 0 ? true : false
                 });
+                // console.warn('active= ', parseInt(i), this.tmpTabs[i]);
             }
 
         } else {
-
             for(let i in this.tabs) {
+                // console.warn('indexOf= ', this.tabs[i].routerUrl.indexOf(path));
                 if(this.tabs[i].routerUrl.indexOf(path) !== -1) {
+                    // console.warn('active= ', this.tabs[i]);
                     this.tabs[i].active = true;          
                 }
             }
-
         }
-
     }
-
-
 
     goToLink(no, path, reDirectTo=false) { 
 
@@ -137,6 +134,9 @@ export class AdminLayoutComponent implements OnInit {
                                 case 'production':
                                     routeName = production_routes;
                                 break;
+                                case 'personnel':
+                                    routeName = personnel_routes;
+                                    break;
                                 case 'materials':
                                     routeName = materials_routes;
                                 break;
@@ -155,7 +155,6 @@ export class AdminLayoutComponent implements OnInit {
                                     path = "/"+strRouteName+"/"+routeName[i].redirectTo;
                                 }
                             }
-                            
                         } 
                         this.router.navigateByUrl(path).then(
                             success => {
@@ -172,16 +171,9 @@ export class AdminLayoutComponent implements OnInit {
             }
             
         }, 100);
-
-        
-
-
-        
     }
 
-
     ngOnInit() {
-
         this.router.events.subscribe((event) => {
             if ( event instanceof NavigationEnd ) {
                 this.currentMenu = this.getActiveGroupMenu();
@@ -202,8 +194,6 @@ export class AdminLayoutComponent implements OnInit {
             this.titleService.setTitle(event['title']);
             this.page_title = event['title'];
         });
-
-        
     }
 
     getActiveGroupMenu() {

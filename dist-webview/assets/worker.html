@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const ipcRenderer = require("electron").ipcRenderer;
+
+    ipcRenderer.on("printWorker", (event, head, content, etc) => {
+        document.head.innerHTML = head;
+        // document.body.innerHTML = content;
+        document.getElementById('print-container').innerHTML = content;
+        if(etc !== null) {
+            // console.log(etc);
+            setPageSize(etc.setPageSize, etc.setPageMargin);
+        }
+
+        //input, select 태그 value 복구
+        if(etc !== null && etc.backupData !== null) {
+            // console.log(etc.backupData);
+            for (let backupDataKey in etc.backupData) {
+                if(document.getElementById(backupDataKey) !== null)
+                    document.getElementById(backupDataKey).value = etc.backupData[backupDataKey];
+                else{
+                    console.error("id가 없는 엘리먼트가 있습니다!!!")
+                }
+            }
+        }
+
+        setTimeout(() => {
+            ipcRenderer.send("readyToPrint", etc);
+        }, 250);
+
+    });
+
+    function setPageSize(cssPageSize, cssPageMargin) {
+        let styleTag = document.createElement('style');
+        styleTag.innerHTML = `@page {
+            size: ${cssPageSize};
+            margin: ${cssPageMargin};
+        }`;
+        document.head.appendChild(styleTag);
+    }
+
+</script>
+<div id="print-container"></div>
+</body>
+</html>
+
+
