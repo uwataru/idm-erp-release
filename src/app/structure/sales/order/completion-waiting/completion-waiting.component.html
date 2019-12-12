@@ -84,7 +84,7 @@
             </div>
             <div class="col-sm-6 text-right text-center-xs">
                 <button (click)="openModal('create', '')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
-                    <i class="glyphicon glyphicon-plus"></i>납품처리
+                    <i class="glyphicon glyphicon-plus"></i>판매처리
                 </button>
                 <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
                 <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
@@ -186,6 +186,7 @@
                                         <input type="text" decimal formControlName="sales_qty"
                                                (keyup)="calculateSalePrice()"
                                                id="sales_qty" nextFocus="delivery_price" class="form-control w-sm"/>
+                                      <input type="hidden" formControlName="not_sales_qty" id="not_sales_qty"/>
                                     </div>
                                 </div>
                             </div>

@@ -242,7 +242,7 @@
                   <input formControlName="sch_materials_{{index+1}}" id="material_title_{{index+1}}"
                    [typeahead]="listMaterials"
                    typeaheadOptionField="name"
-                   [typeaheadOptionsLimit]="50"
+                   [typeaheadOptionsLimit]="150"
                    [typeaheadScrollable]="true"
                    [typeaheadMinLength]="0"
                    (typeaheadOnSelect)="onSelectListMaterials($event, index+1)"
