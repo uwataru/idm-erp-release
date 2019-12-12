@@ -26,6 +26,7 @@ export class ConfigService {
     private defectAPI = this.globals.serverUrl+'/settings/search/defect_content';
     private saleTypeAPI = this.globals.serverUrl+'/settings/search/sales_classification';
     private PackageShipmentAPI = this.globals.serverUrl+'/settings/search/package_shipment';
+    private returnReasonAPI = this.globals.serverUrl+'/settings/search/return_reason';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -56,6 +57,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.defectAPI, 'defectList'))
             .then(() => this.getConfigData(this.saleTypeAPI, 'saleTypeList'))
             .then(() => this.getConfigData(this.PackageShipmentAPI, 'PackageShipmentList'))
+            .then(() => this.getConfigData(this.returnReasonAPI, 'returnReasonList'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);

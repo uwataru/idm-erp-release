@@ -1,127 +1,263 @@
-<div class="panel panel-default">
+<div class="panel panel-default" id="print-main-list">
 
     <div class="panel-heading">
         <div class="text-center">
             <span class="h4 block m-b-sm">{{ panelTitle }}</span>
         </div>
+        <div class="row">
+            <div class="col-sm-6 m-b-xs">
+                <form [formGroup]="searchForm">
+                <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+                <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" /> ~
+                <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" />
+                <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+                </form>
+            </div>
+            <div class="col-sm-6 text-right">
+                <!--
+                <button class="btn btn-sm btn-success btn-addon">
+                <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+                </button>
+                -->
+            </div>
+        </div>
     </div>
-
-    <form [formGroup]="inputForm">
     <div class="panel-body">
-        <div class="form-group">
+      <ngx-datatable
+        [style.height.px]=gridHeight
+        class="bootstrap"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="30"
+        [rowHeight]="30"
+        [scrollbarV]="true"
+        [scrollbarH]="false"
+        [selected]="selected"
+        [selectionType]="'single'"
+        (select)='onSelect($event)'
+        [messages]="messages">
+        <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="product_type" name="사용구분" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="id" name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center hidden-print">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                <button (click)="openModal('note',value)" class="btn btn-xs btn-primary">내역</button>
+            </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  
+    <div class="panel-footer hidden-print">
+      <div class="text-right text-center-xs">
+        <button (click)="openModal('write',selectedId)" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+          <i class="glyphicon glyphicon-plus"></i>입력
+        </button>
+        <button type="button" class="btn btn-sm btn-info btn-addon"
+                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
+          <i class="glyphicon glyphicon-print"></i>인쇄
+        </button>
+        <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works','조립작업지시현황.xlsx')"><i
+          class="glyphicon glyphicon-download-alt"></i>엑셀
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div bsModal #InputFormModal="bs-modal"  id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md ">
+      <div class="modal-content">
+  
+        <form [formGroup]="inputForm">
+          <div class="modal-header">
+            <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">{{ inputFormTitle }}</h4>
+          </div>
+          <div class="modal-body">
+  
             <div class="row">
-                <label for="return_date" class="col-lg-2 control-label">
-                    반품일자
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="return_date" id="return_date" class="form-control w-sm" />
+              <div class="col-lg-6">
+  
+                <div class="form-group">
+                    <input type="hidden" formControlName="sales_delivery_id" id="sales_delivery_id"/>
+                  <div class="row">
+                    <label for="return_date" class="col-lg-4 control-label">
+                      반품일자
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" formControlName="return_date" id="return_date" bsDatepicker placement="bottom left" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
                 </div>
-                <label for="partner_name" class="col-lg-2 control-label">
-                    거래처
-                </label>
-                <div class="col-lg-3">
-                  <input formControlName="partner_name" id="partner_name"
-                      [typeahead]="inputPartners"
-                      typeaheadOptionField="Alias"
-                      [typeaheadOptionsLimit]="50"
-                      [typeaheadScrollable]="true"
-                      [typeaheadMinLength]="0"
-                      (typeaheadOnSelect)="onSelectInputPartner($event)"
-                      placeholder="거래처명"
-                      class="input-sm form-control w-sm inline v-middle" />
-                  <input type="hidden" formControlName="partner_code" id="partner_code" />
-                </div>
-            </div>
-        </div> 
 
-        <div class="form-group">
-            <div class="row">
-              <label for="product_name" class="col-lg-2 control-label">
-                  제품명
-              </label>
-              <div class="col-lg-5">
-                  <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
-              </div>
-            </div>
-        </div>
+                <div class="form-group">
+                  <div class="row">
+                    <label for="partner_name" class="col-lg-4 control-label">
+                      거래처
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" readonly formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="row">
+                    <label for="product_name" class="col-lg-4 control-label">
+                      제품명
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" readonly formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
+                      <input type="hidden" formControlName="product_id" id="product_id" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="row">
+                    <label for="product_type" class="col-lg-4 control-label">
+                      규격
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" readonly formControlName="product_type" id="product_type" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="row">
+                    <label for="type" class="col-lg-4 control-label">
+                      구분
+                    </label>
+                    <div class="col-lg-8">
+                      <label class="i-checks">
+                          <input type="radio" formControlName="type" value="true" class="form-control input-xs">
+                          <i></i>
+                          입고
+                      </label>
+                      <label class="i-checks">
+                          <input type="radio" formControlName="type" value="false" class="form-control input-xs">
+                          <i></i>
+                          반출
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
-        <div class="form-group">
-            <div class="row">
-                <label for="return_reason" class="col-lg-2 control-label">
-                    반품사유
-                </label>
-                <!-- <div class="col-lg-3">
-                    <select formControlName="product_price" id="defective_classification" nextFocus="refer_etc" class="input-sm form-control w-sm inline v-middle">
-                        <option *ngFor="let dc of defectiveClassification" value="{{ dc.CfgCode }}">{{ dc.CfgName }}</option>
-                    </select>
-                </div> -->
-                <div class="col-lg-3">
-                    <select formControlName="return_reason" id="return_reason" class="input-sm form-control w-sm inline v-middle">
-                        <option value=""></option>
-                        <option value="">불량</option>
-                        <option value="">교환</option>
-                        <option value="">기타</option>
-                    </select>
-                    <!-- <input type="text" formControlName="return_reason" id="return_reason" class="form-control w-sm" /> -->
+                <div class="form-group">
+                  <div class="row">
+                    <label for="settings_type" class="col-lg-4 control-label">
+                      반품사유
+                    </label>
+                    <div class="col-lg-8">
+                      <input
+                          formControlName="settings_type"
+                          id="settings_type"
+                          [typeahead]="returnReasonList"
+                          typeaheadOptionField="set_value"
+                          [typeaheadOptionsLimit]="50"
+                          [typeaheadScrollable]="true"
+                          [typeaheadMinLength]="0"
+                          (typeaheadOnSelect)="onSelectReturnReason($event)"
+                          placeholder="반품사유"
+                          class="input-sm form-control w-sm inline v-middle" />
+                      <input type="hidden" formControlName="settings_type_id" id="settings_type_id"/>
+                    </div>
+                  </div>
                 </div>
-                <label for="other_reason" class="col-lg-2 control-label">
-                    기타사유
-                </label>
-                <div class="col-lg-3">
-                    <input type="text"  id="other_reason" formControlName="other_reason" class="form-control w-sm" />
+                
+                  <div class="form-group">
+                  <div class="row">
+                    <label for="qty" class="col-lg-4 control-label">
+                      수량
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-              <label for="return_qty" class="col-lg-2 control-label">
-                  수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-3">
-                  <input type="text" formControlName="return_qty" id="return_qty" class="form-control w-sm" />
+
+                <div class="form-group">
+                  <div class="row">
+                    <label for="etc" class="col-lg-4 control-label">
+                      특이사항
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" formControlName="etc" id="etc" class="form-control input-sm w-sm"/>
+                    </div>
+                  </div>
+                </div>
+
+
+  
               </div>
-              <label for="product_price" class="col-lg-2 control-label">
-                  단가 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-3">
-                  <input type="text" formControlName="product_price" id="product_price" class="form-control w-sm" />
-              </div>
+  
             </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <label for="price" class="col-lg-2 control-label">
-                    금액
-                </label>
-                <div class="col-lg-3">
-                    <input type="text" formControlName="price" id="price" class="form-control" class="form-control w-sm"/>
+          </div>
+  
+          <div class="modal-footer">
+            <div class="text-center">
+              <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
+              </button>
+              <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+            </div>
+          </div>
+        </form>
+  
+      </div>
+    </div>
+  </div>
+  
+  <div bsModal #NoteModal="bs-modal" id="NoteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="NoteModal.hide()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ noteTitle }}</h4>
+            </div>
+            <div class="modal-body">
+                <ngx-datatable
+                    [style.height.px]=gridHeight
+                    class="bootstrap"
+                    [rows]="notes"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [scrollbarV]="true"
+                    [scrollbarH]="false"
+                    [messages]="messages">
+                    <ngx-datatable-column prop="return_type" name="구분" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="return_date" name="일자" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="set_value" name="사유" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="qty" name="수량" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="etc" name="특이사항" cellClass="text-center"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="NoteModal.hide()">확인</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="panel-footer text-right">
-        <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-        <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button>
-	</div>
-    </form>
-
 </div>
 
-<div *ngIf="isLoadingProgress" class="loading-progress">
-
+  <div *ngIf="isLoadingProgress" class="loading-progress">
+  
     <div class="sk-fading-circle">
-        <div class="sk-circle1 sk-circle"></div>
-        <div class="sk-circle2 sk-circle"></div>
-        <div class="sk-circle3 sk-circle"></div>
-        <div class="sk-circle4 sk-circle"></div>
-        <div class="sk-circle5 sk-circle"></div>
-        <div class="sk-circle6 sk-circle"></div>
-        <div class="sk-circle7 sk-circle"></div>
-        <div class="sk-circle8 sk-circle"></div>
-        <div class="sk-circle9 sk-circle"></div>
-        <div class="sk-circle10 sk-circle"></div>
-        <div class="sk-circle11 sk-circle"></div>
-        <div class="sk-circle12 sk-circle"></div>
+      <div class="sk-circle1 sk-circle"></div>
+      <div class="sk-circle2 sk-circle"></div>
+      <div class="sk-circle3 sk-circle"></div>
+      <div class="sk-circle4 sk-circle"></div>
+      <div class="sk-circle5 sk-circle"></div>
+      <div class="sk-circle6 sk-circle"></div>
+      <div class="sk-circle7 sk-circle"></div>
+      <div class="sk-circle8 sk-circle"></div>
+      <div class="sk-circle9 sk-circle"></div>
+      <div class="sk-circle10 sk-circle"></div>
+      <div class="sk-circle11 sk-circle"></div>
+      <div class="sk-circle12 sk-circle"></div>
     </div>
-
-</div>
+  
+  </div>
+  
