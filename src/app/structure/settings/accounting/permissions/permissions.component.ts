@@ -80,7 +80,7 @@ export class PermissionsComponent implements OnInit {
         });
 
         this.users.forEach((user) => {
-            this.inputForm.addControl('id_' + user.UserId, new FormControl(''));
+            this.inputForm.addControl('id_' + user.user_id, new FormControl(''));
         });
     }
 
@@ -130,8 +130,8 @@ export class PermissionsComponent implements OnInit {
         let formData = this.inputForm.value;
         let idArr = [];
         this.users.forEach((user) => {
-            if ( (<HTMLInputElement>document.getElementById('id_' + user.UserId)).checked == true ) {
-                idArr.push(user.UserId);
+            if ( (<HTMLInputElement>document.getElementById('id_' + user.user_id)).checked == true ) {
+                idArr.push(user.user_id);
             }
         });
         formData.menu_id = this.selectedMenuId * 1;
