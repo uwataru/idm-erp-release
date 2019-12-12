@@ -100,6 +100,7 @@ export class AssemblyWorksComponent implements OnInit {
       product_type: ['', Validators.required],
       line_no: '',
       production_work_line_id: ['', Validators.required],
+      sales_orders_detail_id: ['', Validators.required],
       promised_date: '',
       qty: '',
       start_date: '',
@@ -153,6 +154,7 @@ export class AssemblyWorksComponent implements OnInit {
     let formModel = this.inputForm.value;
     
     let formData = {
+      sales_orders_detail_id: formModel.sales_orders_detail_id,
       start_date: this.datePipe.transform(formModel['start_date'], 'yyyy-MM-dd'),
       end_date: this.datePipe.transform(formModel['end_date'], 'yyyy-MM-dd'),
       production_work_line_id: parseInt(formModel['production_work_line_id']),
@@ -243,6 +245,7 @@ export class AssemblyWorksComponent implements OnInit {
               start_date: this.tDate,
               end_date: this.tDate,
               // qty: this.formData.qty,
+              sales_orders_detail_id: this.formData.sales_orders_detail_id,
               order_no: this.formData.order_no,
               partner_name: this.formData.partner_name,
               product_name: this.formData.product_name,

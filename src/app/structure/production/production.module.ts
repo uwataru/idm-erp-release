@@ -36,7 +36,7 @@ export const routes: Routes = [
   {path: 'planning/production-line-planning', component: ProductionLinePlanningComponent, data: {title: '생산 > 라인별가동계획', id: 32}, canActivate: [AuthGuard]},
   {path: 'planning/production-planning', component: ProductionPlanningComponent, data: {title: '생산 > 생산계획관리', id: 33}, canActivate: [AuthGuard]},
   {path: 'planning/materials-planning', component: MaterialsPlanningComponent, data: {title: '생산 > 자재계획', id: 34}, canActivate: [AuthGuard]},
-  {path: 'assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업입력', id: 35}, canActivate: [AuthGuard]},
+  {path: 'assembly-works', component: AssemblyWorksComponent, data: {title: '생산 > 조립작업지시', id: 35}, canActivate: [AuthGuard]},
   {path: 'assembly-performance', component: AssemblyWorkedComponent, data: {title: '생산 > 조립작업실적입력', id: 36}, canActivate: [AuthGuard]},
   {path: 'record/assembly-personnel-performance', component: AssemblyResultComponent, data: {title: '생산 > 조립작업실적서', id: 37}, canActivate: [AuthGuard]},
   {path: 'record/chart-assembly-performance', component: AssemblyWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 38}, canActivate: [AuthGuard]},

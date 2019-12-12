@@ -3,6 +3,7 @@ export class Item {
   totalCount: number;
   data: {
     id: number;
+    sales_orders_detail_id: number;
     order_no: string;
     partner_name: string;
     product_name: string;
