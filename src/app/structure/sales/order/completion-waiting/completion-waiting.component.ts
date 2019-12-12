@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './completion-waiting.item';
+import {not} from "rxjs/internal-compatibility";
 declare var $: any;
 @Component({
   selector: 'app-page',
@@ -102,6 +103,8 @@ export class CompletionWaitingComponent implements OnInit {
             product_price: '',
             sale_price: '',
             sales_orders_detail_id: '',
+            not_sales_qty: ''
+
         });
     }
 
@@ -170,12 +173,13 @@ export class CompletionWaitingComponent implements OnInit {
 
         let saleQty = this.utils.removeComma(formData.sales_qty) * 1;
         let deliveryQty = this.utils.removeComma(formData.delivery_qty) * 1;
-        let notSaleQty = deliveryQty - saleQty;
+        let notSalesQty = this.utils.removeComma(formData.not_sales_qty) * 1;
         if (saleQty < 1) {
             alert('판매수량이 0 이상이어야 합니다');
             return false;
         }
-        if(saleQty > notSaleQty){
+
+        if(saleQty > notSalesQty){
             alert('판매수량이 미판매 수량보다 큽니다.');
             return false;
         }
@@ -239,6 +243,7 @@ export class CompletionWaitingComponent implements OnInit {
                         product_type: this.formData.product_type,
                         delivery_qty: this.utils.addComma(this.formData.delivery_qty),
                         sales_qty: this.utils.addComma(not_sales_qty),
+                        not_sales_qty: this.utils.addComma(not_sales_qty),
                         product_price: this.utils.addComma(this.formData.product_price),
                         sale_price: this.utils.addComma(price),
                         sales_orders_detail_id: this.formData.id
