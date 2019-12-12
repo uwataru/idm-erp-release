@@ -33,15 +33,50 @@
           [scrollbarH]="false"
           [selected]="selected"
           [selectAllRowsOnPage]="false"
+          [summaryRow]="true"
+          [summaryPosition]="'bottom'"
+          [summaryHeight]="35"
           [messages]="messages">
-          <ngx-datatable-column prop="production_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count1" name="찍힘" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count2" name="깨짐" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count3" name="인쇄불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count4" name="색상불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count5" name="성형불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count6" name="작업불량" cellClass="text-center"></ngx-datatable-column>
-          <ngx-datatable-column prop="defect_count7" name="기타" cellClass="text-center"></ngx-datatable-column>
+          <ngx-datatable-column prop="production_date" name="생산일자" cellClass="text-center" [summaryTemplate]="total_label">
+            <ng-template #total_label let-row="row" let-value="value">
+              <div style="margin-top: 6px; text-align: center"><span><b>총 계</b></span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count1" name="찍힘" cellClass="text-center" [summaryTemplate]="defect_count1_total">
+            <ng-template #defect_count1_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal1}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count2" name="깨짐" cellClass="text-center" [summaryTemplate]="defect_count2_total">
+            <ng-template #defect_count2_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal2}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count3" name="인쇄불량" cellClass="text-center" [summaryTemplate]="defect_count3_total">
+            <ng-template #defect_count3_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal3}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count4" name="색상불량" cellClass="text-center" [summaryTemplate]="defect_count4_total">
+            <ng-template #defect_count4_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal4}}</span></div>
+            </ng-template>              
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count5" name="성형불량" cellClass="text-center" [summaryTemplate]="defect_count5_total">
+            <ng-template #defect_count5_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal5}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count6" name="작업불량" cellClass="text-center" [summaryTemplate]="defect_count6_total">
+            <ng-template #defect_count6_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal6}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column prop="defect_count7" name="기타" cellClass="text-center" [summaryTemplate]="defect_count7_total">
+            <ng-template #defect_count7_total let-row="row" let-value="value">
+                <div style="margin-top: 6px; text-align: center"><span>{{totalVal7}}</span></div>
+            </ng-template>
+          </ngx-datatable-column>
       </ngx-datatable>
   </div>
 </div>
