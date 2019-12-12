@@ -129,6 +129,12 @@ export class ProductionLineComponent implements OnInit {
     Save () {
          //disabled="!inputForm.valid"
          let formData = this.inputForm.value;
+         if(formData.is_outsourcing == "Y"){
+            formData.is_outsourcing = true;
+         }else{
+            formData.is_outsourcing = false;
+         }
+         formData.line_no = formData.line_no;
          formData.process_id = parseInt(formData.process_id);
          formData.worker_cnt = parseInt(formData.worker_cnt);
          formData.run_time = parseInt(formData.run_time);
@@ -138,6 +144,7 @@ export class ProductionLineComponent implements OnInit {
          } else {
              this.Create(formData);
          }
+         console.log(formData);
     }
 
     Create (data): void {
