@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
             // 접근권한 체크
             if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
                 if (route.routeConfig.data.id in this.globals.userPermission) {
-                    console.log(route.routeConfig.data.id);
+                    console.log("app.auth", route.routeConfig.data.id);
                     if (this.globals.userPermission[route.routeConfig.data.id]['access_auth'] == false
                         && this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == false) {
                         alert('접근권한이 없습니다.');
