@@ -97,14 +97,6 @@ export class QualityStatusComponent implements OnInit {
           this.listData = listData;
           this.rows = listData['data'];
         
-          for(let i=0; i<this.rows.length; i++){
-            let defect_qty = parseInt(this.rows[i]['defect_qty']);
-            let total_qty = parseInt(this.rows[i]['total_qty']);
-            
-            this.rows[i].defect_rate = (defect_qty/total_qty) * 100;
-            
-          }
-
           this.isLoadingProgress = false;
         }
     );

@@ -36,14 +36,6 @@
                 <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
                 <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
                 <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
-                <ngx-datatable-column prop="input_date" name="생산일자" cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="qty" name="불량수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
-                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                        <span>{{ value | numberFormat }}</span>
-                    </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column prop="set_value" name="불량내용" cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="etc" name="기타" cellClass="text-center"></ngx-datatable-column>
             </ngx-datatable>
         </div>
     
