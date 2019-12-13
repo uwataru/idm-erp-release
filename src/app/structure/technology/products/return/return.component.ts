@@ -211,16 +211,13 @@ export class ReturnComponent implements OnInit {
     }
     else{
       this.NoteModal.show();
-      console.log(id);
+      this.notes = [];
+      // console.log(id);
       this.dataService.GetNote(id).subscribe(
         editData => {
           this.noteData = editData;
           this.notes = editData['data'];
           // console.log(this.notes['totalCount']);
-          if(this.notes == null){
-            alert('내역이 없습니다.');
-          }
-
         }
       );
       setTimeout(() => {
