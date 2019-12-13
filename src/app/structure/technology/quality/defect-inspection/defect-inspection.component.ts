@@ -59,11 +59,6 @@ export class DefectInspectionComponent implements OnInit {
   inputMaterials: any[] = [];
   editData: Item;
 
-  qty: number[] = [];
-  material_name: string[] = [];
-  production_date: string[] = [];
-  set_value: string[] = [];
-  etc: string[] = [];
 
   public isCorrect : boolean;
 
@@ -156,16 +151,6 @@ export class DefectInspectionComponent implements OnInit {
               this.temp = listData['data'];
               this.rows = listData['data'];
 
-              for(let i=0; i<this.rows.length; i++){
-                let id = this.rows[i]['id'];
-                console.log(id,'~!~!~!~!~!~!');
-                    this.rows[i].qty = this.qty[id];
-                    this.rows[i].material_name = this.material_name[id];
-                    this.rows[i].production_date = this.production_date[id];
-                    this.rows[i].set_value = this.set_value[id];
-                    this.rows[i].etc = this.etc[id];
-              }
-
             }
             );
             this.isLoadingProgress = false;
@@ -215,20 +200,15 @@ export class DefectInspectionComponent implements OnInit {
 
   save () {
     let formModel = this.inputForm.value;
-    this.qty[this.selectedId] = this.utils.removeComma(formModel.qty)*1;
-    this.material_name[this.selectedId] = formModel.material_name;
-    this.production_date[this.selectedId] = this.datePipe.transform(formModel['production_date'], 'yyyy-MM-dd');
-    this.set_value[this.selectedId] = formModel.defect_content;
-    this.etc[this.selectedId] = formModel.etc;
-    
+    let qty = this.utils.removeComma(formModel.qty)*1;
       
     let formData = {
-        qty: this.qty[this.selectedId],
+        qty: qty,
         assembly_performance_id: formModel.assembly_performance_id,
         sales_orders_detail_id: formModel.sales_orders_detail_id,
-        materials_id: formModel.material_id,
+        material_id: formModel.material_id,
         settings_id: formModel.defect_content_id,
-        etc: this.etc[this.selectedId]
+        etc: formModel.etc
 
       };
     this.Create(formData);
@@ -262,13 +242,13 @@ export class DefectInspectionComponent implements OnInit {
                   alert(this.globals.isNotExecutable);
                   return false;
               }
-              this.inputFormModal.show();
-
-              // 입력폼 리셋
-              this.inputForm.reset();
-
               this.getProductionDate(this.selectedId);
               this.getInputMaterials(this.selectedId);
+              this.inputFormModal.show();
+              
+              // 입력폼 리셋
+              this.inputForm.reset();
+              
 
               this.dataService.GetById(this.selectedId).subscribe(
                   editData =>
@@ -294,28 +274,21 @@ export class DefectInspectionComponent implements OnInit {
   }
 
   getProductionDate(id){
+      this.productionDate = [];
         this.dataService.GetProductionDate(id).subscribe((responseData) => {
-
             if(responseData['totalCount']>0){
-                this.productionDate = responseData['data'];
+               this.productionDate = responseData['data'];
             }
-            // else{
-            //     alert('아직 생산되지않은 제품입니다.');
-            // }
-
         }, error => {
             console.log(error);
         });
   }
   getInputMaterials(id){
+      this.inputMaterials = [];
         this.dataService.GetInputMaterials(id).subscribe((responseData) => {
-
             if(responseData['totalCount']>0){
-                this.inputMaterials = responseData['data'];
+               return this.inputMaterials = responseData['data'];
             }
-            // else{
-            //     alert('아직 생산되지않은 제품입니다.');
-            // }
 
         }, error => {
             console.log(error);
