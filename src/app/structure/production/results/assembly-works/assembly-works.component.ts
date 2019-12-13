@@ -98,7 +98,7 @@ export class AssemblyWorksComponent implements OnInit {
       partner_name: ['', Validators.required],
       product_name: ['', Validators.required],
       product_type: ['', Validators.required],
-      line_no: '',
+      line_no: ['', Validators.required],
       production_work_line_id: ['', Validators.required],
       sales_orders_detail_id: ['', Validators.required],
       promised_date: '',
