@@ -89,6 +89,7 @@ export class AssemblyWorkedComponent implements OnInit {
       work_time_1: ['', Validators.required],
       material_name_1: ['', Validators.required],
       material_qty_1: ['', Validators.required],
+      hidden_material_qty_1: ['', Validators.required],
     });
   }
 
@@ -250,6 +251,7 @@ export class AssemblyWorkedComponent implements OnInit {
                   this.addMaterialRow();
               }
               this.inputForm.controls['material_name_' + i].setValue(materialData[i-1].name);
+              this.inputForm.controls['hidden_material_qty_' + i].setValue(materialData[i-1].qty);
           }
             console.log(this.inputForm);
 
@@ -287,6 +289,7 @@ export class AssemblyWorkedComponent implements OnInit {
 
     this.inputForm.addControl('material_name_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('material_qty_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('hidden_material_qty_' + index, new FormControl('', Validators.required));
   }
   
   removePersonnelRow(index) {
@@ -326,9 +329,10 @@ export class AssemblyWorkedComponent implements OnInit {
   }
   writeQty(event){
     let len = this.materialDataCnt;
-    for(let i = 1; i<=len; i++){
-      // console.error(workData[i]);
-      this.inputForm.controls['material_qty_' + i].setValue(event.target.value);
+    let tempQty = Number(event.target.value)*1;
+    for(let i = 1; i<=len; i++){  
+      let matQty  = Number(this.inputForm.controls['hidden_material_qty_' + i].value)*1;
+      this.inputForm.controls['material_qty_' + i].setValue(tempQty * matQty);
   }
 
   }
