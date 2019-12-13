@@ -40,6 +40,7 @@
             <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="qty" name="수량" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="id" name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center hidden-print">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <button (click)="openModal('note',value)" class="btn btn-xs btn-primary">내역</button>
@@ -47,7 +48,7 @@
             </ngx-datatable-column>
           </ngx-datatable>
         </div>
-      
+
         <div class="panel-footer hidden-print">
           <div class="text-right text-center-xs">
             <button (click)="openModal('write',selectedId)" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
@@ -63,11 +64,11 @@
           </div>
         </div>
       </div>
-      
+
       <div bsModal #InputFormModal="bs-modal"  id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md ">
           <div class="modal-content">
-      
+
             <form [formGroup]="inputForm">
               <!-- <input type="hidden" formControlName="order_no"/> -->
               <!-- <input type="hidden" formControlName="production_line"/> -->
@@ -77,10 +78,10 @@
                 <h4 class="modal-title">{{ inputFormTitle }}</h4>
               </div>
               <div class="modal-body">
-      
+
                 <div class="row">
                   <div class="col-lg-6">
-      
+
                     <div class="form-group">
                         <input type="hidden" formControlName="id" id="id"/>
                       <div class="row">
@@ -103,7 +104,7 @@
                         </div>
                       </div>
                     </div>
-      
+
                     <div class="form-group">
                       <div class="row">
                         <label for="partner_name" class="col-lg-4 control-label">
@@ -114,7 +115,7 @@
                         </div>
                       </div>
                     </div>
-      
+
                     <div class="form-group">
                       <div class="row">
                         <label for="product_name" class="col-lg-4 control-label">
@@ -125,7 +126,7 @@
                         </div>
                       </div>
                     </div>
-      
+
                     <div class="form-group">
                       <div class="row">
                         <label for="qty" class="col-lg-4 control-label">
@@ -136,7 +137,7 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="form-group">
                       <div class="row">
                         <label for="product_price" class="col-lg-4 control-label">
@@ -162,7 +163,7 @@
                     <div class="form-group">
                             <div class="row">
                               <label for="package_shipment_type" class="col-lg-4 control-label">
-                                구분 
+                                구분
                               </label>
                               <div class="col-lg-8">
                                 <input
@@ -180,12 +181,12 @@
                               </div>
                             </div>
                           </div>
-      
+
                   </div>
-      
+
                 </div>
               </div>
-      
+
               <div class="modal-footer">
                 <div class="text-center">
                   <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
@@ -194,11 +195,11 @@
                 </div>
               </div>
             </form>
-      
+
           </div>
         </div>
       </div>
-      
+
       <div bsModal #NoteModal="bs-modal" id="NoteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -232,7 +233,7 @@
     </div>
 
       <div *ngIf="isLoadingProgress" class="loading-progress">
-      
+
         <div class="sk-fading-circle">
           <div class="sk-circle1 sk-circle"></div>
           <div class="sk-circle2 sk-circle"></div>
@@ -247,6 +248,5 @@
           <div class="sk-circle11 sk-circle"></div>
           <div class="sk-circle12 sk-circle"></div>
         </div>
-      
+
       </div>
-      
