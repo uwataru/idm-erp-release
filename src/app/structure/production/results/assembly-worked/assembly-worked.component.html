@@ -207,13 +207,14 @@
                     소요자재 {{index+1}}
                   </label>
                   <div class="col-lg-4">
-                    <input type="text" formControlName="material_name_{{index+1}}" id="material_name_{{index+1}}" class="input-sm form-control w-sm inline v-middle" />
+                    <input type="text" readonly formControlName="material_name_{{index+1}}" id="material_name_{{index+1}}" class="input-sm form-control w-sm inline v-middle" />
                   </div>
                   <label for="material_qty" class="col-lg-2 control-label">
                     수량 
                   </label>
                   <div class="col-lg-3">
-                    <input type="text" formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                    <input type="text" readonly formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                    <input type="hidden" formControlName="hidden_material_qty_{{index+1}}" id="hidden_material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
                   </div>
                   </div>
                 </div>

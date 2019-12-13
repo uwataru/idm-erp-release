@@ -84,10 +84,10 @@ export function HttpLoaderFactory(http: HttpClient) {
             deps: [ConfigService],
             multi: true
         },
-        {
-            provide: RouteReuseStrategy,
-            useClass:CustomRouteReuseStrategy
-        },
+        // {
+        //     provide: RouteReuseStrategy,
+        //     useClass:CustomRouteReuseStrategy
+        // },
         {
             provide: ErrorHandler,
             useClass:GlobalErrorHandlerService

@@ -63,10 +63,6 @@ export class ScreeningComponent implements OnInit {
   inputMaterials: any[] = [];
   editData: Item;
 
-  qty: number[] = [];
-  input_date: string[] = [];
-  set_value: string[] = [];
-  etc: string[] = [];
 
   public isCorrect : boolean;
 
@@ -154,14 +150,6 @@ export class ScreeningComponent implements OnInit {
           this.listData = listData;
           this.temp = listData['data'];
           this.rows = listData['data'];
-          for(let i=0; i<this.rows.length; i++){
-            let id = this.rows[i]['id'];
-            console.log(id,'~!~!~!~!~!~!');
-                this.rows[i].qty = this.qty[id];
-                this.rows[i].input_date = this.input_date[id];
-                this.rows[i].set_value = this.set_value[id];
-                this.rows[i].etc = this.etc[id];
-          }
         }
         );
         this.isLoadingProgress = false;
@@ -206,19 +194,17 @@ export class ScreeningComponent implements OnInit {
 
   save () {
     let formModel = this.inputForm.value;
-    this.qty[this.selectedId] = this.utils.removeComma(formModel.qty)*1;
-    this.input_date[this.selectedId] = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
-    this.set_value[this.selectedId] = formModel.defect_content;
-    this.etc[this.selectedId] = formModel.etc;
+    let qty = this.utils.removeComma(formModel.qty)*1;
+    formModel.input_date= this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
 
 
     let formData = {
-        qty: this.qty[this.selectedId],
+        qty: qty,
         input_date: formModel.input_date,
         sales_orders_detail_id: formModel.sales_orders_detail_id,
         production_personnel_id: formModel.personnel_id,
         settings_id: formModel.defect_content_id,
-        etc: this.etc[this.selectedId]
+        etc: formModel.etc
 
       };
     this.Create(formData);

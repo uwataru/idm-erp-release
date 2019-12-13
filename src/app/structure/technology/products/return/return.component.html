@@ -52,11 +52,10 @@
         <button (click)="openModal('write',selectedId)" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>입력
         </button>
-        <button type="button" class="btn btn-sm btn-info btn-addon"
-                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
+        <button type="button" class="btn btn-sm btn-info btn-addon">
           <i class="glyphicon glyphicon-print"></i>인쇄
         </button>
-        <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works','조립작업지시현황.xlsx')"><i
+        <button type="button" class="btn btn-sm btn-success btn-addon"><i
           class="glyphicon glyphicon-download-alt"></i>엑셀
         </button>
       </div>
