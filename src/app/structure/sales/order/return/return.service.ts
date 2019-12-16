@@ -11,7 +11,7 @@ export class ReturnService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/history/RETURN';
+    private url = this.globals.serverUrl + '/sales/delivery/return/statement';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
