@@ -14,31 +14,25 @@ export class DeliveryPerformanceChartService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/delivery-performance';
+    private url = this.globals.serverUrl + '/sales/delivery/performance/chart';
 
     /** GET data from the server */
     loadData (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
-    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
-        return this.http.post<Item>(this.url, data, httpOptions).pipe(
+        return this.http.post<Item>(this.globals.serverUrl+'/sales/delivery/performance', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
     }
 
     /** PUT: 데이터 수정 */
-    Update (id:number, data:Item): Observable<Item> {
-        return this.http.put<Item>(this.url+'/'+id, data, httpOptions);
-    }
 
    /**
     * Handle Http operation that failed.
