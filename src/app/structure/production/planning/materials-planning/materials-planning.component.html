@@ -42,25 +42,28 @@
       [selectAllRowsOnPage]="false"
       (select)="onSelect($event)"
       [messages]="messages">
-      <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
       <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
-      <ngx-datatable-column name="자재" prop="" cellClass="text-center">
+      <ngx-datatable-column name="자재" prop="">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
               <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
-              '2px' : '0px' }">{{item.name}}</div>
+              '3px' : '0px', 'margin-left':'10px' }">{{item.name}}</div>
           </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Qty" prop="" cellClass="text-center">
+      <ngx-datatable-column name="Qty" prop="" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
             <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
-              '2px' : '0px' }">{{item.qty}}</div>
+              '3px' : '0px', 'margin-right':'10px' }">{{item.qty | numberFormat}}</div>
           </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="단가" prop="" cellClass="text-center">
+      <ngx-datatable-column name="단가" prop="" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
             <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
-              '2px' : '0px' }">{{item.price}}</div>
+              '3px' : '0px', 'margin-right':'10px' }">{{item.price | numberFormat}}</div>
           </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
@@ -71,12 +74,12 @@
       <div class="col-sm-4 hidden-xs">
       </div>
       <div class="col-sm-8 text-right">
-        <button type="button" class="btn btn-sm btn-info btn-addon"
-                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
-          <i class="glyphicon glyphicon-print"></i>인쇄
-        </button>
-        <button type="button" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀
-        </button>
+<!--        <button type="button" class="btn btn-sm btn-info btn-addon"-->
+<!--                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">-->
+<!--          <i class="glyphicon glyphicon-print"></i>인쇄-->
+<!--        </button>-->
+<!--        <button type="button" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀-->
+<!--        </button>-->
       </div>
     </div>
   </footer>

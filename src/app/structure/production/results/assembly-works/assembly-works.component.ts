@@ -1,5 +1,5 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {ElectronService} from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
 import {saveAs as importedSaveAs} from 'file-saver';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
@@ -10,6 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item, matlReceivingItem} from './assembly-works.item';
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
 
 declare var $: any;
 
@@ -139,10 +140,10 @@ export class AssemblyWorksComponent implements OnInit {
       listData => {
         this.listData = listData;
         this.rows = listData['data'];
-        for(let i=0; i<this.rows.length; i++){
+        for(let i in this.rows){
           let qty = parseInt(this.rows[i]['qty']);
           let production_qty = parseInt(this.rows[i]['Production_qty']);
-          this.rows[i].remind_qty = qty-production_qty;
+          this.rows[i].remind_qty = qty - production_qty;
         }
 
         this.isLoadingProgress = false;
@@ -345,8 +346,6 @@ export class AssemblyWorksComponent implements OnInit {
     this.inputWeightTotal = event.target.value;
   }
 
- 
-
   // chkAll(isChecked) {
   //   let formData = this.inputForm.value;
   //   let params = {};
@@ -370,5 +369,67 @@ export class AssemblyWorksComponent implements OnInit {
 
   // }
 
+  exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+    if (this.elSrv.checkExportExcel()) {
+      let data;
+      if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+        // data = this.dataService.GetMasterExcelData()['data'];
+      } else { //리스트는 기존 가져온 데이터로 생성
+        data = this.rows;
+      }
+
+      let workbook = new Workbook();
+      let worksheet = workbook.addWorksheet(this.panelTitle);
+
+      worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(2).width = 25;
+      worksheet.getColumn(3).width = 25;
+      worksheet.getColumn(4).width = 15;
+      worksheet.getColumn(5).width = 8;
+      worksheet.getColumn(6).width = 8;
+      worksheet.getColumn(7).width = 8;
+      worksheet.getColumn(8).width = 15;
+
+      const header = ["수주번호", "거래처", "제품명", "구분", "수주수량", "생산수량", "잔여수량", "작업라인"];
+      let headerRow = worksheet.addRow(header);
+      headerRow.font = this.globals.headerFontStyle as Font;
+      headerRow.eachCell((cell, number) => {
+        cell.fill = this.globals.headerFillColor as Fill;
+        cell.border = this.globals.headerBorderStyle as Borders;
+        cell.alignment = this.globals.headerAlignment as Alignment;
+      });
+
+      let jsonValueToArray;
+      data.forEach(d => {
+            jsonValueToArray = [];
+            jsonValueToArray.push(d.order_no);
+            jsonValueToArray.push(d.partner_name);
+            jsonValueToArray.push(d.product_name);
+            jsonValueToArray.push(d.product_type);
+            jsonValueToArray.push(d.qty);
+            jsonValueToArray.push(d.Production_qty);
+            jsonValueToArray.push(d.remind_qty);
+            jsonValueToArray.push(d.line_no);
+
+            let row = worksheet.addRow(jsonValueToArray);
+            row.font = this.globals.bodyFontStyle as Font;
+            row.getCell(1).alignment = {horizontal: "center"};
+            row.getCell(8).alignment = {horizontal: "center"};
+            row.getCell(5).alignment = {horizontal: "right"};
+            row.getCell(6).alignment = {horizontal: "right"};
+            row.getCell(7).alignment = {horizontal: "right"};
+            row.eachCell((cell, number) => {
+              cell.border = this.globals.bodyBorderStyle as Borders;
+            });
+          }
+      );
+
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        fileName = fileName == '' ? this.panelTitle : fileName;
+        importedSaveAs(blob, fileName + '.xlsx');
+      })
+    }
+  }
 
 }

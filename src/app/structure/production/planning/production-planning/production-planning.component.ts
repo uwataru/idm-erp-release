@@ -150,7 +150,7 @@ export class ProductionPlanningComponent implements OnInit {
             let remainQty = qty - productionQty;
             this.rows[i].remainQty = remainQty;
 
-            this.rows[i].remainPrecent = (productionQty / qty) * 100;
+            this.rows[i].remainPrecent = Math.round(((productionQty / qty) * 100) * 10) / 10;
             // console.log(this.rows[i].remainPrecent);
           }
 

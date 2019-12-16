@@ -10,7 +10,9 @@ import {MessageService} from '../../../../message.service';
 
 import { ReturnService } from './return.service';
 import { Item, NoteItem } from './return.item';
-
+import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import {saveAs as importedSaveAs} from "file-saver";
 declare var $: any;
 
 @Component({
@@ -65,6 +67,7 @@ export class ReturnComponent implements OnInit {
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
+    public elSrv: ElectronService,
     private globals: AppGlobals,
     private datePipe: DatePipe,
     private dataService: ReturnService,
@@ -232,5 +235,52 @@ export class ReturnComponent implements OnInit {
     console.log(this.inputForm.controls['settings_type_id'].value);
   }
 
+  exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+    if (this.elSrv.checkExportExcel()) {
+      let data;
+      if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+        // data = this.dataService.GetMasterExcelData()['data'];
+      } else { //리스트는 기존 가져온 데이터로 생성
+        data = this.rows;
+      }
+
+      let workbook = new Workbook();
+      let worksheet = workbook.addWorksheet(this.panelTitle);
+
+      worksheet.getColumn(1).width = 25;
+      worksheet.getColumn(2).width = 25;
+      worksheet.getColumn(3).width = 15;
+
+      const header = ["거래처", "제품명", "규격"];
+      let headerRow = worksheet.addRow(header);
+      headerRow.font = this.globals.headerFontStyle as Font;
+      headerRow.eachCell((cell, number) => {
+        cell.fill = this.globals.headerFillColor as Fill;
+        cell.border = this.globals.headerBorderStyle as Borders;
+        cell.alignment = this.globals.headerAlignment as Alignment;
+      });
+
+      let jsonValueToArray;
+      data.forEach(d => {
+            jsonValueToArray = [];
+            jsonValueToArray.push(d.partner_name);
+            jsonValueToArray.push(d.product_name);
+            jsonValueToArray.push(d.product_type);
+
+            let row = worksheet.addRow(jsonValueToArray);
+            row.font = this.globals.bodyFontStyle as Font;
+            row.eachCell((cell, number) => {
+              cell.border = this.globals.bodyBorderStyle as Borders;
+            });
+          }
+      );
+
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        fileName = fileName == '' ? this.panelTitle : fileName;
+        importedSaveAs(blob, fileName + '.xlsx');
+      })
+    }
+  }
 
 }

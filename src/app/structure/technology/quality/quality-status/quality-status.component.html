@@ -1,118 +1,156 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-      <div class="text-center">
-          <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+    <div class="text-center">
+      <span class="h4 block m-t-sm">{{ panelTitle }}</span>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 m-b-xs">
+        <form [formGroup]="searchForm">
+          <form [formGroup]="searchForm">
+            <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+            <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+                   class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
+            <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+                   class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+            <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+          </form>
+        </form>
       </div>
-      <div class="row">
-          <div class="col-sm-6 m-b-xs">
-            <form [formGroup]="searchForm">
-                <form [formGroup]="searchForm">
-                    <label for="sch_sdate" class="control-label text-sm">조회기간</label>
-                    <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
-                    <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
-                    <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
-                    </form>
-            </form>
-          </div>
-          <div class="col-sm-6 text-right">
-              <!--
-              <button class="btn btn-sm btn-success btn-addon">
-              <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-              </button>
-              -->
-          </div>
+      <div class="col-sm-6 text-right">
+        <!--
+        <button class="btn btn-sm btn-success btn-addon">
+        <i class="glyphicon glyphicon-upload"></i>엑셀업로드
+        </button>
+        -->
       </div>
+    </div>
   </div>
   <div class="panel-body">
     <ngx-datatable
-        [style.height.px] = gridHeight
-        class="bootstrap"
-        [rows]="rows"
-        [columnMode]="'force'"
-        [headerHeight]="30"
-        [rowHeight]="30"
-        [scrollbarV]="true"
-        [scrollbarH]="false"
-        [messages]="messages">
-        <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="product_type" name="규격" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="total_qty" name="총생산수량" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="normal_qty" name="양품수량" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="defect_qty" name="불량수량" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="defect_probability" name="불량율(%)" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="id" name="불량내용" cellClass="text-center">
-          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-            <div>
-              <button (click)="openModal(value)" class="btn btn-xs btn-primary">
-                내역
-              </button>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+      [style.height.px]=gridHeight
+      class="bootstrap"
+      [rows]="rows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="30"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [messages]="messages">
+      <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                            cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column prop="total_qty" name="총생산수량" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="normal_qty" name="양품수량" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="defect_qty" name="불량수량" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="defect_probability" name="불량율(%)" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="id" name="불량내용" [width]="80" [canAutoResize]="false"
+                            cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div>
+            <button (click)="openModal(value)" class="btn btn-xs btn-primary">
+              내역
+            </button>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
   </div>
+  <footer class="panel-footer hidden-print">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+      </div>
+      <div class="col-sm-6 text-right">
+        <button class="btn btn-sm btn-info btn-addon"
+                (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
+          <i class="glyphicon glyphicon-print"></i>인쇄
+        </button>
+        <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
+          <i class="glyphicon glyphicon-download-alt"></i>엑셀
+        </button>
+      </div>
+    </div>
+  </footer>
 </div>
 
-<div bsModal #InputFormModal="bs-modal" id="InputFormModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ inputFormTitle }}</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table table-bordered view">
-                <tr>
-                  <td>찍힘</td>
-                  <td>
-                    {{qty_0}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>깨짐</td>
-                  <td>
-                    {{qty_1}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>인쇄불량</td>
-                  <td>
-                    {{qty_2}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>색상불량</td>
-                  <td>
-                    {{qty_3}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>성형불량</td>
-                  <td>
-                    {{qty_4}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>작업불량</td>
-                  <td>
-                    {{qty_5}}
-                  </td>
-                </tr>
-                <tr>
-                  <td>기타</td>
-                  <td>
-                    {{qty_6}}
-                  </td>
-                </tr>
-              </table>
+<div bsModal #InputFormModal="bs-modal" id="InputFormModal" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{ inputFormTitle }}</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered view">
+          <tr>
+            <td>찍힘</td>
+            <td>
+              {{qty_0}}
+            </td>
+          </tr>
+          <tr>
+            <td>깨짐</td>
+            <td>
+              {{qty_1}}
+            </td>
+          </tr>
+          <tr>
+            <td>인쇄불량</td>
+            <td>
+              {{qty_2}}
+            </td>
+          </tr>
+          <tr>
+            <td>색상불량</td>
+            <td>
+              {{qty_3}}
+            </td>
+          </tr>
+          <tr>
+            <td>성형불량</td>
+            <td>
+              {{qty_4}}
+            </td>
+          </tr>
+          <tr>
+            <td>작업불량</td>
+            <td>
+              {{qty_5}}
+            </td>
+          </tr>
+          <tr>
+            <td>기타</td>
+            <td>
+              {{qty_6}}
+            </td>
+          </tr>
+        </table>
 
-            </div>
-            <div class="modal-footer">
-                <div class="text-center">
-                    <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">확인</button>
-                </div>
-            </div>
+      </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <button type="button" class="btn btn-primary btn-cancel" (click)="InputFormModal.hide()">확인</button>
         </div>
+      </div>
     </div>
+  </div>
 </div>

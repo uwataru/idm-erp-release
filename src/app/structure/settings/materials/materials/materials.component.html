@@ -67,17 +67,19 @@
           </label>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="input_date" name="등록일자" [width]="110" cellClass="text-center" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="input_date" name="등록일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center" ></ngx-datatable-column>
       <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="거래처" [width]="221"></ngx-datatable-column>
+      <ngx-datatable-column prop="size" name="규격" [width]="150" [canAutoResize]="false"
+                            [resizeable]="false">></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
       <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="price_date" name="단가적용일" [width]="110" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="price_date" name="단가적용일" [width]="120" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-center">

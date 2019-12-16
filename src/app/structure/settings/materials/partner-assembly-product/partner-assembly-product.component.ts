@@ -236,7 +236,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
 
     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
     formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
-    formData.price = parseInt(formData.price);
+    formData.price = this.utils.removeComma(formData.price) * 1;
     formData.is_type = false;
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);

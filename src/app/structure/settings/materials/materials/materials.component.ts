@@ -10,9 +10,9 @@ import {AppGlobals} from '../../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {MessageService} from '../../../../message.service';
 import {Item} from './materials.item';
+import {UtilsService} from "../../../../utils.service";
 import {saveAs as importedSaveAs} from "file-saver";
 import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-
 
 declare var $: any;
 
@@ -81,6 +81,7 @@ export class MaterialsComponent implements OnInit {
     private globals: AppGlobals,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
+    private utils: UtilsService,
     private messageService: MessageService
   ) {
     // 접근권한 체크
@@ -235,7 +236,7 @@ export class MaterialsComponent implements OnInit {
 
     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
     formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
-    formData.price = parseInt(formData.price);
+    formData.price = this.utils.removeComma(formData.price) * 1;
     formData.is_type = true;
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);

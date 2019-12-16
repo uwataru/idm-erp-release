@@ -36,7 +36,7 @@
             <ngx-datatable-column prop="user_name" name="이름"></ngx-datatable-column>
             <ngx-datatable-column prop="user_id" name="아이디"></ngx-datatable-column>
             <ngx-datatable-column prop="dept_name" name="부서"></ngx-datatable-column>
-            <ngx-datatable-column prop="position_name" name="직급"></ngx-datatable-column>
+            <ngx-datatable-column prop="position_name" name="직급" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="user_phone" name="연락처" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="user_email" name="E-mail"></ngx-datatable-column>
             <ngx-datatable-column prop="joining_date" name="입사일" cellClass="text-center"></ngx-datatable-column>
@@ -64,10 +64,10 @@
                 <button (click)="openModal('write','')" class="btn btn-sm btn-primary btn-addon">
                     <i class="glyphicon glyphicon-plus"></i>등록
                 </button>
-                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
-                <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/users','사용자등록현황.xlsx')">
-                    <i class="glyphicon glyphicon-download-alt"></i>엑셀
-                </button>
+<!--                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>-->
+<!--                <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/users','사용자등록현황.xlsx')">-->
+<!--                    <i class="glyphicon glyphicon-download-alt"></i>엑셀-->
+<!--                </button>-->
     		</div>
         </div>
 	</footer>

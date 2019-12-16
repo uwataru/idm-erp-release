@@ -9,8 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './sales-slips.item';
-import { ElectronService } from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
 import { AppConfig } from '../../../../../environments/environment';
+import {saveAs as importedSaveAs} from "file-saver";
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -72,7 +75,7 @@ export class SalesSlipsComponent implements OnInit {
         private route: ActivatedRoute,
         private utils: UtilsService,
         private messageService: MessageService,
-        public electronService: ElectronService
+        public elSrv: ElectronService
     ) {
         // 접근권한 체크
         if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
@@ -238,5 +241,67 @@ export class SalesSlipsComponent implements OnInit {
         );
     }
 
+    exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+        if (this.elSrv.checkExportExcel()) {
+            let data;
+            if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+                // data = this.dataService.GetMasterExcelData()['data'];
+            } else { //리스트는 기존 가져온 데이터로 생성
+                data = this.rows;
+            }
+
+            let workbook = new Workbook();
+            let worksheet = workbook.addWorksheet(this.panelTitle);
+
+            worksheet.getColumn(1).width = 15;
+            worksheet.getColumn(2).width = 25;
+            worksheet.getColumn(3).width = 12;
+            worksheet.getColumn(4).width = 12;
+            worksheet.getColumn(5).width = 25;
+            worksheet.getColumn(6).width = 15;
+            worksheet.getColumn(7).width = 8;
+            worksheet.getColumn(8).width = 10;
+
+            const header = ["수주번호", "거래처", "등록일자", "약속일자", "제품명", "규격", "수량", "단가"];
+            let headerRow = worksheet.addRow(header);
+            headerRow.font = this.globals.headerFontStyle as Font;
+            headerRow.eachCell((cell, number) => {
+                cell.fill = this.globals.headerFillColor as Fill;
+                cell.border = this.globals.headerBorderStyle as Borders;
+                cell.alignment = this.globals.headerAlignment as Alignment;
+            });
+
+            let jsonValueToArray;
+            data.forEach(d => {
+                    jsonValueToArray = [];
+                    jsonValueToArray.push(d.order_no);
+                    jsonValueToArray.push(d.partner_name);
+                    jsonValueToArray.push(d.demand_date);
+                    jsonValueToArray.push(d.promised_date);
+                    jsonValueToArray.push(d.product_name);
+                    jsonValueToArray.push(d.product_type);
+                    jsonValueToArray.push(d.product_qty);
+                    jsonValueToArray.push(d.product_price);
+
+                    let row = worksheet.addRow(jsonValueToArray);
+                    row.font = this.globals.bodyFontStyle as Font;
+                    row.getCell(1).alignment = {horizontal: "center"};
+                    row.getCell(3).alignment = {horizontal: "center"};
+                    row.getCell(4).alignment = {horizontal: "center"};
+                    row.getCell(7).alignment = {horizontal: "right"};
+                    row.getCell(8).alignment = {horizontal: "right"};
+                    row.eachCell((cell, number) => {
+                        cell.border = this.globals.bodyBorderStyle as Borders;
+                    });
+                }
+            );
+
+            workbook.xlsx.writeBuffer().then((data) => {
+                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                fileName = fileName == '' ? this.panelTitle : fileName;
+                importedSaveAs(blob, fileName + '.xlsx');
+            })
+        }
+    }
 
 }

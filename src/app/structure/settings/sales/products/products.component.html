@@ -72,27 +72,31 @@
           </div>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="input_date" name="등록일자"></ngx-datatable-column>
+      <ngx-datatable-column prop="input_date" name="등록일자" [width]="120" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
       <!-- <ngx-datatable-column prop="partner_name" name="거래처코드" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column> -->
       <ngx-datatable-column prop="name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="type" name="규격"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_price" name="단가" cellClass="text-right">
+      <ngx-datatable-column prop="type" name="규격" [width]="150" [canAutoResize]="false"
+                            [resizeable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_price" name="단가" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <span
             class="inline m-r-sm{{ row.is_tmp_price == 'Y' ? ' text-danger' : '' }}">{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="소요자재" prop="" cellClass="text-center">
+      <ngx-datatable-column name="소요자재" prop="">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.materials">
               <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
-              '2px' : '0px' }">{{item.name}}</div>
+              '3px;' : '0px;', 'margin-left':'10px'}">{{item.name}}</div>
           </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Qty" prop="" cellClass="text-center">
+      <ngx-datatable-column name="Qty" prop=""  [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.materials">
             <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
-              '2px' : '0px' }">{{item.qty}}</div>
+              '3px' : '0px', 'margin-right':'10px' }">{{item.qty}}</div>
           </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;단종&middot;숨김" [width]="100"
