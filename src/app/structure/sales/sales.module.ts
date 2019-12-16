@@ -36,9 +36,9 @@ export const routes: Routes = [
     { path: 'orders-completion-waiting', component: CompletionWaitingComponent, data: { title: '영업 > 판매처리', id:24 }, canActivate: [AuthGuard] },
     { path: 'orders-sales-slips', component: SalesSlipsComponent, data: { title: '영업 > 판매전표처리', id:25 }, canActivate: [AuthGuard] },
     { path: 'loss-handling', component: LossHandlingComponent, data: { title: '영업 > 정기LOSS처리', id:26 }, canActivate: [AuthGuard] },
-    { path: 'orders-delivery', component: DeliveryComponent, data: { title: '영업 > 납품명세서', id:27 }, canActivate: [AuthGuard] },
-    { path: 'orders-return', component: ReturnComponent, data: { title: '영업 > 반품명세서', id:28 }, canActivate: [AuthGuard] },
-    { path: 'orders-inferior-goods', component: InferiorGoodsComponent, data: { title: '영업 > 납품불량명세서', id:29 }, canActivate: [AuthGuard] },
+    { path: 'orders-delivery-statement', component: DeliveryComponent, data: { title: '영업 > 납품명세서', id:27 }, canActivate: [AuthGuard] },
+    { path: 'orders-return-statement', component: ReturnComponent, data: { title: '영업 > 반품명세서', id:28 }, canActivate: [AuthGuard] },
+    { path: 'orders-inferior-goods-statement', component: InferiorGoodsComponent, data: { title: '영업 > 납품불량명세서', id:29 }, canActivate: [AuthGuard] },
     { path: 'order/unsold', component: UnsoldComponent, data: { title: '영업 > 미판매명세서', id:262 }, canActivate: [AuthGuard] },
     { path: 'order/self', component: SelfComponent, data: { title: '영업 > 자가제품수불명세서', id:113 }, canActivate: [AuthGuard] },
     { path: 'chart-delivery-performance', component: DeliveryPerformanceChartComponent, data: { title: '영업 > 납품실적차트', id:30 }, canActivate: [AuthGuard] }

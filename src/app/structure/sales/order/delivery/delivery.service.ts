@@ -11,7 +11,7 @@ export class DeliveryService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/history/NORMAL';
+    private url = this.globals.serverUrl + '/sales/delivery/statement';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
@@ -20,9 +20,6 @@ export class DeliveryService {
     }
 
 
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
-    }
 
    /**
     * Handle Http operation that failed.
