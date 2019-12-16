@@ -11,16 +11,12 @@ export class InferiorGoodsService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/history/BAD';
+    private url = this.globals.serverUrl + '/sales/delivery/return/statement';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
-    }
-
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
    /**

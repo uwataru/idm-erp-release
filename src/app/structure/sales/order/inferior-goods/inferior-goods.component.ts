@@ -29,7 +29,7 @@ export class InferiorGoodsComponent implements OnInit {
     formData: Item['data'];
     sch_partner_name: string;
     //listPartners = [];
-    listPartners: any[] = this.globals.configs['type5Partners'];
+    listPartners: any[] = this.globals.configs['partnerList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
@@ -37,8 +37,6 @@ export class InferiorGoodsComponent implements OnInit {
     sch_st: number;
     st: number;
     rows = [];
-    totalQty: number;
-    totalSalesPrice: number;
 
     messages = this.globals.datatableMessages;
 
@@ -68,12 +66,13 @@ export class InferiorGoodsComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '납품불량명세서';
-        this.searchForm.controls['sch_sdate'].setValue(this.tDate);
+        this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
     }
 
     getAll(): void {
+        this.rows = [];
         let formData = this.searchForm.value;
         let params = {
             partner_name: formData.sch_partner_name,
@@ -83,17 +82,17 @@ export class InferiorGoodsComponent implements OnInit {
             order: ['asc'],
             maxResultCount: 10000
         }
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
-        }
+
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
             listData =>
             {
                 this.listData = listData;
                 this.rows = listData['data'];
-                this.totalQty = listData['sumData']['total_qty'];
-                this.totalSalesPrice = listData['sumData']['total_sales_price'];
+
+                for(let i=0; i<this.rows.length; i++){
+                    listData['data'][i].sales_price = (listData['data'][i].qty - listData['data'][i].return_qty) * listData['data'][i].product_price;
+                }
 
                 this.isLoadingProgress = false;
             }
@@ -101,13 +100,8 @@ export class InferiorGoodsComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
-            this.listSltdPaCode = 0;
-        } else {
-            this.listSltdPaCode = event.item['Code'];
-        }
-
-        const val = this.listSltdPaCode;
+        this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
+        this.getAll();
     }
 
 }

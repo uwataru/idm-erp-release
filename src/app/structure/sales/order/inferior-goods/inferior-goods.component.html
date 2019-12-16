@@ -12,7 +12,7 @@
                 <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
                     <input formControlName="sch_partner_name"
                         [typeahead]="listPartners"
-                        typeaheadOptionField="Alias"
+                        typeaheadOptionField="name"
                         [typeaheadOptionsLimit]="50"
                         [typeaheadScrollable]="true"
                         [typeaheadMinLength]="0"
@@ -43,18 +43,16 @@
             [scrollbarV]="true"
             [virtualization]="false"
             [messages]="messages">
-            <ngx-datatable-column prop="delivery_date" name="납품일자" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="input_date" name="납품일자" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <!-- <ngx-datatable-column prop="drawing_no" name="도번" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column> -->
             <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
             <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="qty" name="납품수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="sales_qty" name="불량수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="return_qty" name="불량수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
@@ -70,28 +68,6 @@
                 </ng-template>
             </ngx-datatable-column>
         </ngx-datatable>
-        <div class="table-responsive">
-            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-            <tbody>
-            <tr>
-                <td width="100px" class="text-center">합계</td>
-                <td width="150px" class="text-right"></td>
-                <td width="120px" class="text-right"></td>
-                <!-- <td width="120px" class="text-right"></td> -->
-                <td></td>
-                <td width="150px" class="text-right"></td>
-                <td width="70px" class="text-right"></td>
-                <td width="70px" class="text-right">
-                    <span>{{ totalQty | numberFormat }}</span>
-                </td>
-                <td width="90px" class="text-right"></td>
-                <td width="125px" class="text-right">
-                    <span>{{ totalSalesPrice | numberFormat }}</span>
-                </td>
-            </tr>
-            </tbody>
-            </table>
-        </div>
     </div>
 
     <footer class="panel-footer hidden-print">
