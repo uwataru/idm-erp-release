@@ -19,6 +19,7 @@ import {saveAs as importedSaveAs} from "file-saver";
 })
 export class ProductivityAnalysisComponent implements OnInit {
     tDate = this.globals.tDate;
+    gridHeight = this.globals.gridHeight;
     panelTitle: string;
     isLoadingProgress: boolean = false;
 
@@ -28,17 +29,7 @@ export class ProductivityAnalysisComponent implements OnInit {
     formData: Item['data'];
     productionLines: any[] = this.globals.configs['productionLine'];
     rows = [];
-
-    sum_working_time: number;
-    sum_failure_time: number;
-    sum_product_cnt: number;
-    sum_production_qty: number;
-    sum_production_weight: number;
-    sum_production_price: number;
-
-    totalQuantity: number;
-    totalSalesPrice: number;
-    isInitPlanDate: boolean = false;
+    selected = [];
 
     messages = this.globals.datatableMessages;
 
@@ -63,7 +54,7 @@ export class ProductivityAnalysisComponent implements OnInit {
         this.searchForm = fb.group({
             sch_sdate: '',
             sch_edate: '',
-            production_line: ''
+            sch_prdline: ''
         });
     }
 
@@ -79,10 +70,8 @@ export class ProductivityAnalysisComponent implements OnInit {
         let params = {
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sch_prdline: formData.production_line,
-            sortby: ['seq_no'],
-            order: ['asc']
-        }
+            sch_prdline: formData.sch_prdline,
+        };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
             listData =>
@@ -90,23 +79,11 @@ export class ProductivityAnalysisComponent implements OnInit {
                 this.listData = listData;
                 this.rows = listData['data'];
 
-                this.sum_working_time = listData['sumData']['working_time'];
-                this.sum_failure_time = listData['sumData']['failure_time'];
-                this.sum_product_cnt = listData['sumData']['product_cnt'];
-                this.sum_production_qty = listData['sumData']['production_qty'];
-                this.sum_production_weight = listData['sumData']['production_weight'];
-                this.sum_production_price = listData['sumData']['production_price'];
-                //this.totalQuantity = listData['sumData']['total_qty'];
-                //this.totalSalesPrice = listData['sumData']['total_sales_price'];
-
-                this.rows.sort(function(a,b) {
-                    return a.subKey > b.subKey ? 1 : -1;
-                });
+                // this.rows.sort(function(a,b) {
+                //     return a.subKey > b.subKey ? 1 : -1;
+                // });
 
                 this.isLoadingProgress = false;
-                if (this.isInitPlanDate == false) {
-                    this.isInitPlanDate = true;
-                }
             }
         );
     }
@@ -124,15 +101,21 @@ export class ProductivityAnalysisComponent implements OnInit {
             let worksheet = workbook.addWorksheet(this.panelTitle);
 
             worksheet.getColumn(1).width = 15;
-            worksheet.getColumn(2).width = 25;
+            worksheet.getColumn(2).width = 15;
             worksheet.getColumn(3).width = 12;
             worksheet.getColumn(4).width = 12;
-            worksheet.getColumn(5).width = 25;
+            worksheet.getColumn(5).width = 12;
             worksheet.getColumn(6).width = 15;
-            worksheet.getColumn(7).width = 8;
-            worksheet.getColumn(8).width = 10;
+            worksheet.getColumn(7).width = 20;
+            worksheet.getColumn(8).width = 20;
+            worksheet.getColumn(9).width = 20;
+            worksheet.getColumn(10).width = 20;
+            worksheet.getColumn(11).width = 20;
+            worksheet.getColumn(12).width = 20;
+            worksheet.getColumn(13).width = 20;
 
-            const header = ["수주번호", "거래처", "등록일자", "약속일자", "제품명", "규격", "수량", "단가"];
+            const header = ["작업일", "작업라인", "총가동시간", "투입인원", "생산수량", "생산금액", "원자재 투입금액", "총가동 시간당 생산수량",
+                "총가동 생산금액", "총가동 자재 투입금액", "투입 인원당 생산수량", "투입 인원당 생산금액", "인원당 원자재 투입금액"];
             let headerRow = worksheet.addRow(header);
             headerRow.font = this.globals.headerFontStyle as Font;
             headerRow.eachCell((cell, number) => {
@@ -144,22 +127,35 @@ export class ProductivityAnalysisComponent implements OnInit {
             let jsonValueToArray;
             data.forEach(d => {
                     jsonValueToArray = [];
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.demand_date);
-                    jsonValueToArray.push(d.promised_date);
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.product_qty);
-                    jsonValueToArray.push(d.product_price);
+                    jsonValueToArray.push(d.production_date);
+                    jsonValueToArray.push(d.line_no);
+                    jsonValueToArray.push(d.total_work_time);
+                    jsonValueToArray.push(d.total_work_personnel);
+                    jsonValueToArray.push(d.total_production_qty);
+                    jsonValueToArray.push(d.total_production_price);
+                    jsonValueToArray.push(d.total_material_price);
+                    jsonValueToArray.push(d.hour_production_qty);
+                    jsonValueToArray.push(d.hour_production_price);
+                    jsonValueToArray.push(d.hour_material_price);
+                    jsonValueToArray.push(d.hour_personner_qty);
+                    jsonValueToArray.push(d.hour_personner_price);
+                    jsonValueToArray.push(d.personner_material_price);
 
                     let row = worksheet.addRow(jsonValueToArray);
                     row.font = this.globals.bodyFontStyle as Font;
                     row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "center"};
+                    row.getCell(2).alignment = {horizontal: "center"};
+                    row.getCell(3).alignment = {horizontal: "right"};
+                    row.getCell(4).alignment = {horizontal: "right"};
+                    row.getCell(5).alignment = {horizontal: "right"};
+                    row.getCell(6).alignment = {horizontal: "right"};
                     row.getCell(7).alignment = {horizontal: "right"};
                     row.getCell(8).alignment = {horizontal: "right"};
+                    row.getCell(9).alignment = {horizontal: "right"};
+                    row.getCell(10).alignment = {horizontal: "right"};
+                    row.getCell(11).alignment = {horizontal: "right"};
+                    row.getCell(12).alignment = {horizontal: "right"};
+                    row.getCell(13).alignment = {horizontal: "right"};
                     row.eachCell((cell, number) => {
                         cell.border = this.globals.bodyBorderStyle as Borders;
                     });
