@@ -69,7 +69,7 @@
 <!--                  (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">-->
 <!--            <i class="glyphicon glyphicon-print"></i>인쇄-->
 <!--          </button>-->
-          <button type="button" class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/production/assembly-works/result','조립작업실적서.xlsx')"><i
+          <button type="button" class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)"><i
             class="glyphicon glyphicon-download-alt"></i>엑셀
           </button>
         </div>

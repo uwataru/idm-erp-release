@@ -10,7 +10,9 @@ import { MessageService } from '../../../../message.service';
 
 import { Item } from './quality-status.item';
 import { QualityStatusService } from './quality-status.service';
-
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
+import {saveAs as importedSaveAs} from "file-saver";
 @Component({
   selector: 'app-quality-status',
   templateUrl: './quality-status.component.html',
@@ -57,6 +59,7 @@ export class QualityStatusComponent implements OnInit {
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
+    public elSrv: ElectronService,
     private datePipe: DatePipe,
     private globals: AppGlobals,
     private dataService: QualityStatusService,
@@ -123,6 +126,67 @@ export class QualityStatusComponent implements OnInit {
         }
       }
     );
+  }
+
+  exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+    if (this.elSrv.checkExportExcel()) {
+      let data;
+      if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+        // data = this.dataService.GetMasterExcelData()['data'];
+      } else { //리스트는 기존 가져온 데이터로 생성
+        data = this.rows;
+      }
+
+      let workbook = new Workbook();
+      let worksheet = workbook.addWorksheet(this.panelTitle);
+
+      worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(2).width = 25;
+      worksheet.getColumn(3).width = 15;
+      worksheet.getColumn(4).width = 12;
+      worksheet.getColumn(5).width = 12;
+      worksheet.getColumn(6).width = 12;
+      worksheet.getColumn(7).width = 12;
+
+      const header = ["수주번호", "제품명", "규격", "총생산수량", "양품수량", "불량수량", "불량율(%)"];
+      let headerRow = worksheet.addRow(header);
+      headerRow.font = this.globals.headerFontStyle as Font;
+      headerRow.eachCell((cell, number) => {
+        cell.fill = this.globals.headerFillColor as Fill;
+        cell.border = this.globals.headerBorderStyle as Borders;
+        cell.alignment = this.globals.headerAlignment as Alignment;
+      });
+
+      let jsonValueToArray;
+      data.forEach(d => {
+            jsonValueToArray = [];
+            jsonValueToArray.push(d.order_no);
+            jsonValueToArray.push(d.product_name);
+            jsonValueToArray.push(d.product_type);
+            jsonValueToArray.push(d.total_qty);
+            jsonValueToArray.push(d.normal_qty);
+            jsonValueToArray.push(d.defect_qty);
+            jsonValueToArray.push(d.defect_probability);
+
+            let row = worksheet.addRow(jsonValueToArray);
+            row.font = this.globals.bodyFontStyle as Font;
+            row.getCell(1).alignment = {horizontal: "center"};
+            row.getCell(4).alignment = {horizontal: "right"};
+            row.getCell(5).alignment = {horizontal: "right"};
+            row.getCell(6).alignment = {horizontal: "right"};
+            row.getCell(7).alignment = {horizontal: "right"};
+            row.eachCell((cell, number) => {
+              cell.border = this.globals.bodyBorderStyle as Borders;
+            });
+          }
+      );
+
+      workbook.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        fileName = fileName == '' ? this.panelTitle : fileName;
+        importedSaveAs(blob, fileName + '.xlsx');
+      })
+    }
   }
 
 }

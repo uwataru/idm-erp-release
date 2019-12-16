@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation  } from '@angular/core';
-import { ElectronService } from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
 import { saveAs as importedSaveAs } from "file-saver";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -11,9 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './raw-materials-receiving.item';
-import { AngularElectronPage } from '../../../../../../e2e/app.po';
-import { element } from 'protractor';
-import { elementClassNamed } from '@angular/core/src/render3/instructions';
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -73,7 +71,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
     @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
 
     constructor(
-        public electronService: ElectronService,
+        public elSrv: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
         private router: Router,
         private datePipe: DatePipe,
@@ -154,7 +152,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
             // sortby: ['material_id'],
             // order: ['asc'],
             // maxResultCount: 10000
-        }
+        };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_id'] = this.listSltdPaCode;
         }
@@ -186,7 +184,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
         }
     }
 
-
     CalculOrderAmount (event): void {
         let formData = this.inputForm.value;
         let f = event.target.id.replace('order_qty', 'receiving_price');
@@ -198,17 +195,14 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     Save () {
         let formModel = this.inputForm.value;
+    
+        let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
+        let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
 
-    
-          let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
-          let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
-    
-          let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
-    
-          let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
-    
-  
-    
+        let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+
+        let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
+
         let formData = {
             material_id: formModel.material_id,
             receiving_type: receiving_type,
@@ -223,8 +217,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
             // partner_name: formModel.partner_name,
             // price_per_unit: this.utils.removeComma(formModel.price_per_unit) * 1,
         };
-
-
 
         this.Create(this.selectedId,formData);
     }
@@ -246,7 +238,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
             );
     }
 
-
     getRowClass(row) {
 
         let rt = '';
@@ -257,7 +248,6 @@ export class RawMaterialsReceivingComponent implements OnInit {
         }
         return rt;
      }
-
 
     deleteOrder(id) {
         this.dataService.Delete(id)
@@ -349,9 +339,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
                     }
                 }
             );
-
         }
-
     }
 
     onSelect({selected}) {
@@ -361,11 +349,69 @@ export class RawMaterialsReceivingComponent implements OnInit {
           this.inputForm.controls['id'].setValue(this.selectedId);
         }
       }
-    
 
     // checkSelect(event) {
     //     return event.id > 0 ? true : false;
     // }
 
+    exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+        if (this.elSrv.checkExportExcel()) {
+            let data;
+            if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+                // data = this.dataService.GetMasterExcelData()['data'];
+            } else { //리스트는 기존 가져온 데이터로 생성
+                data = this.rows;
+            }
+
+            let workbook = new Workbook();
+            let worksheet = workbook.addWorksheet(this.panelTitle);
+
+            worksheet.getColumn(1).width = 25;
+            worksheet.getColumn(2).width = 25;
+            worksheet.getColumn(3).width = 15;
+            worksheet.getColumn(4).width = 12;
+            worksheet.getColumn(5).width = 8;
+            worksheet.getColumn(6).width = 10;
+            worksheet.getColumn(7).width = 12;
+
+            const header = ["거래처", "제품명", "규격", "발주일자", "발주수량", "단가", "금액"];
+            let headerRow = worksheet.addRow(header);
+            headerRow.font = this.globals.headerFontStyle as Font;
+            headerRow.eachCell((cell, number) => {
+                cell.fill = this.globals.headerFillColor as Fill;
+                cell.border = this.globals.headerBorderStyle as Borders;
+                cell.alignment = this.globals.headerAlignment as Alignment;
+            });
+
+            let jsonValueToArray;
+            data.forEach(d => {
+                    jsonValueToArray = [];
+                    jsonValueToArray.push(d.partner_name);
+                    jsonValueToArray.push(d.name);
+                    jsonValueToArray.push(d.size);
+                    jsonValueToArray.push(d.receiving_date);
+                    jsonValueToArray.push(d.order_qty);
+                    jsonValueToArray.push(d.price);
+                    jsonValueToArray.push(d.order_price);
+
+                    let row = worksheet.addRow(jsonValueToArray);
+                    row.font = this.globals.bodyFontStyle as Font;
+                    row.getCell(4).alignment = {horizontal: "center"};
+                    row.getCell(5).alignment = {horizontal: "right"};
+                    row.getCell(6).alignment = {horizontal: "right"};
+                    row.getCell(7).alignment = {horizontal: "right"};
+                    row.eachCell((cell, number) => {
+                        cell.border = this.globals.bodyBorderStyle as Borders;
+                    });
+                }
+            );
+
+            workbook.xlsx.writeBuffer().then((data) => {
+                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                fileName = fileName == '' ? this.panelTitle : fileName;
+                importedSaveAs(blob, fileName + '.xlsx');
+            })
+        }
+    }
 
 }

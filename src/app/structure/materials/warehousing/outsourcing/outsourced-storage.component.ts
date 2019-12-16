@@ -1,4 +1,4 @@
-import {ElectronService} from '../../../../providers/electron.service';
+import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
 import {Component, Inject, OnInit, ViewChild, ViewEncapsulation, ElementRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './outsourced-storage.item';
-
+import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
 declare var $: any;
 
 @Component({
@@ -73,7 +73,7 @@ export class OutsourcedStorageComponent implements OnInit {
   @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
 
   constructor(
-      public electronService: ElectronService,
+      public elSrv: ElectronService,
       @Inject(FormBuilder) fb: FormBuilder,
       private router: Router,
       private datePipe: DatePipe,
@@ -367,5 +367,64 @@ export class OutsourcedStorageComponent implements OnInit {
   //     return event.id > 0 ? true : false;
   // }
 
+    exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
+        if (this.elSrv.checkExportExcel()) {
+            let data;
+            if (type == EXPORT_EXCEL_MODE.MASTER) { //마스터파일은 서버에서 자료가져와 생성
+                // data = this.dataService.GetMasterExcelData()['data'];
+            } else { //리스트는 기존 가져온 데이터로 생성
+                data = this.rows;
+            }
+
+            let workbook = new Workbook();
+            let worksheet = workbook.addWorksheet(this.panelTitle);
+
+            worksheet.getColumn(1).width = 25;
+            worksheet.getColumn(2).width = 25;
+            worksheet.getColumn(3).width = 15;
+            worksheet.getColumn(4).width = 12;
+            worksheet.getColumn(5).width = 8;
+            worksheet.getColumn(6).width = 10;
+            worksheet.getColumn(7).width = 12;
+
+            const header = ["거래처", "제품명", "규격", "발주일자", "발주수량", "단가", "금액"];
+            let headerRow = worksheet.addRow(header);
+            headerRow.font = this.globals.headerFontStyle as Font;
+            headerRow.eachCell((cell, number) => {
+                cell.fill = this.globals.headerFillColor as Fill;
+                cell.border = this.globals.headerBorderStyle as Borders;
+                cell.alignment = this.globals.headerAlignment as Alignment;
+            });
+
+            let jsonValueToArray;
+            data.forEach(d => {
+                    jsonValueToArray = [];
+                    jsonValueToArray.push(d.partner_name);
+                    jsonValueToArray.push(d.name);
+                    jsonValueToArray.push(d.size);
+                    jsonValueToArray.push(d.receiving_date);
+                    jsonValueToArray.push(d.order_qty);
+                    jsonValueToArray.push(d.price);
+                    jsonValueToArray.push(d.order_price);
+
+                    let row = worksheet.addRow(jsonValueToArray);
+                    row.font = this.globals.bodyFontStyle as Font;
+                    row.getCell(4).alignment = {horizontal: "center"};
+                    row.getCell(5).alignment = {horizontal: "right"};
+                    row.getCell(6).alignment = {horizontal: "right"};
+                    row.getCell(7).alignment = {horizontal: "right"};
+                    row.eachCell((cell, number) => {
+                        cell.border = this.globals.bodyBorderStyle as Borders;
+                    });
+                }
+            );
+
+            workbook.xlsx.writeBuffer().then((data) => {
+                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                fileName = fileName == '' ? this.panelTitle : fileName;
+                importedSaveAs(blob, fileName + '.xlsx');
+            })
+        }
+    }
 
 }

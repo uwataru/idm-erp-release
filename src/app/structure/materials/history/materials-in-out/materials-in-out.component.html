@@ -11,7 +11,6 @@
                     <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate" /> ~
                     <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
                     &nbsp;&nbsp;
-
                     <input formControlName="sch_material"
                            [typeahead]="listMaterials"
                            typeaheadOptionField="name"
@@ -35,13 +34,10 @@
                     <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button> 
                 </form>
             </div>
-            
              <!--<div class="col-sm-6 text-right">
-               
                 <button class="btn btn-sm btn-success btn-addon">
                 <i class="glyphicon glyphicon-upload"></i>엑셀업로드
                 </button>
-                
             </div>-->
         </div>
     </div>
@@ -142,10 +138,12 @@
             <div class="row">
                 <div class="col-sm-6 hidden-xs"></div>
                 <div class="col-sm-6 text-right">
-    <!--                <button class="btn btn-sm btn-info btn-addon"(click)="electronService.readyPrint('print-target-mio-comp', '', electronService.PRINT_OPT.LANDSCAPE)">-->
+    <!--                <button class="btn btn-sm btn-info btn-addon"(click)="elSrv.readyPrint('print-target-mio-comp', '', electronService.PRINT_OPT.LANDSCAPE)">-->
     <!--                    <i class="glyphicon glyphicon-print"></i>인쇄-->
     <!--                </button>-->
-                    <button class="btn btn-sm btn-success btn-addon" (click)="electronService.excelDL('','/materials/history/materials-in-out','원자재수불명세서.xlsx')"><i class="glyphicon glyphicon-download-alt"></i>엑셀</button>
+                    <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
+                        <i class="glyphicon glyphicon-download-alt"></i>엑셀
+                    </button>
                 </div>
             </div>
       </footer>

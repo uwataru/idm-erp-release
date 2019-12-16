@@ -76,7 +76,7 @@
                 (click)="elSrv.readyPrint('print-main-list', elSrv.PRINT_MODE.WORKER, elSrv.PRINT_OPT.LANDSCAPE)">
           <i class="glyphicon glyphicon-print"></i>인쇄
         </button>
-        <button class="btn btn-sm btn-success btn-addon" (click)="elSrv.excelDL('','/sales/order-adjustment-details','수주조정.xlsx')">
+        <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
           <i class="glyphicon glyphicon-download-alt"></i>엑셀
         </button>
       </div>
