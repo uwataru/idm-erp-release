@@ -33,10 +33,7 @@ export class DeliveryComponent implements OnInit {
     filteredPartners: any[] = [];
     sch_order_no: string;
     sch_st: number;
-    st: number;
     rows = [];
-    totalQty: number;
-    totalSalesPrice: number;
 
     messages = this.globals.datatableMessages;
 
@@ -99,13 +96,8 @@ export class DeliveryComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
-            this.listSltdPaCode = 0;
-        } else {
-            this.listSltdPaCode = event.item['Code'];
-        }
-
-        const val = this.listSltdPaCode;
+        this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
+        this.getAll();
     }
 
 }
