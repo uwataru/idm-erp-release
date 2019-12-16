@@ -58,19 +58,19 @@
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
-      <ngx-datatable-column prop="size" name="규격" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="price" name="단가" [width]="100" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+      <ngx-datatable-column prop="price" name="단가" [width]="120" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="110" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="price_date" name="단가적용일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
       <!-- 재고수량 추가 -->
       <ngx-datatable-column prop="current_qty" name="재고" [width]="100" [canAutoResize]="false"
-                            [resizeable]="false" cellClass="text-center">
+                            [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>

@@ -61,8 +61,8 @@
       [selectAllRowsOnPage]="false"
       (select)="onSelect($event)"
       [messages]="messages">
-      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-                            [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+      <ngx-datatable-column prop="id" [width]="30" [canAutoResize]="false" [resizeable]="false"
+                            headerClass="checkAll" cellClass="text-center">
         <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
                      let-selectFn="selectFn">
           <label class="i-checks i-checks-sm m-b-none">
@@ -78,20 +78,18 @@
       </ngx-datatable-column>
       <ngx-datatable-column prop="ptype_str" name="구분" [width]="50" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="name" name="풀네임" [width]="140" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="alias" name="약칭명" [width]="90" [canAutoResize]="false"
-                            [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="ceo" name="대표자" [width]="60" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="name" name="풀네임" [width]="140"></ngx-datatable-column>
+      <ngx-datatable-column prop="alias" name="약칭명" [width]="90"></ngx-datatable-column>
+      <ngx-datatable-column prop="ceo" name="대표자" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
       <ngx-datatable-column prop="addr1" name="주소"></ngx-datatable-column>
-      <ngx-datatable-column prop="phone" name="전화" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="phone" name="전화" [width]="120" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column prop="costumer" name="담당자" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="mobile" name="휴대전화" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="mobile" name="휴대전화" [width]="120" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
-      <ngx-datatable-column prop="fax" name="팩스" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="fax" name="팩스" [width]="120" [canAutoResize]="false"
                             [resizeable]="false"></ngx-datatable-column>
       <ngx-datatable-column *ngIf="sch_st===1" prop="id" name="수정&middot;삭제&middot;숨김" [width]="100"
                             [canAutoResize]="false" [resizeable]="false" cellClass="text-center">

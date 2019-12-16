@@ -34,7 +34,7 @@
               [messages]="messages">
         <ngx-datatable-column prop="production_date" name="일자" [width]="120" [canAutoResize]="false"
                               [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-        <ngx-datatable-column prop="work_line" name="작업라인" [width]="150" [canAutoResize]="false"></ngx-datatable-column>
+        <ngx-datatable-column prop="work_line" name="작업라인" [width]="150" cellClass="text-center"></ngx-datatable-column>
         <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
                               cellClass="text-center"></ngx-datatable-column>
         <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" cellClass="text-left"></ngx-datatable-column>
@@ -51,7 +51,7 @@
             <span>{{ value | numberFormat }}</span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="price" name="금액" [width]="100" [canAutoResize]="false" [resizeable]="false"
+        <ngx-datatable-column prop="price" name="금액" [width]="120" [canAutoResize]="false" [resizeable]="false"
                               cellClass="text-right">
           <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
             <span>{{ value | numberFormat }}</span>

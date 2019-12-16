@@ -140,10 +140,10 @@ export class AssemblyWorksComponent implements OnInit {
       listData => {
         this.listData = listData;
         this.rows = listData['data'];
-        for(let i=0; i<this.rows.length; i++){
+        for(let i in this.rows){
           let qty = parseInt(this.rows[i]['qty']);
           let production_qty = parseInt(this.rows[i]['Production_qty']);
-          this.rows[i].remind_qty = qty-production_qty;
+          this.rows[i].remind_qty = qty - production_qty;
         }
 
         this.isLoadingProgress = false;

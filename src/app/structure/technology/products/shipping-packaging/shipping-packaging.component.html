@@ -36,12 +36,16 @@
             [selectionType]="'single'"
             (select)='onSelect($event)'
             [messages]="messages">
-            <ngx-datatable-column prop="input_date" name="일자" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="partner_name" name="거래처" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="product_name" name="제품명" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="qty" name="수량" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="id" name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center hidden-print">
+            <ngx-datatable-column prop="input_date" name="일자" [width]="150" [canAutoResize]="false"
+                                  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                                  cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="qty" name="수량" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                                  cellClass="text-right">></ngx-datatable-column>
+            <ngx-datatable-column prop="id" name="내역" [width]="80" [canAutoResize]="false" [resizeable]="false"
+                                  cellClass="text-center hidden-print">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <button (click)="openModal('note',value)" class="btn btn-xs btn-primary">내역</button>
                 </ng-template>
