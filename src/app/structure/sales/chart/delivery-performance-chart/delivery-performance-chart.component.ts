@@ -5,6 +5,7 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './delivery-performance-chart.item';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
     selector: 'app-page',
@@ -22,13 +23,13 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    lineChartLabels: Array<any>;
+    lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
     lineChartData: Array<any> = [
         {lineTension: 0, data:[], label:'계획(단위:백만)', pointRadius:0},
         {lineTension: 0, data:[], label:'실적(단위:백만)', pointRadius:0}
     ];
     selected = [];
-
+    rows = [];
     isEditMode: boolean = false;
     inputForm: FormGroup;
     formData: Item;
@@ -64,6 +65,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     editOkMsg = '수정이 완료되었습니다.';
 
     @ViewChild('writeFormClose') writeFormClose: ElementRef;
+    @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
@@ -90,6 +92,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     }
 
     loadData() {
+        this.PlannedSaleAmount = 0;
         let formData = this.searchForm.value;
         let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
         if (yearmonth.length != 6) {
@@ -98,27 +101,53 @@ export class DeliveryPerformanceChartComponent implements OnInit {
             return false;
         }
         let params = {
-            //partner_name: formData.sch_partner_name,
             sch_yearmonth: this.convertYearMonth(yearmonth),
-            sortby: ['order_no'],
-            order: ['asc'],
-            maxResultCount: 10000
         }
         this.isLoadingProgress = true;
+
         this.dataService.loadData(params).subscribe(
             data => {
-                this.lineChartLabels = data['labels'];
-                this.PlannedSaleAmount = data['plannedSalesAmount'];
+                for (let i=0; i<this.lineChartLabels.length; i++){
+                    this.lineChartData[0].data[i] = 0;
+                    this.lineChartData[1].data[i] = 0;
+                }
 
-                let i = 0;
-                data['rows'].forEach(e => {
-                    this.lineChartData[i].data = e;
-                    i++;
-                });
+                if(data['totalCount']>0 || data['performance_data'] != null){
+                    // this.lineChartLabels = data['labels'];
+                    if(data['performance_data'].price == null){
+                        this.PlannedSaleAmount = 0;
+                    }else{
+                        this.PlannedSaleAmount = data['performance_data'].price;
+                    }
+                    this.rows = data['data'];
+                    console.log(this.rows);
+                    console.log('!!!!!!!' ,this.lineChartLabels.length);
+                    console.log(this.lineChartLabels[0]);
+
+
+                    for (let i=0; i<this.lineChartLabels.length; i++){
+                        this.lineChartData[0].data[i] = this.PlannedSaleAmount;
+                        this.lineChartData[1].data[i] = 0;
+                    } 
+
+                    if(this.rows != null){
+                        for (let i=0; i<this.rows.length; i++){
+                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                            this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
+                        } 
+                    }
+
+                        console.log('DATA',this.lineChartData[0].data);
+                }
+
 
                 this.isLoadingProgress = false;
             }
+            
         );
+        setTimeout(() => {
+            this.chart.chart.update();
+        }, 250);
     }
 
     convertYearMonth(ym) {
@@ -127,31 +156,15 @@ export class DeliveryPerformanceChartComponent implements OnInit {
         return yy + '-' + mm;
     }
 
-    Edit (id) {
-        this.dataService.GetById(id).subscribe(
-            editData =>
-            {
-                if (editData['result'] == "success") {
-                    this.editData = editData;
-                    this.formData = editData['data'];
-                    this.inputForm.patchValue({
-                        yearmonth: this.formData.yearmonth,
-                        planned_sales_amount: this.utils.addComma(this.formData.planned_sales_amount)
-                    });
-                }
-            }
-        );
-    }
 
     Save () {
-         let formData = this.inputForm.value;
-         formData.planned_sales_amount = this.utils.removeComma(formData.planned_sales_amount) * 1;
-
-         if (this.isEditMode == true) {
-             this.Update(formData.yearmonth, formData);
-         } else {
-             this.Create(formData);
+         let formModel = this.inputForm.value;
+         let formData = {
+            price: this.utils.removeComma(formModel.planned_sales_amount) * 1,
+            input_date: formModel.yearmonth
          }
+        console.log(formData);
+        this.Create(formData);
     }
 
     Create (data): void {
@@ -171,29 +184,16 @@ export class DeliveryPerformanceChartComponent implements OnInit {
             );
     }
 
-    Update (id, data): void {
-        this.dataService.Update(id, data)
-            .subscribe(
-                data => {
-                    if (data['result'] == "success") {
-                        this.inputForm.reset();
-                        this.loadData();
-                        this.messageService.add(this.editOkMsg);
-                    } else {
-                        this.messageService.add(data['errorMessage']);
-                    }
-                    this.closeWriteModal();
-                },
-                error => this.errorMessage = <any>error
-            );
-    }
-
     openModal(method) {
         let formData = this.searchForm.value;
         let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
         if (method == 'edit') {
             this.isEditMode = true;
-            this.Edit(this.convertYearMonth(yearmonth));
+            // this.Edit(this.convertYearMonth(yearmonth));
+            this.inputForm.patchValue({
+                yearmonth: this.convertYearMonth(yearmonth),
+                planned_sales_amount: this.utils.addComma(this.PlannedSaleAmount*1000000)
+            });
         } else {
             this.isEditMode = false;
             this.inputForm.patchValue({yearmonth: this.convertYearMonth(yearmonth)});
