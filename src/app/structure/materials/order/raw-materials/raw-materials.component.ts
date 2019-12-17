@@ -32,7 +32,7 @@ export class RawMaterialsComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   //listPartners = [];
-  listPartners: any[] = this.globals.configs['type2Partners'];
+  listPartners: any[] = this.globals.configs['partnerList'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
@@ -47,7 +47,8 @@ export class RawMaterialsComponent implements OnInit {
   delId = [];
   selected = [];
   selectedId: string;
-  selectedCnt: number;
+  selectedName: string;
+  selectedSize: string;
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
@@ -114,16 +115,11 @@ export class RawMaterialsComponent implements OnInit {
     });
 
     this.lossForm = fb.group({
-      material_code: '',
-      material_name: '',
-      material_size: '',
-      material_maker_name: '',
-      material_maker: '',
-      partner_name: '',
-      partner_code: '',
-      price_per_unit: '',
-      weight_used: ['', Validators.required],
-      input_date: ['', Validators.required]
+      material_id: '',
+      name: '',
+      size: '',
+      input_date: '',
+      qty: '',
     });
 
     // if (this.locationPartners.filter(v => v.id == 0).length < 1) {
@@ -150,7 +146,6 @@ export class RawMaterialsComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selectedCnt = 0;
     this.selectedId = '';
     this.selected = [];
 
@@ -187,14 +182,6 @@ export class RawMaterialsComponent implements OnInit {
     const val = this.listSltdPaCode;
   }
 
-  // onSelectInputPartner(event: TypeaheadMatch): void {
-  //   if (event.item == '') {
-  //     this.inputForm.controls['partner_code'].setValue(0);
-  //   } else {
-  //     this.inputForm.controls['partner_code'].setValue(event.item.id);
-  //   }
-  // }
-
 
   updateFilter(event) {
     const val = event.target.value;
@@ -224,33 +211,16 @@ export class RawMaterialsComponent implements OnInit {
   }
 
 
-  loadMaterial() {
-    let formData = this.lossForm.value;
-    let params = {
-      name: formData.name,
-      size: formData.size,
-    };
-    this.isLoadingProgress = true;
-    setTimeout(() => {
-      this.dataService.GetMaterialsReceiving(params).subscribe(
-        listData => {
-          //합계뺀다
-          this.materialRows = listData['data'].filter(v => v.id != 0);
-          this.isLoadingProgress = false;
-        }
-      );
-    }, 100);
-  }
-
 
   lossSave() {
     let formData = this.lossForm.value;
     let params = {
-      material_code: formData.material_code,
-      weight_used: formData.weight_used * 1,
+      material_id: formData.material_id,
       input_date: this.datePipe.transform(formData.input_date, 'yyyy-MM-dd'),
-      inventory_id: this.selectedRcvItems[0].id
+      qty: parseInt(formData.qty)
     };
+
+    console.log(params);
     this.dataService.LossSave(params)
       .subscribe(
         data => {
@@ -282,9 +252,6 @@ export class RawMaterialsComponent implements OnInit {
 
       let promised_date = this.datePipe.transform(formModel['promised_date'], 'yyyy-MM-dd');
 
-      // colData.push(formModel['rcv_location_id']);
-
-      // rowData.push(colData.join(':#:'));
 
     let formData = {
       order_type: true,
@@ -293,17 +260,8 @@ export class RawMaterialsComponent implements OnInit {
       order_qty: order_qty,
       order_price: order_price,
       material_id: formModel.material_id,
-      // order_price: order_price,
       promised_date: promised_date,
       receiving_location_id: formModel.receiving_location_id,
-      // id: formModel.id,
-      // name: formModel.name,
-      // size: formModel.size * 1,
-      // partner_name: formModel.partner_name,
-      // price_per_unit: this.utils.removeComma(formModel.price_per_unit) * 1,
-      // material_order: rowData.join('=||='),
-      // 재고수량 추가
-      // remaining_weight: formModel.remaining_weight
     };
 
     this.Create(formData);
@@ -339,52 +297,58 @@ export class RawMaterialsComponent implements OnInit {
       this.inputForm.reset();
       this.inputForm.controls['input_date'].setValue(this.tDate);
       myForm = this.inputForm;
+
+      this.dataService.GetMaterialInfo(this.selectedId).subscribe(
+        editData => {
+          if (editData['result'] == 'success') {
+            this.editData = editData;
+            this.formData = editData['data'];
+            // let price_per_unit = this.utils.addComma(this.formData.order_price);
+  
+  
+            myForm.patchValue({
+              name: this.formData.name,
+              price: this.formData.price,
+              size: this.formData.size,
+              partner_name: this.formData.partner_name,
+              order_type: this.formData.order_type,
+              order_price: this.formData.order_price,
+              material_id: this.formData.id,
+              order_qty: this.formData.order_qty,
+              receiving_qty: this.formData.receiving_qty,
+              promised_date: this.formData.promised_date,
+              receiving_location_id: this.formData.receiving_location_id,
+              // order_price: this.formData.order_price,
+              input_date: this.tDate
+            });
+  
+          }
+        }
+      );
     } else if (type == 'loss') {
       this.lossFormModal.show();
       this.lossForm.reset();
       myForm = this.lossForm;
+
+      myForm.patchValue({
+        input_date: this.tDate,
+        material_id: this.selectedId,
+        name: this.selectedName,
+        size: this.selectedSize,
+      });
     }
 
-    this.dataService.GetMaterialInfo(this.selectedId).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          // let price_per_unit = this.utils.addComma(this.formData.order_price);
 
-
-          myForm.patchValue({
-            name: this.formData.name,
-            price: this.formData.price,
-            size: this.formData.size,
-            partner_name: this.formData.partner_name,
-            order_type: this.formData.order_type,
-            order_price: this.formData.order_price,
-            material_id: this.formData.id,
-            order_qty: this.formData.order_qty,
-            receiving_qty: this.formData.receiving_qty,
-            promised_date: this.formData.promised_date,
-            receiving_location_id: this.formData.receiving_location_id,
-            // order_price: this.formData.order_price,
-            input_date: this.formData.input_date
-          });
-
-          if (type == 'loss') {
-            this.loadMaterial();
-          }
-        }
-      }
-    );
   }
 
   onSelect({selected}) {
     //this.selectedId = selected[0].material_code;
-    this.selectedCnt = selected.length;
-    if (this.selectedCnt == 1) {
+    console.log(selected);
       this.selectedId = selected[0].id;
+      this.selectedName = selected[0].name;
+      this.selectedSize = selected[0].size;
       this.inputForm.controls['material_id'].setValue(this.selectedId);
       console.log(this.inputForm.value['material_id']);
-    }
   }
 
 

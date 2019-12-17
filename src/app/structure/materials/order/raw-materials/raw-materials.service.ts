@@ -39,7 +39,7 @@ export class RawMaterialsService {
     }
 
     LossSave (data:any): Observable<any> {
-        return this.http.post<any>(this.url+'/loss-save', data, httpOptions).pipe(
+        return this.http.post<any>(this.globals.serverUrl+'/materials-orders/loss', data, httpOptions).pipe(
             tap((data: any) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<any>('Create'))
         );

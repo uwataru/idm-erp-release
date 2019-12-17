@@ -39,12 +39,11 @@ export class OutsourcingAssemblyWorkService {
     }
 
     LossSave (data:any): Observable<any> {
-        return this.http.post<any>(this.url+'/loss-save', data, httpOptions).pipe(
+        return this.http.post<any>(this.globals.serverUrl+'/materials-orders/loss', data, httpOptions).pipe(
             tap((data: any) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<any>('Create'))
         );
     }
-
    /**
     * 실패한 Http 작업 처리
     * 프로그램은 계속 실행되도록 함.

@@ -38,25 +38,9 @@
       [scrollbarV]="true"
       [scrollbarH]="false"
       [selected]="selected"
-      [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="false"
+      [selectionType]="'single'"
       (select)='onSelect($event)'
       [messages]="messages">
-      <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"
-                            [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
-        <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                     let-selectFn="selectFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
-          </label>
-        </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                     let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <label class="i-checks i-checks-sm m-b-none">
-            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-          </label>
-        </ng-template>
-      </ngx-datatable-column>
       <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
       <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>
       <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
@@ -84,177 +68,75 @@
 
       </div>
       <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('order')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
+        <button (click)="openModal('order')" [disabled]="selectedId == ''" class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>발주
         </button>
-        <!-- <button (click)="openModal('loss')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-success btn-addon">
+        <button (click)="openModal('loss')" [disabled]="selectedId == ''" class="btn btn-sm btn-success btn-addon">
           <i class="glyphicon glyphicon-plus"></i>LOSS처리
-        </button> -->
+        </button>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- <div bsModal #LossFormModal="bs-modal" id="loss-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div bsModal #LossFormModal="bs-modal" id="loss-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
     <div class="modal-content">
 
       <form [formGroup]="lossForm">
-        <input type="hidden" formControlName="material_code" id="material_code"/>
         <div class="modal-header">
           <button type="button" class="close" (click)="LossFormModal.hide()"><span aria-hidden="true">&times;</span>
           </button>
           <h4 class="modal-title">{{ lossFormTitle }}</h4>
         </div>
         <div class="modal-body">
-
-          <div class="row">
-            <div class="col-lg-5">
-
-              <div class="form-group">
+        <input type="hidden" formControlName="material_id" id="material_id"/>
+            <div class="form-group">
                 <div class="row">
-                  <div for="material_name" class="col-lg-4 font-bold">
-                    재질
-                  </div>
-                  <div class="col-lg-8">
-                    {{ lossForm.value.material_name }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <div for="material_size" class="col-lg-4 font-bold">
-                    규격
-                  </div>
-                  <div class="col-lg-8">
-                    {{ lossForm.value.material_size }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <div for="material_maker_name" class="col-lg-4 font-bold">
-                    메이커
-                  </div>
-                  <div class="col-lg-8">
-                    {{ lossForm.value.material_maker_name }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <div for="partner_name" class="col-lg-4 font-bold">
-                    거래처
-                  </div>
-                  <div class="col-lg-8">
-                    {{ lossForm.value.partner_name }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <div for="price_per_unit" class="col-lg-4 font-bold">
-                    단가
-                  </div>
-                  <div class="col-lg-8">
-                    {{ lossForm.value.price_per_unit }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="weight_used" class="col-lg-4 control-label font-bold">
-                    수량
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="weight_used" id="weight_used" nextFocus="input_date"
-                           class="form-control w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="input_date" class="col-lg-4 control-label font-bold">
-                    처리일자
-                  </label>
-                  <div class="col-lg-8">
-                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker
-                           class="form-control w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-
-            <div class="col-lg-7">
-
-              <div class="row m">
-                <div class="col-lg-6">
-                  <span class="h5 font-bold">원자재재고현황</span>
-                </div>
-              </div>
-
-              <ngx-datatable
-                [style.height.px]="300"
-                class="bootstrap"
-                [rows]="materialRows"
-                [columnMode]="'force'"
-                [headerHeight]="30"
-                [rowHeight]="30"
-                [scrollbarV]="true"
-                [scrollbarH]="false"
-                [selected]="selectedRcvItems"
-                [selectionType]="'checkbox'"
-                [selectAllRowsOnPage]="false"
-                [messages]="messages"
-              >
-                <ngx-datatable-column prop="id" name="" [width]="30" [sortable]="false" [canAutoResize]="false"
-                                      [draggable]="false" [resizeable]="false" headerClass="checkAll"
-                                      cellClass="text-center">
-                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row"
-                               let-onCheckboxChangeFn="onCheckboxChangeFn">
-                    <label class="i-checks i-checks-sm m-b-none">
-                      <input type="checkbox" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    <label for="input_date" class="col-lg-4 control-label">
+                        일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </label>
-                  </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column prop="material_code" name="자재코드" [width]="1" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="material" name="재질" [width]="150" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="size" name="규격" [width]="60" [canAutoResize]="false" [resizeable]="false"
-                                      cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="steel_maker" name="제강메이커" [width]="150" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="rcv_date" name="입고일" [width]="100" [canAutoResize]="false"
-                                      [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-                <ngx-datatable-column prop="ms_no" name="M.S.NO" [width]="170" [canAutoResize]="false"
-                                      [resizeable]="false"></ngx-datatable-column>
-                <ngx-datatable-column prop="remaining_weight" name="재고" [width]="70" [canAutoResize]="false"
-                                      [resizeable]="false" cellClass="text-right">
-                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                  </ng-template>
-                </ngx-datatable-column>
-              </ngx-datatable>
-
+                    <div class="col-lg-8">
+                        <input type="text" formControlName="input_date" id="input_date" nextFocus="qty" class="form-control w-sm" />
+                    </div>
+                </div>
             </div>
-
-          </div>
-
+            <div class="form-group">
+                <div class="row">
+                    <label for="name" class="col-lg-4 control-label">
+                        자재명<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </label>
+                    <div class="col-lg-8">
+                        <input type="text" formControlName="name" id="name" readonly class="form-control w-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label for="size" class="col-lg-4 control-label">
+                        규격<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </label>
+                    <div class="col-lg-8">
+                        <input type="text" formControlName="size" id="size" readonly class="form-control w-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label for="qty" class="col-lg-4 control-label">
+                        개수<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                    </label>
+                    <div class="col-lg-8">
+                        <input type="text" formControlName="qty" id="qty" class="form-control w-sm" />
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="modal-footer">
           <div class="text-center">
-            <button type="button" (click)="lossSave()" [disabled]="!lossForm.valid || selectedRcvItems.length != 1"
+            <button type="button" (click)="lossSave()" [disabled]="!lossForm.valid"
                     class="btn btn-primary btn-save">완료
             </button>
             <button type="button" (click)="LossFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
@@ -264,7 +146,7 @@
 
     </div>
   </div>
-</div> -->
+</div>
 
 
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
