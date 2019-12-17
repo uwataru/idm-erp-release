@@ -27,7 +27,7 @@ export class TotalInventorySituationComponent implements OnInit {
 
   formData: Item['data'];
   sch_partner_name: string;
-  listPartners: any[] = this.globals.configs['type5Partners'];
+  listPartners: any[] = this.globals.configs['partnerList'];
   listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
@@ -93,18 +93,21 @@ export class TotalInventorySituationComponent implements OnInit {
   getAll(): void {
     let formData = this.searchForm.value;
     let params = {
-      partner_code: this.listSltdPaCode,
-      sch_prdline: formData.production_line,
+      // partner_name: this.listSltdPaCode,
       sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
       sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      sortby: ['input_date'],
-      order: ['asc'],
-      maxResultCount: 10000
+      // sortby: ['input_date'],
+      // order: ['asc'],
+      // maxResultCount: 10000
     };
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
       data => {
         this.rows = data['data'];
+
+        for(let i in this.rows){
+          this.rows[i].not_delivered_qty = this.rows[i].order_qty - this.rows[i].delivery_qty;
+        }
 
         this.isLoadingProgress = false;
       }
@@ -112,21 +115,14 @@ export class TotalInventorySituationComponent implements OnInit {
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['Code'] == '') {
+    if (event.item['id'] == '') {
       this.listSltdPaCode = 0;
     } else {
-      this.listSltdPaCode = event.item['Code'];
+      this.listSltdPaCode = event.item['id'];
     }
-    console.log(event.item['Code'])
-    const val = this.listSltdPaCode;
   }
 
   openModal(poc_no) {
-
-    // 검색폼 리셋
-    // this.inputForm.reset();
-
-    // POC No로 내역 조회
     let formData = this.searchForm.value;
     let params = {
       poc_no: poc_no,
@@ -172,16 +168,15 @@ export class TotalInventorySituationComponent implements OnInit {
       let workbook = new Workbook();
       let worksheet = workbook.addWorksheet(this.panelTitle);
 
-      worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(1).width = 25;
       worksheet.getColumn(2).width = 25;
-      worksheet.getColumn(3).width = 12;
-      worksheet.getColumn(4).width = 12;
-      worksheet.getColumn(5).width = 25;
-      worksheet.getColumn(6).width = 15;
-      worksheet.getColumn(7).width = 8;
-      worksheet.getColumn(8).width = 10;
+      worksheet.getColumn(3).width = 15;
+      worksheet.getColumn(4).width = 10;
+      worksheet.getColumn(5).width = 10;
+      worksheet.getColumn(6).width = 10;
+      worksheet.getColumn(7).width = 12;
 
-      const header = ["수주번호", "거래처", "등록일자", "약속일자", "제품명", "규격", "수량", "단가"];
+      const header = ["거래처", "제품명", "수주번호", "수주수량", "납품수량", "미납수량", "요구일"];
       let headerRow = worksheet.addRow(header);
       headerRow.font = this.globals.headerFontStyle as Font;
       headerRow.eachCell((cell, number) => {
@@ -193,22 +188,21 @@ export class TotalInventorySituationComponent implements OnInit {
       let jsonValueToArray;
       data.forEach(d => {
             jsonValueToArray = [];
-            jsonValueToArray.push(d.order_no);
             jsonValueToArray.push(d.partner_name);
-            jsonValueToArray.push(d.demand_date);
-            jsonValueToArray.push(d.promised_date);
             jsonValueToArray.push(d.product_name);
-            jsonValueToArray.push(d.product_type);
-            jsonValueToArray.push(d.product_qty);
-            jsonValueToArray.push(d.product_price);
+            jsonValueToArray.push(d.order_no);
+            jsonValueToArray.push(d.order_qty);
+            jsonValueToArray.push(d.delivery_qty);
+            jsonValueToArray.push(d.not_delivered_qty);
+            jsonValueToArray.push(d.demand_date);
 
             let row = worksheet.addRow(jsonValueToArray);
             row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
             row.getCell(3).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "center"};
-            row.getCell(7).alignment = {horizontal: "right"};
-            row.getCell(8).alignment = {horizontal: "right"};
+            row.getCell(7).alignment = {horizontal: "center"};
+            row.getCell(4).alignment = {horizontal: "right"};
+            row.getCell(5).alignment = {horizontal: "right"};
+            row.getCell(6).alignment = {horizontal: "right"};
             row.eachCell((cell, number) => {
               cell.border = this.globals.bodyBorderStyle as Borders;
             });

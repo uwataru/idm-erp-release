@@ -35,12 +35,6 @@ export class ProductivityAnalysisComponent implements OnInit {
 
     errorMessage: string;
 
-    @ViewChild('salesCompletionClose') salesCompletionClose: ElementRef;
-    @ViewChild('changeStatusClose') changeStatusClose: ElementRef;
-    @ViewChild('hideFormClose') hideFormClose: ElementRef;
-    @ViewChild('uploadFormClose') uploadFormClose: ElementRef;
-    @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
-
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
         private datePipe: DatePipe,

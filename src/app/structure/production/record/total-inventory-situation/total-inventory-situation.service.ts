@@ -11,7 +11,7 @@ export class TotalInventorySituationService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/total-inventory-situation';
+    private url = this.globals.serverUrl + '/materials/synthesis';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
