@@ -6,12 +6,12 @@
       </div>
       <div class="row">
         <div class="col-sm-6 m-b-xs">
-          <label for="passenger_phone" class="control-label text-sm">수주번호</label>
-          <input type="text" class="input-sm form-control w-xs inline v-middle m-r"/>
-          <label for="passenger_phone" class="control-label text-sm m-l">기간</label>
-          <input type="text" class="input-sm form-control w-xs inline v-middle"/> ~
-          <input type="text" class="input-sm form-control w-xs inline v-middle"/>
-          <button class="btn btn-sm btn-default">검색</button>
+          <form [formGroup]="searchForm">
+          <label for="sch_order_no" class="control-label text-sm">수주번호</label>
+          <input type="text" formControlName="sch_order_no" id="sch_order_no"
+                 class="input-sm form-control w-sm inline v-middle" placeholder="수주번호" />
+          <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+          </form>
         </div>
         <div class="col-sm-6 text-right">
           <!--
@@ -22,386 +22,134 @@
         </div>
       </div>
     </div>
-  
+
     <div class="panel-body">
-      <div class="table-responsive">
-        <table class="LOT-Table">
-          <thead>
-          <tr>
-            <th width="62px">판매</th>
-            <th width="92px">POC NO</th>
-            <th width="100px">수주번호</th>
-            <th width="100px">거래처</th>
-            <th width="100px">제품번호</th>
-            <th width="100px">품명</th>
-            <th width="100px">도번</th>
-            <th width="80px">판매일</th>
-            <th width="60px">수량</th>
-            <th width="80px">납품일</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td rowspan="4"></td>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td class="text-center">16-07-31</td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td class="text-center">16-07-31</td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td class="text-center">16-07-31</td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td class="text-center">계</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right">5,510</td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-  
-        <table class="LOT-Table">
-          <thead>
-          <tr>
-            <th width="62px">납품</th>
-            <th width="92px">POC NO</th>
-            <th width="100px"></th>
-            <th width="100px">거래처</th>
-            <th width="100px">제품번호</th>
-            <th width="100px">품명</th>
-            <th width="100px">도번</th>
-            <th width="80px">판매일</th>
-            <th width="60px">수량</th>
-            <th width="80px">납품일</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td rowspan="4"></td>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td></td>
-            <td>셰플(전주)</td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">2,500</td>
-            <td class="text-center">16-07-12</td>
-          </tr>
-          <tr>
-            <td class="text-center">계</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right">5,510</td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-  
-        <table class="LOT-Table">
-          <thead>
-          <tr>
-            <th width="62px">단조</th>
-            <th width="92px">POC NO</th>
-            <th width="100px"></th>
-            <th width="100px"></th>
-            <th width="100px">제품번호</th>
-            <th width="100px">품명</th>
-            <th width="100px">도번</th>
-            <th width="80px"></th>
-            <th width="60px">수량</th>
-            <th width="80px">작업일</th>
-            <th width="86px">라인</th>
-            <th width="80px">작업자</th>
-            <th width="80px">주야</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td rowspan="4"></td>
-            <td>160721-011</td>
-            <td></td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">1,000</td>
-            <td class="text-center">16-07-08</td>
-            <td class="text-center">3호기</td>
-            <td class="text-center">허상권</td>
-            <td class="text-center">주</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td></td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">1,200</td>
-            <td class="text-center">16-07-08</td>
-            <td class="text-center">3호기</td>
-            <td class="text-center">신상우</td>
-            <td class="text-center">야</td>
-          </tr>
-          <tr>
-            <td>160721-012</td>
-            <td></td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">1,500</td>
-            <td class="text-center">16-07-09</td>
-            <td class="text-center">3호기</td>
-            <td class="text-center">김성기</td>
-            <td class="text-center">주</td>
-          </tr>
-          <tr>
-            <td>160721-013</td>
-            <td></td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td></td>
-            <td class="text-right">1,810</td>
-            <td class="text-center">16-07-09</td>
-            <td class="text-center">3호기</td>
-            <td class="text-center">박철진</td>
-            <td class="text-center">야</td>
-          </tr>
-          <tr>
-            <td class="text-center">계</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right">5,510</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-  
-        <table class="LOT-Table">
-          <thead>
-          <tr>
-            <th width="62px">절단</th>
-            <th width="92px">POC NO</th>
-            <th width="100px">M.S NO</th>
-            <th width="100px"></th>
-            <th width="100px">제품번호</th>
-            <th width="100px">품명</th>
-            <th width="100px">도번</th>
-            <th width="80px">절단일</th>
-            <th width="60px">수량</th>
-            <th width="80px"></th>
-            <th width="86px">작업자</th>
-            <th width="80px">재질</th>
-            <th width="80px">규격</th>
-            <th width="80px">절단중량</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td rowspan="3"></td>
-            <td>160721-011</td>
-            <td>A234670-0</td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td>16-07-07</td>
-            <td class="text-right">2,550</td>
-            <td class="text-center"></td>
-            <td class="text-center">김형태</td>
-            <td class="text-center">STB2</td>
-            <td class="text-center">Φ70</td>
-            <td class="text-center">1785</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td>A234670-0</td>
-            <td></td>
-            <td>207-033</td>
-            <td>플랜지</td>
-            <td>607082</td>
-            <td>16-07-07</td>
-            <td class="text-right">3,000</td>
-            <td class="text-center"></td>
-            <td class="text-center">김형태</td>
-            <td class="text-center">STB2</td>
-            <td class="text-center">Φ70</td>
-            <td class="text-center">1785</td>
-          </tr>
-          <tr>
-            <td class="text-center">계</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right">5,510</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-  
-        <table class="LOT-Table">
-          <thead>
-          <tr>
-            <th width="62px">원재</th>
-            <th width="92px">POC NO</th>
-            <th width="100px">M.S NO</th>
-            <th width="100px">재질</th>
-            <th width="100px">규격</th>
-            <th width="100px">메이커</th>
-            <th width="100px">거래처</th>
-            <th width="80px">절단일</th>
-            <th width="60px">수량</th>
-            <th width="80px">입고일</th>
-            <th width="86px">입고중량</th>
-            <th width="80px">제품번호</th>
-            <th width="80px">절단중량</th>
-            <th width="80px">잔여중량</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td rowspan="4"></td>
-            <td>160626-057</td>
-            <td>A234670-0</td>
-            <td>STB2</td>
-            <td>Φ70</td>
-            <td>세화특수강</td>
-            <td>동명산업</td>
-            <td>16-06-27</td>
-            <td class="text-right">3,500</td>
-            <td class="text-center">16-06-25</td>
-            <td class="text-right">8,950</td>
-            <td class="text-center">003-028</td>
-            <td class="text-right">4,650</td>
-            <td class="text-right">4,300</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td>A234670-0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>16-07-07</td>
-            <td class="text-right">2,550</td>
-            <td></td>
-            <td></td>
-            <td class="text-center">207-033</td>
-            <td class="text-right">1,785</td>
-            <td class="text-right">2,515</td>
-          </tr>
-          <tr>
-            <td>160721-011</td>
-            <td>A234670-0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>16-07-07</td>
-            <td class="text-right">3,000</td>
-            <td></td>
-            <td></td>
-            <td class="text-center">207-033</td>
-            <td class="text-right">1,785</td>
-            <td class="text-right">2,515</td>
-          </tr>
-          <tr>
-            <td class="text-center">계</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right">5,550</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  
+      <div>[판매]</div>
+      <ngx-datatable
+              [style.height.px]=gridHeight
+              class="bootstrap"
+              [rows]="rowsSales"
+              [columnMode]="'force'"
+              [headerHeight]="30"
+              [rowHeight]="30"
+              [scrollbarV]="true"
+              [scrollbarH]="false"
+              [summaryRow]="true"
+              [summaryPosition]="'bottom'"
+              [summaryHeight]="35"
+              [messages]="messages">
+        <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_label_sale">
+          <ng-template #total_label_sale let-row="row" let-value="value">
+            <div style="margin-top: 6px; text-align: center"><span><b>판매 합계</b></span></div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+        <ngx-datatable-column prop="name" name="제품명"></ngx-datatable-column>
+        <ngx-datatable-column prop="type_name" name="규격"></ngx-datatable-column>
+        <ngx-datatable-column prop="input_date" name="판매일" [width]="120" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="qty" name="수량" [width]="100" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_sale_qty">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+          <ng-template #total_sale_qty let-row="row" let-value="value">
+            <span style="margin-top: 6px"><b>{{ totalSale() | numberFormat }}</b></span>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+      <div style="margin-top: 10px">[납품]</div>
+      <ngx-datatable
+            [style.height.px]=gridHeight
+            class="bootstrap"
+            [rows]="rowsDelivery"
+            [columnMode]="'force'"
+            [headerHeight]="30"
+            [rowHeight]="30"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [summaryRow]="true"
+            [summaryPosition]="'bottom'"
+            [summaryHeight]="35"
+            [messages]="messages">
+        <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_label_delivery">
+          <ng-template #total_label_delivery let-row="row" let-value="value">
+            <div style="margin-top: 6px; text-align: center"><span><b>납품 합계</b></span></div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+        <ngx-datatable-column prop="name" name="제품명"></ngx-datatable-column>
+        <ngx-datatable-column prop="type_name" name="규격"></ngx-datatable-column>
+        <ngx-datatable-column prop="input_date" name="판매일" [width]="120" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="qty" name="수량" [width]="100" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_delivery_qty">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+          <ng-template #total_delivery_qty let-row="row" let-value="value">
+            <span style="margin-top: 6px"><b>{{ totalDelivery() | numberFormat }}</b></span>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+      <div style="margin-top: 10px">[자재]</div>
+      <ngx-datatable
+              [style.height.px]=gridHeight
+              class="bootstrap"
+              [rows]="rowsMaterial"
+              [columnMode]="'force'"
+              [headerHeight]="30"
+              [rowHeight]="30"
+              [selected]="selected"
+              [scrollbarV]="true"
+              [scrollbarH]="false"
+              [summaryRow]="true"
+              [summaryPosition]="'bottom'"
+              [summaryHeight]="35"
+              [messages]="messages">
+        <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_label_material">
+          <ng-template #total_label_material let-row="row" let-value="value">
+            <div style="margin-top: 6px; text-align: center"><span><b>자재 합계</b></span></div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+        <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
+        <ngx-datatable-column prop="type_name" name="규격"></ngx-datatable-column>
+        <ngx-datatable-column prop="input_date" name="입고일" [width]="120" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+        <ngx-datatable-column prop="qty" name="입고수량" [width]="100" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_material_input">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+          <ng-template #total_material_input let-row="row" let-value="value">
+            <span style="margin-top: 6px"><b>{{ totalMaterial('qty') | numberFormat }}</b></span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="insert_qty" name="투입수량" [width]="100" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_material_insert">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+          <ng-template #total_material_insert let-row="row" let-value="value">
+            <span style="margin-top: 6px"><b>{{ totalMaterial('insert_qty') | numberFormat }}</b></span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="remaining_qty" name="잔여수량" [width]="100" [canAutoResize]="false"
+                              [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_material_remain">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <span>{{ value | numberFormat }}</span>
+          </ng-template>
+          <ng-template #total_material_remain let-row="row" let-value="value">
+            <span style="margin-top: 6px"><b>{{ totalMaterial('remaining_qty') | numberFormat }}</b></span>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+  </div>
+
     <footer class="panel-footer">
       <div class="row">
         <div class="col-sm-6 hidden-xs">
