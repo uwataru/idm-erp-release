@@ -8,7 +8,7 @@
       <form [formGroup]="searchForm">
         <input formControlName="sch_partner_name"
                [typeahead]="listPartners"
-               typeaheadOptionField="Alias"
+               typeaheadOptionField="name"
                [typeaheadOptionsLimit]="50"
                [typeaheadScrollable]="true"
                [typeaheadMinLength]="0"
@@ -33,29 +33,35 @@
       [headerHeight]="30"
       [rowHeight]="30"
       [messages]="messages">
-      <ngx-datatable-column prop="product_code" name="제품번호"></ngx-datatable-column>
+      <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
       <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_no" name="수주번호"></ngx-datatable-column>
-      <ngx-datatable-column prop="poc_no" name="POC No"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="수주수량" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span>{{ value | numberFormat }}</span></ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-right">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span>{{ value | numberFormat }}</span></ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column prop="promised_date" name="요구일" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column name="내역" [width]="51" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
-        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.poc_no)"
-                  class="btn btn-xs btn-primary">내역
-          </button>
-        </ng-template>
+      <ngx-datatable-column prop="order_qty" name="수주수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span></ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span></ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span></ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="demand_date" name="요구일" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center"></ngx-datatable-column>
+<!--      <ngx-datatable-column name="내역" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">-->
+<!--        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">-->
+<!--          <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.poc_no)"-->
+<!--                  class="btn btn-xs btn-primary">내역-->
+<!--          </button>-->
+<!--        </ng-template>-->
+<!--      </ngx-datatable-column>-->
     </ngx-datatable>
   </div>
 

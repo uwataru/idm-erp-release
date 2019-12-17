@@ -9,11 +9,12 @@ export class LotTrackerService {
 
     constructor(private http: HttpClient, private globals: AppGlobals) { }
 
-    private loadItemUrl = this.globals.remoteUrl + '/production/record/lot-tracker?format=json';
+    private url = this.globals.remoteUrl + '/sales/orders/lot-tracking-table';
 
     /** GET data from the server */
-    loadData (): Observable<Item[]> {
-        return this.http.jsonp<Item[]>(this.loadItemUrl, 'callback');
+    GetAll (params): Observable<Item[]> {
+        let currTime = (new Date()).getTime();
+        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
    /**

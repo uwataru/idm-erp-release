@@ -10,97 +10,99 @@
                  class="input-sm form-control w-xs inline v-middle"/> ~
           <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
                  class="input-sm form-control w-xs inline v-middle"/>
-          <label for="production_line" class="control-label text-sm m-l">작업LINE</label>
-          <select formControlName="production_line" id="production_line"
+          <label for="sch_prdline" class="m-l">작업라인</label>
+          <select formControlName="sch_prdline" id="sch_prdline" (change)="GetAll()"
                   class="input-sm form-control w-sm inline v-middle">
-            <option value=""></option>
-            <option *ngFor="let line of productionLines" value="{{ line.LineCode }}">{{ line.LineCode }}
-              -{{ line.EquipmentName }}</option>
+            <option *ngFor="let line of productionLines" value="{{ line.id }}">{{ line.line_no }}</option>
           </select>
           <button (click)="GetAll()" class="btn btn-sm btn-default hidden-print">검색</button>
         </form>
       </div>
     </div>
-  
-    <div class="panel-body">
-      <div class="table-responsive">
-        <table id="tblProductAnalysis" class="table table-bordered table-condensed b-light"
-               style="border-top:1px solid #eaeff0">
-          <thead>
-          <tr>
-            <th class="w7p">라인</th>
-            <th class="w7p">총가동시간</th>
-            <th class="w7p">순가동율(%)</th>
-            <th class="w7p">고장시간</th>
-            <th class="w7p">고장율(%)</th>
-            <th class="w7p">생산품목수량</th>
-            <th class="w8p">생산수량(EA)</th>
-            <th class="w8p">생산금액(천원)</th>
-            <th class="w7p">평균LOT</th>
-            <th class="w7p">총가동시간당생산수량</th>
-            <th class="w7p">총가동시간당생산금액</th>
-            <th class="w7p">순가동시간당생산수량</th>
-            <th class="w7p">순가동시간당생산금액</th>
-            <th class="w7p">순가동1분당생산수량</th>
-          </tr>
-          </thead>
-          <tbody class="tbody-scroll">
-          <ng-template ngFor let-linerows [ngForOf]="rows">
-            <tr *ngFor="let row of linerows.subData; let i = index">
-              <td class="w7p text-center" *ngIf="i == 0" [attr.rowspan]="linerows.subData.length">{{ linerows.subKey }}</td>
-              <td class="w7p text-right">{{ row.working_time | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.real_working_rate }}</td>
-              <td class="w7p text-right">{{ row.failure_time }}</td>
-              <td class="w7p text-right">{{ row.failure_rate }}</td>
-              <td class="w7p text-right">{{ row.product_cnt }}</td>
-              <td class="w8p text-right">{{ row.production_qty | numberFormat }}</td>
-              <td class="w8p text-right">{{ row.production_price | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.avg_lot | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.qty_per_working_hour | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.price_per_working_hour | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.qty_per_real_hour | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.price_per_real_hour | numberFormat }}</td>
-              <td class="w7p text-right">{{ row.qty_per_real_min }}</td>
-            </tr>
-            <tr class="bg bg-default">
-              <td class="text-center">계</td>
-              <td class="text-right"><span>{{ linerows.subTotal.working_time | numberFormat }}</span></td>
-              <td></td>
-              <td class="text-right"><span>{{ linerows.subTotal.failure_time }}</span></td>
-              <td></td>
-              <td class="text-right"><span>{{ linerows.subTotal.product_cnt }}</span></td>
-              <td class="text-right"><span>{{ linerows.subTotal.production_qty | numberFormat }}</span></td>
-              <td class="text-right"><span>{{ linerows.subTotal.production_price | numberFormat }}</span></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </ng-template>
-          <tr class="bg bg-total">
-            <td class="w7p text-center">총계</td>
-            <td class="w7p text-right"><span>{{ sum_working_time | numberFormat }}</span></td>
-            <td class="w7p"></td>
-            <td class="w7p text-right"><span>{{ sum_failure_time }}</span></td>
-            <td class="w7p"></td>
-            <td class="w7p text-right"><span>{{ sum_product_cnt }}</span></td>
-            <td class="w8p text-right"><span>{{ sum_production_qty | numberFormat }}</span></td>
-            <td class="w8p text-right"><span>{{ sum_production_price | numberFormat }}</span></td>
-            <td class="w7p"></td>
-            <td class="w7p"></td>
-            <td class="w7p"></td>
-            <td class="w7p"></td>
-            <td class="w7p"></td>
-            <td class="w7p"></td>
-          </tr>
-          <tr>
-            <td colspan="14">당월 총 가용시간 = 25일 × 24H = 800</td>
-          </tbody>
-        </table>
-      </div>
-    </div>
+
+  <div class="panel-body">
+    <ngx-datatable
+            [style.height.px]=gridHeight
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="52"
+            [rowHeight]="30"
+            [selected]="selected"
+            [scrollbarV]="true"
+            [scrollbarH]="false"
+            [messages]="messages">
+      <ngx-datatable-column prop="production_date" name="작업일" [width]="120" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="line_no" name="작업라인" cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="total_work_time" name="총가동시간" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="total_work_personnel" name="투입인원" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="total_production_qty" name="생산수량" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="total_production_price" name="생산금액" [width]="120" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="total_material_price" name="원자재<br>투입금액" [width]="120" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="hour_production_qty" name="총가동 시간당<br>생산수량"[width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="hour_production_price" name="총가동 시간당<br>생산금액" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="hour_material_price" name="총가동 시간당<br>자재 투입금액" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="hour_personner_qty" name="투입 인원당<br>생산수량" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="hour_personner_price" name="투입 인원당<br>생산금액" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="personner_material_price" name="인원당 원자재<br>투입금액" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
   
     <footer class="panel-footer hidden-print">
       <div class="row">

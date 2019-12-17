@@ -41,7 +41,7 @@ export class DeliveryComponent implements OnInit {
 
     errorMessage: string;
 
-    gridHeight = this.globals.gridHeight - 42;
+    gridHeight = this.globals.gridHeight;
 
     @ViewChild('salesCompletionClose') salesCompletionClose: ElementRef;
     @ViewChild('changeStatusClose') changeStatusClose: ElementRef;

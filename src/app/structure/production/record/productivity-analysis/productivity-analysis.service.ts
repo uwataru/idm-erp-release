@@ -9,7 +9,7 @@ export class ProductivityAnalysisService {
 
     constructor(private http: HttpClient, private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/productivity-analysis';
+    private url = this.globals.serverUrl + '/assembly-performance/productivity-analysis';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {
