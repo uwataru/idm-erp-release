@@ -12,7 +12,7 @@ export class AssemblyWorkService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/assembly-works/records';
+    private url = this.globals.serverUrl + '/products/loss';
 
     /** GET data from the server */
     GetAll (params): Observable<Item[]> {

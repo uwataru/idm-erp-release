@@ -25,47 +25,20 @@ export class AssemblyWorkComponent implements OnInit {
     tDate = this.globals.tDate;
     panelTitle: string;
     isLoadingProgress: boolean = false;
-    gridHeight = this.globals.gridHeight - 45;
+    gridHeight = this.globals.gridHeight;
 
     searchForm: FormGroup;
 
     formData: Item['rowData'];
     sch_partner_name: string;
-    listPartners: any[] = this.globals.configs['type5Partners'];
-    productionLines: any[] = this.globals.configs['productionLine'];
+    listPartners: any[] = this.globals.configs['partnerList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
 
     rows: Item['rowData'];
 
-    sums_prev_assembly_qty: number;
-    sums_assembly_qty: number;
-    sums_forwarding_weight: number;
-    sums_defective_qty: number;
-    sums_loss_qty: number;
-    sums_lucre_qty: number;
-    sums_inventory_qty: number;
-
-    detailsTitle: string;
-
-    detail_product_code: string;
-    detail_product_name: string;
-    detail_partner_name: string;
-    detail_sch_sdate: string;
-    detail_sch_edate: string;
-
-    detailrows: Item['rowData'];
-
-    detailsums_assembly_qty: number;
-    detailsums_forwarding_weight: number;
-    detailsums_defective_qty: number;
-    detailsums_loss_qty: number;
-    detailsums_lucre_qty: number;
-    detailsums_inventory_qty: number;
-
     messages = this.globals.datatableMessages;
-
     errorMessage: string;
 
     constructor(
@@ -79,7 +52,7 @@ export class AssemblyWorkComponent implements OnInit {
     ) {
         this.searchForm = fb.group({
             sch_partner_name: '',
-            production_line: '',
+            sch_prdline: '',
             sch_sdate: '',
             sch_edate: ''
         });
@@ -87,103 +60,39 @@ export class AssemblyWorkComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '조립수불명세서';
-        this.detailsTitle = '조립수불내역서';
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
-
-        $(document).ready(function(){
-            let modalContent: any = $('.modal-content');
-            let modalHeader = $('.modal-header');
-            modalHeader.addClass('cursor-all-scroll');
-            modalContent.draggable({
-                handle: '.modal-header'
-            });
-        });
     }
 
     getAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            partner_code: formData.sch_partner_name,
-            sch_prdline: formData.production_line,
+            // partner_code: formData.sch_partner_name,
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sortby: ['input_date'],
-            order: ['asc'],
-            maxResultCount: 10000
         }
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
             data =>
             {
-                this.rows = data['rowData'];
-
-                this.sums_prev_assembly_qty = data['sumData']['prev_assembly_qty'];
-                this.sums_assembly_qty = data['sumData']['assembly_qty'];
-                this.sums_forwarding_weight = data['sumData']['forwarding_weight'];
-                this.sums_defective_qty = data['sumData']['defective_qty'];
-                this.sums_loss_qty = data['sumData']['loss_qty'];
-                this.sums_lucre_qty = data['sumData']['lucre_qty'];
-                this.sums_inventory_qty = data['sumData']['inventory_qty'];
+                this.rows = data['data'];
+                for(let i in this.rows){
+                    this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].production_qty
+                      - this.rows[i].defect_qty - this.rows[i].loss_qty;
+                }
 
                 this.isLoadingProgress = false;
             }
         );
     }
-
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
+        if (event.item['id'] == '') {
             this.listSltdPaCode = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaCode = event.item['id'];
         }
-
-        const val = this.listSltdPaCode;
-    }
-
-    openModal(poc_no) {
-
-        // 검색폼 리셋
-        // this.inputForm.reset();
-
-        // POC No로 내역 조회
-        let formData = this.searchForm.value;
-        let params = {
-            poc_no: poc_no,
-            //sch_prdline: formData.production_line,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sortby: ['input_date'],
-            order: ['asc'],
-            maxResultCount: 10000
-        }
-        this.isLoadingProgress = true;
-        this.dataService.GetDetails(params).subscribe(
-            data =>
-            {
-                this.detail_product_code = data['viewData']['product_code'];
-                this.detail_product_name = data['viewData']['product_name'];
-                this.detail_partner_name = data['viewData']['partner_name'];
-                this.detail_sch_sdate = data['viewData']['sch_sdate'];
-                this.detail_sch_edate = data['viewData']['sch_edate'];
-
-                this.detailrows = data['rowData'];
-
-                this.detailsums_assembly_qty = data['sumData']['assembly_qty'];
-                this.detailsums_forwarding_weight = data['sumData']['forwarding_weight'];
-                this.detailsums_defective_qty = data['sumData']['defective_qty'];
-                this.detailsums_loss_qty = data['sumData']['loss_qty'];
-                this.detailsums_lucre_qty = data['sumData']['lucre_qty'];
-                this.detailsums_inventory_qty = data['sumData']['inventory_qty'];
-
-                this.isLoadingProgress = false;
-                setTimeout(() => {
-                    window.dispatchEvent(new Event('resize'));
-                }, 250);
-            }
-        );
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
@@ -198,16 +107,15 @@ export class AssemblyWorkComponent implements OnInit {
             let workbook = new Workbook();
             let worksheet = workbook.addWorksheet(this.panelTitle);
 
-            worksheet.getColumn(1).width = 15;
-            worksheet.getColumn(2).width = 25;
-            worksheet.getColumn(3).width = 12;
-            worksheet.getColumn(4).width = 12;
-            worksheet.getColumn(5).width = 25;
-            worksheet.getColumn(6).width = 15;
-            worksheet.getColumn(7).width = 8;
-            worksheet.getColumn(8).width = 10;
+            worksheet.getColumn(1).width = 25;
+            worksheet.getColumn(2).width = 15;
+            worksheet.getColumn(3).width = 10;
+            worksheet.getColumn(4).width = 10;
+            worksheet.getColumn(5).width = 10;
+            worksheet.getColumn(6).width = 10;
+            worksheet.getColumn(7).width = 10;
 
-            const header = ["수주번호", "거래처", "등록일자", "약속일자", "제품명", "규격", "수량", "단가"];
+            const header = ["제품명", "규격", "전기이월", "생산수량", "생산불량", "LOSS", "제품재고"];
             let headerRow = worksheet.addRow(header);
             headerRow.font = this.globals.headerFontStyle as Font;
             headerRow.eachCell((cell, number) => {
@@ -219,22 +127,21 @@ export class AssemblyWorkComponent implements OnInit {
             let jsonValueToArray;
             data.forEach(d => {
                     jsonValueToArray = [];
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.demand_date);
-                    jsonValueToArray.push(d.promised_date);
                     jsonValueToArray.push(d.product_name);
                     jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.product_qty);
-                    jsonValueToArray.push(d.product_price);
+                    jsonValueToArray.push(d.transfer_qty);
+                    jsonValueToArray.push(d.production_qty);
+                    jsonValueToArray.push(d.defect_qty);
+                    jsonValueToArray.push(d.loss_qty);
+                    jsonValueToArray.push(d.remain_qty);
 
                     let row = worksheet.addRow(jsonValueToArray);
                     row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "center"};
+                    row.getCell(3).alignment = {horizontal: "right"};
+                    row.getCell(4).alignment = {horizontal: "right"};
+                    row.getCell(5).alignment = {horizontal: "right"};
+                    row.getCell(6).alignment = {horizontal: "right"};
                     row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
                     row.eachCell((cell, number) => {
                         cell.border = this.globals.bodyBorderStyle as Borders;
                     });
