@@ -21,7 +21,7 @@ declare var $: any;
 })
 export class LossHandlingComponent implements OnInit {
     tDate = this.globals.tDate;
-
+    gridHeight = this.globals.gridHeight;
     panelTitle: string;
     inputFormTitle: string;
     isEditMode: boolean = false;
@@ -33,7 +33,7 @@ export class LossHandlingComponent implements OnInit {
 
     formData: Item[];
     listData : Item[];
-    rows: [];
+    rows = [];
 
     selectedId: string;
     product_id: number;

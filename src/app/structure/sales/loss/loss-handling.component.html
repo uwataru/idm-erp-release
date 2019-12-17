@@ -27,7 +27,7 @@
 
   <div class="panel-body">
 	<ngx-datatable
-        style="height:450px;"
+        [style.height.px]=gridHeight
         class="bootstrap"
         [rows]="rows"
         [columnMode]="'force'"
@@ -39,35 +39,33 @@
 		[selectionType]="'single'"
 		(select)='onSelect($event)'
         [messages]="messages">
-      <ngx-datatable-column prop="product_name" name="제품명" [width]="120" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="product_type" name="규격" [width]="120" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="order_qty" name="수주수량" [width]="120" [canAutoResize]="true" [resizeable]="false"
-                            cellClass="text-left"></ngx-datatable-column>
-      <ngx-datatable-column prop="transfer_qty" name="전기이월" [width]="120" [canAutoResize]="true" [resizeable]="false"
-                            cellClass="text-left"></ngx-datatable-column>
-      <ngx-datatable-column prop="production_qty" name="생산수량" [width]="120" [canAutoResize]="true" [resizeable]="false"
-                            cellClass="text-left"></ngx-datatable-column>
-      <ngx-datatable-column prop="sales_qty" name="판매수량" [width]="80" [canAutoResize]="false"
+      <ngx-datatable-column prop="product_name" name="제품명" ></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_qty" name="수주수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="transfer_qty" name="전기이월" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="production_qty" name="생산수량" [width]="100" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
+      <ngx-datatable-column prop="sales_qty" name="판매수량" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="defect_qty" name="총불량" [width]="80" [canAutoResize]="false"
+      <ngx-datatable-column prop="defect_qty" name="총불량" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="loss_qty" name="총LOSS" [width]="80" [canAutoResize]="false"
+      <ngx-datatable-column prop="loss_qty" name="총LOSS" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="total_qty" name="총재고" [width]="80" [canAutoResize]="false"
+      <ngx-datatable-column prop="total_qty" name="총재고" [width]="100" [canAutoResize]="false"
                             [resizeable]="false" cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span>
@@ -78,20 +76,10 @@
 
 	<footer class="panel-footer">
 		<div class="row">
-            <div class="col-sm-4 hidden-xs">
+            <div class="col-sm-6 hidden-xs">
 				<!-- <button id="btn_delete_checked" class="btn btn-sm btn-danger btn-addon"><i class="glyphicon glyphicon-trash"></i>삭제</button> -->
 			</div>
-			<div class="col-sm-4 text-center">
-                <ul class="pagination pagination-sm m-t-none m-b-none">
-                    <li class="active"><a href="#">1<span class="sr-only">(current)</span></a></li>
-                    <!--
-                    <li><a href="" data-ci-pagination-page="2">2</a></li>
-                    <li><a href="" data-ci-pagination-page="3">3</a></li>
-                    <li><a href="" data-ci-pagination-page="2" rel="next">&gt;</a></li>
-                    -->
-                </ul>
-			</div>
-			<div class="col-sm-4 text-right text-center-xs">
+			<div class="col-sm-6 text-right text-center-xs">
                 <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('')">
                     <i class="glyphicon glyphicon-plus"></i>LOSS처리
                 </button>
