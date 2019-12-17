@@ -20,6 +20,7 @@ import {saveAs as importedSaveAs} from "file-saver";
 })
 export class ReturnComponent implements OnInit {
     tDate = this.globals.tDate;
+    gridHeight = this.globals.gridHeight;
     panelTitle: string;
     isLoadingProgress: boolean = false;
 

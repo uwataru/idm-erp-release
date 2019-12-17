@@ -98,101 +98,101 @@
   </footer>
 </div>
 
-<div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-xl-center">
-    <div class="modal-content modal-xl" id="print-target-cutting-detail">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-          aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{ detailsTitle }}</h4>
-      </div>
-      <div class="modal-body">
+<!--<div id="input-form" class="modal modal-xl-center fade" tabindex="-1" role="dialog" aria-hidden="true">-->
+<!--  <div class="modal-dialog modal-xl modal-xl-center">-->
+<!--    <div class="modal-content modal-xl" id="print-target-cutting-detail">-->
+<!--      <div class="modal-header">-->
+<!--        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+<!--          aria-hidden="true">&times;</span></button>-->
+<!--        <h4 class="modal-title">{{ detailsTitle }}</h4>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
 
-        <!-- <input type="hidden" id="reservation_id" name="reservation_id" />
-        <input type="hidden" id="goods_name" name="goods_name" />
-        <input type="hidden" id="fare_per_person" name="fare_per_person" /> -->
+<!--        &lt;!&ndash; <input type="hidden" id="reservation_id" name="reservation_id" />-->
+<!--        <input type="hidden" id="goods_name" name="goods_name" />-->
+<!--        <input type="hidden" id="fare_per_person" name="fare_per_person" /> &ndash;&gt;-->
 
-        <table class="table table-bordered view">
-          <tr>
-            <th>제품번호</th>
-            <td width="120px"><span>{{ detail_product_code }}</span></td>
-            <th>제품명</th>
-            <td width="120px"><span>{{ detail_product_name }}</span></td>
-            <th>거래처</th>
-            <td><span>{{ detail_partner_name }}</span></td>
-            <th>조회기간</th>
-            <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>
-          </tr>
-        </table>
+<!--        <table class="table table-bordered view">-->
+<!--          <tr>-->
+<!--            <th>제품번호</th>-->
+<!--            <td width="120px"><span>{{ detail_product_code }}</span></td>-->
+<!--            <th>제품명</th>-->
+<!--            <td width="120px"><span>{{ detail_product_name }}</span></td>-->
+<!--            <th>거래처</th>-->
+<!--            <td><span>{{ detail_partner_name }}</span></td>-->
+<!--            <th>조회기간</th>-->
+<!--            <td width="200px"><span>{{ detail_sch_sdate }} ~ {{ detail_sch_edate }}</span></td>-->
+<!--          </tr>-->
+<!--        </table>-->
 
-        <ngx-datatable
-          style="min-height:120px;max-height:420px;"
-          class="bootstrap"
-          [rows]="detailrows"
-          [columnMode]="'force'"
-          [headerHeight]="30"
-          [rowHeight]="30"
-          [messages]="messages">
-          <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-center"></ngx-datatable-column>
-          <!--                    <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
-          <!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
-          <!--                            <span>{{ value | numberFormat }}</span>-->
-          <!--                        </ng-template>-->
-          <!--                    </ngx-datatable-column>-->
-          <!--                    <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
-          <!--                    <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">-->
-          <!--                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
-          <!--                            <span>{{ value | numberFormat }}</span>-->
-          <!--                        </ng-template>-->
-          <!--                    </ngx-datatable-column>-->
-          <ngx-datatable-column prop="defective_qty" name="생산불량" [width]="100" [canAutoResize]="false"
-                                [resizeable]="false" cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="80" [canAutoResize]="false" [resizeable]="false"
-                                cellClass="text-right"></ngx-datatable-column>
-          <ngx-datatable-column prop="inventory_qty" name="조립재고" [width]="120" [canAutoResize]="false"
-                                [resizeable]="false" cellClass="text-right">
-            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-              <span>{{ value | numberFormat }}</span>
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
-        </ngx-datatable>
+<!--        <ngx-datatable-->
+<!--          style="min-height:120px;max-height:420px;"-->
+<!--          class="bootstrap"-->
+<!--          [rows]="detailrows"-->
+<!--          [columnMode]="'force'"-->
+<!--          [headerHeight]="30"-->
+<!--          [rowHeight]="30"-->
+<!--          [messages]="messages">-->
+<!--          <ngx-datatable-column prop="input_date" name="일자" [width]="120" [canAutoResize]="false" [resizeable]="false"-->
+<!--                                cellClass="text-center"></ngx-datatable-column>-->
+<!--          &lt;!&ndash;                    <ngx-datatable-column prop="cutting_qty" name="절단수량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">&ndash;&gt;-->
+<!--          &lt;!&ndash;                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">&ndash;&gt;-->
+<!--          &lt;!&ndash;                            <span>{{ value | numberFormat }}</span>&ndash;&gt;-->
+<!--          &lt;!&ndash;                        </ng-template>&ndash;&gt;-->
+<!--          &lt;!&ndash;                    </ngx-datatable-column>&ndash;&gt;-->
+<!--          &lt;!&ndash;                    <ngx-datatable-column prop="input_weight" name="단위투중" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right"></ngx-datatable-column>&ndash;&gt;-->
+<!--          &lt;!&ndash;                    <ngx-datatable-column prop="forwarding_weight" name="절단중량" [width]="100" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">&ndash;&gt;-->
+<!--          &lt;!&ndash;                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">&ndash;&gt;-->
+<!--          &lt;!&ndash;                            <span>{{ value | numberFormat }}</span>&ndash;&gt;-->
+<!--          &lt;!&ndash;                        </ng-template>&ndash;&gt;-->
+<!--          &lt;!&ndash;                    </ngx-datatable-column>&ndash;&gt;-->
+<!--          <ngx-datatable-column prop="defective_qty" name="생산불량" [width]="100" [canAutoResize]="false"-->
+<!--                                [resizeable]="false" cellClass="text-right"></ngx-datatable-column>-->
+<!--          <ngx-datatable-column prop="loss_qty" name="LOSS" [width]="80" [canAutoResize]="false" [resizeable]="false"-->
+<!--                                cellClass="text-right"></ngx-datatable-column>-->
+<!--          <ngx-datatable-column prop="lucre_qty" name="LUCRE" [width]="80" [canAutoResize]="false" [resizeable]="false"-->
+<!--                                cellClass="text-right"></ngx-datatable-column>-->
+<!--          <ngx-datatable-column prop="inventory_qty" name="조립재고" [width]="120" [canAutoResize]="false"-->
+<!--                                [resizeable]="false" cellClass="text-right">-->
+<!--            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">-->
+<!--              <span>{{ value | numberFormat }}</span>-->
+<!--            </ng-template>-->
+<!--          </ngx-datatable-column>-->
+<!--          <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>-->
+<!--        </ngx-datatable>-->
 
-        <div class="table-responsive">
-          <table class="table table-bordered table-condensed b-light sums">
-            <tbody>
-            <tr>
-              <td width="120px" class="text-center">계</td>
-              <!--                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>-->
-              <!--                        <td width="100px" class="text-right"></td>-->
-              <!--                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>-->
+<!--        <div class="table-responsive">-->
+<!--          <table class="table table-bordered table-condensed b-light sums">-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--              <td width="120px" class="text-center">계</td>-->
+<!--              &lt;!&ndash;                        <td width="100px" class="text-right"><span>{{ detailsums_cutting_qty | numberFormat }}</span></td>&ndash;&gt;-->
+<!--              &lt;!&ndash;                        <td width="100px" class="text-right"></td>&ndash;&gt;-->
+<!--              &lt;!&ndash;                        <td width="100px" class="text-right"><span>{{ detailsums_forwarding_weight | numberFormat }}</span></td>&ndash;&gt;-->
 
-              <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>
-              <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>
-              <td width="80px" class="text-right"><span>{{ detailsums_lucre_qty }}</span></td>
-              <td width="120px" class="text-right">
-                <span>{{ detailsums_inventory_qty | numberFormat }}</span>
-              </td>
-              <td></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<!--              <td width="100px" class="text-right"><span>{{ detailsums_defective_qty }}</span></td>-->
+<!--              <td width="80px" class="text-right"><span>{{ detailsums_loss_qty }}</span></td>-->
+<!--              <td width="80px" class="text-right"><span>{{ detailsums_lucre_qty }}</span></td>-->
+<!--              <td width="120px" class="text-right">-->
+<!--                <span>{{ detailsums_inventory_qty | numberFormat }}</span>-->
+<!--              </td>-->
+<!--              <td></td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="modal-footer hidden-print">
-        <div class="text-center">
-          <button type="button" class="btn btn-info"
-                  (click)="elSrv.readyPrint('print-target-cutting-detail', '', elSrv.PRINT_OPT.LANDSCAPE)">인쇄
-          </button>
-          <button type="button" class="btn btn-success">엑셀</button>
-          <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
-        </div>
-      </div>
+<!--      <div class="modal-footer hidden-print">-->
+<!--        <div class="text-center">-->
+<!--          <button type="button" class="btn btn-info"-->
+<!--                  (click)="elSrv.readyPrint('print-target-cutting-detail', '', elSrv.PRINT_OPT.LANDSCAPE)">인쇄-->
+<!--          </button>-->
+<!--          <button type="button" class="btn btn-success">엑셀</button>-->
+<!--          <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>-->
+<!--        </div>-->
+<!--      </div>-->
 
-    </div>
-  </div>
-</div>
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

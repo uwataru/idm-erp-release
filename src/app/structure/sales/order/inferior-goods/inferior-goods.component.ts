@@ -20,6 +20,7 @@ import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
 })
 export class InferiorGoodsComponent implements OnInit {
     tDate = this.globals.tDate;
+    gridHeight = this.globals.gridHeight;
     panelTitle: string;
     isLoadingProgress: boolean = false;
 

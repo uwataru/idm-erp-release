@@ -21,7 +21,7 @@ declare var $: any;
 
 })
 export class MaterialsInOutComponent implements OnInit {
-
+    gridHeight = this.globals.gridHeight;
     tDate = this.globals.tDate;
     panelTitle: string;
     inputFormTitle: string;
