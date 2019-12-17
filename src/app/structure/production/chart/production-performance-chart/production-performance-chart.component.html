@@ -10,12 +10,12 @@
           <label for="passenger_phone" class="control-label text-sm">년월</label>
           <input type="text" formControlName="sch_yearmonth" class="input-sm form-control w-xs inline v-middle m-r"/>
           <label class="i-checks">
-            <input type="radio" formControlName="sch_type" value="Qty" checked>
+            <input type="radio" formControlName="sch_type" (click)="changeData('Qty')" value="Qty" checked>
             <i></i>
             수량
           </label>
           <label class="i-checks">
-            <input type="radio" formControlName="sch_type" value="Amount">
+            <input type="radio" formControlName="sch_type" (click)="changeData('Amount')" value="Amount">
             <i></i>
             금액
           </label>
@@ -24,8 +24,8 @@
       </div>
       <div class="col-sm-6 text-right">
         목표:
-        <span *ngIf="targetProductionQty > 0">{{ targetProductionQty | numberFormat }}개</span>
-        <span *ngIf="targetProductionAmount > 0">{{ targetProductionAmount | numberFormat }}원</span>
+        <span *ngIf="targetProductionQty > 0">{{ targetProductionQty}}개</span>
+        <span *ngIf="targetProductionAmount > 0">{{ targetProductionAmount }}원</span>
         <button *ngIf="targetProductionQty > 0 || targetProductionAmount > 0"
                 data-toggle="modal" data-target="#input-form" (click)="openModal('edit')"
                 class="btn btn-sm btn-default">수정

@@ -42,7 +42,7 @@ export const routes: Routes = [
   {path: 'record/chart-assembly-performance', component: AssemblyWorkTimeComponent, data: {title: '생산 > 조립작업시간집계표', id: 38}, canActivate: [AuthGuard]},
   {path: 'record/assembly-performance-statement', component: AssemblyWorkComponent, data: {title: '생산 > 조립수불명세서', id: 39}, canActivate: [AuthGuard]},
   {path: 'record/productivity-analysis', component: ProductivityAnalysisComponent, data: {title: '생산 > 생산성분석서', id: 40}, canActivate: [AuthGuard]},
-  {path: 'chart/record/chart-production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 41}, canActivate: [AuthGuard]},
+  {path: 'record/chart-production-performance', component: ProductionPerformanceChartComponent, data: {title: '생산 > 생산실적차트', id: 41}, canActivate: [AuthGuard]},
   {path: 'record/forging-work', component: ForgingWorkComponent, data: {title: '생산 > 단조작업명세서', id: 125}, canActivate: [AuthGuard]},
   {path: 'record/total-inventory-situation', component: TotalInventorySituationComponent, data: {title: '생산 > 종합재고상황판', id: 42}, canActivate: [AuthGuard]},
   {path: 'record/lot-tracker', component: LotTrackerComponent, data: {title: '생산 > LOT추적표', id: 43}, canActivate: [AuthGuard]},

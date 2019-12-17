@@ -114,7 +114,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
                 if(data['totalCount']>0 || data['performance_data'] != null){
                     // this.lineChartLabels = data['labels'];
-                    if(data['performance_data'].price == null){
+                    if(data['performance_data'] == null){
                         this.PlannedSaleAmount = 0;
                     }else{
                         this.PlannedSaleAmount = data['performance_data'].price;

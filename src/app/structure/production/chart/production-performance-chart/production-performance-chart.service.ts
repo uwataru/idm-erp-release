@@ -14,17 +14,13 @@ export class ProductionPerformanceChartService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/production/production-performance';
+    private url = this.globals.serverUrl + '/assembly-performance/productivity-analysis/chart';
 
     /** GET data from the server */
     loadData (params): Observable<Item[]> {
-        let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
-    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
@@ -36,9 +32,6 @@ export class ProductionPerformanceChartService {
     }
 
     /** PUT: 데이터 수정 */
-    Update (id:number, data:Item): Observable<Item> {
-        return this.http.put<Item>(this.url+'/'+id, data, httpOptions);
-    }
 
    /**
     * Handle Http operation that failed.

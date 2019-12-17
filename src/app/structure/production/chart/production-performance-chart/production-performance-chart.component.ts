@@ -4,6 +4,7 @@ import {ProductionPerformanceChartService} from './production-performance-chart.
 import {AppGlobals} from '../../../../app.globals';
 import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
+import { BaseChartDirective } from 'ng2-charts';
 import {Item} from './production-performance-chart.item';
 
 @Component({
@@ -22,17 +23,19 @@ export class ProductionPerformanceChartComponent implements OnInit {
 
   searchForm: FormGroup;
 
-  lineChartLabels: Array<any>;
+  lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
   lineChartData: Array<any> = [
     {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
     {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
   ];
   selected = [];
+  rows = [];
 
   isEditMode: boolean = false;
   inputForm: FormGroup;
   formData: Item;
   editData: Item;
+
 
   public lineChartOptions: any = {
     responsive: true,
@@ -64,6 +67,7 @@ export class ProductionPerformanceChartComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
 
   @ViewChild('writeFormClose') writeFormClose: ElementRef;
+  @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -85,14 +89,20 @@ export class ProductionPerformanceChartComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.targetProductionAmount = 0;
+    this.targetProductionQty = 0;
     this.panelTitle = '생산실적차트';
     this.inputFormTitle = '월목표 입력';
     this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g, '').substring(0, 6));
     this.searchForm.controls['sch_type'].setValue('Qty');
+    
     this.loadData();
   }
 
   loadData() {
+    
+    this.targetProductionAmount = 0;
+    this.targetProductionQty = 0;
     let formData = this.searchForm.value;
     let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
     if (yearmonth.length != 6) {
@@ -100,43 +110,132 @@ export class ProductionPerformanceChartComponent implements OnInit {
       this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
       return false;
     }
+    
+
     switch (formData.sch_type) {
       case 'Qty':
         this.lineChartData = [
           {lineTension: 0, data: [], label: '계획(단위:개)', pointRadius: 0},
           {lineTension: 0, data: [], label: '실적(단위:개)', pointRadius: 0}
         ];
+
+        let params_qty = {
+          sch_yearmonth: this.convertYearMonth(yearmonth),
+          // sch_type: formData.sch_type,
+        };
+          this.isLoadingProgress = true;
+          this.dataService.loadData(params_qty).subscribe(
+            data => {
+                for (let i=0; i<this.lineChartLabels.length; i++){
+                    this.lineChartData[0].data[i] = 0;
+                    this.lineChartData[1].data[i] = 0;
+                }
+              
+                if(data['totalCount']>0 || data['performance_data'] != null){
+                    // this.lineChartLabels = data['labels'];
+                    if(data['performance_data'] == null){
+                        this.targetProductionAmount = 0;
+                        this.targetProductionQty = 0;
+                    }else{
+                        this.targetProductionQty = data['performance_data'].qty;
+                        this.targetProductionAmount = data['performance_data'].price;
+                    }
+                    this.rows = data['data'];
+                    console.log(this.rows);
+                    console.log('!!!!!!!' ,this.lineChartLabels.length);
+                    console.log(this.lineChartLabels[0]);
+                  
+                  
+                    for (let i=0; i<this.lineChartLabels.length; i++){
+                        this.lineChartData[0].data[i] = this.targetProductionQty;
+                        this.lineChartData[1].data[i] = 0;
+                    } 
+                  
+                    if(this.rows != null){
+                        for (let i=0; i<this.rows.length; i++){
+                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                            this.lineChartData[1].data[tmpPrice] = this.rows[i]['qty'];
+                        } 
+                    }
+                  
+                        console.log('DATA',this.lineChartData[0].data);
+                }
+              
+              
+                this.isLoadingProgress = false;
+            }
+
+          );
+
         break;
-      case 'Amount':
-        this.lineChartData = [
-          {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
-          {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
-        ];
+      
+      
+        case 'Amount':
+          this.lineChartData = [
+            {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
+            {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
+          ];
+
+          let params = {
+            sch_yearmonth: this.convertYearMonth(yearmonth),
+            // sch_type: formData.sch_type,
+          };
+          this.isLoadingProgress = true;
+          this.dataService.loadData(params).subscribe(
+            data => {
+                for (let i=0; i<this.lineChartLabels.length; i++){
+                    this.lineChartData[0].data[i] = 0;
+                    this.lineChartData[1].data[i] = 0;
+                }
+              
+                if(data['totalCount']>0 || data['performance_data'] != null){
+                    // this.lineChartLabels = data['labels'];
+                    if(data['performance_data'] == null){
+                        this.targetProductionAmount = 0;
+                        this.targetProductionQty = 0;
+                    }else{
+                        this.targetProductionQty = data['performance_data'].qty;
+                        this.targetProductionAmount = data['performance_data'].price;
+                    }
+                    this.rows = data['data'];
+                    console.log(this.rows);
+                    console.log('!!!!!!!' ,this.lineChartLabels.length);
+                    console.log(this.lineChartLabels[0]);
+                  
+                  
+                    for (let i=0; i<this.lineChartLabels.length; i++){
+                        this.lineChartData[0].data[i] = this.targetProductionAmount;
+                        this.lineChartData[1].data[i] = 0;
+                    } 
+                  
+                    if(this.rows != null){
+                        for (let i=0; i<this.rows.length; i++){
+                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                            this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
+                        } 
+                    }
+                  
+                        console.log('DATA',this.lineChartData[0].data);
+                }
+              
+              
+                this.isLoadingProgress = false;
+            }
+          
+          );
+
         break;
     }
-    let params = {
-      sch_yearmonth: this.convertYearMonth(yearmonth),
-      sch_type: formData.sch_type,
-      sortby: ['order_no'],
-      order: ['asc'],
-      maxResultCount: 10000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.loadData(params).subscribe(
-      data => {
-        this.lineChartLabels = data['labels'];
-        this.targetProductionQty = data['targetProductionQty'];
-        this.targetProductionAmount = data['targetProductionAmount'];
 
-        let i = 0;
-        data['rows'].forEach(e => {
-          this.lineChartData[i].data = e;
-          i++;
-        });
+  setTimeout(() => {
+      this.chart.chart.update();
+  }, 250);
+  }
 
-        this.isLoadingProgress = false;
-      }
-    );
+  changeData(Case) {
+    console.log(Case);
+    this.searchForm.controls['sch_type'].setValue(Case);
+    this.loadData();
   }
 
   convertYearMonth(ym) {
@@ -145,33 +244,17 @@ export class ProductionPerformanceChartComponent implements OnInit {
     return yy + '-' + mm;
   }
 
-  Edit(id) {
-    this.dataService.GetById(id).subscribe(
-      editData => {
-        if (editData['result'] == 'success') {
-          this.editData = editData;
-          this.formData = editData['data'];
-          this.inputForm.patchValue({
-            yearmonth: this.formData.yearmonth,
-            target_production_qty: this.utils.addComma(this.formData.target_production_qty),
-            target_production_amount: this.utils.addComma(this.formData.target_production_amount)
-          });
-        }
-      }
-    );
-  }
 
-  Save() {
-    let formData = this.inputForm.value;
-    formData.target_production_qty = this.utils.removeComma(formData.target_production_qty) * 1;
-    formData.target_production_amount = this.utils.removeComma(formData.target_production_amount) * 1;
-
-    if (this.isEditMode == true) {
-      this.Update(formData.yearmonth, formData);
-    } else {
-      this.Create(formData);
+  Save () {
+    let formModel = this.inputForm.value;
+    let formData = {
+       price: this.utils.removeComma(formModel.target_production_amount) * 1,
+       qty: this.utils.removeComma(formModel.target_production_qty) * 1,
+       input_date: formModel.yearmonth
     }
-  }
+   console.log(formData);
+   this.Create(formData);
+}
 
   Create(data): void {
     this.dataService.Create(data)
@@ -190,29 +273,19 @@ export class ProductionPerformanceChartComponent implements OnInit {
       );
   }
 
-  Update(id, data): void {
-    this.dataService.Update(id, data)
-      .subscribe(
-        data => {
-          if (data['result'] == 'success') {
-            this.inputForm.reset();
-            this.loadData();
-            this.messageService.add(this.editOkMsg);
-          } else {
-            this.messageService.add(data['errorMessage']);
-          }
-          this.closeWriteModal();
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
 
   openModal(method) {
     let formData = this.searchForm.value;
     let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
     if (method == 'edit') {
       this.isEditMode = true;
-      this.Edit(this.convertYearMonth(yearmonth));
+      // this.Edit(this.convertYearMonth(yearmonth));
+      this.inputForm.patchValue({
+        yearmonth: this.convertYearMonth(yearmonth),
+        target_production_qty: this.utils.addComma(this.targetProductionQty),
+        target_production_amount: this.utils.addComma(this.targetProductionAmount*1000000)
+    });
+
     } else {
       this.isEditMode = false;
       this.inputForm.patchValue({yearmonth: this.convertYearMonth(yearmonth)});
