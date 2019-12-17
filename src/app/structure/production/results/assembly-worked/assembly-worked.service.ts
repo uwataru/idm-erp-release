@@ -19,7 +19,7 @@ export class AssemblyWorkedService {
     GetAll (): Observable<Item[]> {
         return this.http.get<Item[]>(this.url);
     }
-    GetById (id:number): Observable<Item> {
+    GetById (id:string): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }
 

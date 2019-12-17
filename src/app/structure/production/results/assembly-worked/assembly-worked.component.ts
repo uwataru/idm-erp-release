@@ -203,7 +203,11 @@ export class AssemblyWorkedComponent implements OnInit {
       );
   }
 
-  openModal(method,id) {
+  onSelect({selected}) {
+    this.selectedId = selected[0].id;
+  }
+
+  openModal(method) {
     // 실행권한
     if(method == 'row') {
       this.inputFormModal.show();
@@ -212,9 +216,9 @@ export class AssemblyWorkedComponent implements OnInit {
 
       this.personnelDataCnt = 1;
       this.materialDataCnt = 1;
-      this.selectedId = id;
+      // this.selectedId = id;
       console.log('selectedId',this.selectedId);
-      this.dataService.GetById(id).subscribe(
+      this.dataService.GetById(this.selectedId).subscribe(
         editData => {
           if (editData['result'] == 'success') {
             this.editData = editData;

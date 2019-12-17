@@ -17,6 +17,8 @@
         [headerHeight]="30"
         [rowHeight]="30"
         [selected]="selected"
+        (select)='onSelect($event)'
+        [selectionType]="'single'"
         [scrollbarV]="true"
         [scrollbarH]="false"
         [messages]="messages">
@@ -45,22 +47,29 @@
         </ngx-datatable-column>
         <ngx-datatable-column prop="line_no" name="작업라인" cellClass="text-center"
                               [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column prop="id" name="입력" [width]="65" [canAutoResize]="false" [resizeable]="false" [sortable]="false"
-                              cellClass="text-center">
-          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-            <div>
-              <button (click)="openModal('row',value)" class="btn btn-xs btn-primary">
-                입력
-              </button>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+<!--        <ngx-datatable-column prop="id" name="입력" [width]="65" [canAutoResize]="false" [resizeable]="false" [sortable]="false"-->
+<!--                              cellClass="text-center">-->
+<!--          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">-->
+<!--            <div>-->
+<!--              <button (click)="openModal('row',value)" class="btn btn-xs btn-primary">-->
+<!--                입력-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </ng-template>-->
+<!--        </ngx-datatable-column>-->
       </ngx-datatable>
     </div>
-    <div class="panel-footer text-center">
-      <!-- <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
-      <button type="button" (click)="Reset()" class="btn btn-primary btn-cancel">취소</button> -->
+  <footer class="panel-footer hidden-print">
+    <div class="row">
+      <div class="col-sm-6 hidden-xs">
+      </div>
+      <div class="col-sm-6 text-right">
+        <button (click)="openModal('row')" [disabled]="!selectedId" class="btn btn-sm btn-primary btn-addon">
+          <i class="glyphicon glyphicon-plus"></i>입력
+        </button>
+      </div>
     </div>
+  </footer>
   </div>
 
   <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"

@@ -21,24 +21,23 @@
         (select)='onSelect($event)'
         [scrollbarV]="true"
         [scrollbarH]="false"
-        [selectionType]="'checkbox'"
-        [selectAllRowsOnPage]="false"
+        [selectionType]="'single'"
         [messages]="messages">
-        <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"
-                              [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
-          <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
-                       let-selectFn="selectFn">
-            <label class="i-checks i-checks-sm m-b-none">
-              <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
-            </label>
-          </ng-template>
-          <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                       let-onCheckboxChangeFn="onCheckboxChangeFn">
-            <label class="i-checks i-checks-sm m-b-none">
-              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
-            </label>
-          </ng-template>
-        </ngx-datatable-column>
+<!--        <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false"-->
+<!--                              [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">-->
+<!--          <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"-->
+<!--                       let-selectFn="selectFn">-->
+<!--            <label class="i-checks i-checks-sm m-b-none">-->
+<!--              <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>-->
+<!--            </label>-->
+<!--          </ng-template>-->
+<!--          <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"-->
+<!--                       let-onCheckboxChangeFn="onCheckboxChangeFn">-->
+<!--            <label class="i-checks i-checks-sm m-b-none">-->
+<!--              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>-->
+<!--            </label>-->
+<!--          </ng-template>-->
+<!--        </ngx-datatable-column>-->
         <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
         <ngx-datatable-column prop="name" name="제품명"></ngx-datatable-column>
         <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>

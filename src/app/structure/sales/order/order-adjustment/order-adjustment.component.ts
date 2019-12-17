@@ -129,7 +129,7 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     getAll(): void {
-        this.selectedId = -1;
+        // this.selectedId = -1;
 
         let formData = this.searchForm.value;
 
@@ -279,7 +279,7 @@ export class OrderAdjustmentComponent implements OnInit {
             );
     }
 
-    openModal(row) {
+    openModal() {
         // console.log('openModal', row);
         // 실행권한
         if (this.isExecutable == true) {
@@ -293,7 +293,7 @@ export class OrderAdjustmentComponent implements OnInit {
         this.inputForm.reset();
         this.buildInputFormGroup();
 
-        this.selectedId = row.sales_order_detail_id;
+        // this.selectedId = row.sales_order_detail_id;
 
         // 수주번호
         this.dataService.GetById(this.selectedId)
