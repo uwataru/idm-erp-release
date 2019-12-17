@@ -6,90 +6,80 @@
         </div>
 
         <div class="padder">
-            <span class="inline w-xxs">거래처:</span>
-            <select class="form-control input-sm w-sm inline v-middle">
-                <option value="1">거래처1</option>
-                <option value="2">거래처2</option>
-                <option value="3">거래처3</option>
-                <option value="4">거래처4</option>
-            </select>
+			<form [formGroup]="searchForm">
+			<input formControlName="sch_partner_name"
+			[typeahead]="listPartners"
+			typeaheadOptionField="name"
+			[typeaheadOptionsLimit]="50"
+			[typeaheadScrollable]="true"
+			[typeaheadMinLength]="0"
+			(typeaheadOnSelect)="onSelectListPartner($event)"
+			placeholder="거래처"
+			class="input-sm form-control w-sm inline v-middle" />
 
-            <span class="inline w-xxs">기간:</span>
-            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control inline w-xs" /> ~
-            <input type="text" name="passenger_phone" id="passenger_phone" value="" class="form-control input-sm inline w-xs" />
-            <button class="btn btn-sm btn-default">검색</button>
+			<label for="passenger_phone" class="control-label text-sm">년월</label>
+			<input type="text" formControlName="sch_yearmonth" class="input-sm form-control w-xs inline v-middle" />
+			<button class="btn btn-sm btn-default">검색</button>
+			</form>
         </div>
 
     </div>
 
-	<div class="table-responsive">
-		<table class="table table-bordered b-light" style="border-top:1px solid #eaeff0">
-		<thead>
-		<tr>
-            <th style="width:20px;">
-				<label class="i-checks m-b-none">
-					<input type="checkbox" class="checkAll" /><i></i>
-				</label>
-			</th>
-			<th class="text-center">제품번호</th>
-			<th class="text-center">수주번호</th>
-			<th class="text-center">POC No</th>
-			<th class="text-center">작업LINE</th>
-			<th class="text-center">수주수량</th>
-			<th class="text-center">전기이월</th>
-            <!-- <th class="text-center">절단수량</th> -->
-            <th class="text-center">생산수량</th>
-            <th class="text-center">판매수량</th>
-            <th class="text-center">총불량</th>
-            <th class="text-center">총LOSS</th>
-            <th class="text-center">총LUCRE</th>
-            <th class="text-center">총재고</th>
-			<th class="text-center">수정&middot;삭제</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-            <td>
-				<label class="i-checks m-b-none">
-					<input type="checkbox" value="" /><i></i>
-				</label>
-			</td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-            <td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-            <td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-			<td class="text-center"></td>
-            <td class="text-center">
-                <button class="btn btn-xs btn-primary" data-toggle="modal" data-target="#edit-reservation" (click)="openModal('1234')">
-                    <i class="glyphicon glyphicon-edit"></i>
-                </button>
-                <a href="" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
-            </td>
-		</tr>
-		</tbody>
-		</table>
+  <div class="panel-body">
+	<ngx-datatable
+        style="height:450px;"
+        class="bootstrap"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="30"
+        [scrollbarV]="true"
+        [virtualization]="false"
+		[rowHeight]="30"
+		[selected]="selected"
+		[selectionType]="'single'"
+		(select)='onSelect($event)'
+        [messages]="messages">
+      <ngx-datatable-column prop="product_name" name="제품명" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="규격" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="order_qty" name="수주수량" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-left"></ngx-datatable-column>
+      <ngx-datatable-column prop="transfer_qty" name="전기이월" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-left"></ngx-datatable-column>
+      <ngx-datatable-column prop="production_qty" name="생산수량" [width]="120" [canAutoResize]="true" [resizeable]="false"
+                            cellClass="text-left"></ngx-datatable-column>
+      <ngx-datatable-column prop="sales_qty" name="판매수량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="defect_qty" name="총불량" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="loss_qty" name="총LOSS" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="total_qty" name="총재고" [width]="80" [canAutoResize]="false"
+                            [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
 	</div>
 
 	<footer class="panel-footer">
 		<div class="row">
             <div class="col-sm-4 hidden-xs">
-				<button id="btn_delete_checked" class="btn btn-sm btn-danger btn-addon"><i class="glyphicon glyphicon-trash"></i>삭제</button>
-			<!--
-			<select class="input-sm form-control w-sm inline v-middle">
-			<option value="0">Bulk action</option>
-			<option value="1">Delete selected</option>
-			<option value="2">Bulk edit</option>
-			<option value="3">Export</option>
-			</select>
-			<button class="btn btn-sm btn-default">Apply</button>
-			-->
+				<!-- <button id="btn_delete_checked" class="btn btn-sm btn-danger btn-addon"><i class="glyphicon glyphicon-trash"></i>삭제</button> -->
 			</div>
 			<div class="col-sm-4 text-center">
                 <ul class="pagination pagination-sm m-t-none m-b-none">
@@ -102,312 +92,61 @@
                 </ul>
 			</div>
 			<div class="col-sm-4 text-right text-center-xs">
-                <button class="btn btn-sm btn-primary btn-addon" data-toggle="modal" data-target="#edit-reservation" (click)="openModal('')">
+                <button class="btn btn-sm btn-primary btn-addon" (click)="openModal('')">
                     <i class="glyphicon glyphicon-plus"></i>LOSS처리
                 </button>
-                <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
-                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a>
+                <!-- <a href="" class="btn btn-sm btn-info btn-addon"><i class="glyphicon glyphicon-print"></i>인쇄</a>
+                <a href="" class="btn btn-sm btn-success btn-addon"><i class="glyphicon glyphicon-download-alt"></i>엑셀</a> -->
 			</div>
 		</div>
 	</footer>
 
 </div>
 
-<div id="edit-reservation" class="modal modal-xl-center fade edit-reservation" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-xl modal-xl-center">
-		<div class="modal-content modal-xl">
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+
+            <form [formGroup]="inputForm">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">{{ modalTitle }}</h4>
+				<h4 class="modal-title">{{ inputFormTitle }}</h4>
 			</div>
 			<div class="modal-body">
-
-				<input type="hidden" id="reservation_id" name="reservation_id" />
-				<input type="hidden" id="goods_name" name="goods_name" />
-				<input type="hidden" id="fare_per_person" name="fare_per_person" />
-
-                <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                <tbody>
-                <tr>
-                    <th class="text-center">제품번호</th>
-                    <td class="text-center">
-                        065-054
-                    </td>
-                    <th class="text-center">POC No</th>
-                    <td class="text-center">
-                        171220-011
-                    </td>
-                    <th class="text-center">도번</th>
-                    <td class="text-center">
-                        607082
-                    </td>
-                    <th class="text-center">품명</th>
-                    <td class="text-center">
-                        플랜지
-                    </td>
-                    <th class="text-center">최종년월</th>
-                    <td class="text-center">
-                        2017.11
-                    </td>
-                </tr>
-                </tbody>
-                </table>
-<!--
-                <div class="padder">
+				<input type="hidden" formControlName="history_type" id="history_type"/>
+				<input type="hidden" formControlName="product_id" id="product_id"/>
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-lg-1">
-    					</div>
-    					<label for="passenger_name" class="col-lg-1 control-label m-t-xs text-center">
-                            절단00
+                        <label for="input_date" class="col-lg-4 control-label">
+                            일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                         </label>
-    					<div class="col-lg-1">
-    						<input type="text" name="passenger_name" id="passenger_name" value="" class="form-control input-sm w-xs" />
-    					</div>
-    					<div class="col-lg-9">
-    					</div>
-                    </div>
-    			</div>
--->
-                <div class="padder">
-                    <div class="row">
-
-                        <div class="col-lg-1 wrapper-xs b text-center">
-    						절단재고
-    					</div>
-    					<div class="col-lg-7">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">전기이월</th>
-                    			<th class="text-center">절단수량</th>
-                    			<th class="text-center">생산수량</th>
-                    			<th class="text-center">생산불량</th>
-                    			<th class="text-center">절단재고</th>
-                    			<th class="text-center">LOSS</th>
-                                <th class="text-center">LUCRE</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">0</td>
-                    			<td class="text-center">1000</td>
-                    			<td class="text-center">980</td>
-                    			<td class="text-center">15</td>
-                                <td class="text-center">5</td>
-                    			<td class="text-center">
-                                    <input type="text" name="passenger_name" id="passenger_name" value="" class="form-control inline input-xs w-xxs text-center" />
-                                </td>
-                    			<td class="text-center"></td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-1 wrapper-xs b text-center">
-    					    단조재고
-    					</div>
-                        <div class="col-lg-1 b-t"></div>
-                        <div class="col-lg-9">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">전기이월</th>
-                    			<th class="text-center">생산수량</th>
-                    			<th class="text-center">외주발주</th>
-                    			<th class="text-center">외주입고</th>
-                    			<th class="text-center">선별수량</th>
-                                <th class="text-center">선별불량</th>
-                                <th class="text-center">단조재고</th>
-                    			<th class="text-center">LOSS</th>
-                                <th class="text-center">LUCRE</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">200</td>
-                    			<td class="text-center">980</td>
-                    			<td class="text-center">980</td>
-                    			<td class="text-center">970</td>
-                                <td class="text-center">960</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">200</td>
-                    			<td class="text-center">
-                                    <input type="text" name="passenger_name" id="passenger_name" value="" class="form-control inline input-xs w-xxs text-center" />
-                                </td>
-                    			<td class="text-center"></td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-1 wrapper-xs b text-center">
-    					    외주재고
-    					</div>
-                        <div class="col-lg-2 b-t"></div>
-                        <div class="col-lg-7">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">전기이월</th>
-                    			<th class="text-center">외주발주</th>
-                    			<th class="text-center">외주입고</th>
-                    			<th class="text-center">외주불량</th>
-                    			<th class="text-center">외주재고</th>
-                    			<th class="text-center">LOSS</th>
-                                <th class="text-center">LUCRE</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">100</td>
-                    			<td class="text-center">900</td>
-                    			<td class="text-center">980</td>
-                    			<td class="text-center">10</td>
-                                <td class="text-center">10</td>
-                    			<td class="text-center">
-                                    <input type="text" name="passenger_name" id="passenger_name" value="" class="form-control inline input-xs w-xxs text-center" />
-                                </td>
-                    			<td class="text-center"></td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-1 wrapper-xs b text-center">
-    					    제품재고
-    					</div>
-                        <div class="col-lg-3 b-t"></div>
                         <div class="col-lg-8">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">전기이월</th>
-                    			<th class="text-center">선별수량</th>
-                    			<th class="text-center">납품수량</th>
-                    			<th class="text-center">검사불량</th>
-                    			<th class="text-center">반품처리</th>
-                                <th class="text-center">제품재고</th>
-                    			<th class="text-center">LOSS</th>
-                                <th class="text-center">LUCRE</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">500</td>
-                    			<td class="text-center">960</td>
-                    			<td class="text-center">1,435</td>
-                    			<td class="text-center">15</td>
-                                <td class="text-center">-</td>
-                                <td class="text-center">10</td>
-                    			<td class="text-center">
-                                    <input type="text" name="passenger_name" id="passenger_name" value="" class="form-control inline input-xs w-xxs text-center" />
-                                </td>
-                    			<td class="text-center"></td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
+                            <input type="text" formControlName="input_date" id="input_date" nextFocus="qty" class="form-control w-sm" />
+                        </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-lg-1 wrapper-xs b text-center">
-    					    미판매재고
-    					</div>
-                        <div class="col-lg-4 b-t"></div>
-                        <div class="col-lg-7">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">이월미판</th>
-                    			<th class="text-center">납품수량</th>
-                    			<th class="text-center">판매처리</th>
-                    			<th class="text-center">미판불량</th>
-                    			<th class="text-center">미판재고</th>
-                    			<th class="text-center">LOSS</th>
-                                <th class="text-center">LUCRE</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">0</td>
-                    			<td class="text-center">960</td>
-                    			<td class="text-center">945</td>
-                    			<td class="text-center">-</td>
-                                <td class="text-center">15</td>
-                    			<td class="text-center">
-                                    <input type="text" name="passenger_name" id="passenger_name" value="" class="form-control inline input-xs w-xxs text-center" />
-                                </td>
-                    			<td class="text-center"></td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-1 padder-v b text-center">
-    					    총재고검산
-    					</div>
-                        <div class="col-lg-7">
-
-                            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-                    		<thead>
-                    		<tr>
-                    			<th class="text-center">전기이월</th>
-                    			<th class="text-center">절단수량</th>
-                    			<th class="text-center">판매수량</th>
-                    			<th class="text-center">총불량</th>
-                    			<th class="text-center">총LOSS</th>
-                                <th class="text-center">총LUCRE</th>
-                                <th class="text-center">총재고</th>
-                    		</tr>
-                    		</thead>
-                    		<tbody>
-                    		<tr>
-                    			<td class="text-center">0</td>
-                    			<td class="text-center">1000</td>
-                    			<td class="text-center">945</td>
-                    			<td class="text-center">35</td>
-                                <td class="text-center">40</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center">20</td>
-                    		</tr>
-                    		</tbody>
-                    		</table>
-
-    					</div>
-
-                    </div>
-    			</div>
-
-                <div class="modal-footer">
-					<div class="text-center">
-						<button type="button" class="btn btn-primary btn-save">완료</button>
-                        <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal" aria-label="Close">취소</button>
-					</div>
                 </div>
-			</div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="qty" class="col-lg-4 control-label">
+                            개수<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                        </label>
+                        <div class="col-lg-8">
+                            <input type="text" formControlName="qty" id="qty" class="form-control w-sm" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+				<div class="text-center">
+					<button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>
+                    <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+				</div>
+            </div>
+            </form>
+
 		</div>
 	</div>
 </div>
