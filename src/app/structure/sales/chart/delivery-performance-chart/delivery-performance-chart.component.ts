@@ -6,9 +6,9 @@ import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './delivery-performance-chart.item';
 import { BaseChartDirective } from 'ng2-charts';
-import {BsDatepickerConfig} from "ngx-bootstrap";
-import {BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
-import {DatePipe} from "@angular/common";
+import { BsDatepickerConfig } from "ngx-bootstrap";
+import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
+import { DatePipe } from "@angular/common";
 
 @Component({
     selector: 'app-page',
@@ -28,8 +28,8 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     lineChartLabels = [];
     lineChartData: Array<any> = [
-        {lineTension: 0, data:[], label:'계획(단위:백만)', pointRadius:0},
-        {lineTension: 0, data:[], label:'실적(단위:백만)', pointRadius:0}
+        { lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0 },
+        { lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0 }
     ];
     selected = [];
     rows = [];
@@ -38,12 +38,12 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     formData: Item;
     editData: Item;
 
-    yy = 0 ;
-    mm = 0 ;
-    public lineChartOptions:any = {
+    yy = 0;
+    mm = 0;
+    public lineChartOptions: any = {
         responsive: true,
     };
-    public lineChartColors:Array<any> = [
+    public lineChartColors: Array<any> = [
         { // grey
             backgroundColor: 'rgba(148,159,177,0.2)',
             borderColor: 'rgba(148,159,177,1)',
@@ -61,8 +61,8 @@ export class DeliveryPerformanceChartComponent implements OnInit {
             pointHoverBorderColor: 'rgba(77,83,96,1)'
         }
     ];
-    public lineChartLegend:boolean = true;
-    public lineChartType:string = 'line';
+    public lineChartLegend: boolean = true;
+    public lineChartType: string = 'line';
 
     errorMessage: string;
 
@@ -70,7 +70,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     editOkMsg = '수정이 완료되었습니다.';
 
     bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
-        minMode : 'month' as BsDatepickerViewMode,
+        minMode: 'month' as BsDatepickerViewMode,
         dateInputFormat: 'YYYY-MM'
     });
 
@@ -112,18 +112,16 @@ export class DeliveryPerformanceChartComponent implements OnInit {
         //     this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
         //     return false;
         // }
-       this.yy = 0;
-       this.mm = 0;
-        console.log('Sch_yM',this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
 
-        this.convertYearMonth(this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
-        var lastDay = ( new Date( this.yy, this.mm, 0) ).getDate();
-        console.log('LAST DAY',lastDay);
+        console.log('Sch_yM', this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
 
-        let cnt =0;
-        for(let i=0; i<=lastDay; i++){
-            this.lineChartLabels[i] = cnt;
-            cnt++;
+        this.yy = parseInt(this.datePipe.transform(formData.sch_yearmonth, 'yyyy'));
+        this.mm = parseInt(this.datePipe.transform(formData.sch_yearmonth, 'MM'));
+        var lastDay = (new Date(this.yy, this.mm, 0)).getDate();
+        console.log('LAST DAY', lastDay);
+
+        for (let i = 0; i <= lastDay; i++) {
+            this.lineChartLabels[i] = i;
         }
         let params = {
             sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
@@ -133,16 +131,16 @@ export class DeliveryPerformanceChartComponent implements OnInit {
         this.dataService.loadData(params).subscribe(
             data => {
 
-                for (let i=0; i<this.lineChartLabels.length; i++){
+                for (let i = 0; i < this.lineChartLabels.length; i++) {
                     this.lineChartData[0].data[i] = 0;
                     this.lineChartData[1].data[i] = 0;
                 }
 
-                if(data['totalCount']>0 || data['performance_data'] != null){
+                if (data['totalCount'] > 0 || data['performance_data'] != null) {
                     // this.lineChartLabels = data['labels'];
-                    if(data['performance_data'] == null){
+                    if (data['performance_data'] == null) {
                         this.PlannedSaleAmount = 0;
-                    }else{
+                    } else {
                         this.PlannedSaleAmount = data['performance_data'].price;
                     }
                     this.rows = data['data'];
@@ -150,18 +148,18 @@ export class DeliveryPerformanceChartComponent implements OnInit {
                     // console.log('!!!!!!!' ,this.lineChartLabels.length);
                     // console.log(this.lineChartLabels[0]);
 
-                    for (let i=0; i<this.lineChartLabels.length; i++){
+                    for (let i = 0; i < this.lineChartLabels.length; i++) {
                         this.lineChartData[0].data[i] = this.PlannedSaleAmount;
                         this.lineChartData[1].data[i] = 0;
-                    } 
+                    }
 
-                    if(this.rows != null){
-                        for (let i=0; i<this.rows.length; i++){
+                    if (this.rows != null) {
+                        for (let i = 0; i < this.rows.length; i++) {
                             let tmpPrice = this.rows[i]['input_date'] * 1;
                             this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
-                        } 
+                        }
                     }
-                        // console.log('DATA',this.lineChartData[0].data);
+                    // console.log('DATA',this.lineChartData[0].data);
                 }
 
                 this.isLoadingProgress = false;
@@ -173,23 +171,23 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     }
 
     convertYearMonth(ym) {
-        this.yy = ym.substring(0,4);
-        this.mm = ym.substring(4,6);
+        this.yy = ym.substring(0, 4);
+        this.mm = ym.substring(4, 6);
         // return yy + '-' + mm;
     }
 
 
-    Save () {
-         let formModel = this.inputForm.value;
-         let formData = {
+    Save() {
+        let formModel = this.inputForm.value;
+        let formData = {
             price: this.utils.removeComma(formModel.planned_sales_amount) * 1,
             input_date: formModel.yearmonth
-         };
+        };
         console.log(formData);
         this.Create(formData);
     }
 
-    Create (data): void {
+    Create(data): void {
         this.dataService.Create(data)
             .subscribe(
                 data => {
@@ -214,11 +212,11 @@ export class DeliveryPerformanceChartComponent implements OnInit {
             // this.Edit(this.convertYearMonth(yearmonth));
             this.inputForm.patchValue({
                 yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
-                planned_sales_amount: this.utils.addComma(this.PlannedSaleAmount*1000000)
+                planned_sales_amount: this.utils.addComma(this.PlannedSaleAmount * 1000000)
             });
         } else {
             this.isEditMode = false;
-            this.inputForm.patchValue({yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM')});
+            this.inputForm.patchValue({ yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM') });
         }
     }
 
@@ -227,11 +225,11 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     }
 
     // events
-    public chartClicked(e:any):void {
+    public chartClicked(e: any): void {
         console.log(e);
     }
 
-    public chartHovered(e:any):void {
+    public chartHovered(e: any): void {
         console.log(e);
     }
 

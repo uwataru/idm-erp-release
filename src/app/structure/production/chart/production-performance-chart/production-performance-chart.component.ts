@@ -1,14 +1,14 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ProductionPerformanceChartService} from './production-performance-chart.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProductionPerformanceChartService } from './production-performance-chart.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
 import { BaseChartDirective } from 'ng2-charts';
-import {Item} from './production-performance-chart.item';
-import {BsDatepickerConfig} from "ngx-bootstrap";
-import {BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
-import {DatePipe} from "@angular/common";
+import { Item } from './production-performance-chart.item';
+import { BsDatepickerConfig } from "ngx-bootstrap";
+import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: 'app-page',
@@ -28,8 +28,8 @@ export class ProductionPerformanceChartComponent implements OnInit {
 
   lineChartLabels = [];
   lineChartData: Array<any> = [
-    {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
-    {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
+    { lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0 },
+    { lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0 }
   ];
   selected = [];
   rows = [];
@@ -39,8 +39,8 @@ export class ProductionPerformanceChartComponent implements OnInit {
   formData: Item;
   editData: Item;
 
-  yy = 0 ;
-  mm = 0 ;
+  yy = 0;
+  mm = 0;
 
   public lineChartOptions: any = {
     responsive: true,
@@ -72,7 +72,7 @@ export class ProductionPerformanceChartComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
 
   bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
-    minMode : 'month' as BsDatepickerViewMode,
+    minMode: 'month' as BsDatepickerViewMode,
     dateInputFormat: 'YYYY-MM'
   });
 
@@ -106,16 +106,16 @@ export class ProductionPerformanceChartComponent implements OnInit {
     this.inputFormTitle = '월목표 입력';
     this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
     this.searchForm.controls['sch_type'].setValue('Qty');
-    
+
     // this.loadData();
   }
 
   loadData() {
-    
+
     this.targetProductionAmount = 0;
     this.targetProductionQty = 0;
     this.lineChartLabels = [];
-
+    console.log(this.lineChartLabels.length, "LENGTH");
     let formData = this.searchForm.value;
     // let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
     // if (yearmonth.length != 6) {
@@ -123,130 +123,126 @@ export class ProductionPerformanceChartComponent implements OnInit {
     //   this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
     //   return false;
     // }
-    
-    this.yy = 0;
-    this.mm = 0;
 
-    
-    this.convertYearMonth(this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
-    var lastDay = ( new Date( this.yy, this.mm, 0) ).getDate();
-    console.log('LAST DAY',lastDay);
 
-    let cnt =0;
-    for(let i=0; i<=lastDay; i++){
-        this.lineChartLabels[i] = cnt;
-        cnt++;
+    this.yy = parseInt(this.datePipe.transform(formData.sch_yearmonth, 'yyyy'));
+    this.mm = parseInt(this.datePipe.transform(formData.sch_yearmonth, 'MM'));
+    var lastDay = (new Date(this.yy, this.mm, 0)).getDate();
+    console.log('LAST DAY', lastDay);
+
+    for (let i = 0; i <= lastDay; i++) {
+      this.lineChartLabels[i] = i;
     }
+    console.log(this.lineChartLabels.length, "LENGTH");
     console.log(this.lineChartLabels);
 
     switch (formData.sch_type) {
       case 'Qty':
         this.lineChartData = [
-          {lineTension: 0, data: [], label: '계획(단위:개)', pointRadius: 0},
-          {lineTension: 0, data: [], label: '실적(단위:개)', pointRadius: 0}
+          { lineTension: 0, data: [], label: '계획(단위:개)', pointRadius: 0 },
+          { lineTension: 0, data: [], label: '실적(단위:개)', pointRadius: 0 }
         ];
 
         let params_qty = {
           sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
           // sch_type: formData.sch_type,
         };
-          this.isLoadingProgress = true;
-          this.dataService.loadData(params_qty).subscribe(
-            data => {
+        this.isLoadingProgress = true;
+        this.dataService.loadData(params_qty).subscribe(
+          data => {
 
-                for (let i=0; i<this.lineChartLabels.length; i++){
-                    this.lineChartData[0].data[i] = 0;
-                    this.lineChartData[1].data[i] = 0;
-                }
-              
-                if(data['totalCount']>0 || data['performance_data'] != null){
-                    // this.lineChartLabels = data['labels'];
-                    if(data['performance_data'] == null){
-                        this.targetProductionAmount = 0;
-                        this.targetProductionQty = 0;
-                    }else{
-                        this.targetProductionQty = data['performance_data'].qty;
-                        this.targetProductionAmount = data['performance_data'].price;
-                    }
-                    this.rows = data['data'];
-                    // console.log(this.rows);
-                    // console.log('!!!!!!!' ,this.lineChartLabels.length);
-                    // console.log(this.lineChartLabels[0]);
-                  
-                  
-                    for (let i=0; i<this.lineChartLabels.length; i++){
-                        this.lineChartData[0].data[i] = this.targetProductionQty;
-                        this.lineChartData[1].data[i] = 0;
-                    } 
-                  
-                    if(this.rows != null){
-                        for (let i=0; i<this.rows.length; i++){
-                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
-                            this.lineChartData[1].data[tmpPrice] = this.rows[i]['qty'];
-                        } 
-                    }
-                        // console.log('DATA',this.lineChartData[0].data);
-                }
-
-                this.isLoadingProgress = false;
+            for (let i = 0; i < this.lineChartLabels.length; i++) {
+              this.lineChartData[0].data[i] = 0;
+              this.lineChartData[1].data[i] = 0;
             }
-          );
-          break;
-        case 'Amount':
-          this.lineChartData = [
-            {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
-            {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
-          ];
 
-          let params = {
-            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
-            // sch_type: formData.sch_type,
-          };
-          this.isLoadingProgress = true;
-          this.dataService.loadData(params).subscribe(
-            data => {
-                for (let i=0; i<this.lineChartLabels.length; i++){
-                    this.lineChartData[0].data[i] = 0;
-                    this.lineChartData[1].data[i] = 0;
+            if (data['totalCount'] > 0 || data['performance_data'] != null) {
+              // this.lineChartLabels = data['labels'];
+              if (data['performance_data'] == null) {
+                this.targetProductionAmount = 0;
+                this.targetProductionQty = 0;
+              } else {
+                this.targetProductionQty = data['performance_data'].qty;
+                this.targetProductionAmount = data['performance_data'].price;
+              }
+              this.rows = data['data'];
+              // console.log(this.rows);
+              // console.log('!!!!!!!' ,this.lineChartLabels.length);
+              // console.log(this.lineChartLabels[0]);
+
+
+              for (let i = 0; i < this.lineChartLabels.length; i++) {
+                this.lineChartData[0].data[i] = this.targetProductionQty;
+                this.lineChartData[1].data[i] = 0;
+              }
+
+              if (this.rows != null) {
+                for (let i = 0; i < this.rows.length; i++) {
+                  let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                  this.lineChartData[1].data[tmpPrice] = this.rows[i]['qty'];
                 }
-              
-                if(data['totalCount']>0 || data['performance_data'] != null){
-                    // this.lineChartLabels = data['labels'];
-                    if(data['performance_data'] == null){
-                        this.targetProductionAmount = 0;
-                        this.targetProductionQty = 0;
-                    }else{
-                        this.targetProductionQty = data['performance_data'].qty;
-                        this.targetProductionAmount = data['performance_data'].price;
-                    }
-                    this.rows = data['data'];
-                    // console.log(this.rows);
-                    // console.log('!!!!!!!' ,this.lineChartLabels.length);
-                    // console.log(this.lineChartLabels[0]);
-                  
-                    for (let i=0; i<this.lineChartLabels.length; i++){
-                        this.lineChartData[0].data[i] = this.targetProductionAmount;
-                        this.lineChartData[1].data[i] = 0;
-                    } 
-                  
-                    if(this.rows != null){
-                        for (let i=0; i<this.rows.length; i++){
-                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
-                            this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
-                        } 
-                    }
-                        // console.log('DATA',this.lineChartData[0].data);
-                }
-              
-                this.isLoadingProgress = false;
+              }
+              // console.log('DATA',this.lineChartData[0].data);
             }
-          );
-          break;
+            this.isLoadingProgress = false;
+          }
+        );
+        break;
+
+      case 'Amount':
+        this.lineChartData = [
+          { lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0 },
+          { lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0 }
+        ];
+        let params = {
+          sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+          // sch_type: formData.sch_type,
+        };
+        this.isLoadingProgress = true;
+        this.dataService.loadData(params).subscribe(
+          data => {
+            for (let i = 0; i < this.lineChartLabels.length; i++) {
+              this.lineChartData[0].data[i] = 0;
+              this.lineChartData[1].data[i] = 0;
+            }
+
+            if (data['totalCount'] > 0 || data['performance_data'] != null) {
+              // this.lineChartLabels = data['labels'];
+              if (data['performance_data'] == null) {
+                this.targetProductionAmount = 0;
+                this.targetProductionQty = 0;
+              } else {
+                this.targetProductionQty = data['performance_data'].qty;
+                this.targetProductionAmount = data['performance_data'].price;
+              }
+              this.rows = data['data'];
+              // console.log(this.rows);
+              // console.log('!!!!!!!' ,this.lineChartLabels.length);
+              // console.log(this.lineChartLabels[0]);
+
+              for (let i = 0; i < this.lineChartLabels.length; i++) {
+                this.lineChartData[0].data[i] = this.targetProductionAmount;
+                this.lineChartData[1].data[i] = 0;
+              }
+
+              if (this.rows != null) {
+                for (let i = 0; i < this.rows.length; i++) {
+                  let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                  this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
+                }
+              }
+              // console.log('DATA',this.lineChartData[0].data);
+            }
+
+            this.isLoadingProgress = false;
+          }
+        );
+        break;
     }
-
-  setTimeout(() => {
+    setTimeout(() => {
+      this.chart.chart.config.data.labels = this.lineChartLabels;
       this.chart.chart.update();
-  }, 250);
+    }, 250);
   }
 
   changeData(Case) {
@@ -261,16 +257,16 @@ export class ProductionPerformanceChartComponent implements OnInit {
   }
 
 
-  Save () {
+  Save() {
     let formModel = this.inputForm.value;
     let formData = {
-       price: this.utils.removeComma(formModel.target_production_amount) * 1,
-       qty: this.utils.removeComma(formModel.target_production_qty) * 1,
-       input_date: formModel.yearmonth
+      price: this.utils.removeComma(formModel.target_production_amount) * 1,
+      qty: this.utils.removeComma(formModel.target_production_qty) * 1,
+      input_date: formModel.yearmonth
     }
-   console.log(formData);
-   this.Create(formData);
-}
+    console.log(formData);
+    this.Create(formData);
+  }
 
   Create(data): void {
     this.dataService.Create(data)
@@ -299,12 +295,12 @@ export class ProductionPerformanceChartComponent implements OnInit {
       this.inputForm.patchValue({
         yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
         target_production_qty: this.utils.addComma(this.targetProductionQty),
-        target_production_amount: this.utils.addComma(this.targetProductionAmount*1000000)
-    });
+        target_production_amount: this.utils.addComma(this.targetProductionAmount * 1000000)
+      });
 
     } else {
       this.isEditMode = false;
-      this.inputForm.patchValue({yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM')});
+      this.inputForm.patchValue({ yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM') });
     }
   }
 
