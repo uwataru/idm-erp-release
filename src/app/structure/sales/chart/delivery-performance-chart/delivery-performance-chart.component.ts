@@ -26,7 +26,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+    lineChartLabels = [];
     lineChartData: Array<any> = [
         {lineTension: 0, data:[], label:'계획(단위:백만)', pointRadius:0},
         {lineTension: 0, data:[], label:'실적(단위:백만)', pointRadius:0}
@@ -38,6 +38,8 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     formData: Item;
     editData: Item;
 
+    yy = 0 ;
+    mm = 0 ;
     public lineChartOptions:any = {
         responsive: true,
     };
@@ -102,6 +104,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     loadData() {
         this.PlannedSaleAmount = 0;
+        this.lineChartLabels = [];
         let formData = this.searchForm.value;
         // let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
         // if (yearmonth.length != 6) {
@@ -109,6 +112,19 @@ export class DeliveryPerformanceChartComponent implements OnInit {
         //     this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
         //     return false;
         // }
+       this.yy = 0;
+       this.mm = 0;
+        console.log('Sch_yM',this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
+
+        this.convertYearMonth(this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
+        var lastDay = ( new Date( this.yy, this.mm, 0) ).getDate();
+        console.log('LAST DAY',lastDay);
+
+        let cnt =0;
+        for(let i=0; i<=lastDay; i++){
+            this.lineChartLabels[i] = cnt;
+            cnt++;
+        }
         let params = {
             sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
         };
@@ -116,6 +132,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
         this.dataService.loadData(params).subscribe(
             data => {
+
                 for (let i=0; i<this.lineChartLabels.length; i++){
                     this.lineChartData[0].data[i] = 0;
                     this.lineChartData[1].data[i] = 0;
@@ -156,9 +173,9 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     }
 
     convertYearMonth(ym) {
-        let yy = ym.substring(0,4);
-        let mm = ym.substring(4,6);
-        return yy + '-' + mm;
+        this.yy = ym.substring(0,4);
+        this.mm = ym.substring(4,6);
+        // return yy + '-' + mm;
     }
 
 

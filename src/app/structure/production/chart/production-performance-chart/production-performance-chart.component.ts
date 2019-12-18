@@ -26,7 +26,7 @@ export class ProductionPerformanceChartComponent implements OnInit {
 
   searchForm: FormGroup;
 
-  lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+  lineChartLabels = [];
   lineChartData: Array<any> = [
     {lineTension: 0, data: [], label: '계획(단위:백만)', pointRadius: 0},
     {lineTension: 0, data: [], label: '실적(단위:백만)', pointRadius: 0}
@@ -39,6 +39,8 @@ export class ProductionPerformanceChartComponent implements OnInit {
   formData: Item;
   editData: Item;
 
+  yy = 0 ;
+  mm = 0 ;
 
   public lineChartOptions: any = {
     responsive: true,
@@ -112,6 +114,8 @@ export class ProductionPerformanceChartComponent implements OnInit {
     
     this.targetProductionAmount = 0;
     this.targetProductionQty = 0;
+    this.lineChartLabels = [];
+
     let formData = this.searchForm.value;
     // let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
     // if (yearmonth.length != 6) {
@@ -120,6 +124,20 @@ export class ProductionPerformanceChartComponent implements OnInit {
     //   return false;
     // }
     
+    this.yy = 0;
+    this.mm = 0;
+
+    
+    this.convertYearMonth(this.datePipe.transform(formData.sch_yearmonth, 'yyyyMM'));
+    var lastDay = ( new Date( this.yy, this.mm, 0) ).getDate();
+    console.log('LAST DAY',lastDay);
+
+    let cnt =0;
+    for(let i=0; i<=lastDay; i++){
+        this.lineChartLabels[i] = cnt;
+        cnt++;
+    }
+    console.log(this.lineChartLabels);
 
     switch (formData.sch_type) {
       case 'Qty':
@@ -135,6 +153,7 @@ export class ProductionPerformanceChartComponent implements OnInit {
           this.isLoadingProgress = true;
           this.dataService.loadData(params_qty).subscribe(
             data => {
+
                 for (let i=0; i<this.lineChartLabels.length; i++){
                     this.lineChartData[0].data[i] = 0;
                     this.lineChartData[1].data[i] = 0;
@@ -237,9 +256,8 @@ export class ProductionPerformanceChartComponent implements OnInit {
   }
 
   convertYearMonth(ym) {
-    let yy = ym.substring(0, 4);
-    let mm = ym.substring(4, 6);
-    return yy + '-' + mm;
+    this.yy = ym.substring(0, 4);
+    this.mm = ym.substring(4, 6);
   }
 
 
