@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" id="print-main-list">
 
   <div class="panel-heading">
     <div class="text-center">
@@ -65,7 +65,7 @@
                             cellClass="text-center">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div>
-            <button (click)="openModal(value)" class="btn btn-xs btn-primary">
+            <button (click)="openModal(value)" class="btn btn-xs btn-primary hidden-print">
               내역
             </button>
           </div>

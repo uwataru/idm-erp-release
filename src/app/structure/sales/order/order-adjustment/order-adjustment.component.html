@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" id="print-main-list">
 
   <div class="panel-heading">
     <div class="text-center">
@@ -18,7 +18,7 @@
                  class="input-sm form-control w-sm inline v-middle"/>
           <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)"
                  class="input-sm form-control w-sm inline v-middle" placeholder="제품명"/>
-          <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
+          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
         </form>
       </div>
     </div>
