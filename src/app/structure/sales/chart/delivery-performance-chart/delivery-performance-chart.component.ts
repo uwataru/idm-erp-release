@@ -6,6 +6,9 @@ import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './delivery-performance-chart.item';
 import { BaseChartDirective } from 'ng2-charts';
+import {BsDatepickerConfig} from "ngx-bootstrap";
+import {BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-page',
@@ -64,6 +67,11 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     addOkMsg = '등록이 완료되었습니다.';
     editOkMsg = '수정이 완료되었습니다.';
 
+    bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+        minMode : 'month' as BsDatepickerViewMode,
+        dateInputFormat: 'YYYY-MM'
+    });
+
     @ViewChild('writeFormClose') writeFormClose: ElementRef;
     @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
@@ -72,6 +80,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
         private dataService: DeliveryPerformanceChartService,
         private globals: AppGlobals,
         private utils: UtilsService,
+        private datePipe: DatePipe,
         private messageService: MessageService
     ) {
         this.searchForm = fb.group({
@@ -87,22 +96,22 @@ export class DeliveryPerformanceChartComponent implements OnInit {
     ngOnInit() {
         this.panelTitle = '납품실적차트';
         this.inputFormTitle = '월목표 입력';
-        this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g,'').substring(0,6));
-        this.loadData();
+        this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
+        // this.loadData();
     }
 
     loadData() {
         this.PlannedSaleAmount = 0;
         let formData = this.searchForm.value;
-        let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
-        if (yearmonth.length != 6) {
-            console.log(yearmonth.length);
-            this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
-            return false;
-        }
+        // let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
+        // if (yearmonth.length != 6) {
+        //     console.log(yearmonth.length);
+        //     this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
+        //     return false;
+        // }
         let params = {
-            sch_yearmonth: this.convertYearMonth(yearmonth),
-        }
+            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+        };
         this.isLoadingProgress = true;
 
         this.dataService.loadData(params).subscribe(
@@ -120,10 +129,9 @@ export class DeliveryPerformanceChartComponent implements OnInit {
                         this.PlannedSaleAmount = data['performance_data'].price;
                     }
                     this.rows = data['data'];
-                    console.log(this.rows);
-                    console.log('!!!!!!!' ,this.lineChartLabels.length);
-                    console.log(this.lineChartLabels[0]);
-
+                    // console.log(this.rows);
+                    // console.log('!!!!!!!' ,this.lineChartLabels.length);
+                    // console.log(this.lineChartLabels[0]);
 
                     for (let i=0; i<this.lineChartLabels.length; i++){
                         this.lineChartData[0].data[i] = this.PlannedSaleAmount;
@@ -132,18 +140,15 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
                     if(this.rows != null){
                         for (let i=0; i<this.rows.length; i++){
-                            let tmpPrice = Number(this.rows[i]['input_date']) * 1;
+                            let tmpPrice = this.rows[i]['input_date'] * 1;
                             this.lineChartData[1].data[tmpPrice] = this.rows[i]['price'];
                         } 
                     }
-
-                        console.log('DATA',this.lineChartData[0].data);
+                        // console.log('DATA',this.lineChartData[0].data);
                 }
-
 
                 this.isLoadingProgress = false;
             }
-            
         );
         setTimeout(() => {
             this.chart.chart.update();
@@ -162,7 +167,7 @@ export class DeliveryPerformanceChartComponent implements OnInit {
          let formData = {
             price: this.utils.removeComma(formModel.planned_sales_amount) * 1,
             input_date: formModel.yearmonth
-         }
+         };
         console.log(formData);
         this.Create(formData);
     }
@@ -186,17 +191,17 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     openModal(method) {
         let formData = this.searchForm.value;
-        let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
+        // let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
         if (method == 'edit') {
             this.isEditMode = true;
             // this.Edit(this.convertYearMonth(yearmonth));
             this.inputForm.patchValue({
-                yearmonth: this.convertYearMonth(yearmonth),
+                yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
                 planned_sales_amount: this.utils.addComma(this.PlannedSaleAmount*1000000)
             });
         } else {
             this.isEditMode = false;
-            this.inputForm.patchValue({yearmonth: this.convertYearMonth(yearmonth)});
+            this.inputForm.patchValue({yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM')});
         }
     }
 
@@ -211,5 +216,11 @@ export class DeliveryPerformanceChartComponent implements OnInit {
 
     public chartHovered(e:any):void {
         console.log(e);
+    }
+
+    onValueChange(value: Date): void {
+        // console.log(this.searchForm.controls['sch_yearmonth'].value);
+        this.searchForm.controls['sch_yearmonth'].setValue(value);
+        this.loadData();
     }
 }

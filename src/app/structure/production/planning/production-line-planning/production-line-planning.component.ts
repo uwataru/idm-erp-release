@@ -9,6 +9,8 @@ import {UtilsService} from '../../../../utils.service';
 import {MessageService} from '../../../../message.service';
 import {Item} from './production-line-planning.item';
 import {ElectronService} from '../../../../providers/electron.service';
+import {BsDatepickerConfig} from "ngx-bootstrap";
+import {BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
 
 @Component({
   selector: 'app-page',
@@ -68,6 +70,11 @@ export class ProductionLinePlanningComponent implements OnInit {
   initHour: number = 9;
   initMinute: number = 0;
 
+  bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+    minMode : 'month' as BsDatepickerViewMode,
+    dateInputFormat: 'YYYY-MM'
+  });
+
   // @ViewChild('BatchInsertFormModal') batchInsertFormModal: ModalDirective;
   // @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
   // @ViewChild('DeleteAllFormModal') deleteAllFormModal: ModalDirective;
@@ -109,7 +116,7 @@ export class ProductionLinePlanningComponent implements OnInit {
     this.panelTitle = '라인별 가동 계획';
     // this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
-    this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g, '').substring(0, 6));
+    this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
     this.getAll();
   }
 
@@ -119,11 +126,11 @@ export class ProductionLinePlanningComponent implements OnInit {
       this.messageService.add('작업년월을 입력해주세요!');
       return false;
     }
-    let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
-    if (yearmonth.length != 6) {
-      this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
-      return false;
-    }
+    // let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
+    // if (yearmonth.length != 6) {
+    //   this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
+    //   return false;
+    // }
 
     if (!formData.sch_prdline) {
       this.messageService.add('작업라인을 선택해주세요!');
@@ -133,10 +140,8 @@ export class ProductionLinePlanningComponent implements OnInit {
     }
 
     let params = {
-      sch_yearmonth: this.convertYearMonth(yearmonth),
+      sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
       production_work_lines_id: formData.sch_prdline,
-      // sortby: ['working_date'],
-      // order: ['asc']
     };
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
@@ -202,11 +207,11 @@ export class ProductionLinePlanningComponent implements OnInit {
       return false;
     }
 
-    let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
-    if (yearmonth.length != 6) {
-      this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
-      return false;
-    }
+    // let yearmonth: string = formData.sch_yearmonth.replace(/[^0-9]/g, '');
+    // if (yearmonth.length != 6) {
+    //   this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
+    //   return false;
+    // }
 
     if (!formData.sch_prdline) {
       this.messageService.add('작업라인을 선택해주세요!');
@@ -227,7 +232,7 @@ export class ProductionLinePlanningComponent implements OnInit {
     }
 
     const saveData = {
-      yearmonth: this.convertYearMonth(formData.sch_yearmonth),
+      yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
       production_work_lines_id: parseInt(formData.sch_prdline),
       plan_data: timePlanData.join('=||=')
     };
@@ -345,4 +350,9 @@ export class ProductionLinePlanningComponent implements OnInit {
     row.working_total_time = event.target.value;
   }
 
+  onValueChange(value: Date): void {
+    // console.log(this.searchForm.controls['sch_yearmonth'].value);
+    this.searchForm.controls['sch_yearmonth'].setValue(value);
+    this.getAll();
+  }
 }

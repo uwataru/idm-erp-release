@@ -7,8 +7,10 @@
     <div class="row">
       <div class="col-sm-6 m-b-xs">
         <form [formGroup]="searchForm">
-          <label for="passenger_phone" class="control-label text-sm">년월</label>
-          <input type="text" formControlName="sch_yearmonth" class="input-sm form-control w-xs inline v-middle m-r"/>
+          <label for="sch_yearmonth" class="control-label text-sm">년월</label>
+          <input type="text" id="sch_yearmonth" formControlName="sch_yearmonth"
+                 class="input-sm form-control w-xs inline v-middle"
+                 bsDatepicker [bsConfig]="bsConfig" (bsValueChange)="onValueChange($event)" />
           <label class="i-checks">
             <input type="radio" formControlName="sch_type" (click)="changeData('Qty')" value="Qty" checked>
             <i></i>

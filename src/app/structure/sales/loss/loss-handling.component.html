@@ -17,8 +17,10 @@
 			placeholder="거래처"
 			class="input-sm form-control w-sm inline v-middle" />
 
-			<label for="passenger_phone" class="control-label text-sm">년월</label>
-			<input type="text" formControlName="sch_yearmonth" class="input-sm form-control w-xs inline v-middle" />
+			<label for="sch_yearmonth" class="control-label text-sm">년월</label>
+			<input type="text" id="sch_yearmonth" formControlName="sch_yearmonth"
+             class="input-sm form-control w-xs inline v-middle" bsDatepicker [bsConfig]="bsConfig"
+             (bsValueChange)="onValueChange($event)"/>
 			<button class="btn btn-sm btn-default">검색</button>
 			</form>
         </div>

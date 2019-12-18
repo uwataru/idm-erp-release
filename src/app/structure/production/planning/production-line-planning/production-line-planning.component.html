@@ -9,7 +9,8 @@
         <form [formGroup]="searchForm">
           <label for="sch_yearmonth" class="control-label text-sm">작업년월</label>
           <input id="sch_yearmonth" type="text" formControlName="sch_yearmonth"
-                 class="input-sm form-control w-xs inline v-middle"/>
+                 class="input-sm form-control w-xs inline v-middle"
+                 bsDatepicker [bsConfig]="bsConfig" (bsValueChange)="onValueChange($event)"/>
           <label for="sch_prdline" class="m-l">작업라인</label>
           <select formControlName="sch_prdline" id="sch_prdline" (change)="getAll()"
                   class="input-sm form-control w-sm inline v-middle">

@@ -9,6 +9,7 @@ import {LossHandlingService} from './loss-handling.service';
 import {UtilsService} from '../../../utils.service';
 import {MessageService} from '../../../message.service';
 import {Item} from './loss-handling.item';
+import {BsDatepickerConfig, BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
 
 declare var $: any;
 
@@ -43,6 +44,11 @@ export class LossHandlingComponent implements OnInit {
     messages = this.globals.datatableMessages;
     addOkMsg = 'LOSS처리가 완료되었습니다.';
 
+    bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+        minMode : 'month' as BsDatepickerViewMode,
+        dateInputFormat: 'YYYY-MM'
+    });
+
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
 
 
@@ -70,9 +76,9 @@ export class LossHandlingComponent implements OnInit {
     ngOnInit() {
         this.panelTitle = '종합재고현황';
         this.inputFormTitle = '정기LOSS처리';
-        this.searchForm.controls['sch_yearmonth'].setValue(this.tDate.replace(/[^0-9]/g,'').substring(0,6));
+        this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
 
-        this.getAll();
+        // this.getAll();
 
         $(document).ready(function(){
             let modalContent: any = $('.modal-content');
@@ -88,22 +94,22 @@ export class LossHandlingComponent implements OnInit {
         this.selected = [];
 
         let formData = this.searchForm.value;
-        let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
-        if (yearmonth.length != 6) {
-            console.log(yearmonth.length);
-            this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
-            return false;
-        }
+        // let yearmonth:string = formData.sch_yearmonth.replace(/[^0-9]/g,'');
+        // if (yearmonth.length != 6) {
+        //     console.log(yearmonth.length);
+        //     this.messageService.add('입력된 값이 올바르지 않습니다(6자리 숫자만 가능)');
+        //     return false;
+        // }
         let params = {
-            sch_yearmonth: this.convertYearMonth(yearmonth),
+            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
             sch_partner_name:  formData.sch_partner_name,
-        }
+        };
         this.isLoadingProgress = true;
-    
+
+        this.rows = [];
         this.dataService.GetAll(params).subscribe(
             listData =>
             {
-
                 this.listData = listData;
                 this.rows = listData['data'];
                 
@@ -111,8 +117,7 @@ export class LossHandlingComponent implements OnInit {
                     listData['data'][i].total_qty = (listData['data'][i].transfer_qty + listData['data'][i].production_qty)
                                                     - listData['data'][i].sales_qty - listData['data'][i].defect_qty - listData['data'][i].loss_qty;
                 }
-    
-    
+
               this.isLoadingProgress = false;
             }
         );
@@ -180,6 +185,12 @@ export class LossHandlingComponent implements OnInit {
     onSelect({ selected }) {
         this.selectedId = selected[0].id;
         this.product_id = selected[0].product_id;
+    }
+
+    onValueChange(value: Date): void {
+        // console.log(this.searchForm.controls['sch_yearmonth'].value);
+        this.searchForm.controls['sch_yearmonth'].setValue(value);
+        this.getAll();
     }
 
 }
