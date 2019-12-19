@@ -71,6 +71,7 @@ export class AccountLedgerComponent implements OnInit {
         this.dataService.GetAll(params).subscribe(
             listData =>
             {
+                console.log(listData)
                 this.listData = listData;
                 this.rows = listData['data'];
                 this.drAmountSum = listData['drAmountSum'];

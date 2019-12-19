@@ -2,7 +2,7 @@
 
     <div class="panel-heading">
         <div class="text-center">
-            <span class="h4 block m-b-sm">{{ panelTitle }}</span>
+            <span class="h4 block m-b-sm" id="panel">{{ panelTitle }}</span>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                             분개번호
                         </label>
                         <div class="col-lg-5">
-                            <input type="text" formControlName="entry_no" id="entry_no" (keyup)="showRows($event)" (keyup.enter)="nextFocus('acct_name')" class="form-control input-sm" />
+                            <input type="text" formControlName="entry_no" id="entry_no" (keyup)="showRows($event)" (keyup.enter)="nextFocus()" class="form-control input-sm" />
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                             금액 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                         </label>
                         <div class="col-lg-8">
-                            <input type="text" formControlName="amount" id="amount" (keyup)="AddComma($event)" (keyup.enter)="nextFocus('mgmt_item1')" class="form-control input-sm w-sm" />
+                            <input type="text" formControlName="amount" id="amount" (keyup)="AddComma($event)" (keyup.enter)="nextFocus()" class="form-control input-sm w-sm" />
                         </div>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                                 placeholder="{{ MgmtItem1Name }}"
                                 class="input-sm form-control w-sm inline v-middle" />
                             <input *ngIf="MgmtItem1Values.length > 0" type="hidden" formControlName="mgmt_item1" id="mgmt_item1" />
-                            <input *ngIf="MgmtItem1Values.length == 0" type="text" formControlName="mgmt_item1" id="mgmt_item1" (keyup.enter)="nextFocus('mgmt_item2')" class="form-control input-sm w-sm" />
+                            <input *ngIf="MgmtItem1Values.length == 0" type="text" formControlName="mgmt_item1" id="mgmt_item1" (keyup.enter)="nextFocus()" class="form-control input-sm w-sm" />
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                                 placeholder="{{ MgmtItem2Name }}"
                                 class="input-sm form-control w-sm inline v-middle" />
                             <input *ngIf="MgmtItem2Values.length > 0" type="hidden" formControlName="mgmt_item2" id="mgmt_item2" />
-                            <input *ngIf="MgmtItem2Values.length == 0" type="text" formControlName="mgmt_item2" id="mgmt_item2" (keyup.enter)="nextFocus('mgmt_item3')" class="form-control input-sm w-sm" />
+                            <input *ngIf="MgmtItem2Values.length == 0" type="text" formControlName="mgmt_item2" id="mgmt_item2" (keyup.enter)="nextFocus()" class="form-control input-sm w-sm" />
                         </div>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
                                 placeholder="{{ MgmtItem3Name }}"
                                 class="input-sm form-control w-sm inline v-middle" />
                             <input *ngIf="MgmtItem3Values.length > 0" type="hidden" formControlName="mgmt_item3" id="mgmt_item3" />
-                            <input *ngIf="MgmtItem3Values.length == 0" type="text" formControlName="mgmt_item3" id="mgmt_item3" (keyup.enter)="nextFocus('mgmt_item4')" class="form-control input-sm w-sm" />
+                            <input *ngIf="MgmtItem3Values.length == 0" type="text" formControlName="mgmt_item3" id="mgmt_item3" (keyup.enter)="nextFocus()" class="form-control input-sm w-sm" />
                         </div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                                 placeholder="{{ MgmtItem4Name }}"
                                 class="input-sm form-control w-sm inline v-middle" />
                             <input *ngIf="MgmtItem4Values.length > 0" type="hidden" formControlName="mgmt_item4" id="mgmt_item4" />
-                            <input *ngIf="MgmtItem4Values.length == 0" type="text" formControlName="mgmt_item4" id="mgmt_item4" (keyup.enter)="nextFocus('brief_summary')" class="form-control input-sm w-sm" />
+                            <input *ngIf="MgmtItem4Values.length == 0" type="text" formControlName="mgmt_item4" id="mgmt_item4" (keyup.enter)="nextFocus()" class="form-control input-sm w-sm" />
                         </div>
                     </div>
                 </div>
@@ -232,14 +232,14 @@
             <ngx-datatable-column prop="dr_acct_name" name="차변계정과목" [width]="200" [canAutoResize]="false" [resizeable]="false">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" id="dr_acct_name_{{ row.entry_no }}" (click)="Edit(row.dr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
-                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR', row.cr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR')" class="wrapper-xs active">&nbsp;{{ value }}</div>
                     <div *ngIf="row.entry_no == 0" id="dr_acct_name_{{ row.entry_no }}" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="dr_amount" name="차변금액" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <div *ngIf="row.entry_no > 0 && row.dr_acct_name != ''" id="dr_amount_{{ row.entry_no }}" (click)="Edit(row.dr_id)" class="wrapper-xs active">{{ value | numberFormat }}</div>
-                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR', row.cr_amount)" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no > 0 && row.dr_acct_name == ''" id="dr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'DR')" class="wrapper-xs active"> &nbsp; </div>
                     <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
                 </ng-template>
             </ngx-datatable-column>
@@ -249,14 +249,14 @@
             <ngx-datatable-column prop="cr_acct_name" name="대변계정과목" [width]="200" [canAutoResize]="false" [resizeable]="false">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" id="cr_acct_name_{{ row.entry_no }}" (click)="Edit(row.cr_id)" class="wrapper-xs active">&nbsp;{{ value }}</div>
-                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active">&nbsp;{{ value }}</div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_acct_name_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR')" class="wrapper-xs active">&nbsp;{{ value }}</div>
                     <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="cr_amount" name="대변금액" [width]="200" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
                     <div *ngIf="row.entry_no > 0 && row.cr_acct_name != ''" id="cr_amount_{{ row.entry_no }}" (click)="Edit(row.cr_id)" class="wrapper-xs active">{{ value | numberFormat }}</div>
-                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR', row.dr_amount)" class="wrapper-xs active"> &nbsp; </div>
+                    <div *ngIf="row.entry_no > 0 && row.cr_acct_name == ''" id="cr_amount_{{ row.entry_no }}" (click)="Add(row.entry_no, 'CR')" class="wrapper-xs active"> &nbsp; </div>
                     <div *ngIf="row.entry_no == 0" (click)="NewInput()" class="wrapper-xs active"> &nbsp; </div>
                 </ng-template>
             </ngx-datatable-column>

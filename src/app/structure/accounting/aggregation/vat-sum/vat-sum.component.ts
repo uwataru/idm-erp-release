@@ -38,7 +38,7 @@ export class VatSumComponent implements OnInit {
         this.searchForm = fb.group({
             sch_sdate: ['', [Validators.required]],
             sch_edate: ['', [Validators.required]],
-            acct_code: ['111110', [Validators.required]]
+            acct_code: ['', [Validators.required]]
         });
     }
 
@@ -46,7 +46,7 @@ export class VatSumComponent implements OnInit {
         this.panelTitle = '부가세집계표';
 
         let myDate = new Date(this.rcvDate);
-        let prevYmd = new Date( myDate.setMonth(myDate.getMonth()-1) );        
+        let prevYmd = new Date( myDate.setMonth(myDate.getMonth()) );        
         this.searchForm.controls['sch_sdate'].setValue( this.datePipe.transform( prevYmd , 'yyyy-MM-dd') );
         this.searchForm.controls['sch_edate'].setValue( this.datePipe.transform( prevYmd , 'yyyy-MM-dd') );
 
