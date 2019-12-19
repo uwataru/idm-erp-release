@@ -152,9 +152,13 @@ export class OrderRegistrationComponent implements OnInit {
     this.dataService.GetAll(params).subscribe(
       listData => {
         this.listData = listData;
-        this.temp = listData['data'];
-        this.rows = listData['data'].map(x => Object.assign({}, x));
-        this.dataConvert();
+        this.temp = [];
+        this.rows = [];
+        if(listData['totalCount'] > 0) {
+          this.temp = listData['data'];
+          this.rows = listData['data'].map(x => Object.assign({}, x));
+          this.dataConvert();
+        }
 
         this.isLoadingProgress = false;
       }

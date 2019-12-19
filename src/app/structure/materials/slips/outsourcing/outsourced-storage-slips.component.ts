@@ -67,7 +67,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
     private route: ActivatedRoute,
     private utils: UtilsService,
     private messageService: MessageService,
-    public electronService: ElectronService
+    public elSrv: ElectronService
   ) {
     // 접근권한 체크
     if (route.routeConfig.path && ('id' in route.routeConfig.data)) {
@@ -104,7 +104,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
   ngOnInit() {
     this.panelTitle = '외주입고전표처리';
     this.searchForm.controls['rcv_date'].setValue(this.rcvDate);
-    this.getAll();
+    this.GetAll();
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -118,10 +118,10 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
 
   onValueChange(value: Date): void {
     this.rcvDate = this.datePipe.transform(value, 'yyyy-MM-dd');
-    this.getAll();
+    this.GetAll();
   }
 
-  getAll(): void {
+  GetAll(): void {
     let params = {
       rcv_date: this.rcvDate,
     };
@@ -195,7 +195,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
             // 전표 출력
             this.openResultModal(data['slipNo']);
 
-            this.getAll();
+            this.GetAll();
             this.messageService.add(this.addOkMsg);
           } else {
             this.messageService.add(data['errorMessage']);
