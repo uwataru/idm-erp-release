@@ -18,7 +18,7 @@
                     class="input-sm form-control w-xs inline v-middle" />
                 <input formControlName="sch_partner_name"
                     [typeahead]="listPartners"
-                    typeaheadOptionField="Alias"
+                    typeaheadOptionField="name"
                     [typeaheadOptionsLimit]="50"
                     [typeaheadScrollable]="true"
                     [typeaheadMinLength]="0"
@@ -69,61 +69,46 @@
                     </label>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="product_code" name="제품번호" [width]="120" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="partner_name" name="거래처" [width]="150" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <!-- <ngx-datatable-column prop="drawing_no" name="도번" [width]="140" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column> -->
-            <ngx-datatable-column prop="product_name" name="제품명" [width]="160" [canAutoResize]="false" [resizeable]="false"></ngx-datatable-column>
-            <ngx-datatable-column prop="sales_qty" name="수량" [width]="70" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
+            <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+            <ngx-datatable-column prop="qty" name="수량" [width]="80" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="product_price" name="단가" [width]="90" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="product_price" name="단가" [width]="100" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="sales_price" name="금액" [width]="110" [canAutoResize]="false" [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="sales_price" name="금액" [width]="120" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-right">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="delivery_date" name="납품일" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="sales_date" name="판매일" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="poc_no" name="POC No" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="delivery_date" name="납품일" [width]="120" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="sales_date" name="판매일" [width]="120" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
         </ngx-datatable>
-        <div class="table-responsive">
-            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-            <tbody>
-            <tr>
-                <td width="760px">합계</td>
-                <td width="111px" class="text-right">
-                    <span>{{ totalSalesPrice | numberFormat }}</span>
-                </td>
-                <td></td>
-            </tr>
-            </tbody>
-            </table>
-            <!-- <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">
-            <tbody>
-            <tr>
-                <td width="150px" class="text-center">합계</td>
-                <td width="150px" class="text-right"></td>
-                <td></td>
-                <td width="150px" class="text-right pd9">
-                    <span *ngIf="totalRcvWeight >= 1000">{{ totalRcvWeight | numberFormat }}</span>
-                    <span *ngIf="totalRcvWeight < 1000">{{ totalRcvWeight }}</span>
-                </td>
-                <td width="150px" class="text-right"></td>
-                <td width="149px" class="text-right pd9">
-                    <span *ngIf="totalOrderAmount >= 1000">{{ totalOrderAmount | numberFormat }}</span>
-                    <span *ngIf="totalOrderAmount < 1000">{{ totalOrderAmount }}</span>
-                </td>
-            </tr>
-            </tbody>
-            </table> -->
-        </div>
+<!--        <div class="table-responsive">-->
+<!--            <table class="table table-bordered table-condensed b-light" style="border-top:1px solid #eaeff0">-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td width="760px">합계</td>-->
+<!--                <td width="111px" class="text-right">-->
+<!--                    <span>{{ totalSalesPrice | numberFormat }}</span>-->
+<!--                </td>-->
+<!--                <td></td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
     </div>
 
     <footer class="panel-footer hidden-print">

@@ -35,7 +35,6 @@ export class RawMaterialSlipsComponent implements OnInit {
     formData: Item['data'];
 
     rcvDate = this.globals.tDate;
-    st: number;
     rows = [];
     selected = [];
     totalOrderAmount: number;
@@ -123,17 +122,23 @@ export class RawMaterialSlipsComponent implements OnInit {
     GetAll(): void {
         let params = {
             rcv_date: this.rcvDate,
-            st: 2   // is_slip = 'N'
+            // st: 2   // is_slip = 'N'
         }
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
             listData =>
             {
                 this.listData = listData;
+
+                this.rows = [];
+                for(let i in listData['data']){
+                    listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
+                }
+
                 this.rows = listData['data'];
 
-                this.totalOrderAmount = listData['totalOrderAmount'];
-                this.totalRcvWeight = listData['totalRcvWeight'];
+                // this.totalOrderAmount = listData['totalOrderAmount'];
+                // this.totalRcvWeight = listData['totalRcvWeight'];
 
                 this.isLoadingProgress = false;
             }
@@ -173,10 +178,10 @@ export class RawMaterialSlipsComponent implements OnInit {
         });
         let params = {
             'checked_id': checkedIdArr.join(','),
-            'grp_no': '200',
-            'rcv_date': this.rcvDate,
-            'dr_acct_code': this.drAcctCode,
-            'cr_acct_code': this.crAcctCode
+            // 'grp_no': '200',
+            // 'rcv_date': this.rcvDate,
+            // 'dr_acct_code': this.drAcctCode,
+            // 'cr_acct_code': this.crAcctCode
         }
         this.dataService.Save(params)
             .subscribe(

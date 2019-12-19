@@ -23,33 +23,26 @@ declare var $: any;
     encapsulation: ViewEncapsulation.None
 })
 export class SalesSlipsComponent implements OnInit {
-
-    gridHeight = this.globals.gridHeight - 140;
+    gridHeight = this.globals.gridHeight;
     panelTitle: string;
     inputFormTitle: string;
-    POCNO: string;
-
     searchForm: FormGroup;
 
-    selectedData: string;
     listData : Item[];
     formData: Item['data'];
 
     rcvDate = this.globals.tDate;
     sch_partner_name: string;
     isLoadingProgress: boolean = false;
-    listPartners: any[] = this.globals.configs['type5Partners'];
+    listPartners: any[] = this.globals.configs['partnerList'];
     listSltdPaCode: number = 0;
     searchValue: string;
     filteredPartners: any[] = [];
-    st: number;
     rows: Item[];
-    selectedRows: Item[];
     totalQty: number;
     totalSalesPrice: number;
     temp = [];
     selected = [];
-    selectedTotalPrice: number;
     messages = this.globals.datatableMessages;
 
     inputForm: FormGroup;
@@ -135,11 +128,11 @@ export class SalesSlipsComponent implements OnInit {
         let params = {
             partner_name: formData.sch_partner_name,
             sch_sdate: this.rcvDate,
-            sch_edate: this.rcvDate,
-            sortby: ['product_code'],
-            order: ['asc'],
-            maxResultCount: 300
-        }
+            // sch_edate: this.rcvDate,
+            // sortby: ['product_code'],
+            // order: ['asc'],
+            maxResultCount: 1000
+        };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_code'] = this.listSltdPaCode;
         }
@@ -148,10 +141,16 @@ export class SalesSlipsComponent implements OnInit {
             listData =>
             {
                 this.listData = listData;
+
+                this.temp = [];
+                this.rows = [];
+                for(let i in listData['data']){
+                    listData['data'][i].sales_price = listData['data'][i].qty * listData['data'][i].product_price;
+                }
                 this.temp = listData['data'];
                 this.rows = listData['data'];
-                this.totalQty = listData['sumData']['total_qty'];
-                this.totalSalesPrice = listData['sumData']['total_sales_price'];
+                // this.totalQty = listData['sumData']['total_qty'];
+                // this.totalSalesPrice = listData['sumData']['total_sales_price'];
 
                 this.isLoadingProgress = false;
             }
@@ -159,10 +158,10 @@ export class SalesSlipsComponent implements OnInit {
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['Code'] == '') {
+        if (event.item['name'] == '') {
             this.listSltdPaCode = 0;
         } else {
-            this.listSltdPaCode = event.item['Code'];
+            this.listSltdPaCode = event.item['name'];
         }
 
         this.GetAll();
@@ -201,11 +200,11 @@ export class SalesSlipsComponent implements OnInit {
         });
         let params = {
             'checked_id': checkedIdArr.join(','),
-            'grp_no': '800',
-            'rcv_date': this.rcvDate,
-            'dr_acct_code': this.drAcctCode,
-            'cr_acct_code': this.crAcctCode
-        }
+            // 'grp_no': '800',
+            // 'rcv_date': this.rcvDate,
+            // 'dr_acct_code': this.drAcctCode,
+            // 'cr_acct_code': this.crAcctCode
+        };
         this.dataService.Save(params)
             .subscribe(
                 data => {
@@ -253,16 +252,16 @@ export class SalesSlipsComponent implements OnInit {
             let workbook = new Workbook();
             let worksheet = workbook.addWorksheet(this.panelTitle);
 
-            worksheet.getColumn(1).width = 15;
+            worksheet.getColumn(1).width = 25;
             worksheet.getColumn(2).width = 25;
-            worksheet.getColumn(3).width = 12;
-            worksheet.getColumn(4).width = 12;
-            worksheet.getColumn(5).width = 25;
+            worksheet.getColumn(3).width = 8;
+            worksheet.getColumn(4).width = 10;
+            worksheet.getColumn(5).width = 12;
             worksheet.getColumn(6).width = 15;
-            worksheet.getColumn(7).width = 8;
-            worksheet.getColumn(8).width = 10;
+            worksheet.getColumn(7).width = 12;
+            worksheet.getColumn(8).width = 12;
 
-            const header = ["수주번호", "거래처", "등록일자", "약속일자", "제품명", "규격", "수량", "단가"];
+            const header = ["거래처", "제품명", "수량", "단가", "금액", "수주번호", "납품일", "판매일"];
             let headerRow = worksheet.addRow(header);
             headerRow.font = this.globals.headerFontStyle as Font;
             headerRow.eachCell((cell, number) => {
@@ -274,22 +273,23 @@ export class SalesSlipsComponent implements OnInit {
             let jsonValueToArray;
             data.forEach(d => {
                     jsonValueToArray = [];
-                    jsonValueToArray.push(d.order_no);
                     jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.demand_date);
-                    jsonValueToArray.push(d.promised_date);
                     jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.product_qty);
+                    jsonValueToArray.push(d.qty);
                     jsonValueToArray.push(d.product_price);
+                    jsonValueToArray.push(d.sales_price);
+                    jsonValueToArray.push(d.order_no);
+                    jsonValueToArray.push(d.delivery_date);
+                    jsonValueToArray.push(d.sales_date);
 
                     let row = worksheet.addRow(jsonValueToArray);
                     row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "center"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
+                    row.getCell(6).alignment = {horizontal: "center"};
+                    row.getCell(7).alignment = {horizontal: "center"};
+                    row.getCell(8).alignment = {horizontal: "center"};
+                    row.getCell(3).alignment = {horizontal: "right"};
+                    row.getCell(4).alignment = {horizontal: "right"};
+                    row.getCell(5).alignment = {horizontal: "right"};
                     row.eachCell((cell, number) => {
                         cell.border = this.globals.bodyBorderStyle as Borders;
                     });

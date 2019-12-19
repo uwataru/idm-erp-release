@@ -16,10 +16,10 @@ export class OutsourcedStorageSlipsService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/outsourcing/orders';
+  private url = this.globals.serverUrl + '/materials-orders/history/N';
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url + '/receiving', {params: params});
+      return this.http.get<Item[]>(this.url, {params: params});
     }
 
     GetSlip (slipNo) {
@@ -28,8 +28,8 @@ export class OutsourcedStorageSlipsService {
     }
 
     Save (data): Observable<Item> {
-        return this.http.post<Item>(this.url + '/create-slip', data, httpOptions).pipe(
-            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+      return this.http.post<Item>(this.globals.serverUrl + '/materials-orders/slips/N', data, httpOptions).pipe(
+        tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );
     }

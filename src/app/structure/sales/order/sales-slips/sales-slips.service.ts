@@ -14,7 +14,7 @@ export class SalesSlipsService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/sales/history/COMPLETION';
+    private url = this.globals.serverUrl + '/sales/complete/history';
 
     /** GET data from the server */
     GetSalesCompletionAll (params): Observable<Item[]> {
@@ -28,7 +28,7 @@ export class SalesSlipsService {
     }
 
     Save (data): Observable<Item> {
-        return this.http.post<Item>(this.globals.serverUrl + '/sales/slips', data, httpOptions).pipe(
+        return this.http.post<Item>(this.globals.serverUrl + '/sales/complete/slips', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

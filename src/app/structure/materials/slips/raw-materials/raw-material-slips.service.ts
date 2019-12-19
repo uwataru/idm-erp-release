@@ -16,7 +16,7 @@ export class RawMaterialsStorageSlipsService {
         private http: HttpClient,
         private globals: AppGlobals) { }
 
-    private url = this.globals.serverUrl + '/materials/receiving';
+    private url = this.globals.serverUrl + '/materials-orders/history/Y';
 
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
@@ -28,7 +28,7 @@ export class RawMaterialsStorageSlipsService {
     }
 
     Save (data): Observable<Item> {
-        return this.http.post<Item>(this.url + '/create-slip', data, httpOptions).pipe(
+        return this.http.post<Item>(this.globals.serverUrl + '/materials-orders/slips/Y', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

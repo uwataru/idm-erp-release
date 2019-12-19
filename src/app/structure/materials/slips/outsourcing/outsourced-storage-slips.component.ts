@@ -130,9 +130,15 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
     this.dataService.GetAll(params).subscribe(
       listData => {
         this.listData = listData;
+
+        this.rows = [];
+        for(let i in listData['data']){
+          listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
+        }
+
         this.rows = listData['data'];
-        this.totalOrderAmount = listData['totalOrderAmount'];
-        this.totalRcvWeight = listData['totalRcvWeight'];
+        // this.totalOrderAmount = listData['totalOrderAmount'];
+        // this.totalRcvWeight = listData['totalRcvWeight'];
         this.isLoadingProgress = false;
       }
     );
@@ -173,10 +179,10 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
     });
     let params = {
       'checked_id': checkedIdArr.join(','),
-      'grp_no': '600',
-      'rcv_date': this.rcvDate,
-      'dr_acct_code': this.drAcctCode,
-      'cr_acct_code': this.crAcctCode
+      // 'grp_no': '600',
+      // 'rcv_date': this.rcvDate,
+      // 'dr_acct_code': this.drAcctCode,
+      // 'cr_acct_code': this.crAcctCode
     };
     this.dataService.Save(params)
       .subscribe(
