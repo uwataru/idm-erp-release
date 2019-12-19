@@ -8,7 +8,6 @@ import { Item } from './acct-mgmt-items.item';
 import { AppGlobals } from '../../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
 import {saveAs as importedSaveAs} from "file-saver";
-import {ElectronService} from "../../../../providers/electron.service";
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -48,7 +47,6 @@ export class AcctMgmtItemsComponent implements OnInit {
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
 
     constructor(
-        public electronService: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
         private dataService: AcctMgmtItemsService,
         private globals: AppGlobals,

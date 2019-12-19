@@ -2,7 +2,6 @@ import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import { ElectronService } from '../../../../providers/electron.service';
 import { AcctMgmtItemValuesService } from './acct-mgmt-item-values.service';
 import { AppGlobals } from '../../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
@@ -59,7 +58,6 @@ export class AcctMgmtItemValuesComponent implements OnInit {
 
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
-        public electronService: ElectronService,
         private dataService: AcctMgmtItemValuesService,
         private globals: AppGlobals,
         private route: ActivatedRoute,

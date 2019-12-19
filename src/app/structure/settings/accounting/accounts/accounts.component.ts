@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ElectronService } from '../../../../providers/electron.service';
 import { saveAs as importedSaveAs } from "file-saver";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -56,7 +55,6 @@ export class AccountsComponent implements OnInit {
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
 
     constructor(
-        public electronService: ElectronService,
         @Inject(FormBuilder) fb: FormBuilder,
         private dataService: AccountsService,
         private globals: AppGlobals,
