@@ -16,6 +16,15 @@
                     (typeaheadOnSelect)="onSelectAccounts($event)"
                     placeholder="계정과목"
                     class="input-sm form-control w-sm inline v-middle" />
+                <!-- <input formControlName="sch_mgmt_item_no"
+                    [typeahead]="manItems"
+                    typeaheadOptionField="MgmtItemName"
+                    [typeaheadOptionsLimit]="150"
+                    [typeaheadScrollable]="true"
+                    [typeaheadMinLength]="0"
+                    (typeaheadOnSelect)="schAcctItems($event)"
+                    placeholder="관리항목"
+                    class="input-sm form-control w-sm inline v-middle" /> -->
                 <select formControlName="sch_mgmt_item_no" (change)="schAcctItems($event)" class="input-sm form-control w-sm inline v-middle">
                     <option [ngValue]="item.code" *ngFor="let item of acctItems">{{item.name}}</option>
                 </select>

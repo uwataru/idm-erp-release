@@ -27,6 +27,8 @@ export class ConfigService {
     private saleTypeAPI = this.globals.serverUrl+'/settings/search/sales_classification';
     private PackageShipmentAPI = this.globals.serverUrl+'/settings/search/package_shipment';
     private returnReasonAPI = this.globals.serverUrl+'/settings/search/return_reason';
+    private acctAPI = this.globals.serverUrl+'/accounts/search';
+    private acctMgmtAPI = this.globals.serverUrl+'/acct-mgmt-item-values/search';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -58,6 +60,8 @@ export class ConfigService {
             .then(() => this.getConfigData(this.saleTypeAPI, 'saleTypeList'))
             .then(() => this.getConfigData(this.PackageShipmentAPI, 'PackageShipmentList'))
             .then(() => this.getConfigData(this.returnReasonAPI, 'returnReasonList'))
+            .then(() => this.getConfigData(this.acctAPI, 'acct'))
+            .then(() => this.getConfigData(this.acctMgmtAPI, 'acctMgmtItems'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);

@@ -44,7 +44,7 @@ export class AcctMgmtItemValuesComponent implements OnInit {
     tDate = this.globals.tDate;
     AcctName: string;
     MgmtItemName: string;
-    manItems = this.globals.configs['accManItems'];
+    manItems = this.globals.configs['acctMgmtItems'];
 
     isExecutable: boolean = false;
     isPrintable: boolean = false;
