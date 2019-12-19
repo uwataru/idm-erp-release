@@ -54,8 +54,6 @@ export class AccountsComponent implements OnInit {
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
     @ViewChild('DeleteFormModal') deleteFormModal: ModalDirective;
-    @ViewChild('UploadFormModal') uploadFormModal: ModalDirective;
-    @ViewChild('UploadFileSrc') uploadFileSrc: ElementRef;
 
     constructor(
         public electronService: ElectronService,
@@ -256,8 +254,6 @@ export class AccountsComponent implements OnInit {
                 this.deleteFormModal.show();
             } else if (method == 'write') {
                 this.inputFormModal.show();
-            } else if (method == 'upload') {
-                this.uploadFormModal.show();
             }
         } else {
             alert(this.globals.isNotExecutable);
@@ -291,32 +287,4 @@ export class AccountsComponent implements OnInit {
         }
     }
 
-    fileSelected (event) {
-        let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
-            let file: File = fileList[0];
-            let formData:FormData = new FormData();
-            formData.append('uploadFile', file, file.name);
-
-            this.excelUpload(formData);
-        }
-    }
-
-    excelUpload (data): void {
-        this.isLoadingProgress = true;
-        this.dataService.UploadExcelFile(data).subscribe(
-            data => {
-                if (data['result'] == "success") {
-                    this.inputForm.reset();
-                    this.isLoadingProgress = false;
-                    this.getAll();
-                    this.messageService.add(this.editOkMsg);
-                } else {
-                    this.messageService.add(data['errorMessage']);
-                }
-                this.uploadFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
 }
