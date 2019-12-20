@@ -300,6 +300,7 @@ export class AssemblyWorkedComponent implements OnInit {
     console.log('removePersonnelRow', index);
     this.inputForm.controls['personnel_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
     this.inputForm.controls['personnel_id_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
+    this.inputForm.controls['work_time_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
   }
 
   chkViewAddBtn(index) {
