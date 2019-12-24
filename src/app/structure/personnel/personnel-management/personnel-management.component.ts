@@ -92,7 +92,6 @@ export class PersonnelManagementComponent implements OnInit {
 
         this.selectedId = '';
         this.selected = [];
-        this.rows = [];
 
         this.params = {
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),

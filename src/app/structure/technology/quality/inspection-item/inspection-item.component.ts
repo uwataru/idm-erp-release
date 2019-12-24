@@ -98,7 +98,6 @@ export class InspectionItemComponent implements OnInit {
       sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
       maxResultCount: 10000
     };
-    this.rows = [];
     this.isLoadingProgress = true;
     this.dataService.GetAll(params).subscribe(
       listData => {

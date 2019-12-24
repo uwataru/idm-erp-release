@@ -55,9 +55,6 @@ export class LotTrackerComponent implements OnInit {
 
     getAll() {
         let formData = this.searchForm.value;
-        this.rowsSales = [];
-        this.rowsDelivery = [];
-        this.rowsMaterial = [];
         if (!formData.sch_order_no) {
             this.messageService.add('수주번호를 입력해주세요!');
             return false;
