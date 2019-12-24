@@ -15,9 +15,8 @@ export class ProductionPlanningService {
     private url = this.globals.serverUrl + '/production/plan';
 
     /** GET data from the server */
-    GetAll (): Observable<Item[]> {
-        let currTime = (new Date()).getTime();
-        return this.http.get<Item[]>(this.url);
+    GetAll (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
     GetPlanningDate () {

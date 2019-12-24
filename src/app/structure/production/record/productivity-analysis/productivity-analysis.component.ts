@@ -64,7 +64,7 @@ export class ProductivityAnalysisComponent implements OnInit {
         let params = {
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sch_prdline: formData.sch_prdline,
+            production_work_lines_id: formData.sch_prdline,
         };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(

@@ -134,7 +134,8 @@ export class OrderAdjustmentComponent implements OnInit {
         let formData = this.searchForm.value;
 
         let params = {
-            partner_code: this.listSltdPaCode,
+            partner_name: formData.sch_partner_name,
+            product_name: formData.sch_product_name,
             // sortby: ['order_no'],
             // order: ['asc']
             // maxResultCount: 10000

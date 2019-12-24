@@ -163,7 +163,7 @@ export class PersonnelComponent implements OnInit {
         this.selected = [];
 
         let params = {
-            group_id: this.searchForm.value['sch_group_id'],
+            settings_id: this.searchForm.value['sch_group_id'],
         }
         console.log(this.searchForm.value['sch_group_id']);
         this.isLoadingProgress = true;
@@ -177,6 +177,15 @@ export class PersonnelComponent implements OnInit {
                 this.isLoadingProgress = false;
             }
         );
+    }
+
+    hiddenCheck() {
+        let formData = this.searchForm.value;
+
+        if (formData.sch_affiliation_name == '') {
+            this.searchForm.controls['sch_group_id'].setValue('');
+        }
+        this.getAll();
     }
 
     Edit (id) {
@@ -461,9 +470,9 @@ export class PersonnelComponent implements OnInit {
         this.allResult  = this.utils.addComma(tmpResult);
 
 
-        console.log(tmpTime);
-        console.log(tmpWage);
-        console.log(tmpResult);
+        console.log('tmpTime',tmpTime);
+        console.log('tmpWage',tmpWage);
+        console.log('tmpResult',tmpResult);
         // console.log('Time', this.tmpTime[index-1], index);
         // console.log('Time', this.tmpTime, index);
         // console.log('Price', this.tmpWage[index-1], index);

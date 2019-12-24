@@ -6,21 +6,20 @@
     </div>
     <div class="m-l-xs">
       <form [formGroup]="searchForm">
-<!--        <input formControlName="sch_partner_name"-->
-<!--               [typeahead]="listPartners"-->
-<!--               typeaheadOptionField="name"-->
-<!--               [typeaheadOptionsLimit]="50"-->
-<!--               [typeaheadScrollable]="true"-->
-<!--               [typeaheadMinLength]="0"-->
-<!--               (typeaheadOnSelect)="onSelectListPartner($event)"-->
-<!--               placeholder="거래처명"-->
-<!--               class="input-sm form-control w-sm inline v-middle"-->
-<!--               id="sch_partner_name"/>-->
-        <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
-        <input id="sch_sdate" type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
-               class="input-sm form-control w-xs inline v-middle"/> ~
-        <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
-               class="input-sm form-control w-xs inline v-middle"/>
+       <input formControlName="sch_product_name"
+              [typeahead]="listProduct"
+              typeaheadOptionField="name"
+              [typeaheadOptionsLimit]="50"
+              [typeaheadScrollable]="true"
+              [typeaheadMinLength]="0"
+              (typeaheadOnSelect)="onSelectListProduct($event)"
+              placeholder="제품명"
+              class="input-sm form-control w-sm inline v-middle"
+              id="sch_product_name"/>
+        <label for="sch_yearmonth" class="control-label text-sm">년월</label>
+        <input type="text" id="sch_yearmonth" formControlName="sch_yearmonth"
+               class="input-sm form-control w-xs inline v-middle"
+               bsDatepicker [bsConfig]="bsConfig" (bsValueChange)="onValueChange($event)" />
         <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
       </form>
     </div>

@@ -76,7 +76,7 @@ export class AssemblyResultComponent implements OnInit {
     getAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            sch_prdline: formData.sch_prdline,
+            production_work_lines_id: formData.sch_prdline,
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
             // sortby: ['sales_date'],
@@ -99,6 +99,9 @@ export class AssemblyResultComponent implements OnInit {
                 this.isLoadingProgress = false;
             }
         );
+    }
+    selectPrdline(event){
+        console.log(event);
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

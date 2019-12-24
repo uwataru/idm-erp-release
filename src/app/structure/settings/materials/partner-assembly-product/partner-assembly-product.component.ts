@@ -148,14 +148,11 @@ export class PartnerAssemblyProductComponent implements OnInit {
 
   getAll(): void {
     this.selected = [];
-
+    this.temp = [];
+    this.rows = [];
     let formData = this.searchForm.value;
     let params = {
       partner_name: formData.sch_partner_name,
-      // st: this.sch_st,
-      sortby: ['name', 'size'],
-      order: ['asc', 'asc'],
-      maxResultCount: 10000
     };
     if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
       params['partner_id'] = this.listSltdPaId;
@@ -164,6 +161,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
     this.dataService.GetAll(params).subscribe(
       listData => {
         this.listData = listData;
+
         this.temp = listData['data'];
         this.rows = listData['data'];
 
@@ -179,14 +177,9 @@ export class PartnerAssemblyProductComponent implements OnInit {
     } else {
       this.listSltdPaId = event.item['id'];
     }
-    let id = this.listSltdPaId;
-    let formData = this.searchForm.value;
-    const temp = this.temp.filter(function (d) {
-      d.partner_code = String(d.id);
-      return d.partner_code.indexOf(id) !== -1 || !id;
-    });
 
-    this.rows = temp;
+    this.getAll();
+
   }
 
   updateFilter(event) {

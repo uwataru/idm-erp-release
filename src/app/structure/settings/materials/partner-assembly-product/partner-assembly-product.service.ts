@@ -17,7 +17,7 @@ export class PartnerAssemblyProductService {
     private url = this.globals.serverUrl ;
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url+ '/materials/list/ptype4');
+        return this.http.get<Item[]>(this.url+ '/materials/list/ptype4', {params: params});
     }
 
     GetById (id:number): Observable<Item> {

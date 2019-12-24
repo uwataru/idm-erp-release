@@ -28,7 +28,6 @@ export class TotalInventorySituationComponent implements OnInit {
   formData: Item['data'];
   sch_partner_name: string;
   listPartners: any[] = this.globals.configs['partnerList'];
-  listSltdPaCode: number = 0;
   searchValue: string;
   filteredPartners: any[] = [];
 
@@ -93,7 +92,7 @@ export class TotalInventorySituationComponent implements OnInit {
   getAll(): void {
     let formData = this.searchForm.value;
     let params = {
-      // partner_name: this.listSltdPaCode,
+      partner_name: formData.sch_partner_name,
       sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
       sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
       // sortby: ['input_date'],
@@ -115,10 +114,10 @@ export class TotalInventorySituationComponent implements OnInit {
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['id'] == '') {
-      this.listSltdPaCode = 0;
+    if (event.item['name'] == '') {
+      this.searchForm.controls['sch_partner_name'].setValue('');
     } else {
-      this.listSltdPaCode = event.item['id'];
+      this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
     }
   }
 

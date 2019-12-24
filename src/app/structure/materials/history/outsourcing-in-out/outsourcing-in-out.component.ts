@@ -1,16 +1,18 @@
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
-import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {OutsourcingInOutService} from './outsourcing-in-out.service';
-import {AppGlobals} from '../../../../app.globals';
-import {saveAs as importedSaveAs} from 'file-saver';
-import {ActivatedRoute} from '@angular/router';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './outsourcing-in-out.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { OutsourcingInOutService } from './outsourcing-in-out.service';
+import { AppGlobals } from '../../../../app.globals';
+import { saveAs as importedSaveAs } from 'file-saver';
+import { ActivatedRoute } from '@angular/router';
+import { BsDatepickerConfig } from "ngx-bootstrap";
+import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './outsourcing-in-out.item';
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 declare var $: any;
 
 @Component({
@@ -38,6 +40,7 @@ export class OutsourcingInOutComponent implements OnInit {
   listSltdPaCode: number = 0;
   listPartners: any[] = this.globals.configs['partnerList'];
   listMaterials: any[] = this.globals.configs['schMaterials'];
+  listSize: any[] = this.globals.configs['sizeList'];
 
 
   totalBalance: number;
@@ -57,6 +60,10 @@ export class OutsourcingInOutComponent implements OnInit {
 
   errorMessage: string;
 
+  bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+    minMode: 'month' as BsDatepickerViewMode,
+    dateInputFormat: 'YYYY-MM'
+  });
   constructor(
     public elSrv: ElectronService,
     @Inject(FormBuilder) fb: FormBuilder,
@@ -73,8 +80,7 @@ export class OutsourcingInOutComponent implements OnInit {
     });
 
     this.searchForm = fb.group({
-      sch_sdate: '',
-      sch_edate: '',
+      sch_yearmonth: '',
       sch_material: '',
       sch_size: '',
       sch_partner_name: '',
@@ -89,11 +95,11 @@ export class OutsourcingInOutComponent implements OnInit {
     this.panelTitle = '외주수불명세서';
     // this.inputFormTitle = '외주수불내역서';
 
-    this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
-    this.searchForm.controls['sch_edate'].setValue(this.tDate);
-    this.getAll();
 
-    $(document).ready(function(){
+    this.getAll();
+    this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
+
+    $(document).ready(function () {
       let modalContent: any = $('.modal-content');
       let modalHeader = $('.modal-header');
       modalHeader.addClass('cursor-all-scroll');
@@ -107,11 +113,10 @@ export class OutsourcingInOutComponent implements OnInit {
     let formData = this.searchForm.value;
 
     let params = {
-      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      sch_material: formData.sch_material,
-      sch_size: formData.sch_size,
-      sch_partner_name: formData.sch_partner_name,
+      sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+      material_name: formData.sch_material,
+      material_size: formData.sch_size,
+      partner_name: formData.sch_partner_name,
       // sortby: ['rcv_date'],
       // order: ['asc'],
       // maxResultCount: 10000
@@ -119,50 +124,57 @@ export class OutsourcingInOutComponent implements OnInit {
     this.isLoadingProgress = true;
 
     this.dataService.GetAll(params).subscribe(
-        data =>
-        {
-          this.rows = data['data'];
-          this.temp = data['data'];
+      data => {
+        this.rows = data['data'];
+        this.temp = data['data'];
 
-          let len = this.rows.length;
-          for(let i=0; i<len; i++){
-            this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
-          }
-
-          // this.totalBalance = data['totalBalance'];
-          // this.totalBalanceAmount = data['totalBalanceAmount'];
-          //
-          // this.totalOrderAmount = data['totalOrderAmount'];
-          // this.totalRcvWeight = data['totalRcvWeight'];
-          // this.totalUsedWeight = data['totalUsedWeight'];
-          // this.totalUsedAmount = data['totalUsedAmount'];
-          // this.totalWeight = data['totalWeight'];
-          // this.totalRemaingAmount = data['totalRemaingAmount'];
-
-          this.isLoadingProgress = false;
+        let len = this.rows.length;
+        for (let i = 0; i < len; i++) {
+          this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
         }
+
+        // this.totalBalance = data['totalBalance'];
+        // this.totalBalanceAmount = data['totalBalanceAmount'];
+        //
+        // this.totalOrderAmount = data['totalOrderAmount'];
+        // this.totalRcvWeight = data['totalRcvWeight'];
+        // this.totalUsedWeight = data['totalUsedWeight'];
+        // this.totalUsedAmount = data['totalUsedAmount'];
+        // this.totalWeight = data['totalWeight'];
+        // this.totalRemaingAmount = data['totalRemaingAmount'];
+
+        this.isLoadingProgress = false;
+      }
     );
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['id'] == '') {
-      this.listSltdPaCode = 0;
+    if (event.item['name'] == '') {
+      this.searchForm.controls['sch_partner_name'].setValue('');
     } else {
-      this.listSltdPaCode = event.item['id'];
+      this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
     }
 
     const val = this.listSltdPaCode;
   }
 
-  updateFilterSize(event) {
-    const val = event.target.value;
-    // filter data
-    let tempArr = this.temp.map(x => Object.assign({}, x));
-    let temp = tempArr.filter(function (d) {
-      return d.size.indexOf(val) !== -1 || !val;
-    });
+  onSelectListMaterial(event: TypeaheadMatch): void {
+    if (event.item['v_name'] == '') {
+      this.searchForm.controls['sch_material'].setValue('');
+    } else {
+      this.searchForm.controls['sch_material'].setValue(event.item['name']);
+    }
 
-    this.rows = temp;
+    const val = this.listSltdPaCode;
+  }
+
+  onSelectListSize(event: TypeaheadMatch): void {
+    if (event.item['set_value'] == '') {
+      this.searchForm.controls['sch_size'].setValue('');
+    } else {
+      this.searchForm.controls['sch_size'].setValue(event.item['set_value']);
+    }
+
   }
 
   exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
@@ -198,38 +210,44 @@ export class OutsourcingInOutComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.input_date);
-            jsonValueToArray.push(d.name);
-            jsonValueToArray.push(d.size);
-            jsonValueToArray.push(d.partner_name);
-            jsonValueToArray.push(d.transfer_qty);
-            jsonValueToArray.push(d.receiving_qty);
-            jsonValueToArray.push(d.insert_qty);
-            jsonValueToArray.push(d.output_qty);
-            jsonValueToArray.push(d.remain_qty);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.input_date);
+        jsonValueToArray.push(d.name);
+        jsonValueToArray.push(d.size);
+        jsonValueToArray.push(d.partner_name);
+        jsonValueToArray.push(d.transfer_qty);
+        jsonValueToArray.push(d.receiving_qty);
+        jsonValueToArray.push(d.insert_qty);
+        jsonValueToArray.push(d.output_qty);
+        jsonValueToArray.push(d.remain_qty);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "right"};
-            row.getCell(5).alignment = {horizontal: "right"};
-            row.getCell(6).alignment = {horizontal: "right"};
-            row.getCell(7).alignment = {horizontal: "right"};
-            row.getCell(8).alignment = {horizontal: "right"};
-            row.getCell(9).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(4).alignment = { horizontal: "right" };
+        row.getCell(5).alignment = { horizontal: "right" };
+        row.getCell(6).alignment = { horizontal: "right" };
+        row.getCell(7).alignment = { horizontal: "right" };
+        row.getCell(8).alignment = { horizontal: "right" };
+        row.getCell(9).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })
     }
+  }
+
+  onValueChange(value: Date): void {
+    // console.log(this.searchForm.controls['sch_yearmonth'].value);
+    this.searchForm.controls['sch_yearmonth'].setValue(value);
+    this.getAll();
   }
 
 }

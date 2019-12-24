@@ -12,9 +12,20 @@
         <input id="sch_edate" type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
                class="input-sm form-control w-xs inline v-middle"/>
         <label for="sch_worker_name" class="m-l">작업자</label>
-        <input type="text" formControlName="sch_worker_name" id="sch_worker_name" (keyup)="updateFilter($event)"
-               class="input-sm form-control w-sm inline v-middle" placeholder="작업자"/>
-        <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+        <!-- <input type="text" formControlName="sch_worker_name" id="sch_worker_name" (keyup)="updateFilter($event)"
+               class="input-sm form-control w-sm inline v-middle" placeholder="작업자"/> -->
+        <input formControlName="sch_worker_name"
+              id="sch_worker_name"
+              [typeahead]="personnelList"
+              typeaheadOptionField="name"
+              [typeaheadOptionsLimit]="300"
+              [typeaheadScrollable]="true"
+              [typeaheadMinLength]="0"
+              (typeaheadOnSelect)="onSelectWorkers($event)"
+              placeholder="작업자"
+              class="input-sm form-control w-sm inline v-middle" />
+        <input type="hidden" formControlName="production_personnel_id" id="production_personnel_id"/>
+        <button (click)="hiddenCheck()" class="btn btn-sm btn-default hidden-print">검색</button>
       </form>
     </div>
   </div>

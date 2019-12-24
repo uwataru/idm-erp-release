@@ -136,16 +136,23 @@ export class ProductionPlanningComponent implements OnInit {
   getAll(): void {
     let formData = this.searchForm.value;
 
+    let params = {
+      order_no: formData.sch_order_no
+    }
+
     this.isLoadingProgress = true;
-      this.dataService.GetAll().subscribe(
-        listData => {
-          this.listData = listData;
+    this.dataService.GetAll(params).subscribe(
+      listData => {
+        this.listData = listData;
+        this.rows = [];
+        this.temp = [];
+        if (this.listData['totalCount'] > 0) {
           this.rows = listData['data'];
           this.temp = listData['data'];
 
-          for(let i=0; i<this.rows.length; i++){
-            let qty = Number(this.rows[i]['qty'])*1;
-            let productionQty = Number(this.rows[i]['Production_qty'])*1;
+          for (let i = 0; i < this.rows.length; i++) {
+            let qty = Number(this.rows[i]['qty']) * 1;
+            let productionQty = Number(this.rows[i]['Production_qty']) * 1;
             // console.log(i, qty, productionQty);
             let remainQty = qty - productionQty;
             this.rows[i].remainQty = remainQty;
@@ -153,10 +160,11 @@ export class ProductionPlanningComponent implements OnInit {
             this.rows[i].remainPrecent = Math.round(((productionQty / qty) * 100) * 10) / 10;
             // console.log(this.rows[i].remainPrecent);
           }
-
-          this.isLoadingProgress = false;
         }
-      );
+
+        this.isLoadingProgress = false;
+      }
+    );
 
   }
 

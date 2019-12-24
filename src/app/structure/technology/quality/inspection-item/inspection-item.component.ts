@@ -84,6 +84,13 @@ export class InspectionItemComponent implements OnInit {
 
 
   getAll(): void {
+    this.totalVal1 = 0;
+    this.totalVal2 = 0;
+    this.totalVal3 = 0;
+    this.totalVal4 = 0;
+    this.totalVal5 = 0;
+    this.totalVal6 = 0;
+    this.totalVal7 = 0;
     let formData = this.searchForm.value;
 
     let params = {

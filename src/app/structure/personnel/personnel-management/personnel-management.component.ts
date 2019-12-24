@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppGlobals } from '../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
@@ -9,80 +10,82 @@ import { MessageService } from '../../../message.service';
 
 import { Item } from './personnel-management.item';
 import { PersonnelManagementService } from './personnel-management.service';
-import {UtilsService} from "../../../utils.service";
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../providers/electron.service";
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {saveAs as importedSaveAs} from "file-saver";
+import { UtilsService } from "../../../utils.service";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../providers/electron.service";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { saveAs as importedSaveAs } from "file-saver";
 declare var $: any;
 
 @Component({
-  selector: 'app-personnel-management',
-  templateUrl: './personnel-management.component.html',
-  styleUrls: ['./personnel-management.component.scss'],
-  providers: [PersonnelManagementService]
+    selector: 'app-personnel-management',
+    templateUrl: './personnel-management.component.html',
+    styleUrls: ['./personnel-management.component.scss'],
+    providers: [PersonnelManagementService]
 })
 export class PersonnelManagementComponent implements OnInit {
-  panelTitle: string;
+    panelTitle: string;
 
-  isLoadingProgress: boolean = false;
-  selectedId: string;
-  listData : Item[];
-  gridHeight = this.globals.gridHeight;
-  messages = this.globals.datatableMessages;
+    isLoadingProgress: boolean = false;
+    selectedId: string;
+    listData: Item[];
+    gridHeight = this.globals.gridHeight;
+    messages = this.globals.datatableMessages;
 
-  selectedCnt: number;
-  editData: Item;
-  formData: Item['data'];
-  rows = [];
-  temp = [];
-  delId = [];
-  selected = [];
-  searchForm: FormGroup;
-  tDate = this.globals.tDate;
+    selectedCnt: number;
+    editData: Item;
+    formData: Item['data'];
+    rows = [];
+    temp = [];
+    delId = [];
+    selected = [];
+    searchForm: FormGroup;
+    tDate = this.globals.tDate;
+    personnelList: any[] = this.globals.configs['personnelList'];
+    params;
+    errorMessage: string;
 
-  errorMessage: string;
-
-  constructor(
-    @Inject(FormBuilder) fb: FormBuilder,
-    private datePipe: DatePipe,
-    private dataService: PersonnelManagementService,
-    private globals: AppGlobals,
-    private route: ActivatedRoute,
-    private configService: ConfigService,
-    private utils: UtilsService,
-    public elSrv: ElectronService
-  ) {
-      this.searchForm = fb.group({
-          sch_sdate: '',
-          sch_edate: '',
-          sch_worker_name: ''
-      });
-   }
-
-  ngOnInit() {
-    this.panelTitle = '생산인력투입기록';
-
-    this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
-    this.searchForm.controls['sch_edate'].setValue(this.tDate);
-
-    this.getAll();
-
-    $(document).ready(function(){
-        let modalContent: any = $('.modal-content');
-        let modalHeader = $('.modal-header');
-        modalHeader.addClass('cursor-all-scroll');
-        modalContent.draggable({
-            handle: '.modal-header'
+    constructor(
+        @Inject(FormBuilder) fb: FormBuilder,
+        private datePipe: DatePipe,
+        private dataService: PersonnelManagementService,
+        private globals: AppGlobals,
+        private route: ActivatedRoute,
+        private configService: ConfigService,
+        private utils: UtilsService,
+        public elSrv: ElectronService
+    ) {
+        this.searchForm = fb.group({
+            sch_sdate: '',
+            sch_edate: '',
+            sch_worker_name: '',
+            production_personnel_id: ''
         });
-    });
-  }
+    }
 
-  onSelect({ selected }) {
-    // console.log('Select Event', selected, this.selected);
+    ngOnInit() {
+        this.panelTitle = '생산인력투입기록';
 
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-}
+        this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
+        this.searchForm.controls['sch_edate'].setValue(this.tDate);
+
+        this.getAll();
+
+        $(document).ready(function () {
+            let modalContent: any = $('.modal-content');
+            let modalHeader = $('.modal-header');
+            modalHeader.addClass('cursor-all-scroll');
+            modalContent.draggable({
+                handle: '.modal-header'
+            });
+        });
+    }
+
+    onSelect({ selected }) {
+        // console.log('Select Event', selected, this.selected);
+
+        this.selected.splice(0, this.selected.length);
+        this.selected.push(...selected);
+    }
 
     getAll(): void {
         let formData = this.searchForm.value;
@@ -90,15 +93,15 @@ export class PersonnelManagementComponent implements OnInit {
         this.selectedId = '';
         this.selected = [];
 
-        let params = {
+        this.params = {
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            maxResultCount: 1000
+            production_personnel_id: formData.production_personnel_id
         };
+
         this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
+        this.dataService.GetAll(this.params).subscribe(
+            listData => {
                 this.listData = listData;
                 this.temp = listData['data'];
                 this.rows = listData['data'];
@@ -108,25 +111,43 @@ export class PersonnelManagementComponent implements OnInit {
         );
     }
 
+    hiddenCheck() {
+        let formData = this.searchForm.value;
+
+        if (formData.sch_worker_name == '') {
+            this.searchForm.controls['production_personnel_id'].setValue('');
+        }
+        this.getAll();
+    }
+
     updateFilter(event) {
         // let partner_code = this.listSltdPaCode;
         const val = event.target.value;
         // filter data
         const temp = this.temp.filter(function (d) {
             // console.log(d);
-            return (d.personnel_name!=null &&  d.personnel_name.indexOf(val) !== -1) || !val;
+            return (d.personnel_name != null && d.personnel_name.indexOf(val) !== -1) || !val;
         });
 
         // update the rows
         this.rows = temp;
     }
 
-    totalWorkTime(){
+    totalWorkTime() {
         let totalVal = 0;
-        for(let i in this.rows){
+        for (let i in this.rows) {
             totalVal += parseInt(this.rows[i].work_time);
         }
         return this.utils.addComma(totalVal);
+    }
+
+    onSelectWorkers(event: TypeaheadMatch): void {
+        console.log(event);
+        if (event.item['name'] == '') {
+            this.searchForm.controls['sch_worker_name'].setValue('');
+        } else {
+            this.searchForm.controls['production_personnel_id'].setValue(event.item['id']);
+        }
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
@@ -160,29 +181,29 @@ export class PersonnelManagementComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.production_date);
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.personnel_name);
-                    jsonValueToArray.push(d.work_time);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.production_date);
+                jsonValueToArray.push(d.order_no);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.product_type);
+                jsonValueToArray.push(d.personnel_name);
+                jsonValueToArray.push(d.work_time);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(2).alignment = {horizontal: "center"};
-                    row.getCell(6).alignment = {horizontal: "center"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(2).alignment = { horizontal: "center" };
+                row.getCell(6).alignment = { horizontal: "center" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

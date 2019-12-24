@@ -29,6 +29,7 @@ export class ConfigService {
     private returnReasonAPI = this.globals.serverUrl+'/settings/search/return_reason';
     private acctAPI = this.globals.serverUrl+'/accounts/search';
     private acctMgmtAPI = this.globals.serverUrl+'/acct-mgmt-item-values/search';
+    private sizeAPI = this.globals.serverUrl+'/settings/search/standard';
     /** GET data from the server */
     public getConfigData(apiURL, configKey) {
         return new Promise((resolve, reject) => {
@@ -62,6 +63,7 @@ export class ConfigService {
             .then(() => this.getConfigData(this.returnReasonAPI, 'returnReasonList'))
             .then(() => this.getConfigData(this.acctAPI, 'acct'))
             .then(() => this.getConfigData(this.acctMgmtAPI, 'acctMgmtItems'))
+            .then(() => this.getConfigData(this.sizeAPI, 'sizeList'))
             .then(() => {
                 console.warn(this.globals.configs['menu']);
                 console.warn(this.globals.configs['type1Partners']);

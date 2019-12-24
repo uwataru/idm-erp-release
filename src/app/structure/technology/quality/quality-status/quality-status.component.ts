@@ -84,12 +84,18 @@ export class QualityStatusComponent implements OnInit {
   }
 
   getAll(): void {
+    this.qty_0 = 0;
+    this.qty_1 = 0;
+    this.qty_2 = 0;
+    this.qty_3 = 0;
+    this.qty_4 = 0;
+    this.qty_5 = 0;
+    this.qty_6 = 0;
     let formData = this.searchForm.value;
 
     let params = {
         sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
         sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-        sortby: ['id'],
         order: ['asc'],
         maxResultCount: 10000
     }

@@ -162,6 +162,7 @@ export class CompletionWaitingComponent implements OnInit {
         } else {
             this.listSltdPaCode = event.item['id'];
         }
+        this.getAll();
     }
 
     onSelect({ selected }) {

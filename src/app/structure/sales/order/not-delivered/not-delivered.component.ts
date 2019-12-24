@@ -135,10 +135,10 @@ export class OrderNotDeliveredComponent implements OnInit {
 
         let formData = this.searchForm.value;
         let params = {
-            // partner_name: formData.sch_partner_name,
+            partner_name: formData.sch_partner_name,
+            order_no: formData.sch_order_no,
             // sortby: ['product_code'],
             // order: ['asc'],
-            maxResultCount: 10000
         };
         if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
             params['partner_code'] = this.listSltdPaCode;
@@ -166,6 +166,7 @@ export class OrderNotDeliveredComponent implements OnInit {
         } else {
             this.listSltdPaCode = event.item['id'];
         }
+        this.getAll();
     }
     onSelectListUnloadPlace(event: TypeaheadMatch): void {
         this.inputForm.controls['unload_place_id'].setValue(event.item['id']);

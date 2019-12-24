@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
@@ -8,9 +8,11 @@ import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { saveAs as importedSaveAs } from "file-saver";
 import { Item } from './assembly-work.item';
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { BsDatepickerConfig } from "ngx-bootstrap";
+import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 
 declare var $: any;
 
@@ -30,9 +32,8 @@ export class AssemblyWorkComponent implements OnInit {
     searchForm: FormGroup;
 
     formData: Item['rowData'];
-    sch_partner_name: string;
-    listPartners: any[] = this.globals.configs['partnerList'];
-    listSltdPaCode: number = 0;
+    sch_product_name: string;
+    listProduct: any[] = this.globals.configs['productList'];
     searchValue: string;
     filteredPartners: any[] = [];
 
@@ -40,6 +41,11 @@ export class AssemblyWorkComponent implements OnInit {
 
     messages = this.globals.datatableMessages;
     errorMessage: string;
+
+    bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+        minMode: 'month' as BsDatepickerViewMode,
+        dateInputFormat: 'YYYY-MM'
+    });
 
     constructor(
         public elSrv: ElectronService,
@@ -51,35 +57,32 @@ export class AssemblyWorkComponent implements OnInit {
         private messageService: MessageService
     ) {
         this.searchForm = fb.group({
-            sch_partner_name: '',
+            sch_product_name: '',
             sch_prdline: '',
-            sch_sdate: '',
-            sch_edate: ''
+            sch_yearmonth: ''
         });
     }
 
     ngOnInit() {
         this.panelTitle = '조립수불명세서';
-        this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
-        this.searchForm.controls['sch_edate'].setValue(this.tDate);
+        this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
         this.getAll();
     }
 
     getAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            // partner_code: formData.sch_partner_name,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+            product_name: formData.sch_product_name,
+            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+
         }
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
-            data =>
-            {
+            data => {
                 this.rows = data['data'];
-                for(let i in this.rows){
+                for (let i in this.rows) {
                     this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].production_qty
-                      - this.rows[i].defect_qty - this.rows[i].loss_qty;
+                        - this.rows[i].defect_qty - this.rows[i].loss_qty;
                 }
 
                 this.isLoadingProgress = false;
@@ -87,11 +90,11 @@ export class AssemblyWorkComponent implements OnInit {
         );
     }
 
-    onSelectListPartner(event: TypeaheadMatch): void {
-        if (event.item['id'] == '') {
-            this.listSltdPaCode = 0;
+    onSelectListProduct(event: TypeaheadMatch): void {
+        if (event.item['name'] == '') {
+            this.searchForm.controls['sch_product_name'].setValue('');
         } else {
-            this.listSltdPaCode = event.item['id'];
+            this.searchForm.controls['sch_product_name'].setValue(event.item['name']);
         }
     }
 
@@ -126,34 +129,40 @@ export class AssemblyWorkComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.transfer_qty);
-                    jsonValueToArray.push(d.production_qty);
-                    jsonValueToArray.push(d.defect_qty);
-                    jsonValueToArray.push(d.loss_qty);
-                    jsonValueToArray.push(d.remain_qty);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.product_type);
+                jsonValueToArray.push(d.transfer_qty);
+                jsonValueToArray.push(d.production_qty);
+                jsonValueToArray.push(d.defect_qty);
+                jsonValueToArray.push(d.loss_qty);
+                jsonValueToArray.push(d.remain_qty);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(3).alignment = {horizontal: "right"};
-                    row.getCell(4).alignment = {horizontal: "right"};
-                    row.getCell(5).alignment = {horizontal: "right"};
-                    row.getCell(6).alignment = {horizontal: "right"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(3).alignment = { horizontal: "right" };
+                row.getCell(4).alignment = { horizontal: "right" };
+                row.getCell(5).alignment = { horizontal: "right" };
+                row.getCell(6).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })
         }
+    }
+
+    onValueChange(value: Date): void {
+        // console.log(this.searchForm.controls['sch_yearmonth'].value);
+        this.searchForm.controls['sch_yearmonth'].setValue(value);
+        this.getAll();
     }
 
 }

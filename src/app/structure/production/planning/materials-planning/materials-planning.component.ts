@@ -7,8 +7,6 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './materials-planning.item';
-import {ElectronService} from "../../../../providers/electron.service";
-import { saveAs as importedSaveAs } from "file-saver";
 
 @Component({
   selector: 'app-page',
@@ -52,12 +50,9 @@ export class MaterialsPlanningComponent implements OnInit {
         private globals: AppGlobals,
         private utils: UtilsService,
         private messageService: MessageService,
-        public elSrv: ElectronService
     ) {
         this.searchForm = fb.group({
             sch_order_no:'',
-            sch_sdate: '',
-            sch_edate: ''
         });
 
         // 생산계획 수립일, 출력기한
@@ -77,12 +72,11 @@ export class MaterialsPlanningComponent implements OnInit {
 
     GetAll(): void {
         let formData = this.searchForm.value;
-        // let params = {
-        //     sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-        //     sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-        // };
+        let params = {
+            order_no: formData.sch_order_no
+        };
         this.isLoadingProgress = true;
-        this.dataService.GetAll().subscribe(
+        this.dataService.GetAll(params).subscribe(
             listData => {
                 this.listData = listData;
                 this.rows = listData['data'];

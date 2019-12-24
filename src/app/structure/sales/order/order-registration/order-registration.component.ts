@@ -144,7 +144,8 @@ export class OrderRegistrationComponent implements OnInit {
     let formData = this.searchForm.value;
 
     let params = {
-      partner_code: this.listSltdPaCode,
+      partner_name: formData.sch_partner_name,
+      product_name: formData.sch_product_name,
       // maxResultCount: 10000
     };
 

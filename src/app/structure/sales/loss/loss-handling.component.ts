@@ -27,7 +27,7 @@ export class LossHandlingComponent implements OnInit {
     inputFormTitle: string;
     isEditMode: boolean = false;
     isLoadingProgress: boolean = false;
-    listPartners: any[] = this.globals.configs['partnerList'];
+    productList: any[] = this.globals.configs['productList'];
    
     searchForm: FormGroup;
     inputForm: FormGroup;
@@ -63,7 +63,7 @@ export class LossHandlingComponent implements OnInit {
     ) {
         this.searchForm = fb.group({
             sch_yearmonth: '',
-            sch_partner_name: '',
+            sch_product_name: '',
           });
         this.inputForm = fb.group({
             history_type: '',
@@ -102,7 +102,7 @@ export class LossHandlingComponent implements OnInit {
         // }
         let params = {
             sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
-            sch_partner_name:  formData.sch_partner_name,
+            product_name:  formData.sch_product_name,
         };
         this.isLoadingProgress = true;
 
@@ -173,11 +173,11 @@ export class LossHandlingComponent implements OnInit {
         return yy + '-' + mm;
     }
 
-    onSelectListPartner(event: TypeaheadMatch): void {
+    onSelectListProducts(event: TypeaheadMatch): void {
         if (event.item['name'] == '') {
-            this.searchForm.controls['sch_partner_name'].setValue('');
+            this.searchForm.controls['sch_product_name'].setValue('');
         } else {
-            this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
+            this.searchForm.controls['sch_product_name'].setValue(event.item['name']);
         }
         this.getAll();
     }

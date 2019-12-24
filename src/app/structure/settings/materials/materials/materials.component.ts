@@ -144,14 +144,11 @@ export class MaterialsComponent implements OnInit {
 
   getAll(): void {
     this.selected = [];
-
+    this.rows = [];
+    this.temp = [];
     let formData = this.searchForm.value;
     let params = {
       partner_name: formData.sch_partner_name,
-      // st: this.sch_st,
-      sortby: ['name', 'size'],
-      order: ['asc', 'asc'],
-      maxResultCount: 10000
     };
     if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
       params['partner_id'] = this.listSltdPaId;
@@ -160,6 +157,7 @@ export class MaterialsComponent implements OnInit {
     this.dataService.GetAll(params).subscribe(
       listData => {
         this.listData = listData;
+
         this.temp = listData['data'];
         this.rows = listData['data'];
 
@@ -177,29 +175,21 @@ export class MaterialsComponent implements OnInit {
       this.listSltdPaId = event.item['id'];
     }
 
-    let id = this.listSltdPaId;
-    let formData = this.searchForm.value;
-
-    const temp = this.temp.filter(function (d) {
-      d.partner_code = String(d.id);
-      return d.partner_code.indexOf(id) !== -1 || !id;
-    });
-
-    this.rows = temp;
+    this.getAll();
 
   }
 
-  updateFilter(event) {
+  // updateFilter(event) {
 
-    let material = event.target.value;
-    let partner_id = this.listSltdPaId;
+  //   let material = event.target.value;
+  //   let partner_id = this.listSltdPaId;
 
-    let rt = this.temp.filter(function (d) {
-      return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
-    });
+  //   let rt = this.temp.filter(function (d) {
+  //     return (d.material.indexOf(material) !== -1 && d.partner_id.indexOf(partner_id) !== -1) || !material && !partner_id;
+  //   });
 
-    this.rows = rt;
-  }
+  //   this.rows = rt;
+  // }
 
 
   onSelectInputPartner(event: TypeaheadMatch): void {

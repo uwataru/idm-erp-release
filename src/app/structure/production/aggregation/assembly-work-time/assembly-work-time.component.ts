@@ -68,7 +68,7 @@ export class AssemblyWorkTimeComponent implements OnInit {
     getAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            sch_production_line: formData.sch_prdline,
+            production_work_lines_id: formData.sch_prdline,
             sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
             sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
             // sortby: ['sales_date'],

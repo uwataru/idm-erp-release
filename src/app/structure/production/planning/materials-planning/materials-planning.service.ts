@@ -15,8 +15,8 @@ export class MaterialsPlanningService {
     private url = this.globals.serverUrl + '/production/plan/materials';
 
     /** GET data from the server */
-    GetAll (): Observable<Item[]> {
-        return this.http.get<Item[]>(this.url);
+    GetAll (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url, {params: params});
     }
 
    /**

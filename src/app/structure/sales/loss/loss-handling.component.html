@@ -7,13 +7,13 @@
 
         <div class="padder">
 			<form [formGroup]="searchForm">
-			<input formControlName="sch_partner_name"
-			[typeahead]="listPartners"
+			<input formControlName="sch_product_name"
+			[typeahead]="productList"
 			typeaheadOptionField="name"
 			[typeaheadOptionsLimit]="50"
 			[typeaheadScrollable]="true"
 			[typeaheadMinLength]="0"
-			(typeaheadOnSelect)="onSelectListPartner($event)"
+			(typeaheadOnSelect)="onSelectListProducts($event)"
 			placeholder="거래처"
 			class="input-sm form-control w-sm inline v-middle" />
 
@@ -21,7 +21,7 @@
 			<input type="text" id="sch_yearmonth" formControlName="sch_yearmonth"
              class="input-sm form-control w-xs inline v-middle" bsDatepicker [bsConfig]="bsConfig"
              (bsValueChange)="onValueChange($event)"/>
-			<button class="btn btn-sm btn-default">검색</button>
+			<button class="btn btn-sm btn-default" (click)="getAll()">검색</button>
 			</form>
         </div>
 

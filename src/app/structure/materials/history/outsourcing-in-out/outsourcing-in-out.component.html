@@ -7,22 +7,30 @@
     <div class="row">
       <div class="col-sm-7 m-b-xs">
         <form [formGroup]="searchForm">
-          <label for="sch_sdate" class="control-label text-sm m-l">검색기간</label>
-          <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_sdate" /> ~
-          <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left" class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+          <label for="sch_yearmonth" class="control-label text-sm">년월</label>
+          <input type="text" id="sch_yearmonth" formControlName="sch_yearmonth"
+                 class="input-sm form-control w-xs inline v-middle"
+                 bsDatepicker [bsConfig]="bsConfig" (bsValueChange)="onValueChange($event)" />
           &nbsp;&nbsp;
 
           <input formControlName="sch_material"
                  [typeahead]="listMaterials"
-                 typeaheadOptionField="name"
+                 typeaheadOptionField="v_name"
                  [typeaheadOptionsLimit]="50"
                  [typeaheadScrollable]="true"
                  [typeaheadMinLength]="0"
-                 (typeaheadOnSelect)="onSelectListPartner($event)"
+                 (typeaheadOnSelect)="onSelectListMaterial($event)"
                  placeholder="자재명"
                  class="input-sm form-control w-sm inline v-middle" />
-          <input type="text" formControlName="sch_size" placeholder="규격" (keyup)="updateFilterSize($event)"
-                 class="input-sm form-control w-xs inline v-middle" id="sch_size" />
+          <input formControlName="sch_size"
+                 [typeahead]="listSize"
+                 typeaheadOptionField="set_value"
+                 [typeaheadOptionsLimit]="50"
+                 [typeaheadScrollable]="true"
+                 [typeaheadMinLength]="0"
+                 (typeaheadOnSelect)="onSelectListSize($event)"
+                 placeholder="규격"
+                 class="input-sm form-control w-xs inline v-middle" />
           <input formControlName="sch_partner_name"
                  [typeahead]="listPartners"
                  typeaheadOptionField="name"
