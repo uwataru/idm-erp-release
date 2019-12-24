@@ -255,12 +255,12 @@
                                 <td>
                                     <input type="text" formControlName="work_time_{{index+1}}" id="work_time_{{index+1}}"
                                            class="form-control input-sm w-xs"
-                                           (keyup)="calculateDayWage($event,index+1);"/>
+                                           (blur)="calculateDayWage($event,index+1);"/>
                                 </td>
                                 <td>
                                     <input type="text" formControlName="hourly_wage_{{index+1}}" id="hourly_wage_{{index+1}}"
                                            class="form-control input-sm w-xs"
-                                           (keyup)="calculateDayWage($event, index+1);"/>
+                                           (blur)="calculateDayWage($event, index+1);"/>
                                 </td>
                                 <td>
                                     <input type="text" formControlName="day_wage_{{index+1}}" id="day_wage_{{index+1}}" class="form-control input-sm w-xs"/>

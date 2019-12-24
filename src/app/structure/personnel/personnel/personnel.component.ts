@@ -438,8 +438,6 @@ export class PersonnelComponent implements OnInit {
         this.inputWorktimeForm.controls['work_date_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
         this.inputWorktimeForm.controls['hourly_wage_' + index].setValue(-1);
         this.inputWorktimeForm.controls['day_wage_' + index].setValue(-1);
-
-        this.calculateDayWage('',index);
     }
 
     calculateDayWage(event, index) {
@@ -462,14 +460,10 @@ export class PersonnelComponent implements OnInit {
         
         this.inputWorktimeForm.controls['day_wage_'+index].setValue(this.utils.addComma(result));
 
-        for(let i=0; i<this.workHistoryDataCnt; i++){
-            if(this.inputWorktimeForm.controls['work_date_' + (i+1)].value != -1){
-                tmpTime += this.tmpTime[i];
-                tmpWage += this.tmpWage[i];
-                tmpResult += this.tmpResult[i];
-                console.log(tmpTime, tmpWage, tmpResult, i);
-            }
-
+        for(let i=0; i<index; i++){
+            tmpTime += this.tmpTime[i];
+            tmpWage += this.tmpWage[i];
+            tmpResult += this.tmpResult[i];
         }
         this.allTime  = this.utils.addComma(tmpTime);
         this.allWage  = this.utils.addComma(tmpWage);
