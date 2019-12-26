@@ -149,6 +149,7 @@ export class MaterialsComponent implements OnInit {
     let formData = this.searchForm.value;
     let params = {
       partner_name: formData.sch_partner_name,
+      st: this.sch_st
     };
     if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
       params['partner_id'] = this.listSltdPaId;
