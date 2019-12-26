@@ -9,10 +9,10 @@ import { MessageService } from '../../../../message.service';
 import { Item } from './materials-planning.item';
 
 @Component({
-  selector: 'app-page',
-  templateUrl: './materials-planning.component.html',
-  styleUrls: ['./materials-planning.component.css'],
-  providers: [MaterialsPlanningService, DatePipe]
+    selector: 'app-page',
+    templateUrl: './materials-planning.component.html',
+    styleUrls: ['./materials-planning.component.css'],
+    providers: [MaterialsPlanningService, DatePipe]
 })
 export class MaterialsPlanningComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -21,7 +21,7 @@ export class MaterialsPlanningComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     productionLines: any[] = this.globals.configs['productionLine'];
     rows = [];
@@ -52,7 +52,7 @@ export class MaterialsPlanningComponent implements OnInit {
         private messageService: MessageService,
     ) {
         this.searchForm = fb.group({
-            sch_order_no:'',
+            sch_order_no: '',
         });
 
         // 생산계획 수립일, 출력기한
@@ -102,33 +102,36 @@ export class MaterialsPlanningComponent implements OnInit {
                 if (this.isInitPlanDate == false) {
                     this.isInitPlanDate = true;
                 }
+                setTimeout(() => {
+                    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+                }, 0);
             }
         );
     }
     calRowHeight(row) {
         if (row.height === undefined) {
-          let addHeight = 0;
-          if(row.material.length > 1){
-            addHeight = (row.material.length-1) * 21;
-          }
-          return 30 + addHeight;
+            let addHeight = 0;
+            if (row.material.length > 1) {
+                addHeight = (row.material.length - 1) * 21;
+            }
+            return 30 + addHeight;
         }
-      }
+    }
     updateFilter(event) {
         const val = event.target.value;
-    
+
         // filter data
-        const temp = this.temp.filter(function(d){
+        const temp = this.temp.filter(function (d) {
             return d.order_no.indexOf(val) !== -1 || !val;
         })
-    
+
         // update the rows
         this.rows = temp;
         // 필터 변경될때마다 항상 첫 페이지로 이동.
         //this.table.offset = 0;
     }
 
-    onSelect({selected}) {
+    onSelect({ selected }) {
         // console.log('onSelected', selected[0].id);
         this.selectedId = selected[0].id;
     }
