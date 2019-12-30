@@ -162,7 +162,7 @@ export class ProductsComponent implements OnInit {
     let formData = this.searchForm.value;
     let params = {
       //partner_name: formData.sch_partner_name,
-      product_name: formData.sch_product_name,
+      product_name: formData.sch_product_name.trim(),
       st: this.sch_st,
       sortby: ['sort_no'],
       order: ['asc'],
@@ -205,7 +205,7 @@ export class ProductsComponent implements OnInit {
 
   updateFilter(event) {
     // let partner_code = this.listSltdPaCode;
-    const val = event.target.value;
+    const val = event.target.value.trim();
     // filter data
     const temp = this.temp.filter(function (d) {
       // console.log(d);

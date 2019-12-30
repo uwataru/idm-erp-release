@@ -145,7 +145,7 @@ export class OrderRegistrationComponent implements OnInit {
 
     let params = {
       partner_name: formData.sch_partner_name,
-      product_name: formData.sch_product_name,
+      product_name: formData.sch_product_name.trim(),
       // maxResultCount: 10000
     };
 
@@ -193,7 +193,7 @@ export class OrderRegistrationComponent implements OnInit {
   }
 
   updateFilter(event) {
-    const val = event.target.value;
+    const val = event.target.value.trim();
     // filter data
     let tempArr = this.temp.map(x => Object.assign({}, x));
     let temp = tempArr.filter(function (d) {

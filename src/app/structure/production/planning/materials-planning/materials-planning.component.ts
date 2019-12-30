@@ -73,7 +73,7 @@ export class MaterialsPlanningComponent implements OnInit {
     GetAll(): void {
         let formData = this.searchForm.value;
         let params = {
-            order_no: formData.sch_order_no
+            order_no: formData.sch_order_no.trim()
         };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(
@@ -118,7 +118,7 @@ export class MaterialsPlanningComponent implements OnInit {
         }
     }
     updateFilter(event) {
-        const val = event.target.value;
+        const val = event.target.value.trim();
 
         // filter data
         const temp = this.temp.filter(function (d) {

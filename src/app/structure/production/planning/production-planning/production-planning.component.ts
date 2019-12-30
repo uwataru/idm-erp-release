@@ -137,7 +137,7 @@ export class ProductionPlanningComponent implements OnInit {
     let formData = this.searchForm.value;
 
     let params = {
-      order_no: formData.sch_order_no
+      order_no: formData.sch_order_no.trim()
     }
 
     this.isLoadingProgress = true;
@@ -169,7 +169,7 @@ export class ProductionPlanningComponent implements OnInit {
   }
 
   updateFilter(event) {
-    const val = event.target.value;
+    const val = event.target.value.trim();
 
     // filter data
     const temp = this.temp.filter(function(d){

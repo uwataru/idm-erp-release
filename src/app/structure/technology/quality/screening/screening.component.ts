@@ -138,7 +138,7 @@ export class ScreeningComponent implements OnInit {
 
     let formData = this.searchForm.value;
     let params = {
-        order_no: formData.sch_order_no,
+        order_no: formData.sch_order_no.trim(),
         sortby: ['order_no'],
         order: ['asc'],
         maxResultCount: 10000
@@ -174,7 +174,7 @@ export class ScreeningComponent implements OnInit {
   }
 
   updateFilter(event) {
-      const val = event.target.value;
+      const val = event.target.value.trim();
 
       // filter data
       const temp = this.temp.filter(function(d){

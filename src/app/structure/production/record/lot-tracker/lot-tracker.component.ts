@@ -61,7 +61,7 @@ export class LotTrackerComponent implements OnInit {
         }
 
         let params = {
-            order_no: formData.sch_order_no,
+            order_no: formData.sch_order_no.trim(),
         };
         this.isLoadingProgress = true;
         this.dataService.GetAll(params).subscribe(

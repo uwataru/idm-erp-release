@@ -135,7 +135,7 @@ export class OrderAdjustmentComponent implements OnInit {
 
         let params = {
             partner_name: formData.sch_partner_name,
-            product_name: formData.sch_product_name,
+            product_name: formData.sch_product_name.trim(),
             // sortby: ['order_no'],
             // order: ['asc']
             // maxResultCount: 10000
@@ -183,7 +183,7 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     updateFilter(event) {
-        const val = event.target.value;
+        const val = event.target.value.trim();
         // filter data
         let tempArr = this.temp.map(x => Object.assign({}, x));
         let temp = tempArr.filter(function (d) {

@@ -136,7 +136,7 @@ export class OrderNotDeliveredComponent implements OnInit {
         let formData = this.searchForm.value;
         let params = {
             partner_name: formData.sch_partner_name,
-            order_no: formData.sch_order_no,
+            order_no: formData.sch_order_no.trim(),
             // sortby: ['product_code'],
             // order: ['asc'],
         };
@@ -181,7 +181,7 @@ export class OrderNotDeliveredComponent implements OnInit {
     }
 
     updateFilter(event) {
-        const val = event.target.value;
+        const val = event.target.value.trim();
 
         // filter data
         const temp = this.temp.filter(function(d){
