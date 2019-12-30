@@ -121,7 +121,7 @@ export class RawMaterialSlipsComponent implements OnInit {
 
     GetAll(): void {
         let params = {
-            rcv_date: this.rcvDate,
+            sch_sdate: this.rcvDate,
             // st: 2   // is_slip = 'N'
         }
         this.isLoadingProgress = true;

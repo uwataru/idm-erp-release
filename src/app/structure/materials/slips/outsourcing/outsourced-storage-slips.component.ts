@@ -123,7 +123,7 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
 
   GetAll(): void {
     let params = {
-      rcv_date: this.rcvDate,
+      sch_sdate: this.rcvDate,
     };
 
     this.isLoadingProgress = true;
