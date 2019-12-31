@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import { DatePipe } from '@angular/common';
-import { MaterialsPlanningService } from './materials-planning.service';
-import { AppGlobals } from '../../../../app.globals';
-import { UtilsService } from '../../../../utils.service';
-import { MessageService } from '../../../../message.service';
-import { Item } from './materials-planning.item';
+import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import {DatePipe} from '@angular/common';
+import {MaterialsPlanningService} from './materials-planning.service';
+import {AppGlobals} from '../../../../app.globals';
+import {UtilsService} from '../../../../utils.service';
+import {MessageService} from '../../../../message.service';
+import {Item} from './materials-planning.item';
 
 @Component({
     selector: 'app-page',
@@ -71,43 +71,45 @@ export class MaterialsPlanningComponent implements OnInit {
     }
 
     GetAll(): void {
-        let formData = this.searchForm.value;
-        let params = {
-            order_no: formData.sch_order_no.trim()
-        };
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData => {
-                this.listData = listData;
-                this.rows = listData['data'];
-                this.temp = listData['data'];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                console.log(this.rows);
+        setTimeout(() => {
+            let formData = this.searchForm.value.trim();
+            let params = {
+                order_no: formData.sch_order_no
+            };
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
+                    this.temp = listData['data'];
 
-                // this.rows.sort(function (a, b) {
-                //     return a.subKey > b.subKey ? 1 : -1;
-                // });
-                // for (let i = 0; i < this.rows.length; i++) {
-                //     this.rows[i].subData.sort(function (a, b) {
-                //         return a.working_date.localeCompare(b.working_date)
-                //             || b.product_code.localeCompare(a.product_code)
-                //             || a.production_line.localeCompare(b.production_line);
-                //     });
-                // }
+                    // console.log(this.rows);
 
-                //this.totalQty = listData['sumData']['total_qty'];
-                //this.totalSalesPrice = listData['sumData']['total_sales_price'];
+                    // this.rows.sort(function (a, b) {
+                    //     return a.subKey > b.subKey ? 1 : -1;
+                    // });
+                    // for (let i = 0; i < this.rows.length; i++) {
+                    //     this.rows[i].subData.sort(function (a, b) {
+                    //         return a.working_date.localeCompare(b.working_date)
+                    //             || b.product_code.localeCompare(a.product_code)
+                    //             || a.production_line.localeCompare(b.production_line);
+                    //     });
+                    // }
 
-                this.isLoadingProgress = false;
-                if (this.isInitPlanDate == false) {
-                    this.isInitPlanDate = true;
+                    //this.totalQty = listData['sumData']['total_qty'];
+                    //this.totalSalesPrice = listData['sumData']['total_sales_price'];
+
+                    this.isLoadingProgress = false;
+                    if (this.isInitPlanDate == false) {
+                        this.isInitPlanDate = true;
+                    }
                 }
-                setTimeout(() => {
-                    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
-                }, 0);
-            }
-        );
+            );
+        }, 10);
     }
+
     calRowHeight(row) {
         if (row.height === undefined) {
             let addHeight = 0;
@@ -117,21 +119,19 @@ export class MaterialsPlanningComponent implements OnInit {
             return 30 + addHeight;
         }
     }
+
     updateFilter(event) {
-        const val = event.target.value.trim();
-
-        // filter data
-        const temp = this.temp.filter(function (d) {
-            return d.order_no.indexOf(val) !== -1 || !val;
-        })
-
-        // update the rows
-        this.rows = temp;
-        // 필터 변경될때마다 항상 첫 페이지로 이동.
-        //this.table.offset = 0;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+        setTimeout(() => {
+            const val = event.target.value.trim();
+            const temp = this.temp.filter(function (d) {
+                return d.order_no.indexOf(val) !== -1 || !val;
+            });
+            this.rows = temp;
+        }, 10);
     }
 
-    onSelect({ selected }) {
+    onSelect({selected}) {
         // console.log('onSelected', selected[0].id);
         this.selectedId = selected[0].id;
     }
