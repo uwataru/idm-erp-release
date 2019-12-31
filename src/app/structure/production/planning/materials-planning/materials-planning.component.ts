@@ -74,9 +74,9 @@ export class MaterialsPlanningComponent implements OnInit {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
         setTimeout(() => {
-            let formData = this.searchForm.value.trim();
+            let formData = this.searchForm.value;
             let params = {
-                order_no: formData.sch_order_no
+                order_no: formData.sch_order_no.trim()
             };
             this.isLoadingProgress = true;
             this.dataService.GetAll(params).subscribe(
