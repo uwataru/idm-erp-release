@@ -1,18 +1,18 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {ConfigService} from '../../../../config.service';
-import {UtilsService} from "../../../../utils.service";
-import {DatePipe} from '@angular/common';
-import {MessageService} from '../../../../message.service';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { AppGlobals } from '../../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from '../../../../config.service';
+import { UtilsService } from "../../../../utils.service";
+import { DatePipe } from '@angular/common';
+import { MessageService } from '../../../../message.service';
 
-import {Item} from './inspection-item.item';
-import {InspectionItemService} from './inspection-item.service';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {saveAs as importedSaveAs} from "file-saver";
+import { Item } from './inspection-item.item';
+import { InspectionItemService } from './inspection-item.service';
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { saveAs as importedSaveAs } from "file-saver";
 declare var $: any;
 
 @Component({
@@ -64,7 +64,7 @@ export class InspectionItemComponent implements OnInit {
     this.searchForm = fb.group({
       sch_sdate: ['', [Validators.required]],
       sch_edate: ['', [Validators.required]],
-  });
+    });
   }
 
   ngOnInit() {
@@ -84,40 +84,45 @@ export class InspectionItemComponent implements OnInit {
 
 
   getAll(): void {
-    this.totalVal1 = 0;
-    this.totalVal2 = 0;
-    this.totalVal3 = 0;
-    this.totalVal4 = 0;
-    this.totalVal5 = 0;
-    this.totalVal6 = 0;
-    this.totalVal7 = 0;
-    let formData = this.searchForm.value;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let params = {
-      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      maxResultCount: 10000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.rows = listData['data'];
-        this.isLoadingProgress = false;
-        this.total_defect_count();
-      }
-    );
+    setTimeout(() => {
+      this.rows = [];
+      this.totalVal1 = 0;
+      this.totalVal2 = 0;
+      this.totalVal3 = 0;
+      this.totalVal4 = 0;
+      this.totalVal5 = 0;
+      this.totalVal6 = 0;
+      this.totalVal7 = 0;
+      let formData = this.searchForm.value;
+
+      let params = {
+        sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+        sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+        maxResultCount: 10000
+      };
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.rows = listData['data'];
+          this.isLoadingProgress = false;
+          this.total_defect_count();
+        }
+      );
+    }, 10);
   }
 
-  total_defect_count(){
-    for(let i in this.rows){
-        this.totalVal1 += parseInt(this.rows[i].defect_count1);
-        this.totalVal2 += parseInt(this.rows[i].defect_count2);
-        this.totalVal3 += parseInt(this.rows[i].defect_count3);
-        this.totalVal4 += parseInt(this.rows[i].defect_count4);
-        this.totalVal5 += parseInt(this.rows[i].defect_count5);
-        this.totalVal6 += parseInt(this.rows[i].defect_count6);
-        this.totalVal7 += parseInt(this.rows[i].defect_count7);
+  total_defect_count() {
+    for (let i in this.rows) {
+      this.totalVal1 += parseInt(this.rows[i].defect_count1);
+      this.totalVal2 += parseInt(this.rows[i].defect_count2);
+      this.totalVal3 += parseInt(this.rows[i].defect_count3);
+      this.totalVal4 += parseInt(this.rows[i].defect_count4);
+      this.totalVal5 += parseInt(this.rows[i].defect_count5);
+      this.totalVal6 += parseInt(this.rows[i].defect_count6);
+      this.totalVal7 += parseInt(this.rows[i].defect_count7);
     }
   }
 
@@ -153,34 +158,34 @@ export class InspectionItemComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.production_date);
-            jsonValueToArray.push(d.defect_count1);
-            jsonValueToArray.push(d.defect_count2);
-            jsonValueToArray.push(d.defect_count3);
-            jsonValueToArray.push(d.defect_count4);
-            jsonValueToArray.push(d.defect_count5);
-            jsonValueToArray.push(d.defect_count6);
-            jsonValueToArray.push(d.defect_count7);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.production_date);
+        jsonValueToArray.push(d.defect_count1);
+        jsonValueToArray.push(d.defect_count2);
+        jsonValueToArray.push(d.defect_count3);
+        jsonValueToArray.push(d.defect_count4);
+        jsonValueToArray.push(d.defect_count5);
+        jsonValueToArray.push(d.defect_count6);
+        jsonValueToArray.push(d.defect_count7);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(2).alignment = {horizontal: "right"};
-            row.getCell(3).alignment = {horizontal: "right"};
-            row.getCell(4).alignment = {horizontal: "right"};
-            row.getCell(5).alignment = {horizontal: "right"};
-            row.getCell(6).alignment = {horizontal: "right"};
-            row.getCell(7).alignment = {horizontal: "right"};
-            row.getCell(8).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(2).alignment = { horizontal: "right" };
+        row.getCell(3).alignment = { horizontal: "right" };
+        row.getCell(4).alignment = { horizontal: "right" };
+        row.getCell(5).alignment = { horizontal: "right" };
+        row.getCell(6).alignment = { horizontal: "right" };
+        row.getCell(7).alignment = { horizontal: "right" };
+        row.getCell(8).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

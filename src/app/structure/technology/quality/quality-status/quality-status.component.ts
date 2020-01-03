@@ -10,9 +10,9 @@ import { MessageService } from '../../../../message.service';
 
 import { Item } from './quality-status.item';
 import { QualityStatusService } from './quality-status.service';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {saveAs as importedSaveAs} from "file-saver";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { saveAs as importedSaveAs } from "file-saver";
 @Component({
   selector: 'app-quality-status',
   templateUrl: './quality-status.component.html',
@@ -20,7 +20,7 @@ import {saveAs as importedSaveAs} from "file-saver";
   providers: [QualityStatusService]
 })
 export class QualityStatusComponent implements OnInit {
-  
+
   panelTitle: string;
   inputFormTitle: string;
   searchForm: FormGroup;
@@ -28,9 +28,9 @@ export class QualityStatusComponent implements OnInit {
   isLoadingProgress: boolean = false;
 
   inputForm: FormGroup;
-  
+
   editData: Item;
-  listData : Item[];
+  listData: Item[];
   formData: Item['data'];
   sch_partner_name: string;
   listSltdPaCode: number = 0;
@@ -65,7 +65,7 @@ export class QualityStatusComponent implements OnInit {
     private dataService: QualityStatusService,
     private utils: UtilsService,
     private messageService: MessageService
-  ) { 
+  ) {
     this.searchForm = fb.group({
       sch_sdate: '',
       sch_edate: '',
@@ -84,34 +84,38 @@ export class QualityStatusComponent implements OnInit {
   }
 
   getAll(): void {
-    this.qty_0 = 0;
-    this.qty_1 = 0;
-    this.qty_2 = 0;
-    this.qty_3 = 0;
-    this.qty_4 = 0;
-    this.qty_5 = 0;
-    this.qty_6 = 0;
-    let formData = this.searchForm.value;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let params = {
+    setTimeout(() => {
+      this.rows = [];
+      this.qty_0 = 0;
+      this.qty_1 = 0;
+      this.qty_2 = 0;
+      this.qty_3 = 0;
+      this.qty_4 = 0;
+      this.qty_5 = 0;
+      this.qty_6 = 0;
+      let formData = this.searchForm.value;
+
+      let params = {
         sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
         sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
         order: ['asc'],
         maxResultCount: 10000
-    }
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-        listData =>
-        {
+      }
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
           this.listData = listData;
           this.rows = listData['data'];
-        
+
           this.isLoadingProgress = false;
         }
-    );
+      );
+    }, 10);
   }
 
-  openModal(id){
+  openModal(id) {
     this.inputFormModal.show();
     // this.inputForm.reset();
     this.dataService.GetById(id).subscribe(
@@ -119,15 +123,15 @@ export class QualityStatusComponent implements OnInit {
         if (editData['result'] == 'success') {
           this.editData = editData;
           this.formData = editData['data'];
-          console.log('!!!!!!!' ,this.formData);
-        
-            this.qty_0 = this.formData[0].qty
-            this.qty_1 = this.formData[1].qty
-            this.qty_2 = this.formData[2].qty
-            this.qty_3 = this.formData[3].qty
-            this.qty_4 = this.formData[4].qty
-            this.qty_5 = this.formData[5].qty
-            this.qty_6 = this.formData[6].qty
+          console.log('!!!!!!!', this.formData);
+
+          this.qty_0 = this.formData[0].qty
+          this.qty_1 = this.formData[1].qty
+          this.qty_2 = this.formData[2].qty
+          this.qty_3 = this.formData[3].qty
+          this.qty_4 = this.formData[4].qty
+          this.qty_5 = this.formData[5].qty
+          this.qty_6 = this.formData[6].qty
 
         }
       }
@@ -165,30 +169,30 @@ export class QualityStatusComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.order_no);
-            jsonValueToArray.push(d.product_name);
-            jsonValueToArray.push(d.product_type);
-            jsonValueToArray.push(d.total_qty);
-            jsonValueToArray.push(d.normal_qty);
-            jsonValueToArray.push(d.defect_qty);
-            jsonValueToArray.push(d.defect_probability);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.order_no);
+        jsonValueToArray.push(d.product_name);
+        jsonValueToArray.push(d.product_type);
+        jsonValueToArray.push(d.total_qty);
+        jsonValueToArray.push(d.normal_qty);
+        jsonValueToArray.push(d.defect_qty);
+        jsonValueToArray.push(d.defect_probability);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "right"};
-            row.getCell(5).alignment = {horizontal: "right"};
-            row.getCell(6).alignment = {horizontal: "right"};
-            row.getCell(7).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(4).alignment = { horizontal: "right" };
+        row.getCell(5).alignment = { horizontal: "right" };
+        row.getCell(6).alignment = { horizontal: "right" };
+        row.getCell(7).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

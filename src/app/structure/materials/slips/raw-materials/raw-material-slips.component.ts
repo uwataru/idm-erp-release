@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
@@ -9,8 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './raw-material-slips.item';
-import {AppConfig} from '../../../../../environments/environment';
-import {ElectronService} from '../../../../providers/electron.service';
+import { AppConfig } from '../../../../../environments/environment';
+import { ElectronService } from '../../../../providers/electron.service';
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -31,7 +31,7 @@ export class RawMaterialSlipsComponent implements OnInit {
     searchForm: FormGroup;
 
     selectedId: string;
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
 
     rcvDate = this.globals.tDate;
@@ -68,7 +68,7 @@ export class RawMaterialSlipsComponent implements OnInit {
         public elSrv: ElectronService
     ) {
         // 접근권한 체크
-        if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+        if (route.routeConfig.path && ("id" in route.routeConfig.data)) {
             if (route.routeConfig.data.id in this.globals.userPermission) {
                 console.log(route.routeConfig.data.id);
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
@@ -104,7 +104,7 @@ export class RawMaterialSlipsComponent implements OnInit {
         this.searchForm.controls['rcv_date'].setValue(this.rcvDate);
         this.GetAll();
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
             modalHeader.addClass('cursor-all-scroll');
@@ -120,29 +120,32 @@ export class RawMaterialSlipsComponent implements OnInit {
     }
 
     GetAll(): void {
-        let params = {
-            sch_sdate: this.rcvDate,
-            // st: 2   // is_slip = 'N'
-        }
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                this.rows = [];
-                for(let i in listData['data']){
-                    listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
-                }
-
-                this.rows = listData['data'];
-
-                // this.totalOrderAmount = listData['totalOrderAmount'];
-                // this.totalRcvWeight = listData['totalRcvWeight'];
-
-                this.isLoadingProgress = false;
+        setTimeout(() => {
+            let params = {
+                sch_sdate: this.rcvDate,
+                // st: 2   // is_slip = 'N'
             }
-        );
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+
+                    this.rows = [];
+                    for (let i in listData['data']) {
+                        listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
+                    }
+
+                    this.rows = listData['data'];
+
+                    // this.totalOrderAmount = listData['totalOrderAmount'];
+                    // this.totalRcvWeight = listData['totalRcvWeight'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelect({ selected }) {
@@ -173,7 +176,7 @@ export class RawMaterialSlipsComponent implements OnInit {
         }
 
         let checkedIdArr = [];
-        this.selected.forEach((e:any) => {
+        this.selected.forEach((e: any) => {
             checkedIdArr.push(e.id);
         });
         let params = {
@@ -207,8 +210,7 @@ export class RawMaterialSlipsComponent implements OnInit {
 
     private openResultModal(slipNo): void {
         this.dataService.GetSlip(slipNo).subscribe(
-            data =>
-            {
+            data => {
                 if (data['data'].length > 0) {
                     this.resultRows = data['data'];
                     this.slipNo = data['slip_no'];

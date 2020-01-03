@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, Inject, ViewEncapsulation } from '@angular/core';
-import { FormBuilder,FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { saveAs as importedSaveAs } from "file-saver";
 import { DatePipe } from '@angular/common';
@@ -8,10 +8,10 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { BsDatepickerConfig } from "ngx-bootstrap";
 import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './materials-in-out.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 declare var $: any;
 
 @Component({
@@ -29,10 +29,10 @@ export class MaterialsInOutComponent implements OnInit {
     inputFormTitle: string;
     searchForm: FormGroup;
     historyForm: FormGroup;
-    
+
     isEditMode: boolean = false;
     isLoadingProgress: boolean = false;
-    
+
     formData: Item[];
     searchValue: string;
     rows: Item['rowData'][];
@@ -95,11 +95,11 @@ export class MaterialsInOutComponent implements OnInit {
         this.panelTitle = '원자재수불명세서';
         // this.inputFormTitle = '원자재수불내역서';
 
-        
+
         this.getAll();
         this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
             modalHeader.addClass('cursor-all-scroll');
@@ -110,43 +110,47 @@ export class MaterialsInOutComponent implements OnInit {
     }
 
     getAll(): void {
-        let formData = this.searchForm.value;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        let params = {
-            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
-            material_name: formData.sch_material,
-            material_size: formData.sch_size,
-            partner_name: formData.sch_partner_name,
-            // sortby: ['rcv_date'],
-            // order: ['asc'],
-            // maxResultCount: 10000
-        }
-        this.isLoadingProgress = true;
+        setTimeout(() => {
+            let formData = this.searchForm.value;
+            this.rows = [];
 
-        this.dataService.GetAll(params).subscribe(
-            data =>
-            {
-                this.rows = data['data'];
-                this.temp = data['data'];
-
-                let len = this.rows.length;
-                for(let i=0; i<len; i++){
-                    this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
-                }
-
-                // this.totalBalance = data['totalBalance'];
-                // this.totalBalanceAmount = data['totalBalanceAmount'];
-                //
-                // this.totalOrderAmount = data['totalOrderAmount'];
-                // this.totalRcvWeight = data['totalRcvWeight'];
-                // this.totalUsedWeight = data['totalUsedWeight'];
-                // this.totalUsedAmount = data['totalUsedAmount'];
-                // this.totalWeight = data['totalWeight'];
-                // this.totalRemaingAmount = data['totalRemaingAmount'];
-                
-                this.isLoadingProgress = false;
+            let params = {
+                sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+                material_name: formData.sch_material,
+                material_size: formData.sch_size,
+                partner_name: formData.sch_partner_name,
+                // sortby: ['rcv_date'],
+                // order: ['asc'],
+                // maxResultCount: 10000
             }
-        );
+            this.isLoadingProgress = true;
+
+            this.dataService.GetAll(params).subscribe(
+                data => {
+                    this.rows = data['data'];
+                    this.temp = data['data'];
+
+                    let len = this.rows.length;
+                    for (let i = 0; i < len; i++) {
+                        this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
+                    }
+
+                    // this.totalBalance = data['totalBalance'];
+                    // this.totalBalanceAmount = data['totalBalanceAmount'];
+                    //
+                    // this.totalOrderAmount = data['totalOrderAmount'];
+                    // this.totalRcvWeight = data['totalRcvWeight'];
+                    // this.totalUsedWeight = data['totalUsedWeight'];
+                    // this.totalUsedAmount = data['totalUsedAmount'];
+                    // this.totalWeight = data['totalWeight'];
+                    // this.totalRemaingAmount = data['totalRemaingAmount'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
@@ -168,7 +172,7 @@ export class MaterialsInOutComponent implements OnInit {
 
         const val = this.listSltdPaCode;
     }
-    
+
     onSelectListSize(event: TypeaheadMatch): void {
         if (event.item['set_value'] == '') {
             this.searchForm.controls['sch_size'].setValue('');
@@ -222,34 +226,34 @@ export class MaterialsInOutComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.input_date);
-                    jsonValueToArray.push(d.name);
-                    jsonValueToArray.push(d.size);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.transfer_qty);
-                    jsonValueToArray.push(d.receiving_qty);
-                    jsonValueToArray.push(d.insert_qty);
-                    jsonValueToArray.push(d.output_qty);
-                    jsonValueToArray.push(d.remain_qty);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.input_date);
+                jsonValueToArray.push(d.name);
+                jsonValueToArray.push(d.size);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.transfer_qty);
+                jsonValueToArray.push(d.receiving_qty);
+                jsonValueToArray.push(d.insert_qty);
+                jsonValueToArray.push(d.output_qty);
+                jsonValueToArray.push(d.remain_qty);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "right"};
-                    row.getCell(5).alignment = {horizontal: "right"};
-                    row.getCell(6).alignment = {horizontal: "right"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
-                    row.getCell(9).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(4).alignment = { horizontal: "right" };
+                row.getCell(5).alignment = { horizontal: "right" };
+                row.getCell(6).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.getCell(8).alignment = { horizontal: "right" };
+                row.getCell(9).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

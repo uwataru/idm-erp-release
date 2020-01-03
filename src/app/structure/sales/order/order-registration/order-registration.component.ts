@@ -1,14 +1,14 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {OrderRegistrationService} from './order-registration.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './order-registration.item';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { OrderRegistrationService } from './order-registration.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './order-registration.item';
 
 declare var $: any;
 
@@ -56,7 +56,7 @@ export class OrderRegistrationComponent implements OnInit {
   editData: Item;
   data: Date;
 
-  productDataCnt:number;
+  productDataCnt: number;
 
   isExecutable: boolean = false;
   isPrintable: boolean = false;
@@ -99,7 +99,7 @@ export class OrderRegistrationComponent implements OnInit {
     this.buildInputFormGroup();
   }
 
-  buildInputFormGroup(){
+  buildInputFormGroup() {
     this.inputForm = this.fb.group({
       input_date: ['', Validators.required],
       order_no: ['', Validators.required],
@@ -139,37 +139,41 @@ export class OrderRegistrationComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selectedId = '';
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    setTimeout(() => {
 
-    let formData = this.searchForm.value;
+      this.selectedId = '';
 
-    let params = {
-      partner_name: formData.sch_partner_name,
-      product_name: formData.sch_product_name.trim(),
-      // maxResultCount: 10000
-    };
+      let formData = this.searchForm.value;
 
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.temp = [];
-        this.rows = [];
-        if(listData['totalCount'] > 0) {
-          this.temp = listData['data'];
-          this.rows = listData['data'].map(x => Object.assign({}, x));
-          this.dataConvert();
+      let params = {
+        partner_name: formData.sch_partner_name,
+        product_name: formData.sch_product_name.trim(),
+        // maxResultCount: 10000
+      };
+
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.temp = [];
+          this.rows = [];
+          if (listData['totalCount'] > 0) {
+            this.temp = listData['data'];
+            this.rows = listData['data'].map(x => Object.assign({}, x));
+            this.dataConvert();
+          }
+
+          this.isLoadingProgress = false;
         }
-
-        this.isLoadingProgress = false;
-      }
-    );
+      );
+    }, 10);
   }
 
-  dataConvert(){  //같은 수주 번호 제품은 기본수주정보 제거
+  dataConvert() {  //같은 수주 번호 제품은 기본수주정보 제거
     let len = this.rows.length;
-    for(let i = 0; i<len; i++){
-      if(this.rows[i-1] != null && this.rows[i].id == this.rows[i-1].id){
+    for (let i = 0; i < len; i++) {
+      if (this.rows[i - 1] != null && this.rows[i].id == this.rows[i - 1].id) {
         this.rows[i].order_no = '';
         this.rows[i].partner_name = '';
         this.rows[i].demand_date = '';
@@ -179,42 +183,45 @@ export class OrderRegistrationComponent implements OnInit {
   }
 
   onSearchSelectListPartner(event: TypeaheadMatch): void {
-      console.log(event);
-      let id = event.item['id'];
-      if (id == '') {
-          this.listSltdPaCode = 0;
-      } else {
-          this.listSltdPaCode = id;
-      }
+    console.log(event);
+    let id = event.item['id'];
+    if (id == '') {
+      this.listSltdPaCode = 0;
+    } else {
+      this.listSltdPaCode = id;
+    }
 
-      const val = this.listSltdPaCode;
+    const val = this.listSltdPaCode;
 
-      this.getAll();
+    this.getAll();
   }
 
   updateFilter(event) {
-    const val = event.target.value.trim();
-    // filter data
-    let tempArr = this.temp.map(x => Object.assign({}, x));
-    let temp = tempArr.filter(function (d) {
-      return d.product_name.indexOf(val) !== -1 || !val;
-    });
-    // update the rows
-    this.rows = temp;
-    this.dataConvert()
-    // 필터 변경될때마다 항상 첫 페이지로 이동.
-    //this.table.offset = 0;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    setTimeout(() => {
+      const val = event.target.value.trim();
+      // filter data
+      let tempArr = this.temp.map(x => Object.assign({}, x));
+      let temp = tempArr.filter(function (d) {
+        return d.product_name.indexOf(val) !== -1 || !val;
+      });
+      // update the rows
+      this.rows = temp;
+      this.dataConvert()
+      // 필터 변경될때마다 항상 첫 페이지로 이동.
+      //this.table.offset = 0;
+    }, 10);
   }
 
   copy_date(event): void {
     let formData = this.inputForm.value;
     if (formData.promised_date == null || formData.promised_date == '') {
-      this.inputForm.patchValue({promised_date: event.target.value});
+      this.inputForm.patchValue({ promised_date: event.target.value });
     }
   }
 
   onValueChange(value: Date): void {
-    this.inputForm.patchValue({promised_date: value});
+    this.inputForm.patchValue({ promised_date: value });
   }
 
   AddComma(event) {
@@ -263,8 +270,8 @@ export class OrderRegistrationComponent implements OnInit {
     formData.promised_date = this.datePipe.transform(formData.promised_date, 'yyyy-MM-dd');
 
     formData.sales_orders_detail = [];
-    for(let i=1; i<=this.productDataCnt; i++){
-      if(formData['product_id_'+i] != -1) {  //-1 은 삭제된 행
+    for (let i = 1; i <= this.productDataCnt; i++) {
+      if (formData['product_id_' + i] != -1) {  //-1 은 삭제된 행
         let product = {
           product_id: formData['product_id_' + i],
           product_qty: parseInt(this.utils.removeComma(formData['product_qty_' + i])),
@@ -274,13 +281,13 @@ export class OrderRegistrationComponent implements OnInit {
         formData.sales_orders_detail.push(product);
       }
 
-      delete formData['sch_product_'+i];
-      delete formData['product_id_'+i];
-      delete formData['product_type_'+i];
-      delete formData['product_qty_'+i];
-      delete formData['product_unit_price_'+i];
-      delete formData['product_base_unit_price_'+i];
-      delete formData['product_price_'+i];
+      delete formData['sch_product_' + i];
+      delete formData['product_id_' + i];
+      delete formData['product_type_' + i];
+      delete formData['product_qty_' + i];
+      delete formData['product_unit_price_' + i];
+      delete formData['product_base_unit_price_' + i];
+      delete formData['product_price_' + i];
       // delete formData['sch_work_line_'+i];
       // delete formData['product_workline_id_'+i];
     }
@@ -342,7 +349,7 @@ export class OrderRegistrationComponent implements OnInit {
       );
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     this.selectedId = selected[0].product_code;
   }
 
@@ -368,13 +375,13 @@ export class OrderRegistrationComponent implements OnInit {
     console.log('calculatePrice', event, index);
     let formData = this.inputForm.value;
 
-    console.log(formData['product_qty_'+index], formData['product_base_unit_price_'+index]);
-    let mQty = this.utils.removeComma( (formData['product_qty_'+index]) );
-    let mPrice = parseInt(formData['product_base_unit_price_'+index]);
+    console.log(formData['product_qty_' + index], formData['product_base_unit_price_' + index]);
+    let mQty = this.utils.removeComma((formData['product_qty_' + index]));
+    let mPrice = parseInt(formData['product_base_unit_price_' + index]);
 
     let result = mQty * mPrice;
     result = this.utils.addComma(result);
-    this.inputForm.controls['product_price_'+index].setValue(result);
+    this.inputForm.controls['product_price_' + index].setValue(result);
 
     this.AddComma(event);
     // console.log('calculatePrice', this.inputForm.value);
@@ -398,7 +405,7 @@ export class OrderRegistrationComponent implements OnInit {
 
   removeMaterialRow(index) {
     console.log('removeMaterialRow', index);
-    this.inputForm.controls['product_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    this.inputForm.controls['product_id_' + index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
     if (this.isEditMode == false) {
       this.inputForm.controls['sch_product_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
       this.inputForm.controls['product_type_' + index].setValue(-1);
@@ -418,14 +425,14 @@ export class OrderRegistrationComponent implements OnInit {
       }
     }
     // console.log(index, len , unVisibleItemCnt);
-    if((len - unVisibleItemCnt) == index){
+    if ((len - unVisibleItemCnt) == index) {
       return true;
     }
     return false;
 
   }
 
-  chkViewRemoveBtn(index){
+  chkViewRemoveBtn(index) {
     let len = this.productDataCnt;
     let unVisibleItemCnt = 0;
     for (let i = 1; i <= len; i++) {
@@ -433,7 +440,7 @@ export class OrderRegistrationComponent implements OnInit {
         unVisibleItemCnt++;
       }
     }
-    if(len - unVisibleItemCnt > 1){
+    if (len - unVisibleItemCnt > 1) {
       return true;
     }
     return false;

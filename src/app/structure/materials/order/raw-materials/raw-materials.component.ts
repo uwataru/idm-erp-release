@@ -1,14 +1,14 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {RawMaterialsService} from './raw-materials.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './raw-materials.item';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { RawMaterialsService } from './raw-materials.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './raw-materials.item';
 
 declare var $: any;
 
@@ -54,7 +54,7 @@ export class RawMaterialsComponent implements OnInit {
 
   inputForm: FormGroup;
   lossForm: FormGroup;
-  inputPartners: any[] = this.globals.configs['partnerList'] ;
+  inputPartners: any[] = this.globals.configs['partnerList'];
   locationPartners: any[] = this.globals.configs['partnerList'];
 
   inputMakers: any[] = this.globals.configs['maker'];
@@ -146,30 +146,35 @@ export class RawMaterialsComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selectedId = '';
-    this.selected = [];
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let formData = this.searchForm.value;
-    let params = {
-      partner_name: formData.sch_partner_name,
-      st: 1,
-      //sortby: ['material_name','size'],
-      sortby: ['partner_name', 'material_name', 'size'],
-      order: ['asc', 'asc'],
-      maxResultCount: 10000
-    };
-    if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-      params['partner_id'] = this.listSltdPaCode;
-    }
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.temp = listData['data'];
-        this.rows = listData['data'];
-        this.isLoadingProgress = false;
+    setTimeout(() => {
+      this.selectedId = '';
+      this.selected = [];
+      this.rows = [];
+
+      let formData = this.searchForm.value;
+      let params = {
+        partner_name: formData.sch_partner_name,
+        st: 1,
+        //sortby: ['material_name','size'],
+        sortby: ['partner_name', 'material_name', 'size'],
+        order: ['asc', 'asc'],
+        maxResultCount: 10000
+      };
+      if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+        params['partner_id'] = this.listSltdPaCode;
       }
-    );
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.temp = listData['data'];
+          this.rows = listData['data'];
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 10);
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
@@ -207,7 +212,7 @@ export class RawMaterialsComponent implements OnInit {
   }
 
   onValueChange(value: Date): void {
-    this.inputForm.patchValue({promised_date: value});
+    this.inputForm.patchValue({ promised_date: value });
   }
 
 
@@ -242,15 +247,15 @@ export class RawMaterialsComponent implements OnInit {
     let formModel = this.inputForm.value;
 
     let rowData = [];
-      // let colData = [];
+    // let colData = [];
 
-      let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+    let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
 
-      let order_qty = this.utils.removeComma(formModel['order_qty']) * 1;
+    let order_qty = this.utils.removeComma(formModel['order_qty']) * 1;
 
-      let order_price = this.utils.removeComma(formModel['order_price']) * 1;
+    let order_price = this.utils.removeComma(formModel['order_price']) * 1;
 
-      let promised_date = this.datePipe.transform(formModel['promised_date'], 'yyyy-MM-dd');
+    let promised_date = this.datePipe.transform(formModel['promised_date'], 'yyyy-MM-dd');
 
 
     let formData = {
@@ -304,8 +309,8 @@ export class RawMaterialsComponent implements OnInit {
             this.editData = editData;
             this.formData = editData['data'];
             // let price_per_unit = this.utils.addComma(this.formData.order_price);
-  
-  
+
+
             myForm.patchValue({
               name: this.formData.name,
               price: this.formData.price,
@@ -321,7 +326,7 @@ export class RawMaterialsComponent implements OnInit {
               // order_price: this.formData.order_price,
               input_date: this.tDate
             });
-  
+
           }
         }
       );
@@ -341,14 +346,14 @@ export class RawMaterialsComponent implements OnInit {
 
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     //this.selectedId = selected[0].material_code;
     console.log(selected);
-      this.selectedId = selected[0].id;
-      this.selectedName = selected[0].name;
-      this.selectedSize = selected[0].size;
-      this.inputForm.controls['material_id'].setValue(this.selectedId);
-      console.log(this.inputForm.value['material_id']);
+    this.selectedId = selected[0].id;
+    this.selectedName = selected[0].name;
+    this.selectedSize = selected[0].size;
+    this.inputForm.controls['material_id'].setValue(this.selectedId);
+    console.log(this.inputForm.value['material_id']);
   }
 
 

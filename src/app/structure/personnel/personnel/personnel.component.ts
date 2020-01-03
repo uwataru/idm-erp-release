@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppGlobals } from '../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
@@ -10,15 +10,15 @@ import { MessageService } from '../../../message.service';
 import { PersonnelService } from './personnel.service';
 import { Item } from './personnel.item';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {UtilsService} from "../../../utils.service";
+import { UtilsService } from "../../../utils.service";
 
 declare var $: any;
 
 @Component({
-  selector: 'app-personnel',
-  templateUrl: './personnel.component.html',
-  styleUrls: ['./personnel.component.scss'],
-  providers: [PersonnelService, DatePipe]
+    selector: 'app-personnel',
+    templateUrl: './personnel.component.html',
+    styleUrls: ['./personnel.component.scss'],
+    providers: [PersonnelService, DatePipe]
 })
 export class PersonnelComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -33,7 +33,7 @@ export class PersonnelComponent implements OnInit {
     isLoadingProgress: boolean = false;
     isEditMode: boolean = false;
     selectedId: string;
-    listData : Item[];
+    listData: Item[];
     enumData: Item;
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
@@ -77,106 +77,109 @@ export class PersonnelComponent implements OnInit {
     @ViewChild('WorkTimeFormModal') workTimeFormModal: ModalDirective;
 
     constructor(
-      @Inject(FormBuilder) public fb: FormBuilder,
-      private datePipe: DatePipe,
-      private dataService: PersonnelService,
-      private globals: AppGlobals,
-      private route: ActivatedRoute,
-      private configService: ConfigService,
-      private messageService: MessageService,
-      private utils: UtilsService
+        @Inject(FormBuilder) public fb: FormBuilder,
+        private datePipe: DatePipe,
+        private dataService: PersonnelService,
+        private globals: AppGlobals,
+        private route: ActivatedRoute,
+        private configService: ConfigService,
+        private messageService: MessageService,
+        private utils: UtilsService
     ) {
-      // 접근권한 체크
-    //   if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
-    //     if (route.routeConfig.data.id in this.globals.userPermission) {
-    //         console.log(route.routeConfig.data.id);
-    //         if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
-    //             this.isExecutable = true;
-    //         }
-    //         if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
-    //             this.isPrintable = true;
-    //         }
-    //     }
-    //   }
+        // 접근권한 체크
+        //   if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+        //     if (route.routeConfig.data.id in this.globals.userPermission) {
+        //         console.log(route.routeConfig.data.id);
+        //         if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
+        //             this.isExecutable = true;
+        //         }
+        //         if (this.globals.userPermission[route.routeConfig.data.id]['print_auth'] == true) {
+        //             this.isPrintable = true;
+        //         }
+        //     }
+        //   }
 
-      this.inputForm = fb.group({
-        group_name: ['', [Validators.required]],
-        group_id: ['', [Validators.required]],
-        name: ['', [Validators.required]],
-        employee_num: ['', [Validators.required]],
-        phone: ['', [Validators.required]],
-        addr: ['', [Validators.required]],
-        input_date: ['', [Validators.required]],
-        specialnote: ''
-        
-      });
-      this.searchForm = fb.group({
-        sch_affiliation_name: '',
-        sch_group_id: ''
-      });
-  }
-  buildInputWorktimeForm(){
-      this.inputWorktimeForm = this.fb.group({
-          id_1: '',
-          work_date_1: ['', [Validators.required]],
-          work_time_1: ['', [Validators.required]],
-          hourly_wage_1: ['', [Validators.required]],
-          day_wage_1: ['', [Validators.required]],
-      });
-  }
+        this.inputForm = fb.group({
+            group_name: ['', [Validators.required]],
+            group_id: ['', [Validators.required]],
+            name: ['', [Validators.required]],
+            employee_num: ['', [Validators.required]],
+            phone: ['', [Validators.required]],
+            addr: ['', [Validators.required]],
+            input_date: ['', [Validators.required]],
+            specialnote: ''
 
-  ngOnInit() {
-    this.panelTitle = '생산인력현황';
-    this.inputFormTitle = '생산인력 등록';
-    this.editFormTitle = '생산인력 수정';
-    this.deleteFormTitle = '생산인력 삭제';
-    this.worktimeFormTitle = '근무시간 산출';
-    this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
-
-    this.workHistoryDataCnt = 1;
-    this.buildInputWorktimeForm();
-    this.getAll();
-
-    // this.inputForm.controls['input_date'].setValue(this.InputDate);
-
-    $(document).ready(function(){
-        let modalContent: any = $('.modal-content');
-        let modalHeader = $('.modal-header');
-        modalHeader.addClass('cursor-all-scroll');
-        modalContent.draggable({
-            handle: '.modal-header'
         });
-    });
-  }
-
-  onSelect({ selected }) {
-    this.selectedCnt = selected.length;
-    if (this.selectedCnt == 1) {
-      this.selectedId = selected[0].id;
-    //   this.inputForm.controls['id'].setValue(this.selectedId);
+        this.searchForm = fb.group({
+            sch_affiliation_name: '',
+            sch_group_id: ''
+        });
     }
-}
+    buildInputWorktimeForm() {
+        this.inputWorktimeForm = this.fb.group({
+            id_1: '',
+            work_date_1: ['', [Validators.required]],
+            work_time_1: ['', [Validators.required]],
+            hourly_wage_1: ['', [Validators.required]],
+            day_wage_1: ['', [Validators.required]],
+        });
+    }
+
+    ngOnInit() {
+        this.panelTitle = '생산인력현황';
+        this.inputFormTitle = '생산인력 등록';
+        this.editFormTitle = '생산인력 수정';
+        this.deleteFormTitle = '생산인력 삭제';
+        this.worktimeFormTitle = '근무시간 산출';
+        this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
+
+        this.workHistoryDataCnt = 1;
+        this.buildInputWorktimeForm();
+        this.getAll();
+
+        // this.inputForm.controls['input_date'].setValue(this.InputDate);
+
+        $(document).ready(function () {
+            let modalContent: any = $('.modal-content');
+            let modalHeader = $('.modal-header');
+            modalHeader.addClass('cursor-all-scroll');
+            modalContent.draggable({
+                handle: '.modal-header'
+            });
+        });
+    }
+
+    onSelect({ selected }) {
+        this.selectedCnt = selected.length;
+        if (this.selectedCnt == 1) {
+            this.selectedId = selected[0].id;
+            //   this.inputForm.controls['id'].setValue(this.selectedId);
+        }
+    }
 
     getAll(): void {
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        this.selectedId = '';
-        this.selected = [];
+        setTimeout(() => {
+            this.selectedId = '';
+            this.selected = [];
+            this.rows = [];
 
-        let params = {
-            settings_id: this.searchForm.value['sch_group_id'],
-        }
-        console.log(this.searchForm.value['sch_group_id']);
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
-
-
-                this.isLoadingProgress = false;
+            let params = {
+                settings_id: this.searchForm.value['sch_group_id'],
             }
-        );
+            console.log(this.searchForm.value['sch_group_id']);
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
+
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     hiddenCheck() {
@@ -188,10 +191,9 @@ export class PersonnelComponent implements OnInit {
         this.getAll();
     }
 
-    Edit (id) {
+    Edit(id) {
         this.dataService.GetById(id).subscribe(
-            editData =>
-            {
+            editData => {
                 if (editData['result'] == "success") {
                     this.editData = editData;
                     this.formData = editData['data'];
@@ -212,14 +214,14 @@ export class PersonnelComponent implements OnInit {
         );
     }
 
-    Save () {
+    Save() {
         let formModel = this.inputForm.value;
 
 
-          let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+        let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
 
 
-         if (this.isEditMode == true) {
+        if (this.isEditMode == true) {
             let formData = {
                 input_date: input_date,
                 group_id: formModel.group_id,
@@ -228,10 +230,10 @@ export class PersonnelComponent implements OnInit {
                 employee_num: formModel.employee_num,
                 phone: formModel.phone,
                 addr: formModel.addr,
-                specialnote:"",
-              };
-             this.Update(this.selectedId, formData);
-         } else {
+                specialnote: "",
+            };
+            this.Update(this.selectedId, formData);
+        } else {
             let formData = {
                 input_date: input_date,
                 group_id: formModel.group_id,
@@ -240,13 +242,13 @@ export class PersonnelComponent implements OnInit {
                 employee_num: formModel.employee_num,
                 phone: formModel.phone,
                 addr: formModel.addr,
-                specialnote:"",
-              };
-             this.Create(formData);
-         }
+                specialnote: "",
+            };
+            this.Create(formData);
+        }
     }
 
-    Create (data): void {
+    Create(data): void {
         this.dataService.Create(data)
             .subscribe(
                 data => {
@@ -263,7 +265,7 @@ export class PersonnelComponent implements OnInit {
             );
     }
 
-    Update (id, data): void {
+    Update(id, data): void {
         this.dataService.Update(id, data)
             .subscribe(
                 data => {
@@ -280,7 +282,7 @@ export class PersonnelComponent implements OnInit {
             );
     }
 
-    Delete (id): void {
+    Delete(id): void {
         this.dataService.Delete(id)
             .subscribe(
                 data => {
@@ -296,7 +298,7 @@ export class PersonnelComponent implements OnInit {
             );
     }
 
-    getWorkHistory (id): void {
+    getWorkHistory(id): void {
         this.workHistoryDataCnt = 1;
         this.dataService.GetWorkHistory(id)
             .subscribe(
@@ -309,15 +311,15 @@ export class PersonnelComponent implements OnInit {
 
                         let workData = data['data']['work_history'];
                         let len = workData.length;
-                        for(let i = 1; i<=len; i++){
+                        for (let i = 1; i <= len; i++) {
                             // console.error(workData[i]);
-                            if(i != 1) {
+                            if (i != 1) {
                                 this.addWorkTimeRow();
                             }
-                            this.inputWorktimeForm.controls['id_' + i].setValue(workData[i-1].id);
-                            this.inputWorktimeForm.controls['work_date_' + i].setValue(workData[i-1].work_date);
-                            this.inputWorktimeForm.controls['work_time_' + i].setValue(workData[i-1].work_time);
-                            this.inputWorktimeForm.controls['hourly_wage_' + i].setValue(this.utils.addComma(workData[i-1].hourly_wage));
+                            this.inputWorktimeForm.controls['id_' + i].setValue(workData[i - 1].id);
+                            this.inputWorktimeForm.controls['work_date_' + i].setValue(workData[i - 1].work_date);
+                            this.inputWorktimeForm.controls['work_time_' + i].setValue(workData[i - 1].work_time);
+                            this.inputWorktimeForm.controls['hourly_wage_' + i].setValue(this.utils.addComma(workData[i - 1].hourly_wage));
                             this.calculateDayWage('', i);
                         }
                         console.log(this.inputWorktimeForm)
@@ -334,30 +336,30 @@ export class PersonnelComponent implements OnInit {
     openModal(method, id) {
         // 실행권한
         // if (this.isExecutable == true) {
-            if (method == 'delete') {
-                this.deleteFormModal.show();
-            } else if (method == 'write') {
-                this.inputFormModal.show();
-                this.inputForm.controls['input_date'].setValue(this.tDate);
+        if (method == 'delete') {
+            this.deleteFormModal.show();
+        } else if (method == 'write') {
+            this.inputFormModal.show();
+            this.inputForm.controls['input_date'].setValue(this.tDate);
 
-            } else if (method == 'worktime'){
-                this.allResult = 0;
-                this.allTime = 0;
-                this.allWage = 0;
-                this.buildInputWorktimeForm();
-                this.workTimeFormModal.show();
-                this.getWorkHistory(id);
-                
-            }
+        } else if (method == 'worktime') {
+            this.allResult = 0;
+            this.allTime = 0;
+            this.allWage = 0;
+            this.buildInputWorktimeForm();
+            this.workTimeFormModal.show();
+            this.getWorkHistory(id);
+
+        }
         // } else {
-            // alert(this.globals.isNotExecutable);
-            // return false;
+        // alert(this.globals.isNotExecutable);
+        // return false;
         // }
 
         if (id) {
             if (id == 'selected') {
                 let idArr = [];
-                this.selected.forEach((e:any) => {
+                this.selected.forEach((e: any) => {
                     idArr.push(e.id);
                 });
                 this.selectedId = idArr.join(',');
@@ -378,10 +380,9 @@ export class PersonnelComponent implements OnInit {
         }
     }
 
-    getEmployeeNum(){
+    getEmployeeNum() {
         this.dataService.GetEmployeeNum().subscribe(
-            enumData =>
-            {
+            enumData => {
                 this.enumData = enumData;
                 console.log(enumData);
 
@@ -434,12 +435,12 @@ export class PersonnelComponent implements OnInit {
     }
     removeMaterialRow(index) {
         console.log('removeMaterialRow', index);
-        this.inputWorktimeForm.controls['work_time_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+        this.inputWorktimeForm.controls['work_time_' + index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
         this.inputWorktimeForm.controls['work_date_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
         this.inputWorktimeForm.controls['hourly_wage_' + index].setValue(-1);
         this.inputWorktimeForm.controls['day_wage_' + index].setValue(-1);
 
-        this.calculateDayWage('',index);
+        this.calculateDayWage('', index);
 
     }
 
@@ -451,20 +452,20 @@ export class PersonnelComponent implements OnInit {
         var tmpResult = 0;
 
         // console.log(formData['work_time_'+index], formData['hourly_wage_'+index]);
-        let mWtime = Number(formData['work_time_'+index]) * 1;
-        this.tmpTime[index-1] = mWtime;
-        
-        
-        let mHwage = Number(this.utils.removeComma(formData['hourly_wage_'+index])) * 1;
-        this.tmpWage[index-1] = mHwage;
+        let mWtime = Number(formData['work_time_' + index]) * 1;
+        this.tmpTime[index - 1] = mWtime;
+
+
+        let mHwage = Number(this.utils.removeComma(formData['hourly_wage_' + index])) * 1;
+        this.tmpWage[index - 1] = mHwage;
 
         let result = mWtime * mHwage;
-        this.tmpResult[index-1] = result;
-        
-        this.inputWorktimeForm.controls['day_wage_'+index].setValue(this.utils.addComma(result));
+        this.tmpResult[index - 1] = result;
 
-        for(let i=0; i<this.workHistoryDataCnt; i++){
-            if(this.inputWorktimeForm.controls['work_date_' + (i+1)].value != -1){
+        this.inputWorktimeForm.controls['day_wage_' + index].setValue(this.utils.addComma(result));
+
+        for (let i = 0; i < this.workHistoryDataCnt; i++) {
+            if (this.inputWorktimeForm.controls['work_date_' + (i + 1)].value != -1) {
                 tmpTime += this.tmpTime[i];
                 tmpWage += this.tmpWage[i];
                 tmpResult += this.tmpResult[i];
@@ -472,14 +473,14 @@ export class PersonnelComponent implements OnInit {
             }
 
         }
-        this.allTime  = this.utils.addComma(tmpTime);
-        this.allWage  = this.utils.addComma(tmpWage);
-        this.allResult  = this.utils.addComma(tmpResult);
+        this.allTime = this.utils.addComma(tmpTime);
+        this.allWage = this.utils.addComma(tmpWage);
+        this.allResult = this.utils.addComma(tmpResult);
 
 
-        console.log('tmpTime',tmpTime);
-        console.log('tmpWage',tmpWage);
-        console.log('tmpResult',tmpResult);
+        console.log('tmpTime', tmpTime);
+        console.log('tmpWage', tmpWage);
+        console.log('tmpResult', tmpResult);
         // console.log('Time', this.tmpTime[index-1], index);
         // console.log('Time', this.tmpTime, index);
         // console.log('Price', this.tmpWage[index-1], index);
@@ -487,7 +488,7 @@ export class PersonnelComponent implements OnInit {
         // console.log('Re', this.tmpResult,index);
 
 
-        if(event != '')
+        if (event != '')
             this.AddComma(event);
     }
 
@@ -500,14 +501,14 @@ export class PersonnelComponent implements OnInit {
             }
         }
         // console.log(index, len , upItemCnt);
-        if((len - unVisibleItemCnt) == index){
+        if ((len - unVisibleItemCnt) == index) {
             return true;
         }
         return false;
 
     }
 
-    chkViewRemoveBtn(index){
+    chkViewRemoveBtn(index) {
         let len = this.workHistoryDataCnt;
         let unVisibleItemCnt = 0;
         for (let i = 1; i <= len; i++) {
@@ -515,47 +516,47 @@ export class PersonnelComponent implements OnInit {
                 unVisibleItemCnt++;
             }
         }
-        if(len - unVisibleItemCnt > 1){
+        if (len - unVisibleItemCnt > 1) {
             return true;
         }
         return false;
     }
 
-    saveWorkTime(){
+    saveWorkTime() {
         let formData = this.inputWorktimeForm.value;
         formData.work_history = [];
-        
+
         let state = 1;
         let id = '';
-        for(let i=1; i<=this.workHistoryDataCnt; i++){
-            id = formData['id_'+i];
-            if(id != '' && formData['work_time_'+i] == -1) {
+        for (let i = 1; i <= this.workHistoryDataCnt; i++) {
+            id = formData['id_' + i];
+            if (id != '' && formData['work_time_' + i] == -1) {
                 state = 3; //삭제
-            } else{
-                if(id == '') {
+            } else {
+                if (id == '') {
                     state = 1; //추가
-                } else{
+                } else {
                     state = 2; //수정
                 }
             }
             // console.log(state);
-            if(state == 1 || ((state == 2 || state == 3) && id != "") ){
+            if (state == 1 || ((state == 2 || state == 3) && id != "")) {
                 console.log(id, state, i, formData);
-                formData.work_history.push( this.makeTimeTable(id, state, i, formData) );
+                formData.work_history.push(this.makeTimeTable(id, state, i, formData));
             }
 
-            delete formData['work_time_'+i];
-            delete formData['work_date_'+i];
-            delete formData['hourly_wage_'+i];
-            delete formData['day_wage_'+i];
-            delete formData['id_'+i];
+            delete formData['work_time_' + i];
+            delete formData['work_date_' + i];
+            delete formData['hourly_wage_' + i];
+            delete formData['day_wage_' + i];
+            delete formData['id_' + i];
         }
 
         console.log('save', this.selectedId, formData);
         this.CreateWroktime(this.selectedId, formData);
     }
 
-    CreateWroktime (id, data): void {
+    CreateWroktime(id, data): void {
         this.dataService.CreateWorkHistory(id, data)
             .subscribe(
                 data => {
@@ -571,7 +572,7 @@ export class PersonnelComponent implements OnInit {
             );
     }
 
-    makeTimeTable(id, state, index, formData){
+    makeTimeTable(id, state, index, formData) {
         let timeTable = {
             id: id,
             work_time: parseInt(this.utils.removeComma(formData['work_time_' + index])),

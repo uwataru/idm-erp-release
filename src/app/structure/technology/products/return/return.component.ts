@@ -1,18 +1,18 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {DatePipe} from '@angular/common';
-import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { DatePipe } from '@angular/common';
+import { AppGlobals } from '../../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
 
 import { ReturnService } from './return.service';
 import { Item, NoteItem } from './return.item';
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {saveAs as importedSaveAs} from "file-saver";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { saveAs as importedSaveAs } from "file-saver";
 declare var $: any;
 
 @Component({
@@ -33,7 +33,7 @@ export class ReturnComponent implements OnInit {
 
   searchForm: FormGroup;
   inputForm: FormGroup;
-  
+
   selectedId: string;
   listData: Item[];
   noteData: NoteItem[];
@@ -74,7 +74,7 @@ export class ReturnComponent implements OnInit {
     private route: ActivatedRoute,
     private utils: UtilsService,
     private messageService: MessageService
-  ) { 
+  ) {
     this.searchForm = fb.group({
       sch_sdate: '',
       sch_edate: ''
@@ -98,12 +98,12 @@ export class ReturnComponent implements OnInit {
     this.panelTitle = '반품관리';
     this.inputFormTitle = '반품 입력';
     this.noteTitle = '반품 내역';
-  
+
     this.selectedId = '';
     this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
     this.searchForm.controls['sch_edate'].setValue(this.tDate);
     this.getAll();
-  
+
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
       let modalHeader = $('.modal-header');
@@ -115,23 +115,28 @@ export class ReturnComponent implements OnInit {
   }
 
   getAll(): void {
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+    setTimeout(() => {
+      this.rows = [];
       let formData = this.searchForm.value;
       let params = {
-      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      sortby: ['order_no'],
-      order: ['asc'],
-      maxResultCount: 10000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.rows = listData['data'];
+        sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+        sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+        sortby: ['order_no'],
+        order: ['asc'],
+        maxResultCount: 10000
+      };
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.rows = listData['data'];
 
-        this.isLoadingProgress = false;
-      }
-    );
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 10);
   }
 
   Save() {
@@ -144,9 +149,9 @@ export class ReturnComponent implements OnInit {
     let formModel = this.inputForm.value;
 
     formModel.return_date = this.datePipe.transform(formModel.return_date, 'yyyy-MM-dd');
-    if(formModel.type == "true"){
+    if (formModel.type == "true") {
       formModel.type = true;
-    }else{
+    } else {
       formModel.type = false;
     }
     let formData = {
@@ -159,7 +164,7 @@ export class ReturnComponent implements OnInit {
       return_date: formModel.return_date
     }
     console.log(formData);
-    this.Create(this.selectedId,formData);
+    this.Create(this.selectedId, formData);
   }
 
 
@@ -185,7 +190,7 @@ export class ReturnComponent implements OnInit {
     this.selectedId = event.selected[0].id;
   }
 
-  openModal(method,id) {
+  openModal(method, id) {
     // 실행권한
     if (method == 'write') {
       this.inputFormModal.show();
@@ -197,7 +202,7 @@ export class ReturnComponent implements OnInit {
             this.editData = editData;
             this.formData = editData['data'];
 
-            console.log('!!!!!!!' ,this.formData);
+            console.log('!!!!!!!', this.formData);
 
             this.inputForm.patchValue({
               sales_delivery_id: this.formData.id,
@@ -212,7 +217,7 @@ export class ReturnComponent implements OnInit {
         }
       );
     }
-    else{
+    else {
       this.NoteModal.show();
       this.notes = [];
       // console.log(id);
@@ -225,12 +230,12 @@ export class ReturnComponent implements OnInit {
       );
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
-    }, 250);
+      }, 250);
     }
 
   }
 
-  onSelectReturnReason(event){
+  onSelectReturnReason(event) {
     this.inputForm.controls['settings_type_id'].setValue(event.item.id);
     console.log(this.inputForm.controls['settings_type_id'].value);
   }
@@ -262,21 +267,21 @@ export class ReturnComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.partner_name);
-            jsonValueToArray.push(d.product_name);
-            jsonValueToArray.push(d.product_type);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.partner_name);
+        jsonValueToArray.push(d.product_name);
+        jsonValueToArray.push(d.product_type);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

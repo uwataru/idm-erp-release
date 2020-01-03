@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
@@ -8,14 +8,14 @@ import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './assembly-result.item';
 import { saveAs as importedSaveAs } from "file-saver";
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 
 @Component({
-  selector: 'app-page',
-  templateUrl: './assembly-result.component.html',
-  styleUrls: ['./assembly-result.component.scss'],
-  providers: [AssemblyResultService, DatePipe]
+    selector: 'app-page',
+    templateUrl: './assembly-result.component.html',
+    styleUrls: ['./assembly-result.component.scss'],
+    providers: [AssemblyResultService, DatePipe]
 })
 export class AssemblyResultComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -24,7 +24,7 @@ export class AssemblyResultComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     //listPartners = [];
@@ -74,33 +74,37 @@ export class AssemblyResultComponent implements OnInit {
     }
 
     getAll(): void {
-        let formData = this.searchForm.value;
-        let params = {
-            production_work_lines_id: formData.sch_prdline,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            // sortby: ['sales_date'],
-            // order: ['asc'],
-            // maxResultCount: 10000
-        };
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                let price: number;
-                for (let i=0; i < this.rows.length; i++) {
-                   price = this.rows[i].qty * this.rows[i].product_price;
-                   this.rows[i].price = price;
+        setTimeout(() => {
+            this.rows = [];
+            let formData = this.searchForm.value;
+            let params = {
+                production_work_lines_id: formData.sch_prdline,
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                // sortby: ['sales_date'],
+                // order: ['asc'],
+                // maxResultCount: 10000
+            };
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
+
+                    let price: number;
+                    for (let i = 0; i < this.rows.length; i++) {
+                        price = this.rows[i].qty * this.rows[i].product_price;
+                        this.rows[i].price = price;
+                    }
+
+                    this.isLoadingProgress = false;
                 }
-
-                this.isLoadingProgress = false;
-            }
-        );
+            );
+        }, 10);
     }
-    selectPrdline(event){
+    selectPrdline(event) {
         console.log(event);
     }
 
@@ -136,32 +140,32 @@ export class AssemblyResultComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.production_date);
-                    jsonValueToArray.push(d.work_line);
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.qty);
-                    jsonValueToArray.push(d.product_price);
-                    jsonValueToArray.push(d.price);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.production_date);
+                jsonValueToArray.push(d.work_line);
+                jsonValueToArray.push(d.order_no);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.qty);
+                jsonValueToArray.push(d.product_price);
+                jsonValueToArray.push(d.price);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(2).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "center"};
-                    row.getCell(6).alignment = {horizontal: "right"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(2).alignment = { horizontal: "center" };
+                row.getCell(3).alignment = { horizontal: "center" };
+                row.getCell(6).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.getCell(8).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

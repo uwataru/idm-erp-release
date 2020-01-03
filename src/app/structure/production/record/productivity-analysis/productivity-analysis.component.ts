@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DragulaService } from 'ng2-dragula';
@@ -8,14 +8,14 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './productivity-analysis.item';
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {saveAs as importedSaveAs} from "file-saver";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { saveAs as importedSaveAs } from "file-saver";
 @Component({
-  selector: 'app-page',
-  templateUrl: './productivity-analysis.component.html',
-  styleUrls: ['./productivity-analysis.component.scss'],
-  providers: [ProductivityAnalysisService, DragulaService, DatePipe]
+    selector: 'app-page',
+    templateUrl: './productivity-analysis.component.html',
+    styleUrls: ['./productivity-analysis.component.scss'],
+    providers: [ProductivityAnalysisService, DragulaService, DatePipe]
 })
 export class ProductivityAnalysisComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -25,7 +25,7 @@ export class ProductivityAnalysisComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     productionLines: any[] = this.globals.configs['productionLine'];
     rows = [];
@@ -60,26 +60,30 @@ export class ProductivityAnalysisComponent implements OnInit {
     }
 
     GetAll() {
-        let formData = this.searchForm.value;
-        let params = {
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            production_work_lines_id: formData.sch_prdline,
-        };
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                // this.rows.sort(function(a,b) {
-                //     return a.subKey > b.subKey ? 1 : -1;
-                // });
+        setTimeout(() => {
+            this.rows = [];
+            let formData = this.searchForm.value;
+            let params = {
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                production_work_lines_id: formData.sch_prdline,
+            };
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
 
-                this.isLoadingProgress = false;
-            }
-        );
+                    // this.rows.sort(function(a,b) {
+                    //     return a.subKey > b.subKey ? 1 : -1;
+                    // });
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
@@ -120,44 +124,44 @@ export class ProductivityAnalysisComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.production_date);
-                    jsonValueToArray.push(d.line_no);
-                    jsonValueToArray.push(d.total_work_time);
-                    jsonValueToArray.push(d.total_work_personnel);
-                    jsonValueToArray.push(d.total_production_qty);
-                    jsonValueToArray.push(d.total_production_price);
-                    jsonValueToArray.push(d.total_material_price);
-                    jsonValueToArray.push(d.hour_production_qty);
-                    jsonValueToArray.push(d.hour_production_price);
-                    jsonValueToArray.push(d.hour_material_price);
-                    jsonValueToArray.push(d.hour_personner_qty);
-                    jsonValueToArray.push(d.hour_personner_price);
-                    jsonValueToArray.push(d.personner_material_price);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.production_date);
+                jsonValueToArray.push(d.line_no);
+                jsonValueToArray.push(d.total_work_time);
+                jsonValueToArray.push(d.total_work_personnel);
+                jsonValueToArray.push(d.total_production_qty);
+                jsonValueToArray.push(d.total_production_price);
+                jsonValueToArray.push(d.total_material_price);
+                jsonValueToArray.push(d.hour_production_qty);
+                jsonValueToArray.push(d.hour_production_price);
+                jsonValueToArray.push(d.hour_material_price);
+                jsonValueToArray.push(d.hour_personner_qty);
+                jsonValueToArray.push(d.hour_personner_price);
+                jsonValueToArray.push(d.personner_material_price);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(2).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "right"};
-                    row.getCell(4).alignment = {horizontal: "right"};
-                    row.getCell(5).alignment = {horizontal: "right"};
-                    row.getCell(6).alignment = {horizontal: "right"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
-                    row.getCell(9).alignment = {horizontal: "right"};
-                    row.getCell(10).alignment = {horizontal: "right"};
-                    row.getCell(11).alignment = {horizontal: "right"};
-                    row.getCell(12).alignment = {horizontal: "right"};
-                    row.getCell(13).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(2).alignment = { horizontal: "center" };
+                row.getCell(3).alignment = { horizontal: "right" };
+                row.getCell(4).alignment = { horizontal: "right" };
+                row.getCell(5).alignment = { horizontal: "right" };
+                row.getCell(6).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.getCell(8).alignment = { horizontal: "right" };
+                row.getCell(9).alignment = { horizontal: "right" };
+                row.getCell(10).alignment = { horizontal: "right" };
+                row.getCell(11).alignment = { horizontal: "right" };
+                row.getCell(12).alignment = { horizontal: "right" };
+                row.getCell(13).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

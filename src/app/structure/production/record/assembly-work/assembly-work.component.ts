@@ -13,6 +13,7 @@ import { BsDatepickerConfig } from "ngx-bootstrap";
 import { BsDatepickerViewMode } from "ngx-bootstrap/datepicker";
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { empty } from 'rxjs';
 
 declare var $: any;
 
@@ -37,7 +38,7 @@ export class AssemblyWorkComponent implements OnInit {
     searchValue: string;
     filteredPartners: any[] = [];
 
-    rows: Item['rowData'];
+    rows = [];
 
     messages = this.globals.datatableMessages;
     errorMessage: string;
@@ -70,6 +71,7 @@ export class AssemblyWorkComponent implements OnInit {
     }
 
     getAll(): void {
+        this.rows = [];
         let formData = this.searchForm.value;
         let params = {
             product_name: formData.sch_product_name,

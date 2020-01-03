@@ -1,17 +1,17 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
-import {saveAs as importedSaveAs} from 'file-saver';
-import {ProductsService} from './products.service';
-import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './products.item';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
+import { saveAs as importedSaveAs } from 'file-saver';
+import { ProductsService } from './products.service';
+import { AppGlobals } from '../../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './products.item';
 import { FormArray } from '@angular/forms';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 declare var $: any;
 
 @Component({
@@ -109,7 +109,7 @@ export class ProductsComponent implements OnInit {
     });
     this.buildInputFormGroup();
   }
-  buildInputFormGroup(){
+  buildInputFormGroup() {
     this.inputForm = this.fb.group({
       input_date: ['', Validators.required],
       type: '',
@@ -121,7 +121,7 @@ export class ProductsComponent implements OnInit {
       sch_materials_1: ['', Validators.required],
       material_qty_1: ['', Validators.required],
       material_price_1: ['', Validators.required],
-      material_base_price_1: ['', ]
+      material_base_price_1: ['',]
     });
   }
 
@@ -150,7 +150,7 @@ export class ProductsComponent implements OnInit {
     this.getAll();
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
@@ -158,40 +158,41 @@ export class ProductsComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selected = [];
-    let formData = this.searchForm.value;
-    let params = {
-      //partner_name: formData.sch_partner_name,
-      product_name: formData.sch_product_name.trim(),
-      st: this.sch_st,
-      sortby: ['sort_no'],
-      order: ['asc'],
-      maxResultCount: 10000
-    };
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-      params['partner_code'] = this.listSltdPaCode;
-    }
-    if (formData.sch_partner_name != '' && !this.listSltdPaCode) {
-      this.messageService.add('거래처 코드를 거래처목록에서 선택하세요.');
-      return;
-    }
+    setTimeout(() => {
+      this.selected = [];
+      let formData = this.searchForm.value;
+      let params = {
+        //partner_name: formData.sch_partner_name,
+        product_name: formData.sch_product_name.trim(),
+        st: this.sch_st,
+        sortby: ['sort_no'],
+        order: ['asc'],
+        maxResultCount: 10000
+      };
 
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.temp = listData['data'];
-        this.rows = listData['data'];
-        // console.log('getAll', this.rows);
-
-        this.isLoadingProgress = false;
-
-        setTimeout(() => {
-          document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
-        }, 0);
+      if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+        params['partner_code'] = this.listSltdPaCode;
       }
-    );
+      if (formData.sch_partner_name != '' && !this.listSltdPaCode) {
+        this.messageService.add('거래처 코드를 거래처목록에서 선택하세요.');
+        return;
+      }
+
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.temp = listData['data'];
+          this.rows = listData['data'];
+          // console.log('getAll', this.rows);
+
+          this.isLoadingProgress = false;
+
+        }
+      );
+    }, 10);
   }
 
   onSelectListMaterials(event: TypeaheadMatch, index): void {
@@ -199,7 +200,7 @@ export class ProductsComponent implements OnInit {
     this.inputForm.controls['material_price_' + index].setValue(this.utils.addComma(event.item.price));
     this.inputForm.controls['material_base_price_' + index].setValue(event.item.price);
     this.inputForm.controls['material_id_' + index].setValue(event.item.id);
-    if(this.inputForm.controls['id_' + index] == null)  //신규등록시 공백값으로 전달함.
+    if (this.inputForm.controls['id_' + index] == null)  //신규등록시 공백값으로 전달함.
       this.inputForm.controls['id_' + index].setValue('');
   }
 
@@ -209,7 +210,7 @@ export class ProductsComponent implements OnInit {
     // filter data
     const temp = this.temp.filter(function (d) {
       // console.log(d);
-      return (d.name!=null &&  d.name.indexOf(val) !== -1) || !val;
+      return (d.name != null && d.name.indexOf(val) !== -1) || !val;
     });
 
     // update the rows
@@ -260,17 +261,17 @@ export class ProductsComponent implements OnInit {
             is_tmp_price = true;
           }
 
-          for(let i=1; i<=this.formData['materials'].length; i++){
-            if(i != 1) {
+          for (let i = 1; i <= this.formData['materials'].length; i++) {
+            if (i != 1) {
               this.addMaterialRow();
             }
-            let matierialInfo = this.getMateriaInfo(this.formData['materials'][i-1].material_id);
+            let matierialInfo = this.getMateriaInfo(this.formData['materials'][i - 1].material_id);
             // console.log(matierialInfo);
             this.inputForm.controls['sch_materials_' + i].setValue(matierialInfo.name);
-            this.inputForm.controls['id_' + i].setValue(this.formData['materials'][i-1].id);
-            this.inputForm.controls['material_id_' + i].setValue(this.formData['materials'][i-1].material_id);
-            this.inputForm.controls['material_qty_' + i].setValue(this.utils.addComma(this.formData['materials'][i-1].qty));
-            this.inputForm.controls['material_price_' + i].setValue(this.utils.addComma(this.formData['materials'][i-1].price));
+            this.inputForm.controls['id_' + i].setValue(this.formData['materials'][i - 1].id);
+            this.inputForm.controls['material_id_' + i].setValue(this.formData['materials'][i - 1].material_id);
+            this.inputForm.controls['material_qty_' + i].setValue(this.utils.addComma(this.formData['materials'][i - 1].qty));
+            this.inputForm.controls['material_price_' + i].setValue(this.utils.addComma(this.formData['materials'][i - 1].price));
             this.inputForm.controls['material_base_price_' + i].setValue(matierialInfo.price);
           }
 
@@ -301,36 +302,36 @@ export class ProductsComponent implements OnInit {
 
     let state = 1;
     let id = '';
-    for(let i=1; i<=this.materialDataCnt; i++){
-      id = formData['id_'+i];
+    for (let i = 1; i <= this.materialDataCnt; i++) {
+      id = formData['id_' + i];
       if (this.isEditMode == true) {
-        if(formData['material_id_'+i] == -1) {
+        if (formData['material_id_' + i] == -1) {
           state = 3; //삭제
-        } else{
-          if(id == '') {
+        } else {
+          if (id == '') {
             state = 1; //추가
-          } else{
+          } else {
             state = 2; //수정
           }
         }
       }
 
-      if(this.isEditMode == false){
-        if(formData['material_id_'+i] != -1){
-          formData.materials.push( this.makeMaterial(id, state, i, formData) );
+      if (this.isEditMode == false) {
+        if (formData['material_id_' + i] != -1) {
+          formData.materials.push(this.makeMaterial(id, state, i, formData));
         }
-      } else{
-        if(state == 1 || ((state == 2 || state == 3) && id != "") ){
-          formData.materials.push( this.makeMaterial(id, state, i, formData) );
+      } else {
+        if (state == 1 || ((state == 2 || state == 3) && id != "")) {
+          formData.materials.push(this.makeMaterial(id, state, i, formData));
         }
       }
 
-      delete formData['material_id_'+i];
-      delete formData['id_'+i];
-      delete formData['material_price_'+i];
-      delete formData['material_base_price_'+i];
-      delete formData['material_qty_'+i];
-      delete formData['sch_materials_'+i];
+      delete formData['material_id_' + i];
+      delete formData['id_' + i];
+      delete formData['material_price_' + i];
+      delete formData['material_base_price_' + i];
+      delete formData['material_qty_' + i];
+      delete formData['sch_materials_' + i];
     }
 
     console.log('save', this.selectedId, formData);
@@ -341,7 +342,7 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  makeMaterial(id, state, index, formData){
+  makeMaterial(id, state, index, formData) {
     let material = {
       id: id,
       material_id: formData['material_id_' + index],
@@ -354,19 +355,19 @@ export class ProductsComponent implements OnInit {
 
   Create(data): void {
     this.dataService.Create(data)
-        .subscribe(
-            data => {
-              if (data['result'] == 'success') {
-                this.inputForm.reset();
-                this.getAll();
-                this.messageService.add(this.addOkMsg);
-              } else {
-                this.messageService.add(data['errorMessage']);
-              }
-              this.inputFormModal.hide();
-            },
-            error => this.errorMessage = <any>error
-        );
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.inputForm.reset();
+            this.getAll();
+            this.messageService.add(this.addOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.inputFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
   }
 
   Update(id, data): void {
@@ -497,8 +498,8 @@ export class ProductsComponent implements OnInit {
   calRowHeight(row) {
     if (row.height === undefined) {
       let addHeight = 0;
-      if(row.materials.length > 1){
-        addHeight = (row.materials.length-1) * 21;
+      if (row.materials.length > 1) {
+        addHeight = (row.materials.length - 1) * 21;
       }
       return 30 + addHeight;
     }
@@ -518,7 +519,7 @@ export class ProductsComponent implements OnInit {
   }
   removeMaterialRow(index) {
     console.log('removeMaterialRow', index);
-    this.inputForm.controls['material_id_'+index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
+    this.inputForm.controls['material_id_' + index].setValue(-1); //save() 할 때 이 값을 기준으로 삭제된 행인지 판단.
     this.inputForm.controls['sch_materials_' + index].setValue(-1); //validator 위해서 임의에 값 넣어놈
     this.inputForm.controls['material_qty_' + index].setValue(-1);
     this.inputForm.controls['material_price_' + index].setValue(-1);
@@ -529,11 +530,11 @@ export class ProductsComponent implements OnInit {
     let formData = this.inputForm.value;
 
     // console.log(formData['material_qty_'+index], formData['material_base_price_'+index]);
-    let mQty = Number(formData['material_qty_'+index]) * 1;
-    let mPrice = Number(formData['material_base_price_'+index]) * 1;
+    let mQty = Number(formData['material_qty_' + index]) * 1;
+    let mPrice = Number(formData['material_base_price_' + index]) * 1;
 
     let result = mQty * mPrice;
-    this.inputForm.controls['material_price_'+index].setValue(this.utils.addComma(result));
+    this.inputForm.controls['material_price_' + index].setValue(this.utils.addComma(result));
     // console.log('calculatePrice', this.inputForm.value);
   }
 
@@ -546,14 +547,14 @@ export class ProductsComponent implements OnInit {
       }
     }
     // console.log(index, len , upItemCnt);
-    if((len - unVisibleItemCnt) == index){
+    if ((len - unVisibleItemCnt) == index) {
       return true;
     }
     return false;
 
   }
 
-  chkViewRemoveBtn(index){
+  chkViewRemoveBtn(index) {
     let len = this.materialDataCnt;
     let unVisibleItemCnt = 0;
     for (let i = 1; i <= len; i++) {
@@ -561,15 +562,15 @@ export class ProductsComponent implements OnInit {
         unVisibleItemCnt++;
       }
     }
-    if(len - unVisibleItemCnt > 1){
+    if (len - unVisibleItemCnt > 1) {
       return true;
     }
     return false;
   }
 
-  getMateriaInfo(id){
-    for(let i=0; i<this.listMaterials.length; i++){
-      if(this.listMaterials[i].id == id){
+  getMateriaInfo(id) {
+    for (let i = 0; i < this.listMaterials.length; i++) {
+      if (this.listMaterials[i].id == id) {
         return this.listMaterials[i];
       }
     }
@@ -585,8 +586,8 @@ export class ProductsComponent implements OnInit {
 
         //
         let tData = [];
-        for(let i in data){
-          for(let j in data[i].materials){
+        for (let i in data) {
+          for (let j in data[i].materials) {
             tData.push({
               input_date: data[i].input_date,
               name: data[i].name,
@@ -621,28 +622,28 @@ export class ProductsComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.input_date);
-            jsonValueToArray.push(d.name);
-            jsonValueToArray.push(d.type);
-            jsonValueToArray.push(d.product_price);
-            jsonValueToArray.push(d.material_name);
-            jsonValueToArray.push(d.material_qty * 1);
-            // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.input_date);
+        jsonValueToArray.push(d.name);
+        jsonValueToArray.push(d.type);
+        jsonValueToArray.push(d.product_price);
+        jsonValueToArray.push(d.material_name);
+        jsonValueToArray.push(d.material_qty * 1);
+        // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "right"};
-            row.getCell(6).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(4).alignment = { horizontal: "right" };
+        row.getCell(6).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

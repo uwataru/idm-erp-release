@@ -1,16 +1,16 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {ModalDirective} from 'ngx-bootstrap/modal';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../providers/electron.service';
-import {saveAs as importedSaveAs} from 'file-saver';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {PartnersService} from './partners.service';
-import {AppGlobals} from '../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {ConfigService} from '../../../config.service';
-import {MessageService} from '../../../message.service';
-import {Item} from './partners.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../providers/electron.service';
+import { saveAs as importedSaveAs } from 'file-saver';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PartnersService } from './partners.service';
+import { AppGlobals } from '../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { ConfigService } from '../../../config.service';
+import { MessageService } from '../../../message.service';
+import { Item } from './partners.item';
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 
 declare var $: any;
 
@@ -141,7 +141,7 @@ export class PartnersComponent implements OnInit {
     this.getAll();
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
@@ -149,44 +149,49 @@ export class PartnersComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selected = [];
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let formData = this.searchForm.value;
-    let params = {
-      partner_name: formData.sch_partner_name,
-      ptype: formData.sch_ptype,
-      st: this.sch_st,
-      sortby: ['alias', 'ptype'],
-      order: ['asc', 'asc'],
-      maxResultCount: 10000
-    };
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.temp = listData['data'];
-        this.rows = listData['data'];
-      }
-    );
+    setTimeout(() => {
+      this.selected = [];
+      this.rows = [];
+
+      let formData = this.searchForm.value;
+      let params = {
+        partner_name: formData.sch_partner_name,
+        ptype: formData.sch_ptype,
+        st: this.sch_st,
+        sortby: ['alias', 'ptype'],
+        order: ['asc', 'asc'],
+        maxResultCount: 10000
+      };
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.temp = listData['data'];
+          this.rows = listData['data'];
+        }
+      );
+    }, 10);
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
     if (event.item['id'] == '') {
-        this.listSltdPaId = 0;
+      this.listSltdPaId = 0;
     } else {
-        this.listSltdPaId = event.item['id'];
+      this.listSltdPaId = event.item['id'];
     }
 
-     let id = this.listSltdPaId;
-     let formData = this.searchForm.value;
+    let id = this.listSltdPaId;
+    let formData = this.searchForm.value;
 
-     const temp = this.temp.filter(function(d){
-         d.partner_code = String(d.id);
-         return d.partner_code.indexOf(id) !== -1  ||  !id ;
-     });
+    const temp = this.temp.filter(function (d) {
+      d.partner_code = String(d.id);
+      return d.partner_code.indexOf(id) !== -1 || !id;
+    });
 
-     this.rows = temp;
+    this.rows = temp;
 
-}
+  }
 
   Edit(id) {
     this.dataService.GetById(id).subscribe(
@@ -420,17 +425,17 @@ export class PartnersComponent implements OnInit {
   setAddressData(data) {
     // console.log(data);
     this.inputForm.patchValue({
-          zipcode: data.zip,
-          addr1: data.addr
-      }
+      zipcode: data.zip,
+      addr1: data.addr
+    }
     );
   }
   setAddressData2(data) {
     // console.log(data);
     this.inputForm.patchValue({
-          zipcode2: data.zip,
-          addr2: data.addr
-      }
+      zipcode2: data.zip,
+      addr2: data.addr
+    }
     );
   }
 
@@ -468,31 +473,31 @@ export class PartnersComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.ptype_str);
-            jsonValueToArray.push(d.name);
-            jsonValueToArray.push(d.alias);
-            jsonValueToArray.push(d.ceo);
-            jsonValueToArray.push(d.addr1);
-            jsonValueToArray.push(d.phone);
-            jsonValueToArray.push(d.costumer);
-            jsonValueToArray.push(d.mobile);
-            jsonValueToArray.push(d.fax);
-            // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.ptype_str);
+        jsonValueToArray.push(d.name);
+        jsonValueToArray.push(d.alias);
+        jsonValueToArray.push(d.ceo);
+        jsonValueToArray.push(d.addr1);
+        jsonValueToArray.push(d.phone);
+        jsonValueToArray.push(d.costumer);
+        jsonValueToArray.push(d.mobile);
+        jsonValueToArray.push(d.fax);
+        // jsonValueToArray.push(d.st == 1 ? '사용' : d.st == -1 ? '삭제' : '숨김');
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "center"};
-            row.getCell(7).alignment = {horizontal: "center"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(4).alignment = { horizontal: "center" };
+        row.getCell(7).alignment = { horizontal: "center" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

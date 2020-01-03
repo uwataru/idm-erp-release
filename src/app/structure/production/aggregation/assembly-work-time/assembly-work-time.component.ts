@@ -10,10 +10,10 @@ import { MessageService } from '../../../../message.service';
 import { Item } from './assembly-work-time.item';
 
 @Component({
-  selector: 'app-page',
-  templateUrl: './assembly-work-time.component.html',
-  styleUrls: ['./assembly-work-time.component.scss'],
-  providers: [AssemblyWorkTimeService, DatePipe]
+    selector: 'app-page',
+    templateUrl: './assembly-work-time.component.html',
+    styleUrls: ['./assembly-work-time.component.scss'],
+    providers: [AssemblyWorkTimeService, DatePipe]
 })
 export class AssemblyWorkTimeComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -22,7 +22,7 @@ export class AssemblyWorkTimeComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     productionLines: any[] = this.globals.configs['productionLine'];
@@ -66,33 +66,37 @@ export class AssemblyWorkTimeComponent implements OnInit {
     }
 
     getAll(): void {
-        let formData = this.searchForm.value;
-        let params = {
-            production_work_lines_id: formData.sch_prdline,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            // sortby: ['sales_date'],
-            // order: ['asc'],
-            // maxResultCount: 10000
-        };
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                // this.rows.sort(function(a,b) {
-                //     return a.dateKey > b.dateKey ? 1 : -1;
-                // });
-                // for (let i=0; i < this.rows.length; i++) {
-                //     this.rows[i].dateData.sort(function(a,b) {
-                //         return a.lineKey.localeCompare(b.lineKey)
-                //     })
-                // }
+        setTimeout(() => {
+            this.rows = [];
+            let formData = this.searchForm.value;
+            let params = {
+                production_work_lines_id: formData.sch_prdline,
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                // sortby: ['sales_date'],
+                // order: ['asc'],
+                // maxResultCount: 10000
+            };
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
 
-                this.isLoadingProgress = false;
-            }
-        );
+                    // this.rows.sort(function(a,b) {
+                    //     return a.dateKey > b.dateKey ? 1 : -1;
+                    // });
+                    // for (let i=0; i < this.rows.length; i++) {
+                    //     this.rows[i].dateData.sort(function(a,b) {
+                    //         return a.lineKey.localeCompare(b.lineKey)
+                    //     })
+                    // }
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 }

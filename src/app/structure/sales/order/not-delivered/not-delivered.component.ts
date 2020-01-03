@@ -10,14 +10,14 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item, PartnerItem } from './not-delivered.item';
-import {AppConfig} from '../../../../../environments/environment';
-import {DatePipe} from "@angular/common";
+import { AppConfig } from '../../../../../environments/environment';
+import { DatePipe } from "@angular/common";
 declare var $: any;
 @Component({
-  selector: 'app-page',
-  templateUrl: './not-delivered.component.html',
-  styleUrls: ['./not-delivered.component.scss'],
-  providers: [OrderNotDeliveredService]
+    selector: 'app-page',
+    templateUrl: './not-delivered.component.html',
+    styleUrls: ['./not-delivered.component.scss'],
+    providers: [OrderNotDeliveredService]
 })
 export class OrderNotDeliveredComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -33,7 +33,7 @@ export class OrderNotDeliveredComponent implements OnInit {
 
     selectedId: string;
     currentQty: number;
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     listSltdPaCode: number = 0;
@@ -75,8 +75,8 @@ export class OrderNotDeliveredComponent implements OnInit {
         private messageService: MessageService
     ) {
         // 접근권한 체크
-        if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
-          if (route.routeConfig.data.id in this.globals.userPermission) {
+        if (route.routeConfig.path && ("id" in route.routeConfig.data)) {
+            if (route.routeConfig.data.id in this.globals.userPermission) {
                 console.log(route.routeConfig.data.id);
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
                     this.isExecutable = true;
@@ -116,7 +116,7 @@ export class OrderNotDeliveredComponent implements OnInit {
 
         this.changeSubMenu(1);
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
             modalHeader.addClass('cursor-all-scroll');
@@ -131,33 +131,37 @@ export class OrderNotDeliveredComponent implements OnInit {
     }
 
     getAll(): void {
-        this.selectedId = '';
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        let formData = this.searchForm.value;
-        let params = {
-            partner_name: formData.sch_partner_name,
-            order_no: formData.sch_order_no.trim(),
-            // sortby: ['product_code'],
-            // order: ['asc'],
-        };
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
-        }
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                for(let i in listData['data']){
-                    listData['data'][i].not_delivered_qty = listData['data'][i].order_qty - listData['data'][i].delivery_qty;
-                }
+        setTimeout(() => {
+            this.selectedId = '';
+            this.rows = [];
 
-                this.temp = listData['data'];
-                this.rows = listData['data'];
-
-                this.isLoadingProgress = false;
+            let formData = this.searchForm.value;
+            let params = {
+                partner_name: formData.sch_partner_name,
+                order_no: formData.sch_order_no.trim(),
+                // sortby: ['product_code'],
+                // order: ['asc'],
+            };
+            if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+                params['partner_code'] = this.listSltdPaCode;
             }
-        );
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    for (let i in listData['data']) {
+                        listData['data'][i].not_delivered_qty = listData['data'][i].order_qty - listData['data'][i].delivery_qty;
+                    }
+
+                    this.temp = listData['data'];
+                    this.rows = listData['data'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
@@ -181,20 +185,23 @@ export class OrderNotDeliveredComponent implements OnInit {
     }
 
     updateFilter(event) {
-        const val = event.target.value.trim();
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+        setTimeout(() => {
+            const val = event.target.value.trim();
 
-        // filter data
-        const temp = this.temp.filter(function(d){
-            return d.order_no.indexOf(val) !== -1 || !val;
-        });
+            // filter data
+            const temp = this.temp.filter(function (d) {
+                return d.order_no.indexOf(val) !== -1 || !val;
+            });
 
-        // update the rows
-        this.rows = temp;
-        // 필터 변경될때마다 항상 첫 페이지로 이동.
-        //this.table.offset = 0;
+            // update the rows
+            this.rows = temp;
+            // 필터 변경될때마다 항상 첫 페이지로 이동.
+            //this.table.offset = 0;
+        }, 10);
     }
 
-    calculDeliveryPrice (): void {
+    calculDeliveryPrice(): void {
         let formData = this.inputForm.value;
         let q = this.utils.removeComma(formData.delivery_qty) * 1;
         let p = this.utils.removeComma(formData.product_price) * 1;
@@ -202,7 +209,7 @@ export class OrderNotDeliveredComponent implements OnInit {
         this.inputForm.controls['delivery_price'].setValue(dp);
     }
 
-    deliveryCompletion () {
+    deliveryCompletion() {
         let formData = this.inputForm.value;
         let deliveryQty = this.utils.removeComma(formData.delivery_qty);
         if (deliveryQty < 1) {
@@ -227,7 +234,7 @@ export class OrderNotDeliveredComponent implements OnInit {
         this.Create(regData);
     }
 
-    Create (data): void {
+    Create(data): void {
         this.dataService.Create(data)
             .subscribe(
                 data => {
@@ -254,7 +261,7 @@ export class OrderNotDeliveredComponent implements OnInit {
                     alert(this.globals.isNotExecutable);
                     return false;
                 }
-                if(this.currentQty < 1) {
+                if (this.currentQty < 1) {
                     this.messageService.add('해당 제품의 재고가 없습니다.');
                     return false;
                 }
@@ -263,8 +270,7 @@ export class OrderNotDeliveredComponent implements OnInit {
                 this.inputForm.reset();
 
                 this.dataService.GetById(this.selectedId).subscribe(
-                    editData =>
-                    {
+                    editData => {
                         if (editData['result'] == "success") {
                             this.formData = editData['data'];
                             this.order_qty = this.formData.order_qty;

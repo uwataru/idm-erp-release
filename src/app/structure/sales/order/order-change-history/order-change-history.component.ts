@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
@@ -7,10 +7,10 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './order-change-history.item';
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 
-import {saveAs as importedSaveAs} from "file-saver";
+import { saveAs as importedSaveAs } from "file-saver";
 
 @Component({
     selector: 'app-page',
@@ -26,7 +26,7 @@ export class OrderChangeHistoryComponent implements OnInit {
     isLoadingProgress: boolean = false;
 
     searchForm: FormGroup;
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     listPartners: any[] = this.globals.configs['partnerList'];
@@ -63,29 +63,33 @@ export class OrderChangeHistoryComponent implements OnInit {
     }
 
     getAll(): void {
-        let formData = this.searchForm.value;
-        let params = {
-            partner_name: formData.sch_partner_name,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sortby: ['order_no'],
-            order: ['asc'],
-            // maxResultCount: 10000
-        };
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
-        }
-        this.isLoadingProgress = true;
-        console.log(params);
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-                this.isLoadingProgress = false;
+        setTimeout(() => {
+            this.rows = [];
+            let formData = this.searchForm.value;
+            let params = {
+                partner_name: formData.sch_partner_name,
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                sortby: ['order_no'],
+                order: ['asc'],
+                // maxResultCount: 10000
+            };
+            if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+                params['partner_code'] = this.listSltdPaCode;
             }
-        );
+            this.isLoadingProgress = true;
+            console.log(params);
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
@@ -130,32 +134,32 @@ export class OrderChangeHistoryComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.input_date);
-                    jsonValueToArray.push(d.before_value);
-                    jsonValueToArray.push(d.after_promised_date);
-                    jsonValueToArray.push(d.after_value);
-                    jsonValueToArray.push(d.set_value);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.order_no);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.input_date);
+                jsonValueToArray.push(d.before_value);
+                jsonValueToArray.push(d.after_promised_date);
+                jsonValueToArray.push(d.after_value);
+                jsonValueToArray.push(d.set_value);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(2).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "center"};
-                    row.getCell(6).alignment = {horizontal: "center"};
-                    row.getCell(8).alignment = {horizontal: "center"};
-                    row.getCell(5).alignment = {horizontal: "right"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(2).alignment = { horizontal: "center" };
+                row.getCell(4).alignment = { horizontal: "center" };
+                row.getCell(6).alignment = { horizontal: "center" };
+                row.getCell(8).alignment = { horizontal: "center" };
+                row.getCell(5).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

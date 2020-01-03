@@ -1,17 +1,17 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {DatePipe} from '@angular/common';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {PartnerAssemblyProductService} from './partner-assembly-product.service';
-import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './partner-assembly-product.item';
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {saveAs as importedSaveAs} from "file-saver";
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { DatePipe } from '@angular/common';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { PartnerAssemblyProductService } from './partner-assembly-product.service';
+import { AppGlobals } from '../../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './partner-assembly-product.item';
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { saveAs as importedSaveAs } from "file-saver";
 
 declare var $: any;
 
@@ -139,7 +139,7 @@ export class PartnerAssemblyProductComponent implements OnInit {
     this.getAll();
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
@@ -147,28 +147,32 @@ export class PartnerAssemblyProductComponent implements OnInit {
   }
 
   getAll(): void {
-    this.selected = [];
-    this.temp = [];
-    this.rows = [];
-    let formData = this.searchForm.value;
-    let params = {
-      partner_name: formData.sch_partner_name,
-      st: this.sch_st
-    };
-    if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
-      params['partner_id'] = this.listSltdPaId;
-    }
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        this.temp = listData['data'];
-        this.rows = listData['data'];
-
-        this.isLoadingProgress = false;
+    setTimeout(() => {
+      this.selected = [];
+      this.temp = [];
+      this.rows = [];
+      let formData = this.searchForm.value;
+      let params = {
+        partner_name: formData.sch_partner_name,
+        st: this.sch_st
+      };
+      if (this.listSltdPaId > 0 && formData.sch_partner_name != '') {
+        params['partner_id'] = this.listSltdPaId;
       }
-    );
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+
+          this.temp = listData['data'];
+          this.rows = listData['data'];
+
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 10);
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
@@ -409,27 +413,27 @@ export class PartnerAssemblyProductComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.input_date);
-            jsonValueToArray.push(d.name);
-            jsonValueToArray.push(d.size);
-            jsonValueToArray.push(d.partner_name);
-            jsonValueToArray.push(d.price);
-            jsonValueToArray.push(d.price_date);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.input_date);
+        jsonValueToArray.push(d.name);
+        jsonValueToArray.push(d.size);
+        jsonValueToArray.push(d.partner_name);
+        jsonValueToArray.push(d.price);
+        jsonValueToArray.push(d.price_date);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(1).alignment = {horizontal: "center"};
-            row.getCell(6).alignment = {horizontal: "center"};
-            row.getCell(5).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(1).alignment = { horizontal: "center" };
+        row.getCell(6).alignment = { horizontal: "center" };
+        row.getCell(5).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

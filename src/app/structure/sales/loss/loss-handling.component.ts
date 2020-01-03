@@ -91,6 +91,9 @@ export class LossHandlingComponent implements OnInit {
     }
 
     getAll() {
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+        setTimeout(() => {
         this.selected = [];
 
         let formData = this.searchForm.value;
@@ -121,7 +124,8 @@ export class LossHandlingComponent implements OnInit {
               this.isLoadingProgress = false;
             }
         );
-    }
+    }, 10);
+}
 
     Save(){
         let formModel = this.inputForm.value;

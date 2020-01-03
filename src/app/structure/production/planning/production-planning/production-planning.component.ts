@@ -1,18 +1,18 @@
-import {Component, ElementRef, Inject, OnInit, Renderer2, ViewChild, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DragulaService} from 'ng2-dragula';
-import {DatePipe} from '@angular/common';
-import {ProductionPlanningService} from './production-planning.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {WindowRefService} from '../../../../structure/shared/popup/window-ref.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './production-planning.item';
-import {ElectronService} from '../../../../providers/electron.service';
-import {saveAs as importedSaveAs} from 'file-saver';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DragulaService } from 'ng2-dragula';
+import { DatePipe } from '@angular/common';
+import { ProductionPlanningService } from './production-planning.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { WindowRefService } from '../../../../structure/shared/popup/window-ref.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './production-planning.item';
+import { ElectronService } from '../../../../providers/electron.service';
+import { saveAs as importedSaveAs } from 'file-saver';
 
 declare var $: any;
 
@@ -134,53 +134,58 @@ export class ProductionPlanningComponent implements OnInit {
   }
 
   getAll(): void {
-    let formData = this.searchForm.value;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let params = {
-      order_no: formData.sch_order_no.trim()
-    }
+    setTimeout(() => {
+      let formData = this.searchForm.value;
 
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
-        this.rows = [];
-        this.temp = [];
-        if (this.listData['totalCount'] > 0) {
-          this.rows = listData['data'];
-          this.temp = listData['data'];
-
-          for (let i = 0; i < this.rows.length; i++) {
-            let qty = Number(this.rows[i]['qty']) * 1;
-            let productionQty = Number(this.rows[i]['Production_qty']) * 1;
-            // console.log(i, qty, productionQty);
-            let remainQty = qty - productionQty;
-            this.rows[i].remainQty = remainQty;
-
-            this.rows[i].remainPrecent = Math.round(((productionQty / qty) * 100) * 10) / 10;
-            // console.log(this.rows[i].remainPrecent);
-          }
-        }
-
-        this.isLoadingProgress = false;
+      let params = {
+        order_no: formData.sch_order_no.trim()
       }
-    );
 
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+          this.rows = [];
+          this.temp = [];
+          if (this.listData['totalCount'] > 0) {
+            this.rows = listData['data'];
+            this.temp = listData['data'];
+
+            for (let i = 0; i < this.rows.length; i++) {
+              let qty = Number(this.rows[i]['qty']) * 1;
+              let productionQty = Number(this.rows[i]['Production_qty']) * 1;
+              // console.log(i, qty, productionQty);
+              let remainQty = qty - productionQty;
+              this.rows[i].remainQty = remainQty;
+
+              this.rows[i].remainPrecent = Math.round(((productionQty / qty) * 100) * 10) / 10;
+              // console.log(this.rows[i].remainPrecent);
+            }
+          }
+
+          this.isLoadingProgress = false;
+        }
+      );
+
+    }, 10);
   }
 
   updateFilter(event) {
-    const val = event.target.value.trim();
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    setTimeout(() => {
+      const val = event.target.value.trim();
 
-    // filter data
-    const temp = this.temp.filter(function(d){
+      // filter data
+      const temp = this.temp.filter(function (d) {
         return d.order_no.indexOf(val) !== -1 || !val;
-    })
+      })
 
-    // update the rows
-    this.rows = temp;
-    // 필터 변경될때마다 항상 첫 페이지로 이동.
-    //this.table.offset = 0;
-}
+      // update the rows
+      this.rows = temp;
+    }, 10);
+  }
 
   // CreatePrintView(): void {
   //   let formData = this.searchForm.value;

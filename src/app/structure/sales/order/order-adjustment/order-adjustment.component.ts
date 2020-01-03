@@ -1,17 +1,17 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
 import { saveAs as importedSaveAs } from "file-saver";
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
 import { OrderAdjustmentService } from './order-adjustment.service';
 import { AppGlobals } from '../../../../app.globals';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './order-adjustment.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -92,7 +92,7 @@ export class OrderAdjustmentComponent implements OnInit {
         this.buildInputFormGroup();
     }
 
-    buildInputFormGroup(){
+    buildInputFormGroup() {
         this.inputForm = this.fb.group({
             product_name: [''],
             product_type: [''],
@@ -130,38 +130,41 @@ export class OrderAdjustmentComponent implements OnInit {
 
     getAll(): void {
         // this.selectedId = -1;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        let formData = this.searchForm.value;
+        setTimeout(() => {
+            let formData = this.searchForm.value;
 
-        let params = {
-            partner_name: formData.sch_partner_name,
-            product_name: formData.sch_product_name.trim(),
-            // sortby: ['order_no'],
-            // order: ['asc']
-            // maxResultCount: 10000
-        };
+            let params = {
+                partner_name: formData.sch_partner_name,
+                product_name: formData.sch_product_name.trim(),
+                // sortby: ['order_no'],
+                // order: ['asc']
+                // maxResultCount: 10000
+            };
 
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData => {
-                this.listData = listData as Item[];
-                this.temp = [];
-                this.rows = [];
-                if(listData['totalCount'] > 0) {
-                    this.temp = listData['data'];
-                    this.rows = listData['data'].map(x => Object.assign({}, x));
-                    this.dataConvert();
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData as Item[];
+                    this.temp = [];
+                    this.rows = [];
+                    if (listData['totalCount'] > 0) {
+                        this.temp = listData['data'];
+                        this.rows = listData['data'].map(x => Object.assign({}, x));
+                        this.dataConvert();
+                    }
+
+                    this.isLoadingProgress = false;
                 }
-
-                this.isLoadingProgress = false;
-            }
-        );
+            );
+        }, 10);
     }
 
-    dataConvert(){  //같은 수주 번호 제품은 기본수주정보 제거
+    dataConvert() {  //같은 수주 번호 제품은 기본수주정보 제거
         let len = this.rows.length;
-        for(let i = 0; i<len; i++){
-            if(this.rows[i-1] != null && this.rows[i].id == this.rows[i-1].id){
+        for (let i = 0; i < len; i++) {
+            if (this.rows[i - 1] != null && this.rows[i].id == this.rows[i - 1].id) {
                 this.rows[i].order_no = '';
                 this.rows[i].partner_name = '';
                 this.rows[i].demand_date = '';
@@ -183,17 +186,20 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     updateFilter(event) {
-        const val = event.target.value.trim();
-        // filter data
-        let tempArr = this.temp.map(x => Object.assign({}, x));
-        let temp = tempArr.filter(function (d) {
-            return d.product_name.indexOf(val) !== -1 || !val;
-        });
-        // update the rows
-        this.rows = temp;
-        this.dataConvert()
-        // 필터 변경될때마다 항상 첫 페이지로 이동.
-        //this.table.offset = 0;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+        setTimeout(() => {
+            const val = event.target.value.trim();
+            // filter data
+            let tempArr = this.temp.map(x => Object.assign({}, x));
+            let temp = tempArr.filter(function (d) {
+                return d.product_name.indexOf(val) !== -1 || !val;
+            });
+            // update the rows
+            this.rows = temp;
+            this.dataConvert()
+            // 필터 변경될때마다 항상 첫 페이지로 이동.
+            //this.table.offset = 0;
+        }, 10);
     }
 
     // copy_date(event): void {
@@ -242,13 +248,13 @@ export class OrderAdjustmentComponent implements OnInit {
         let afterProductQty = parseInt(this.utils.removeComma(inputData.product_qty));
         switch (inputData.correction_reason_id) {
             case 2:
-                if(this.beforeProductQty < afterProductQty){
+                if (this.beforeProductQty < afterProductQty) {
                     alert('이전 수주량보다 많습니다.');
                     return false;
                 }
                 break;
             case 3:
-                if(this.beforeProductQty > afterProductQty){
+                if (this.beforeProductQty > afterProductQty) {
                     alert('이전 수주량 보다 작습니다.');
                     return false;
                 }
@@ -328,7 +334,7 @@ export class OrderAdjustmentComponent implements OnInit {
             );
     }
 
-    onSelect({selected}) {
+    onSelect({ selected }) {
         this.selectedId = selected[0].sales_order_detail_id;
     }
 
@@ -347,8 +353,8 @@ export class OrderAdjustmentComponent implements OnInit {
         let formData = this.inputForm.value;
 
         // console.log(formData['product_qty'], formData['product_price']);
-        let mQty = this.utils.removeComma( formData['product_qty'] );
-        let mPrice = this.utils.removeComma( formData['product_price'] );
+        let mQty = this.utils.removeComma(formData['product_qty']);
+        let mPrice = this.utils.removeComma(formData['product_price']);
 
         let result = mQty * mPrice;
         result = this.utils.addComma(result);
@@ -390,31 +396,31 @@ export class OrderAdjustmentComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                    jsonValueToArray = [];
-                    jsonValueToArray.push(d.order_no);
-                    jsonValueToArray.push(d.partner_name);
-                    jsonValueToArray.push(d.demand_date);
-                    jsonValueToArray.push(d.promised_date);
-                    jsonValueToArray.push(d.product_name);
-                    jsonValueToArray.push(d.product_type);
-                    jsonValueToArray.push(d.product_qty);
-                    jsonValueToArray.push(d.product_price);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.order_no);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.demand_date);
+                jsonValueToArray.push(d.promised_date);
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.product_type);
+                jsonValueToArray.push(d.product_qty);
+                jsonValueToArray.push(d.product_price);
 
-                    let row = worksheet.addRow(jsonValueToArray);
-                    row.font = this.globals.bodyFontStyle as Font;
-                    row.getCell(1).alignment = {horizontal: "center"};
-                    row.getCell(3).alignment = {horizontal: "center"};
-                    row.getCell(4).alignment = {horizontal: "center"};
-                    row.getCell(7).alignment = {horizontal: "right"};
-                    row.getCell(8).alignment = {horizontal: "right"};
-                    row.eachCell((cell, number) => {
-                        cell.border = this.globals.bodyBorderStyle as Borders;
-                    });
-                }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(3).alignment = { horizontal: "center" };
+                row.getCell(4).alignment = { horizontal: "center" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.getCell(8).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })

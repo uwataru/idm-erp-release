@@ -110,42 +110,46 @@ export class OutsourcingInOutComponent implements OnInit {
   }
 
   getAll(): void {
-    let formData = this.searchForm.value;
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    let params = {
-      sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
-      material_name: formData.sch_material,
-      material_size: formData.sch_size,
-      partner_name: formData.sch_partner_name,
-      // sortby: ['rcv_date'],
-      // order: ['asc'],
-      // maxResultCount: 10000
-    }
-    this.isLoadingProgress = true;
+    setTimeout(() => {
+      let formData = this.searchForm.value;
 
-    this.dataService.GetAll(params).subscribe(
-      data => {
-        this.rows = data['data'];
-        this.temp = data['data'];
-
-        let len = this.rows.length;
-        for (let i = 0; i < len; i++) {
-          this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
-        }
-
-        // this.totalBalance = data['totalBalance'];
-        // this.totalBalanceAmount = data['totalBalanceAmount'];
-        //
-        // this.totalOrderAmount = data['totalOrderAmount'];
-        // this.totalRcvWeight = data['totalRcvWeight'];
-        // this.totalUsedWeight = data['totalUsedWeight'];
-        // this.totalUsedAmount = data['totalUsedAmount'];
-        // this.totalWeight = data['totalWeight'];
-        // this.totalRemaingAmount = data['totalRemaingAmount'];
-
-        this.isLoadingProgress = false;
+      let params = {
+        sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+        material_name: formData.sch_material,
+        material_size: formData.sch_size,
+        partner_name: formData.sch_partner_name,
+        // sortby: ['rcv_date'],
+        // order: ['asc'],
+        // maxResultCount: 10000
       }
-    );
+      this.isLoadingProgress = true;
+
+      this.dataService.GetAll(params).subscribe(
+        data => {
+          this.rows = data['data'];
+          this.temp = data['data'];
+
+          let len = this.rows.length;
+          for (let i = 0; i < len; i++) {
+            this.rows[i].remain_qty = this.rows[i].transfer_qty + this.rows[i].receiving_qty - this.rows[i].insert_qty - this.rows[i].output_qty;
+          }
+
+          // this.totalBalance = data['totalBalance'];
+          // this.totalBalanceAmount = data['totalBalanceAmount'];
+          //
+          // this.totalOrderAmount = data['totalOrderAmount'];
+          // this.totalRcvWeight = data['totalRcvWeight'];
+          // this.totalUsedWeight = data['totalUsedWeight'];
+          // this.totalUsedAmount = data['totalUsedAmount'];
+          // this.totalWeight = data['totalWeight'];
+          // this.totalRemaingAmount = data['totalRemaingAmount'];
+
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 10);
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {

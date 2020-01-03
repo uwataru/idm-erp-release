@@ -88,27 +88,32 @@ export class PersonnelManagementComponent implements OnInit {
     }
 
     getAll(): void {
-        let formData = this.searchForm.value;
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        this.selectedId = '';
-        this.selected = [];
+        setTimeout(() => {
+            let formData = this.searchForm.value;
 
-        this.params = {
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            production_personnel_id: formData.production_personnel_id
-        };
+            this.selectedId = '';
+            this.selected = [];
+            this.rows = [];
 
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(this.params).subscribe(
-            listData => {
-                this.listData = listData;
-                this.temp = listData['data'];
-                this.rows = listData['data'];
+            this.params = {
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                production_personnel_id: formData.production_personnel_id
+            };
 
-                this.isLoadingProgress = false;
-            }
-        );
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(this.params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.temp = listData['data'];
+                    this.rows = listData['data'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     hiddenCheck() {

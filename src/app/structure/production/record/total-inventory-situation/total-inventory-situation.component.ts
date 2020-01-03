@@ -1,15 +1,15 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {TotalInventorySituationService} from './total-inventory-situation.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './total-inventory-situation.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {ElectronService, EXPORT_EXCEL_MODE} from "../../../../providers/electron.service";
-import {saveAs as importedSaveAs} from "file-saver";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { TotalInventorySituationService } from './total-inventory-situation.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './total-inventory-situation.item';
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
+import { saveAs as importedSaveAs } from "file-saver";
 declare var $: any;
 
 @Component({
@@ -90,27 +90,31 @@ export class TotalInventorySituationComponent implements OnInit {
   }
 
   getAll(): void {
-    let formData = this.searchForm.value;
-    let params = {
-      partner_name: formData.sch_partner_name,
-      sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-      sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-      // sortby: ['input_date'],
-      // order: ['asc'],
-      // maxResultCount: 10000
-    };
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      data => {
-        this.rows = data['data'];
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        for(let i in this.rows){
-          this.rows[i].not_delivered_qty = this.rows[i].order_qty - this.rows[i].delivery_qty;
+    setTimeout(() => {
+      let formData = this.searchForm.value;
+      let params = {
+        partner_name: formData.sch_partner_name,
+        sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+        sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+        // sortby: ['input_date'],
+        // order: ['asc'],
+        // maxResultCount: 10000
+      };
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        data => {
+          this.rows = data['data'];
+
+          for (let i in this.rows) {
+            this.rows[i].not_delivered_qty = this.rows[i].order_qty - this.rows[i].delivery_qty;
+          }
+
+          this.isLoadingProgress = false;
         }
-
-        this.isLoadingProgress = false;
-      }
-    );
+      );
+    }, 10);
   }
 
   onSelectListPartner(event: TypeaheadMatch): void {
@@ -186,30 +190,30 @@ export class TotalInventorySituationComponent implements OnInit {
 
       let jsonValueToArray;
       data.forEach(d => {
-            jsonValueToArray = [];
-            jsonValueToArray.push(d.partner_name);
-            jsonValueToArray.push(d.product_name);
-            jsonValueToArray.push(d.order_no);
-            jsonValueToArray.push(d.order_qty);
-            jsonValueToArray.push(d.delivery_qty);
-            jsonValueToArray.push(d.not_delivered_qty);
-            jsonValueToArray.push(d.demand_date);
+        jsonValueToArray = [];
+        jsonValueToArray.push(d.partner_name);
+        jsonValueToArray.push(d.product_name);
+        jsonValueToArray.push(d.order_no);
+        jsonValueToArray.push(d.order_qty);
+        jsonValueToArray.push(d.delivery_qty);
+        jsonValueToArray.push(d.not_delivered_qty);
+        jsonValueToArray.push(d.demand_date);
 
-            let row = worksheet.addRow(jsonValueToArray);
-            row.font = this.globals.bodyFontStyle as Font;
-            row.getCell(3).alignment = {horizontal: "center"};
-            row.getCell(7).alignment = {horizontal: "center"};
-            row.getCell(4).alignment = {horizontal: "right"};
-            row.getCell(5).alignment = {horizontal: "right"};
-            row.getCell(6).alignment = {horizontal: "right"};
-            row.eachCell((cell, number) => {
-              cell.border = this.globals.bodyBorderStyle as Borders;
-            });
-          }
+        let row = worksheet.addRow(jsonValueToArray);
+        row.font = this.globals.bodyFontStyle as Font;
+        row.getCell(3).alignment = { horizontal: "center" };
+        row.getCell(7).alignment = { horizontal: "center" };
+        row.getCell(4).alignment = { horizontal: "right" };
+        row.getCell(5).alignment = { horizontal: "right" };
+        row.getCell(6).alignment = { horizontal: "right" };
+        row.eachCell((cell, number) => {
+          cell.border = this.globals.bodyBorderStyle as Borders;
+        });
+      }
       );
 
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         fileName = fileName == '' ? this.panelTitle : fileName;
         importedSaveAs(blob, fileName + '.xlsx');
       })

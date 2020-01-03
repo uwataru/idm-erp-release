@@ -124,6 +124,9 @@ export class SalesSlipsComponent implements OnInit {
     }
 
     GetAll(): void {
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+        setTimeout(() => {
         let formData = this.searchForm.value;
         let params = {
             partner_name: formData.sch_partner_name,
@@ -155,7 +158,8 @@ export class SalesSlipsComponent implements OnInit {
                 this.isLoadingProgress = false;
             }
         );
-    }
+    }, 10);
+}
 
     onSelectListPartner(event: TypeaheadMatch): void {
         if (event.item['name'] == '') {

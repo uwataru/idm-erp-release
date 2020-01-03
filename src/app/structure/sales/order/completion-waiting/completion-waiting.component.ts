@@ -11,13 +11,13 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './completion-waiting.item';
-import {not} from "rxjs/internal-compatibility";
+import { not } from "rxjs/internal-compatibility";
 declare var $: any;
 @Component({
-  selector: 'app-page',
-  templateUrl: './completion-waiting.component.html',
-  styleUrls: ['./completion-waiting.component.scss'],
-  providers: [CompletionWaitingService]
+    selector: 'app-page',
+    templateUrl: './completion-waiting.component.html',
+    styleUrls: ['./completion-waiting.component.scss'],
+    providers: [CompletionWaitingService]
 })
 export class CompletionWaitingComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -32,7 +32,7 @@ export class CompletionWaitingComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     partnerList: any[] = this.globals.configs['partnerList'];
@@ -74,7 +74,7 @@ export class CompletionWaitingComponent implements OnInit {
         private messageService: MessageService
     ) {
         // 접근권한 체크
-        if (route.routeConfig.path && ("id" in route.routeConfig.data) ) {
+        if (route.routeConfig.path && ("id" in route.routeConfig.data)) {
             if (route.routeConfig.data.id in this.globals.userPermission) {
                 console.log(route.routeConfig.data.id);
                 if (this.globals.userPermission[route.routeConfig.data.id]['executive_auth'] == true) {
@@ -114,7 +114,7 @@ export class CompletionWaitingComponent implements OnInit {
 
         this.getAll();
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
             modalHeader.addClass('cursor-all-scroll');
@@ -125,35 +125,39 @@ export class CompletionWaitingComponent implements OnInit {
     }
 
     getAll(): void {
-        this.selected = [];
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        let formData = this.searchForm.value;
-        let params = {
-            partner_name: formData.sch_partner_name,
-            // sortby: ['product_code'],
-            // order: ['asc'],
-            // maxResultCount: 10000
-        };
-        if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
-            params['partner_code'] = this.listSltdPaCode;
-        }
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
+        setTimeout(() => {
+            this.selected = [];
+            this.rows = [];
 
-                for(let i in listData['data']){
-                    listData['data'][i].price = listData['data'][i].sales_qty * listData['data'][i].product_price;
-                    listData['data'][i].not_sales_qty = listData['data'][i].delivery_qty - listData['data'][i].sales_qty;
-                }
-
-                this.temp = listData['data'];
-                this.rows = listData['data'];
-
-                this.isLoadingProgress = false;
+            let formData = this.searchForm.value;
+            let params = {
+                partner_name: formData.sch_partner_name,
+                // sortby: ['product_code'],
+                // order: ['asc'],
+                // maxResultCount: 10000
+            };
+            if (this.listSltdPaCode > 0 && formData.sch_partner_name != '') {
+                params['partner_code'] = this.listSltdPaCode;
             }
-        );
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+
+                    for (let i in listData['data']) {
+                        listData['data'][i].price = listData['data'][i].sales_qty * listData['data'][i].product_price;
+                        listData['data'][i].not_sales_qty = listData['data'][i].delivery_qty - listData['data'][i].sales_qty;
+                    }
+
+                    this.temp = listData['data'];
+                    this.rows = listData['data'];
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
@@ -169,7 +173,7 @@ export class CompletionWaitingComponent implements OnInit {
         this.selectedId = selected[0].id;
     }
 
-    Save () {
+    Save() {
         let formData = this.inputForm.value;
 
         let saleQty = this.utils.removeComma(formData.sales_qty) * 1;
@@ -180,7 +184,7 @@ export class CompletionWaitingComponent implements OnInit {
             return false;
         }
 
-        if(saleQty > notSalesQty){
+        if (saleQty > notSalesQty) {
             alert('판매수량이 미판매 수량보다 큽니다.');
             return false;
         }
@@ -195,7 +199,7 @@ export class CompletionWaitingComponent implements OnInit {
         this.Create(regData);
     }
 
-    Create (data): void {
+    Create(data): void {
         this.dataService.Create(data)
             .subscribe(
                 data => {
@@ -215,7 +219,7 @@ export class CompletionWaitingComponent implements OnInit {
     openModal(method, rowIndex) {
         // 실행권한
         if (this.isExecutable == true) {
-           this.inputFormModal.show();
+            this.inputFormModal.show();
         } else {
             alert(this.globals.isNotExecutable);
             return false;
@@ -228,8 +232,7 @@ export class CompletionWaitingComponent implements OnInit {
 
         // 수주정보
         this.dataService.GetById(this.selectedId).subscribe(
-            editData =>
-            {
+            editData => {
                 if (editData['result'] == "success") {
                     this.formData = editData['data'];
 
@@ -254,7 +257,7 @@ export class CompletionWaitingComponent implements OnInit {
         );
     }
 
-    calculateSalePrice(){
+    calculateSalePrice() {
         let formData = this.inputForm.value;
         let q = this.utils.removeComma(formData.sales_qty) * 1;
         let p = this.utils.removeComma(formData.product_price) * 1;

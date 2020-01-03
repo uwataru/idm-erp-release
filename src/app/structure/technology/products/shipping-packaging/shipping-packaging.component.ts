@@ -110,6 +110,10 @@ export class ShippingPackagingComponent implements OnInit {
     });
   }
   getAll(): void {
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+    setTimeout(() => {
+    this.rows = [];
       let formData = this.searchForm.value;
       let params = {
       sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
@@ -127,7 +131,8 @@ export class ShippingPackagingComponent implements OnInit {
         this.isLoadingProgress = false;
       }
     );
-  }
+  }, 10);
+}
 
   Save() {
     // 실행권한

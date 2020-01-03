@@ -143,6 +143,9 @@ export class MaterialsComponent implements OnInit {
   }
 
   getAll(): void {
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+    setTimeout(() => {
     this.selected = [];
     this.rows = [];
     this.temp = [];
@@ -166,7 +169,8 @@ export class MaterialsComponent implements OnInit {
         this.isLoadingProgress = false;
       }
     );
-  }
+  }, 10);
+}
 
   onSelectListPartner(event: TypeaheadMatch): void {
 

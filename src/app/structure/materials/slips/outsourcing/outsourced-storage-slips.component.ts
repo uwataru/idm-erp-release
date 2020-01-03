@@ -1,15 +1,15 @@
-import {Component, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {OutsourcedStorageSlipsService} from './outsourced-storage-slips.service';
-import {AppGlobals} from '../../../../app.globals';
-import {ActivatedRoute} from '@angular/router';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './outsourced-storage-slips.item';
-import {ElectronService} from '../../../../providers/electron.service';
+import { Component, Inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { OutsourcedStorageSlipsService } from './outsourced-storage-slips.service';
+import { AppGlobals } from '../../../../app.globals';
+import { ActivatedRoute } from '@angular/router';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './outsourced-storage-slips.item';
+import { ElectronService } from '../../../../providers/electron.service';
 
 declare var $: any;
 
@@ -122,29 +122,33 @@ export class OutsourcedStorageSlipsComponent implements OnInit {
   }
 
   GetAll(): void {
-    let params = {
-      sch_sdate: this.rcvDate,
-    };
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-    this.isLoadingProgress = true;
-    this.dataService.GetAll(params).subscribe(
-      listData => {
-        this.listData = listData;
+    setTimeout(() => {
+      let params = {
+        sch_sdate: this.rcvDate,
+      };
 
-        this.rows = [];
-        for(let i in listData['data']){
-          listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
+      this.isLoadingProgress = true;
+      this.dataService.GetAll(params).subscribe(
+        listData => {
+          this.listData = listData;
+
+          this.rows = [];
+          for (let i in listData['data']) {
+            listData['data'][i].sales_price = listData['data'][i].receiving_qty * listData['data'][i].price;
+          }
+
+          this.rows = listData['data'];
+          // this.totalOrderAmount = listData['totalOrderAmount'];
+          // this.totalRcvWeight = listData['totalRcvWeight'];
+          this.isLoadingProgress = false;
         }
-
-        this.rows = listData['data'];
-        // this.totalOrderAmount = listData['totalOrderAmount'];
-        // this.totalRcvWeight = listData['totalRcvWeight'];
-        this.isLoadingProgress = false;
-      }
-    );
+      );
+    }, 10);
   }
 
-  onSelect({selected}) {
+  onSelect({ selected }) {
     console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);

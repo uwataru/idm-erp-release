@@ -1,4 +1,4 @@
-import {ElectronService, EXPORT_EXCEL_MODE} from '../../../../providers/electron.service';
+import { ElectronService, EXPORT_EXCEL_MODE } from '../../../../providers/electron.service';
 import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
@@ -8,15 +8,15 @@ import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './return.item';
-import {Alignment, Border, Borders, Fill, Font, Workbook} from "exceljs";
-import {saveAs as importedSaveAs} from "file-saver";
+import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
+import { saveAs as importedSaveAs } from "file-saver";
 
 @Component({
-  selector: 'app-page',
-  templateUrl: './return.component.html',
-  styleUrls: ['./return.component.css'],
-  providers: [ReturnService, DatePipe],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-page',
+    templateUrl: './return.component.html',
+    styleUrls: ['./return.component.css'],
+    providers: [ReturnService, DatePipe],
+    encapsulation: ViewEncapsulation.None
 })
 export class ReturnComponent implements OnInit {
     tDate = this.globals.tDate;
@@ -26,7 +26,7 @@ export class ReturnComponent implements OnInit {
 
     searchForm: FormGroup;
 
-    listData : Item[];
+    listData: Item[];
     formData: Item['data'];
     sch_partner_name: string;
     //listPartners = [];
@@ -74,31 +74,34 @@ export class ReturnComponent implements OnInit {
     }
 
     getAll(): void {
-        this.rows = [];
-        let formData = this.searchForm.value;
-        let params = {
-            partner_name: formData.sch_partner_name,
-            sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
-            sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
-            sortby: ['sales_date'],
-            order: ['asc'],
-            maxResultCount: 10000
-        }
+        document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
-        this.isLoadingProgress = true;
-        this.dataService.GetAll(params).subscribe(
-            listData =>
-            {
-                this.listData = listData;
-                this.rows = listData['data'];
-
-                for(let i=0; i<this.rows.length; i++){
-                    listData['data'][i].sales_price = (listData['data'][i].qty - listData['data'][i].return_qty) * listData['data'][i].product_price;
-                }
-
-                this.isLoadingProgress = false;
+        setTimeout(() => {
+            this.rows = [];
+            let formData = this.searchForm.value;
+            let params = {
+                partner_name: formData.sch_partner_name,
+                sch_sdate: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM-dd'),
+                sch_edate: this.datePipe.transform(formData.sch_edate, 'yyyy-MM-dd'),
+                sortby: ['sales_date'],
+                order: ['asc'],
+                maxResultCount: 10000
             }
-        );
+
+            this.isLoadingProgress = true;
+            this.dataService.GetAll(params).subscribe(
+                listData => {
+                    this.listData = listData;
+                    this.rows = listData['data'];
+
+                    for (let i = 0; i < this.rows.length; i++) {
+                        listData['data'][i].sales_price = (listData['data'][i].qty - listData['data'][i].return_qty) * listData['data'][i].product_price;
+                    }
+
+                    this.isLoadingProgress = false;
+                }
+            );
+        }, 10);
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {
@@ -137,30 +140,30 @@ export class ReturnComponent implements OnInit {
 
             let jsonValueToArray;
             data.forEach(d => {
-                  jsonValueToArray = [];
-                  jsonValueToArray.push(d.input_date);
-                  jsonValueToArray.push(d.partner_name);
-                  jsonValueToArray.push(d.product_name);
-                  jsonValueToArray.push(d.order_no);
-                  jsonValueToArray.push(d.qty);
-                  jsonValueToArray.push(d.product_price);
-                  jsonValueToArray.push(d.sales_price);
+                jsonValueToArray = [];
+                jsonValueToArray.push(d.input_date);
+                jsonValueToArray.push(d.partner_name);
+                jsonValueToArray.push(d.product_name);
+                jsonValueToArray.push(d.order_no);
+                jsonValueToArray.push(d.qty);
+                jsonValueToArray.push(d.product_price);
+                jsonValueToArray.push(d.sales_price);
 
-                  let row = worksheet.addRow(jsonValueToArray);
-                  row.font = this.globals.bodyFontStyle as Font;
-                  row.getCell(1).alignment = {horizontal: "center"};
-                  row.getCell(4).alignment = {horizontal: "center"};
-                  row.getCell(5).alignment = {horizontal: "right"};
-                  row.getCell(7).alignment = {horizontal: "right"};
-                  row.getCell(8).alignment = {horizontal: "right"};
-                  row.eachCell((cell, number) => {
-                      cell.border = this.globals.bodyBorderStyle as Borders;
-                  });
-              }
+                let row = worksheet.addRow(jsonValueToArray);
+                row.font = this.globals.bodyFontStyle as Font;
+                row.getCell(1).alignment = { horizontal: "center" };
+                row.getCell(4).alignment = { horizontal: "center" };
+                row.getCell(5).alignment = { horizontal: "right" };
+                row.getCell(7).alignment = { horizontal: "right" };
+                row.getCell(8).alignment = { horizontal: "right" };
+                row.eachCell((cell, number) => {
+                    cell.border = this.globals.bodyBorderStyle as Borders;
+                });
+            }
             );
 
             workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 fileName = fileName == '' ? this.panelTitle : fileName;
                 importedSaveAs(blob, fileName + '.xlsx');
             })
