@@ -129,7 +129,7 @@ export class ReturnComponent implements OnInit {
             worksheet.getColumn(6).width = 10;
             worksheet.getColumn(7).width = 12;
 
-            const header = ["납품일자", "거래처", "제품명", "수주번호", "납품수량", "단가", "금액"];
+            const header = ["납품일자", "거래처", "제품명", "수주번호", "반품수량", "단가", "금액"];
             let headerRow = worksheet.addRow(header);
             headerRow.font = this.globals.headerFontStyle as Font;
             headerRow.eachCell((cell, number) => {
@@ -145,7 +145,7 @@ export class ReturnComponent implements OnInit {
                 jsonValueToArray.push(d.partner_name);
                 jsonValueToArray.push(d.product_name);
                 jsonValueToArray.push(d.order_no);
-                jsonValueToArray.push(d.qty);
+                jsonValueToArray.push(d.return_qty);
                 jsonValueToArray.push(d.product_price);
                 jsonValueToArray.push(d.sales_price);
 
