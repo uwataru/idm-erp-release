@@ -102,7 +102,7 @@ export class PartnersComponent implements OnInit {
       biz_no: '',
       mobile: ['', Validators.required],
       name: ['', Validators.required],
-      alias: '',
+      alias: ['', Validators.required],
       ceo: '',
       addr1: '',
       addr2: '',
