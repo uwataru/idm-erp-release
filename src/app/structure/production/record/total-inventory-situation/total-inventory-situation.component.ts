@@ -31,7 +31,7 @@ export class TotalInventorySituationComponent implements OnInit {
   searchValue: string;
   filteredPartners: any[] = [];
 
-  rows: Item['data'];
+  rows = [];
 
   detailsTitle: string;
 
@@ -93,6 +93,7 @@ export class TotalInventorySituationComponent implements OnInit {
     document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
     setTimeout(() => {
+      this.rows = [];
       let formData = this.searchForm.value;
       let params = {
         partner_name: formData.sch_partner_name,
