@@ -35,7 +35,8 @@
             [scrollbarH]="false"
             [selected]="selected"
             [selectionType]="'checkbox'"
-            [selectAllRowsOnPage]="false">
+            [selectAllRowsOnPage]="false"
+            [messages]="messages">
             <ngx-datatable-column prop="id" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
                 <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
                     <label class="i-checks i-checks-sm m-b-none hidden-print">
