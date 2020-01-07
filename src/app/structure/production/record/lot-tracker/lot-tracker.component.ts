@@ -55,6 +55,8 @@ export class LotTrackerComponent implements OnInit {
 
     getAll() {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+        document.getElementsByTagName('datatable-body')[1].scrollTop = 1;
+        document.getElementsByTagName('datatable-body')[2].scrollTop = 1;
 
         setTimeout(() => {
             let formData = this.searchForm.value;
