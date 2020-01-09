@@ -104,7 +104,7 @@ export class LossHandlingComponent implements OnInit {
         //     return false;
         // }
         let params = {
-            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-M'),
+            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
             product_name:  formData.sch_product_name,
         };
         this.isLoadingProgress = true;
