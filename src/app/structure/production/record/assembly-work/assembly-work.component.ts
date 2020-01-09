@@ -75,7 +75,7 @@ export class AssemblyWorkComponent implements OnInit {
         let formData = this.searchForm.value;
         let params = {
             product_name: formData.sch_product_name,
-            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+            sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-M'),
 
         }
         this.isLoadingProgress = true;

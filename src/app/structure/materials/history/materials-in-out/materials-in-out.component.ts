@@ -117,7 +117,7 @@ export class MaterialsInOutComponent implements OnInit {
             this.rows = [];
 
             let params = {
-                sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-MM'),
+                sch_yearmonth: this.datePipe.transform(formData.sch_yearmonth, 'yyyy-M'),
                 material_name: formData.sch_material,
                 material_size: formData.sch_size,
                 partner_name: formData.sch_partner_name,
