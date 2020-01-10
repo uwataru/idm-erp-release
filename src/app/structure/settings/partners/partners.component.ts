@@ -288,6 +288,7 @@ export class PartnersComponent implements OnInit {
       );
   }
 
+
   Update(id, data): void {
     this.dataService.Update(id, data)
       .subscribe(
@@ -337,6 +338,8 @@ export class PartnersComponent implements OnInit {
       if (method == 'delete' || method == 'hide' || method == 'use') {
         this.statusFormModal.show();
       } else if (method == 'write') {
+        document.getElementById('daum_address_pop_1').style.display = 'none';
+        document.getElementById('daum_address_pop_2').style.display = 'none';
         this.inputFormModal.show();
       } else if (method == 'upload') {
         this.uploadFormModal.show();
@@ -416,10 +419,16 @@ export class PartnersComponent implements OnInit {
   }
 
   //주소검색
-  daumAddressOptions = {
+  daumAddressOptions_1 = {
     class: ['btn-small', 'btn-primary'],
     type: 'layer',
-    target: 'daum_address_pop',
+    target: 'daum_address_pop_1',
+    width: 400
+  };
+  daumAddressOptions_2 = {
+    class: ['btn-small', 'btn-primary'],
+    type: 'layer',
+    target: 'daum_address_pop_2',
     width: 400
   };
   setAddressData(data) {
