@@ -25,6 +25,39 @@ With this sample, you can :
 - Run your app in a production environment
 - Package your app into an executable file for Linux, Windows & Mac
 
+#필수 적용 사항!
+웹뷰용 컨텐트 빌드용  /node_modules/electron/index.js 파일 수정
+```
+var fs, path;
+try {
+    fs = require('fs');
+    path = require('path');
+}
+catch (err) {
+}
+if(fs && path) {
+    var pathFile = path.join(__dirname, 'path.txt')
+    function getElectronPath() {
+        if (fs.existsSync(pathFile)) {
+            var executablePath = fs.readFileSync(pathFile, 'utf-8')
+            if (process.env.ELECTRON_OVERRIDE_DIST_PATH) {
+                return path.join(process.env.ELECTRON_OVERRIDE_DIST_PATH, executablePath)
+            }
+            return path.join(__dirname, 'dist', executablePath)
+        } else {
+            throw new Error('Electron failed to install correctly, please delete node_modules/electron and try installing again')
+        }
+    }
+    module.exports = getElectronPath()
+}
+```
+src/environments/serverinfo.ts 생성
+```
+export const ServerConfig = {
+        myDevServer : "<개발서버주소>"
+};
+```
+
 ## Getting Started
 
 Clone this repository locally :
