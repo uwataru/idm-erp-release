@@ -34,23 +34,23 @@
         </div>
         <!-- / buttons -->
 
-<!--		<tabset>-->
-<!--			<tab class="tabHome" (select)="goToLink(9999,'/?tabs=1')">				-->
-<!--				<ng-template tabHeading>-->
-<!--					<i class="glyphicon glyphicon-home"></i>-->
-<!--				</ng-template>-->
-<!--			</tab>-->
-<!--			<tab *ngFor="let tabz of tabs"-->
-<!--				 [heading]="tabz.title"-->
-<!--				 [active]="tabz.active"-->
-<!--				 (select)="goToLink(tabz.no, tabz.routerUrl)"-->
-<!--				 (deselect)="tabz.active = false"-->
-<!--				 [disabled]="tabz.disabled"-->
-<!--				 [removable]="tabz.removable"-->
-<!--				 (removed)="removeTabHandler(tabz)"-->
-<!--				 [customClass]="tabz.customClass">-->
-<!--			</tab>-->
-<!--		</tabset>-->
+		<tabset>
+			<tab class="tabHome" (select)="goToLink(9999,'/?tabs=1')">				
+				<ng-template tabHeading>
+					<i class="glyphicon glyphicon-home"></i>
+				</ng-template>
+			</tab>
+			<tab *ngFor="let tabz of tabs"
+				 [heading]="tabz.title"
+				 [active]="tabz.active"
+				 (select)="goToLink(tabz.no, tabz.routerUrl)"
+				 (deselect)="tabz.active = false"
+				 [disabled]="tabz.disabled"
+				 [removable]="tabz.removable"
+				 (removed)="removeTabHandler(tabz)"
+				 [customClass]="tabz.customClass">
+			</tab>
+		</tabset>
 
         <!-- nabar right -->
         <div class="m-t-sm m-r-xs navbar-right">
@@ -184,8 +184,8 @@
 	<span>{{ navItem.name }}</span>
 </li>
 <li *ngFor="let menu of navItem.nav; let i = index" [ngClass]="{'active': currentMenu==menu.src}">
-	 <a [routerLink]="menu.src" class="auto">
-<!--	<a (click)="goToLink(menu.no, menu.src, true);" class="auto">-->
+	 <!-- <a [routerLink]="menu.src" class="auto"> -->
+	<a (click)="goToLink(menu.no, menu.src, true);" class="auto">
 		<span *ngIf="menu.sub" class="pull-right text-muted">
 			<i class="fa fa-fw fa-angle-right text"></i>
 			<i class="fa fa-fw fa-angle-down text-active"></i>
@@ -195,14 +195,14 @@
 	</a>
 	<ul *ngIf="menu.sub.length > 0" class="nav nav-sub dk">
 		<li class="nav-sub-header">
-			 <a [routerLink]="menu.src">
-<!--			<a (click)="goToLink(menu.no, menu.src, true);">-->
+			 <!-- <a [routerLink]="menu.src"> -->
+			<a (click)="goToLink(menu.no, menu.src, true);">
 				<span>{{ menu.name }}</span>
 			</a>
 		</li>
 		<li *ngFor="let submenu of menu.sub; let j = index" [ngClass]="{'active': currentSubmenu==submenu.src}">
-			 <a [routerLink]="submenu.src"><i class="subMenuNo">{{ submenu.no }}</i>{{ submenu.name }}</a>
-<!--			<a (click)="goToLink(submenu.no, submenu.src);"><i class="subMenuNo">{{ submenu.no }}</i>{{ submenu.name }}</a>-->
+			 <!-- <a [routerLink]="submenu.src"><i class="subMenuNo">{{ submenu.no }}</i>{{ submenu.name }}</a> -->
+			<a (click)="goToLink(submenu.no, submenu.src);"><i class="subMenuNo">{{ submenu.no }}</i>{{ submenu.name }}</a>
 		</li>
 	</ul>
 	<!-- /.nav-second-level -->
