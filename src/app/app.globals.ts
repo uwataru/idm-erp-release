@@ -6,7 +6,7 @@ import { ServerConfig } from '../environments/serverinfo';
 export class AppGlobals {
     constructor() { }
 
-    public remoteUrl: string = 'http://tqxat-idm.innest.co.kr';
+    public remoteUrl: string = 'http://idm.innest.co.kr';
     public serverUrl: string = this.getServerUrl();
 
 
@@ -46,7 +46,7 @@ export class AppGlobals {
         this.serverUrl = ServerConfig.myDevServer;
       }else{
         // this.serverUrl='http://idm.innest.co.kr';
-        this.serverUrl='http://tqxat-idm.innest.co.kr';
+        this.serverUrl='http://idm.innest.co.kr';
         // this.serverUrl='http://lucas.innest.co.kr';
       }
       return this.serverUrl;
