@@ -101,6 +101,7 @@ export class PartnersComponent implements OnInit {
       ptype6: '',
       biz_no: '',
       mobile: ['', Validators.required],
+      mobile2: '',
       name: ['', Validators.required],
       alias: ['', Validators.required],
       ceo: '',
@@ -233,6 +234,7 @@ export class PartnersComponent implements OnInit {
             ptype6: ptype6,
             biz_no: this.formData.biz_no,
             mobile: this.formData.mobile,
+            mobile2: this.formData.mobile2,
             country: this.formData.country,
             name: this.formData.name,
             alias: this.formData.alias,
@@ -258,7 +260,13 @@ export class PartnersComponent implements OnInit {
   Save() {
     let formData = this.inputForm.value;
 
-    if (!formData.ptype1 && !formData.ptype2 && !formData.ptype3 && !formData.ptype4 && !formData.ptype5) {
+    console.log('MOBILE',formData.mobile, formData.mobile2);
+    if(formData.mobile != null){
+      formData.mobile = formData.mobile.replace(/\-/g,'');
+    }
+    formData.mobile2 = formData.mobile2.replace(/\-/g,'');
+
+    if (!formData.ptype1 && !formData.ptype2 && !formData.ptype3 && !formData.ptype4 && !formData.ptype5 && !formData.ptype6) {
       alert('구분은 최소 1개 이상 선택하셔야 합니다!');
       return false;
     }
@@ -266,6 +274,7 @@ export class PartnersComponent implements OnInit {
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);
     } else {
+      console.log(formData);
       this.Create(formData);
     }
   }
@@ -447,6 +456,35 @@ export class PartnersComponent implements OnInit {
     }
     );
   }
+
+  addHyphen(event){
+    console.log(event.target.value);
+    var number = event.target.value.replace(/[^0-9]/g, "");
+    var phone = "";
+
+
+
+    if(number.length < 4) {
+        return number;
+    } else if(number.length < 7) {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3);
+    } else if(number.length < 11) {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3, 3);
+        phone += "-";
+        phone += number.substr(6);
+    } else {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3, 4);
+        phone += "-";
+        phone += number.substr(7);
+    }
+    event.target.value = phone;
+}
 
   //
   exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

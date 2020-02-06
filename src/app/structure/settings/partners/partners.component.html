@@ -261,6 +261,8 @@
                 <input type="text" formControlName="biz_no" id="biz_no" nextFocus="ceo"
                        class="form-control input-sm w-md"/>
               </td>
+            </tr>
+            <tr>
               <th>
                 <label for="ceo">대표자</label>
               </th>
@@ -268,25 +270,15 @@
                 <input type="text" formControlName="ceo" id="ceo" nextFocus="costumer"
                        class="form-control input-sm w-sm"/>
               </td>
-            </tr>
-            <tr>
               <th>
-                <label for="costumer">담당자</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                <label for="mobile2">Mobile.</label>
               </th>
               <td>
-                <input type="text" formControlName="costumer" id="costumer" required nextFocus="mobile"
-                       class="form-control input-sm w-sm"/>
-              </td>
-              <th>
-                <label for="mobile">Mobile.</label>
-                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </th>
-              <td>
-                <input type="text" formControlName="mobile" id="mobile" required nextFocus="addr1"
+                <input type="text" (keyup)="addHyphen($event)" formControlName="mobile2" id="mobile2" nextFocus="addr1"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>
+
             <tr>
               <th>
                 <label for="addr1">사업장소재지</label>
@@ -341,6 +333,24 @@
               <td>
                 <input type="text" formControlName="email" id="email" nextFocus="phone_no"
                        class="form-control input-sm w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="costumer">담당자</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" formControlName="costumer" id="costumer" required nextFocus="mobile"
+                       class="form-control input-sm w-sm"/>
+              </td>
+              <th>
+                <label for="mobile">Mobile.</label>
+                <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              </th>
+              <td>
+                <input type="text" (keyup)="addHyphen($event)" formControlName="mobile" id="mobile" required nextFocus="addr1"
+                       class="form-control input-sm w-md"/>
               </td>
             </tr>
             <tr>

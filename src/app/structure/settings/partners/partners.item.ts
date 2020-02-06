@@ -20,6 +20,7 @@ export class Item {
         zipcode: string;
         zipcode2: string;
         mobile: string;
+        mobile2: string;
         email: string;
         phone: string;
         fax: string;
