@@ -261,10 +261,10 @@ export class PartnersComponent implements OnInit {
     let formData = this.inputForm.value;
 
     console.log('MOBILE',formData.mobile, formData.mobile2);
-    if(formData.mobile != null){
-      formData.mobile = formData.mobile.replace(/\-/g,'');
+    if(formData.mobile2 != null){
+      formData.mobile2 = formData.mobile2.replace(/\-/g,'');
     }
-    formData.mobile2 = formData.mobile2.replace(/\-/g,'');
+    formData.mobile = formData.mobile.replace(/\-/g,'');
 
     if (!formData.ptype1 && !formData.ptype2 && !formData.ptype3 && !formData.ptype4 && !formData.ptype5 && !formData.ptype6) {
       alert('구분은 최소 1개 이상 선택하셔야 합니다!');
