@@ -155,7 +155,7 @@ export class ProductionPlanningComponent implements OnInit {
 
             for (let i = 0; i < this.rows.length; i++) {
               let qty = Number(this.rows[i]['qty']) * 1;
-              let productionQty = Number(this.rows[i]['Production_qty']) * 1;
+              let productionQty = Number(this.rows[i]['production_qty']) * 1;
               // console.log(i, qty, productionQty);
               let remainQty = qty - productionQty;
               this.rows[i].remainQty = remainQty;
