@@ -75,7 +75,7 @@
   <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
      aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" style="width: 1000px !important;">
+    <div class="modal-content" style="width: 1200px !important;">
       <form [formGroup]="inputForm">
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
@@ -83,7 +83,7 @@
           <h4 class="modal-title">{{ inputFormTitle }}</h4>
         </div>
         <div class="modal-body" style="overflow-y: scroll; height: 700px;">
-        <div class="col-lg-5">
+        <div class="col-lg-4">
           <input type="hidden" formControlName="id" id="id"/>
             <div class="form-group">
               <div class="row">
@@ -164,6 +164,17 @@
 
             <div class="form-group">
               <div class="row">
+                <label for="production_qty" class="col-lg-4 control-label">
+                    기생산수량
+                </label>
+                <div class="col-lg-8">
+                  <input readonly type="text" formControlName="production_qty" id="production_qty" class="form-control input-sm w-sm"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="row">
                 <label for="add_production_qty" class="col-lg-4 control-label">
                     생산수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </label>
@@ -220,23 +231,29 @@
               </table>
             </div>
           </div>
-          <div class="col-lg-7">
+          <div class="col-lg-8">
               <div class="form-group">
                 <div *ngFor='let material of [].constructor(materialDataCnt); let index = index;' class="row">
                   <div *ngIf="inputForm.value['material_name_'+(index+1)] != -1" style="display: contents"
                   id="material_wrap_{{index+1}}">
-                  <label for="material_name" class="col-lg-3 control-label">
+                  <label for="material_name" class="col-lg-2 control-label">
                     소요자재 {{index+1}}
                   </label>
-                  <div class="col-lg-4">
+                  <div class="col-lg-3">
                     <input type="text" readonly formControlName="material_name_{{index+1}}" id="material_name_{{index+1}}" class="input-sm form-control w-sm inline v-middle" />
                   </div>
-                  <label for="material_qty" class="col-lg-2 control-label">
+                  <label for="material_qty" class="col-lg-1 control-label">
                     수량 
                   </label>
-                  <div class="col-lg-3">
+                  <div class="col-lg-2">
                     <input type="text" readonly formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
                     <input type="hidden" formControlName="hidden_material_qty_{{index+1}}" id="hidden_material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                  </div>
+                  <label for="current_qty" class="col-lg-1 control-label">
+                    재고 
+                  </label>
+                  <div class="col-lg-2">
+                    <input type="text" readonly formControlName="current_qty_{{index+1}}" id="current_qty_{{index+1}}" class="form-control input-sm w-xs"/>
                   </div>
                   </div>
                 </div>

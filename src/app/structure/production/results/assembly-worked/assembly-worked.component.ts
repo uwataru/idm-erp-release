@@ -83,12 +83,14 @@ export class AssemblyWorkedComponent implements OnInit {
       product_name: ['', Validators.required],
       product_type: ['', Validators.required],
       qty: ['', Validators.required],
+      production_qty: ['', Validators.required],
       add_production_qty: ['', Validators.required],
       personnel_1: ['', Validators.required],
       personnel_id_1: ['', Validators.required],
       work_time_1: ['', Validators.required],
       material_name_1: ['', Validators.required],
       material_qty_1: ['', Validators.required],
+      current_qty_1: ['', Validators.required],
       hidden_material_qty_1: ['', Validators.required],
     });
   }
@@ -233,6 +235,7 @@ export class AssemblyWorkedComponent implements OnInit {
               id: this.selectedId,
               order_no: this.formData.order_no,
               partner_name: this.formData.partner_name,
+              production_qty: this.formData.production_qty,
               product_name: this.formData.product_name,
               product_type: this.formData.product_type,
               line_no: this.formData.line_no,
@@ -256,6 +259,7 @@ export class AssemblyWorkedComponent implements OnInit {
               }
               this.inputForm.controls['material_name_' + i].setValue(materialData[i-1].name);
               this.inputForm.controls['hidden_material_qty_' + i].setValue(materialData[i-1].qty);
+              this.inputForm.controls['current_qty_' + i].setValue(materialData[i-1].current_qty);
           }
             console.log(this.inputForm);
 
@@ -293,6 +297,7 @@ export class AssemblyWorkedComponent implements OnInit {
 
     this.inputForm.addControl('material_name_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('material_qty_' + index, new FormControl('', Validators.required));
+    this.inputForm.addControl('current_qty_' + index, new FormControl('', Validators.required));
     this.inputForm.addControl('hidden_material_qty_' + index, new FormControl('', Validators.required));
   }
   
