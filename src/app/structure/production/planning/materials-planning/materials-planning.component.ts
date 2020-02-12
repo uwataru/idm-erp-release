@@ -1,12 +1,14 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TypeaheadMatch} from 'ngx-bootstrap/typeahead/typeahead-match.class';
-import {DatePipe} from '@angular/common';
-import {MaterialsPlanningService} from './materials-planning.service';
-import {AppGlobals} from '../../../../app.globals';
-import {UtilsService} from '../../../../utils.service';
-import {MessageService} from '../../../../message.service';
-import {Item} from './materials-planning.item';
+import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
+import { DatePipe } from '@angular/common';
+import { MaterialsPlanningService } from './materials-planning.service';
+import { AppGlobals } from '../../../../app.globals';
+import { UtilsService } from '../../../../utils.service';
+import { MessageService } from '../../../../message.service';
+import { Item } from './materials-planning.item';
+declare var $: any;
 
 @Component({
     selector: 'app-page',
@@ -16,9 +18,11 @@ import {Item} from './materials-planning.item';
 })
 export class MaterialsPlanningComponent implements OnInit {
     tDate = this.globals.tDate;
+    inputFormTitle: string;
     panelTitle: string;
     isLoadingProgress: boolean = false;
 
+    inputForm: FormGroup;
     searchForm: FormGroup;
 
     listData: Item[];
@@ -29,6 +33,9 @@ export class MaterialsPlanningComponent implements OnInit {
     totalQuantity: number;
     totalSalesPrice: number;
     isInitPlanDate: boolean = false;
+
+    materialDataCnt: number;
+
 
     selected = [];
     selectedId: string;
@@ -42,6 +49,8 @@ export class MaterialsPlanningComponent implements OnInit {
     @ViewChild('hideFormClose') hideFormClose: ElementRef;
     @ViewChild('uploadFormClose') uploadFormClose: ElementRef;
     @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
+    @ViewChild('InputFormModal') inputFormModal: ModalDirective;
+
 
     constructor(
         @Inject(FormBuilder) fb: FormBuilder,
@@ -53,6 +62,18 @@ export class MaterialsPlanningComponent implements OnInit {
     ) {
         this.searchForm = fb.group({
             sch_order_no: '',
+        });
+
+        this.inputForm = fb.group({
+            order_no: '',
+            product_name: '',
+            product_type: '',
+            qty: '',
+            name_1: '',
+            material_qty_1: '',
+            price_1: '',
+            current_qty_1: '',
+            short_qty_1: '',
         });
 
         // 생산계획 수립일, 출력기한
@@ -67,7 +88,20 @@ export class MaterialsPlanningComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '자재계획';
+        this.inputFormTitle = '자재계획';
         this.GetAll();
+
+        this.materialDataCnt = 1;
+
+        $(document).ready(function () {
+            let modalContent: any = $('.modal-content');
+            let modalHeader = $('.modal-header');
+            modalHeader.addClass('cursor-all-scroll');
+            modalContent.draggable({
+                handle: '.modal-header'
+            });
+        });
+
     }
 
     GetAll(): void {
@@ -120,6 +154,51 @@ export class MaterialsPlanningComponent implements OnInit {
         }
     }
 
+    openModal(id) {
+        this.materialDataCnt = 1;
+
+        this.inputFormModal.show();
+        this.dataService.GetMaterialPlanningInfo(id).subscribe(
+            editData => {
+                if (editData['result'] == "success") {
+                    let formData = editData['data'];
+                    let materialData = editData['data']['material'];
+                    this.inputForm.patchValue({
+                        order_no: formData.order_no,
+                        product_name: formData.product_name,
+                        product_type: formData.product_type,
+                        qty: formData.qty,
+                    });
+                    // this.productDetailInfo(formData.product_code);
+                    let len2 = materialData.length;
+                    for (let i = 1; i <= len2; i++) {
+                        // console.error(workData[i]);
+                        if (i != 1) {
+                            this.addMaterialRow();
+                        }
+                        this.inputForm.controls['name_' + i].setValue(materialData[i - 1].name);
+                        this.inputForm.controls['material_qty_' + i].setValue(materialData[i - 1].qty);
+                        this.inputForm.controls['price_' + i].setValue(materialData[i - 1].price);
+                        this.inputForm.controls['current_qty_' + i].setValue(materialData[i - 1].current_qty);
+                        this.inputForm.controls['short_qty_' + i].setValue(materialData[i - 1].current_qty - materialData[i - 1].qty);
+                    }
+                }
+            }
+        );
+
+    }
+    addMaterialRow() {
+        // console.log('addMaterialRow', index);
+        this.materialDataCnt++;
+        let index = this.materialDataCnt;
+
+        this.inputForm.addControl('name_' + index, new FormControl('', Validators.required));
+        this.inputForm.addControl('material_qty_' + index, new FormControl('', Validators.required));
+        this.inputForm.addControl('price_' + index, new FormControl('', Validators.required));
+        this.inputForm.addControl('current_qty_' + index, new FormControl('', Validators.required));
+        this.inputForm.addControl('short_qty_' + index, new FormControl('', Validators.required));
+    }
+
     updateFilter(event) {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
         setTimeout(() => {
@@ -131,7 +210,7 @@ export class MaterialsPlanningComponent implements OnInit {
         }, 10);
     }
 
-    onSelect({selected}) {
+    onSelect({ selected }) {
         // console.log('onSelected', selected[0].id);
         this.selectedId = selected[0].id;
     }

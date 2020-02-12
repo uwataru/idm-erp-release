@@ -18,6 +18,9 @@ export class MaterialsPlanningService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
     }
+    GetMaterialPlanningInfo(id){
+        return this.http.get(this.url + '/' + id);
+    }
 
    /**
     * Handle Http operation that failed.

@@ -66,6 +66,13 @@
               '3px' : '0px', 'margin-right':'10px' }">{{item.price | numberFormat}}</div>
           </ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column name="상세보기" prop="id" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <button (click)="openModal(value)" class="btn btn-xs btn-primary">
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+          </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
   </div>
 
@@ -77,6 +84,113 @@
       </div>
     </div>
   </footer>
+</div>
+
+<div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <form [formGroup]="inputForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ inputFormTitle }}</h4>
+        </div>
+        <div class="modal-body" style="max-height: 700px !important; overflow-y: scroll;">
+          <div class="col-lg-12">
+              <div class="form-group">
+                <div class="row">
+                  <label for="order_no" class="col-lg-2 control-label">
+                    지시번호
+                  </label>
+                  <div class="col-lg-4">
+                    <input readonly type="text" formControlName="order_no" id="order_no" class="form-control input-sm w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="product_name" class="col-lg-2 control-label">
+                      제품명
+                  </label>
+                  <div class="col-lg-4">
+                    <input readonly type="text" formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <div class="row">
+                  <label for="product_type" class="col-lg-2 control-label">
+                      규격
+                  </label>
+                  <div class="col-lg-4">
+                    <input readonly type="text" formControlName="product_type" id="product_type" class="form-control input-sm w-sm"/>
+                  </div>
+                </div>
+              </div>
+   
+              <div class="form-group">
+                <div class="row">
+                  <label for="qty" class="col-lg-2 control-label">
+                      지시수량
+                  </label>
+                  <div class="col-lg-4">
+                    <input readonly type="text" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              <div class="form-group">
+                <div *ngFor='let material of [].constructor(materialDataCnt); let index = index;' class="row">
+                  <div *ngIf="inputForm.value['name'+(index+1)] != -1" style="display: contents"
+                  id="material_wrap_{{index+1}}">
+                  <label for="name" class="col-lg-1 control-label">
+                    소요자재
+                  </label>
+                  <div class="col-lg-2">
+                    <input type="text" readonly formControlName="name_{{index+1}}" id="name_{{index+1}}" class="input-sm form-control w-sm inline v-middle" />
+                  </div>
+                  <label for="material_qty" class="col-lg-1 control-label">
+                    수량 
+                  </label>
+                  <div class="col-lg-1">
+                    <input type="text" readonly formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                  </div>
+                  <label for="price" class="col-lg-1 control-label">
+                    단가 
+                  </label>
+                  <div class="col-lg-1">
+                    <input type="text" readonly formControlName="price_{{index+1}}" id="price_{{index+1}}" class="form-control input-sm w-xs"/>
+                  </div>
+                  <label for="current_qty" class="col-lg-1 control-label">
+                    현재고 
+                  </label>
+                  <div class="col-lg-1">
+                    <input type="text" readonly formControlName="current_qty_{{index+1}}" id="current_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                  </div>
+                  <label for="short_qty" class="col-lg-1 control-label">
+                    과부족 
+                  </label>
+                  <div class="col-lg-1">
+                    <input type="text" readonly formControlName="short_qty_{{index+1}}" id="short_qty_{{index+1}}" class="form-control input-sm w-xs"/>
+                  </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">닫기</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
 </div>
 
 <div *ngIf="isLoadingProgress" class="loading-progress">
