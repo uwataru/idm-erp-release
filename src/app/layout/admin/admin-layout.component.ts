@@ -224,6 +224,10 @@ export class AdminLayoutComponent implements OnInit {
         this.router.navigate(['/auth/session']);
     }
 
+    minimumWindow() {
+        this.electronService.remote.getCurrentWindow().minimize();
+    }
+
     closeWindow() {
         this.dataService.logout();
         this.electronService.exitApp();

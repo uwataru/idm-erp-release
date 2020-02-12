@@ -2,9 +2,9 @@
  
 ::ng-deep .navbar-header { background-color: white; }
 ::ng-deep .navbar-brand img { max-height: 45px; margin-left: -30px;}
-::ng-deep .ngxTab.tabSub a { float:left; margin:0; width:125px; }
+::ng-deep .ngxTab.tabSub a { float:left; margin:0; width:135px; }
 ::ng-deep .ngxTab.tabSub a.active { float:left; font-weight:bold; }
-::ng-deep .ngxTab.tabSub span:first-child { float:left; width:70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+::ng-deep .ngxTab.tabSub span:first-child { float:left; width:84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 ::ng-deep .ngxTab.tabSub span:last-child { float:right; }
 ::ng-deep .tab-content { display:none; }
 ::ng-deep .bs-remove-tab { float:right; cursor:pointer; visibility:hidden; }
