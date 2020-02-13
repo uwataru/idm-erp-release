@@ -348,6 +348,7 @@ export class ProductionLinePlanningComponent implements OnInit {
   totalWorkTimeFocusOut(event, row, value){
     // console.log('totalWorkTimeFocusOut', event, row, value);
     row.working_total_time = event.target.value;
+    this.selectedIndex = -1;
   }
 
   onValueChange(value: Date): void {
