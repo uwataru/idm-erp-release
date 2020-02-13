@@ -106,13 +106,13 @@ export class ScreeningComponent implements OnInit {
     this.inputForm = fb.group({
       sales_orders_detail_id: ['', Validators.required],
       input_date: ['', Validators.required],
-      personnel: ['', Validators.required],
-      personnel_id: ['', Validators.required],
-      product_name: ['', Validators.required],
+      personnel: [''],
+      personnel_id: [''],
+      product_name: [''],
       product_type: '',
-      qty: '',
-      defect_content: '',
-      defect_content_id: '',
+      qty: ['', Validators.required],
+      defect_content: ['', Validators.required],
+      defect_content_id: ['', Validators.required],
       etc: '',
     });
   }
