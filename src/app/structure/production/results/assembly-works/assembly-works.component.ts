@@ -229,11 +229,19 @@ export class AssemblyWorksComponent implements OnInit {
     }
 
       // 입력폼 리셋
-      this.inputForm.reset();
-
       this.personnelDataCnt = 1;
+      this.inputForm.reset();
+      this.buildInputFormGroup();
 
       // 절단작업지시 내용
+      this.dataService.GetPersonnel().subscribe(
+        editData => {
+            this.personnelList = editData['data'];
+
+            console.log('!!!!!!!success');
+
+        }
+      );
       this.dataService.GetById(this.selectedId).subscribe(
         editData => {
           if (editData['result'] == 'success') {

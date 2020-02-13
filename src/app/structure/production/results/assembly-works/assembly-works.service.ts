@@ -20,6 +20,9 @@ export class AssemblyWorksService {
   GetAll(params): Observable<Item[]> {
     return this.http.get<Item[]>(this.url+'/operation-instruction', {params: params});
   }
+  GetPersonnel(): Observable<Item[]> {
+    return this.http.get<Item[]>(this.globals.serverUrl+'/production/personnel/search');
+  }
 
   GetById(id: string): Observable<Item> {
     return this.http.get<Item>(this.url + '/' + id);
