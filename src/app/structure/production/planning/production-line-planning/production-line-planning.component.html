@@ -82,7 +82,7 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div *ngIf="isEditTime(rowIndex)">
             <input type="text" id="working_total_time{{rowIndex+1}}" style="margin-top: 5px" value="{{row.total_work_time}}"
-                   (keyup.enter)="totalWorkTimeFocusOut($event, row, value)" />
+            (focusout)="totalWorkTimeFocusOut($event, row, value)" (keyup.enter)="totalWorkTimeFocusOut($event, row, value)" />
           </div>
           <div *ngIf="!isEditTime(rowIndex)">{{row.working_total_time}}</div>
         </ng-template>
