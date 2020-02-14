@@ -17,7 +17,7 @@ export class OutsourcingAssemblyWorkService {
         private url = this.globals.serverUrl + '/outsourcing/orders';
 
     GetAll (params): Observable<Item[]> {
-        return this.http.get<Item[]>(this.globals.serverUrl + '/materials', {params: params});
+        return this.http.get<Item[]>(this.globals.serverUrl + '/materials/list/ptype4', {params: params});
     }
 
     GetMaterialInfo (id:string): Observable<Item> {
