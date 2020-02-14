@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
 import { OrderChangeHistoryService } from './order-change-history.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
-import { Item } from './order-change-history.item';
+import { Item, NoteItem } from './order-change-history.item';
 import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
 import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 
@@ -23,10 +24,13 @@ export class OrderChangeHistoryComponent implements OnInit {
 
     tDate = this.globals.tDate;
     panelTitle: string;
+    noteTitle: string;
     isLoadingProgress: boolean = false;
 
     searchForm: FormGroup;
     listData: Item[];
+    notes = [];
+    noteData: NoteItem[];
     formData: Item['data'];
     sch_partner_name: string;
     listPartners: any[] = this.globals.configs['partnerList'];
@@ -38,6 +42,9 @@ export class OrderChangeHistoryComponent implements OnInit {
     messages = this.globals.datatableMessages;
     errorMessage: string;
     gridHeight = this.globals.gridHeight;
+
+    @ViewChild('NoteModal') NoteModal: ModalDirective;
+
 
     constructor(
         public elSrv: ElectronService,
@@ -57,6 +64,7 @@ export class OrderChangeHistoryComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '수주조정내역';
+        this.noteTitle = '상세내역';
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
@@ -100,6 +108,24 @@ export class OrderChangeHistoryComponent implements OnInit {
         }
 
         this.getAll();
+    }
+
+    openModal(id) {
+        // 실행권한
+        this.NoteModal.show();
+        console.log(id);
+        this.notes = [];
+        this.dataService.GetNote(id).subscribe(
+            editData => {
+                this.noteData = editData;
+                this.notes = editData['data'];
+
+            }
+        );
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 250);
+
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

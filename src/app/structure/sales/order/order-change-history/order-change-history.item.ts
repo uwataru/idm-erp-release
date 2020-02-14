@@ -27,3 +27,18 @@ export class Item {
     result: string;
     errorMessage: string;
 }
+
+export class NoteItem {
+    //id: number;
+    totalCount: number;
+    data: {
+        input_date: string;
+        before_value: number;
+        after_promised_date: string;
+        after_value: number;
+        set_value: string;
+    };
+    maxResultCount: number;
+    result: string;
+    errorMessage: string;
+}

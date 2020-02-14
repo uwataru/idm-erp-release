@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Item } from './order-change-history.item';
+import { Item, NoteItem } from './order-change-history.item';
 import { AppGlobals } from '../../../../app.globals';
 
 const httpOptions = {};
@@ -20,8 +20,8 @@ export class OrderChangeHistoryService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
-    GetById (id:number): Observable<Item> {
-        return this.http.get<Item>(this.url+'/'+id);
+    GetNote (id:string): Observable<NoteItem[]> {
+        return this.http.get<NoteItem[]>(this.url+'/'+id);
     }
 
     //======= 저장 =======//

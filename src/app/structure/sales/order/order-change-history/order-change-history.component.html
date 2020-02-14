@@ -47,24 +47,16 @@
             <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
                                   [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
             <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
-            <ngx-datatable-column prop="input_date" name="최초등록일" [width]="120" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="before_value" name="최초등록수량" [width]="100" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
+            <ngx-datatable-column prop="id" name="내역" [width]="80" [canAutoResize]="false"
+                                  cellClass="text-center">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                <div>
+                  <button (click)="openModal(value)" class="btn btn-xs btn-primary hidden-print">
+                    내역
+                  </button>
+                </div>
+              </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="after_promised_date" name="조정약속일자" [width]="120" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="after_value" name="조정수량" [width]="100" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-right">
-                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-                    <span>{{ value | numberFormat }}</span>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column prop="set_value" name="조정사유" [width]="150"  [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
         </ngx-datatable>
     </div>
 
@@ -83,4 +75,38 @@
     		</div>
         </div>
 	</footer>
+</div>
+
+<div bsModal #NoteModal="bs-modal" id="NoteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="NoteModal.hide()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ noteTitle }}</h4>
+            </div>
+            <div class="modal-body">
+                <ngx-datatable
+                    [style.height.px]=gridHeight
+                    class="bootstrap"
+                    [rows]="notes"
+                    [columnMode]="'force'"
+                    [headerHeight]="30"
+                    [rowHeight]="30"
+                    [scrollbarV]="true"
+                    [scrollbarH]="false"
+                    [messages]="messages">
+                    <ngx-datatable-column prop="input_date" name="최초등록일자" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="before_value" name="최초등록수량" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="after_promised_date" name="조정약속일자" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="after_value" name="조정수량" cellClass="text-center"></ngx-datatable-column>
+                    <ngx-datatable-column prop="set_value" name="조정사유" cellClass="text-center"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-cancel" (click)="NoteModal.hide()">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
