@@ -16,7 +16,7 @@
             </div>
             <div class="col-sm-6 text-right">
                 목표:
-                <span *ngIf="PlannedSaleAmount > 0">{{ PlannedSaleAmount *1000000 | numberFormat}} 원</div>
+                <span *ngIf="PlannedSaleAmount > 0">{{ PlannedSaleAmount *1000000 | numberFormat}} 원</span>
                 <button *ngIf="PlannedSaleAmount > 0"  data-toggle="modal" data-target="#input-form" (click)="openModal('edit')" class="btn btn-sm btn-default">수정</button>
                 <button *ngIf="PlannedSaleAmount == 0"  data-toggle="modal" data-target="#input-form" (click)="openModal('write')" class="btn btn-sm btn-default">등록</button>
             </div>
