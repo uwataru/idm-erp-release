@@ -252,7 +252,7 @@ export class AssemblyWorksComponent implements OnInit {
 
             this.inputForm.patchValue({
               start_date: this.tDate,
-              end_date: this.tDate,
+              // end_date: this.tDate,
               // qty: this.formData.qty,
               sales_orders_detail_id: this.formData.sales_orders_detail_id,
               order_no: this.formData.order_no,
