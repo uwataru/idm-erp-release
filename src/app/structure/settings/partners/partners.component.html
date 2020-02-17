@@ -359,7 +359,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" formControlName="phone" id="phone" required nextFocus="fax"
+                <input type="text" (keyup)="addHyphen($event)" formControlName="phone" id="phone" required nextFocus="fax"
                        class="form-control input-sm w-md"/>
               </td>
               <th>

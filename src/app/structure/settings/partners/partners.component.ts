@@ -233,8 +233,8 @@ export class PartnersComponent implements OnInit {
             ptype5: ptype5,
             ptype6: ptype6,
             biz_no: this.formData.biz_no,
-            mobile: this.formData.mobile,
-            mobile2: this.formData.mobile2,
+            mobile: this.addHyphen_2(this.formData.mobile),
+            mobile2: this.addHyphen_2(this.formData.mobile2),
             country: this.formData.country,
             name: this.formData.name,
             alias: this.formData.alias,
@@ -244,7 +244,7 @@ export class PartnersComponent implements OnInit {
             zipcode: this.formData.zipcode,
             zipcode2: this.formData.zipcode2,
             email: this.formData.email,
-            phone: this.formData.phone,
+            phone: this.addHyphen_2(this.formData.phone),
             costumer: this.formData.costumer,
             fax: this.formData.fax,
             biz_cate1: this.formData.biz_cate1,
@@ -264,7 +264,13 @@ export class PartnersComponent implements OnInit {
     if(formData.mobile2 != null){
       formData.mobile2 = formData.mobile2.replace(/\-/g,'');
     }
-    formData.mobile = formData.mobile.replace(/\-/g,'');
+    if(formData.mobile != null){
+      formData.mobile = formData.mobile2.replace(/\-/g,'');
+    }
+    if(formData.phone != null){
+      formData.phone = formData.mobile2.replace(/\-/g,'');
+    }
+    // formData.mobile = formData.mobile.replace(/\-/g,'');
 
     if (!formData.ptype1 && !formData.ptype2 && !formData.ptype3 && !formData.ptype4 && !formData.ptype5 && !formData.ptype6) {
       alert('구분은 최소 1개 이상 선택하셔야 합니다!');
@@ -484,6 +490,35 @@ export class PartnersComponent implements OnInit {
         phone += number.substr(7);
     }
     event.target.value = phone;
+}
+addHyphen_2(event){
+  console.log(event);
+  var number = event.replace(/[^0-9]/g, "");
+  var phone = "";
+
+
+
+  if(number.length < 4) {
+      return number;
+  } else if(number.length < 7) {
+      phone += number.substr(0, 3);
+      phone += "-";
+      phone += number.substr(3);
+  } else if(number.length < 11) {
+      phone += number.substr(0, 3);
+      phone += "-";
+      phone += number.substr(3, 3);
+      phone += "-";
+      phone += number.substr(6);
+  } else {
+      phone += number.substr(0, 3);
+      phone += "-";
+      phone += number.substr(3, 4);
+      phone += "-";
+      phone += number.substr(7);
+  }
+  event = phone;
+  return event;
 }
 
   //
