@@ -342,6 +342,15 @@ export class PartnerAssemblyProductComponent implements OnInit {
       }
     }
     if (method == 'write') {
+
+      this.dataService.GetPaList()
+      .subscribe(
+        data => {
+          this.listPartners = data['data'];
+        },
+        error => this.errorMessage = <any>error
+      );
+
       if (id) {
         this.isEditMode = true;
         this.Edit(id);
