@@ -21,6 +21,9 @@ export class MaterialsService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url+ '/materials/list/ptype2',{params: params});
     }
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url+ '/partners/search?ptype=ptype2');
+    }
 
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/materials/'+id);

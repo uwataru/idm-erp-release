@@ -339,6 +339,14 @@ export class MaterialsComponent implements OnInit {
       }
     }
     if (method == 'write') {
+
+      this.dataService.GetPaList()
+      .subscribe(
+        data => {
+          this.listPartners = data['data']
+        }
+      );
+
       if (id) {
         this.isEditMode = true;
         this.Edit(id);
