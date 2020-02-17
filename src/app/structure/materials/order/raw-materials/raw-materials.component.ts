@@ -174,6 +174,11 @@ export class RawMaterialsComponent implements OnInit {
           this.isLoadingProgress = false;
         }
       );
+      this.dataService.GetPaList().subscribe(
+        listData => {
+          this.listPartners = listData['data'];
+        }
+      );
     }, 10);
   }
 

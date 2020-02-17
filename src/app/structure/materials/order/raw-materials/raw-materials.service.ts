@@ -20,6 +20,10 @@ export class RawMaterialsService {
         return this.http.get<Item[]>(this.globals.serverUrl + '/materials/list/ptype2', {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype2');
+    }
+
     GetMaterialInfo (id:string): Observable<Item> {
         return this.http.get<Item>(this.globals.serverUrl +'/materials/'+ id);
     }
