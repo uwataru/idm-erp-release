@@ -318,6 +318,11 @@ export class OrderRegistrationComponent implements OnInit {
 
     // 실행권한
     if (this.isExecutable == true) {
+      this.dataService.GetProductName()
+      .subscribe(
+        data => {
+          this.productList = data['data'];
+        })
       this.inputFormModal.show();
     } else {
       alert(this.globals.isNotExecutable);

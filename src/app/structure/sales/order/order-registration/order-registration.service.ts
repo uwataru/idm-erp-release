@@ -23,6 +23,9 @@ export class OrderRegistrationService {
     GetProductInfo (code:string): Observable<Item> {
         return this.http.get<Item>(this.globals.serverUrl + '/products/code/' + code);
     }
+    GetProductName (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl + '/products/search');
+    }
 
     createOrderNo () {
         return this.http.get(this.url + '/newOrderNo');

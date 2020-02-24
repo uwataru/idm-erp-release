@@ -228,10 +228,10 @@ export class MaterialsComponent implements OnInit {
 
   Save() {
     let formData = this.inputForm.value;
-
+    
     formData.input_date = this.datePipe.transform(formData.input_date, 'yyyy-MM-dd');
     formData.price_date = this.datePipe.transform(formData.price_date, 'yyyy-MM-dd');
-    formData.price = this.utils.removeComma(formData.price) * 1;
+    formData.price = Number(formData.price) * 1;
     formData.is_type = true;
     if (this.isEditMode == true) {
       this.Update(this.selectedId, formData);

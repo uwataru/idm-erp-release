@@ -233,8 +233,8 @@ export class PartnersComponent implements OnInit {
             ptype5: ptype5,
             ptype6: ptype6,
             biz_no: this.formData.biz_no,
-            mobile: this.addHyphen_2(this.formData.mobile),
-            mobile2: this.addHyphen_2(this.formData.mobile2),
+            mobile: this.addHyphen(this.formData.mobile),
+            mobile2: this.addHyphen(this.formData.mobile2),
             country: this.formData.country,
             name: this.formData.name,
             alias: this.formData.alias,
@@ -244,9 +244,9 @@ export class PartnersComponent implements OnInit {
             zipcode: this.formData.zipcode,
             zipcode2: this.formData.zipcode2,
             email: this.formData.email,
-            phone: this.addHyphen_2(this.formData.phone),
+            phone: this.addHyphen(this.formData.phone),
             costumer: this.formData.costumer,
-            fax: this.formData.fax,
+            fax: this.addHyphen(this.formData.fax),
             biz_cate1: this.formData.biz_cate1,
             biz_cate2: this.formData.biz_cate2
           });
@@ -260,15 +260,18 @@ export class PartnersComponent implements OnInit {
   Save() {
     let formData = this.inputForm.value;
 
-    console.log('MOBILE',formData.mobile, formData.mobile2);
-    if(formData.mobile2 != null){
-      formData.mobile2 = formData.mobile2.replace(/\-/g,'');
+    console.log('MOBILE', formData.mobile, formData.mobile2);
+    if (formData.mobile2 != null) {
+      formData.mobile2 = formData.mobile2.replace(/\-/g, '');
     }
-    if(formData.mobile != null){
-      formData.mobile = formData.mobile2.replace(/\-/g,'');
+    if (formData.mobile != null) {
+      formData.mobile = formData.mobile.replace(/\-/g, '');
     }
-    if(formData.phone != null){
-      formData.phone = formData.mobile2.replace(/\-/g,'');
+    if (formData.phone != null) {
+      formData.phone = formData.phone.replace(/\-/g, '');
+    }
+    if (formData.fax != null) {
+      formData.fax = formData.fax.replace(/\-/g, '');
     }
     // formData.mobile = formData.mobile.replace(/\-/g,'');
 
@@ -463,63 +466,62 @@ export class PartnersComponent implements OnInit {
     );
   }
 
-  addHyphen(event){
-    console.log(event.target.value);
+  addHyphen(event) {
     var number = event.target.value.replace(/[^0-9]/g, "");
-    var phone = "";
+    var tel = "";
 
-
-
-    if(number.length < 4) {
+    // 서울 지역번호(02)가 들어오는 경우
+    if (number.substring(0, 2).indexOf('02') == 0) {
+      if (number.length < 3) {
         return number;
-    } else if(number.length < 7) {
-        phone += number.substr(0, 3);
-        phone += "-";
-        phone += number.substr(3);
-    } else if(number.length < 11) {
-        phone += number.substr(0, 3);
-        phone += "-";
-        phone += number.substr(3, 3);
-        phone += "-";
-        phone += number.substr(6);
+      } else if (number.length < 6) {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2);
+      } else if (number.length < 10) {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2, 3);
+        tel += "-";
+        tel += number.substr(5);
+      } else {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2, 4);
+        tel += "-";
+        tel += number.substr(6);
+      }
+
+      // 서울 지역번호(02)가 아닌경우
     } else {
-        phone += number.substr(0, 3);
-        phone += "-";
-        phone += number.substr(3, 4);
-        phone += "-";
-        phone += number.substr(7);
+      if (number.length < 4) {
+        return number;
+      } else if (number.length < 7) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3);
+      } else if (number.length < 11) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3, 3);
+        tel += "-";
+        tel += number.substr(6);
+      } else if (number.length < 12) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3, 4);
+        tel += "-";
+        tel += number.substr(7);
+      } else {
+        tel += number.substr(0, 4);
+        tel += "-";
+        tel += number.substr(4, 4);
+        tel += "-";
+        tel += number.substr(8);
+      }
     }
-    event.target.value = phone;
-}
-addHyphen_2(event){
-  console.log(event);
-  var number = event.replace(/[^0-9]/g, "");
-  var phone = "";
-
-
-
-  if(number.length < 4) {
-      return number;
-  } else if(number.length < 7) {
-      phone += number.substr(0, 3);
-      phone += "-";
-      phone += number.substr(3);
-  } else if(number.length < 11) {
-      phone += number.substr(0, 3);
-      phone += "-";
-      phone += number.substr(3, 3);
-      phone += "-";
-      phone += number.substr(6);
-  } else {
-      phone += number.substr(0, 3);
-      phone += "-";
-      phone += number.substr(3, 4);
-      phone += "-";
-      phone += number.substr(7);
+    event.target.value = tel;
   }
-  event = phone;
-  return event;
-}
 
   //
   exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

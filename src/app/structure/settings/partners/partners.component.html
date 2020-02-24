@@ -366,7 +366,7 @@
                 <label for="fax">팩스</label>
               </th>
               <td>
-                <input type="text" formControlName="fax" id="fax" nextFocus="biz_cate1"
+                <input type="text" (keyup)="addHyphen($event)" formControlName="fax" id="fax" nextFocus="biz_cate1"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>
