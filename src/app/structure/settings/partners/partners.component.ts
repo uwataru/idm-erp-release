@@ -201,28 +201,40 @@ export class PartnersComponent implements OnInit {
           this.editData = editData;
           this.formData = editData['data'];
           let ptype1 = false;
-          if (this.formData.ptype1 == true) {
+          if (this.formData.ptype1 == "Y") {
             ptype1 = true;
           }
           let ptype2 = false;
-          if (this.formData.ptype2 == true) {
+          if (this.formData.ptype2 == "Y") {
             ptype2 = true;
           }
           let ptype3 = false;
-          if (this.formData.ptype3 == true) {
+          if (this.formData.ptype3 == "Y") {
             ptype3 = true;
           }
           let ptype4 = false;
-          if (this.formData.ptype4 == true) {
+          if (this.formData.ptype4 == "Y") {
             ptype4 = true;
           }
           let ptype5 = false;
-          if (this.formData.ptype5 == true) {
+          if (this.formData.ptype5 == "Y") {
             ptype5 = true;
           }
           let ptype6 = false;
-          if (this.formData.ptype6 == true) {
+          if (this.formData.ptype6 == "Y") {
             ptype6 = true;
+          }
+          if (this.formData.mobile != null){
+            this.formData.mobile = this.addHyphen_2(this.formData.mobile);
+          }
+          if (this.formData.mobile2 != null){
+            this.formData.mobile2 = this.addHyphen_2(this.formData.mobile2);
+          }
+          if (this.formData.phone != null){
+            this.formData.phone = this.addHyphen_2(this.formData.phone);
+          }
+          if (this.formData.fax != null){
+            this.formData.fax = this.addHyphen_2(this.formData.fax);
           }
           this.inputForm.patchValue({
             input_date: this.formData.input_date,
@@ -233,8 +245,8 @@ export class PartnersComponent implements OnInit {
             ptype5: ptype5,
             ptype6: ptype6,
             biz_no: this.formData.biz_no,
-            mobile: this.addHyphen(this.formData.mobile),
-            mobile2: this.addHyphen(this.formData.mobile2),
+            mobile: this.formData.mobile,
+            mobile2: this.formData.mobile2,
             country: this.formData.country,
             name: this.formData.name,
             alias: this.formData.alias,
@@ -244,9 +256,9 @@ export class PartnersComponent implements OnInit {
             zipcode: this.formData.zipcode,
             zipcode2: this.formData.zipcode2,
             email: this.formData.email,
-            phone: this.addHyphen(this.formData.phone),
+            phone: this.formData.phone,
             costumer: this.formData.costumer,
-            fax: this.addHyphen(this.formData.fax),
+            fax: this.formData.fax,
             biz_cate1: this.formData.biz_cate1,
             biz_cate2: this.formData.biz_cate2
           });
@@ -466,6 +478,63 @@ export class PartnersComponent implements OnInit {
     );
   }
 
+  addHyphen_2(value) {
+    var number = value.replace(/[^0-9]/g, "");
+    var tel = "";
+
+    // 서울 지역번호(02)가 들어오는 경우
+    if (number.substring(0, 2).indexOf('02') == 0) {
+      if (number.length < 3) {
+        return number;
+      } else if (number.length < 6) {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2);
+      } else if (number.length < 10) {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2, 3);
+        tel += "-";
+        tel += number.substr(5);
+      } else {
+        tel += number.substr(0, 2);
+        tel += "-";
+        tel += number.substr(2, 4);
+        tel += "-";
+        tel += number.substr(6);
+      }
+
+      // 서울 지역번호(02)가 아닌경우
+    } else {
+      if (number.length < 4) {
+        return number;
+      } else if (number.length < 7) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3);
+      } else if (number.length < 11) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3, 3);
+        tel += "-";
+        tel += number.substr(6);
+      } else if (number.length < 12) {
+        tel += number.substr(0, 3);
+        tel += "-";
+        tel += number.substr(3, 4);
+        tel += "-";
+        tel += number.substr(7);
+      } else {
+        tel += number.substr(0, 4);
+        tel += "-";
+        tel += number.substr(4, 4);
+        tel += "-";
+        tel += number.substr(8);
+      }
+    }
+    value = tel;
+    return value;
+  }
   addHyphen(event) {
     var number = event.target.value.replace(/[^0-9]/g, "");
     var tel = "";

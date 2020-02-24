@@ -114,6 +114,7 @@ export class ProductionLineComponent implements OnInit {
                     this.formData = editData['data'];
                     this.inputForm.patchValue({
                         line_no: this.formData.line_no,
+                        main_process: this.formData.process_assembly_type,
                         process_id: this.formData.process_id,
                         run_time: this.formData.run_time,
                         worker_cnt: this.formData.worker_cnt,

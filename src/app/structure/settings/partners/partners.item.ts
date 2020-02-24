@@ -4,12 +4,12 @@ export class Item {
     data: {
         id: string;
         input_date: string;
-        ptype1: boolean;
-        ptype2: boolean;
-        ptype3: boolean;
-        ptype4: boolean;
-        ptype5: boolean;
-        ptype6: boolean;
+        ptype1: String;
+        ptype2: String;
+        ptype3: String;
+        ptype4: String;
+        ptype5: String;
+        ptype6: String;
         biz_no: string;
         name: string;
         alias: string;

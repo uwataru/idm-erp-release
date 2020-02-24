@@ -3,6 +3,7 @@ export class Item {
     data: {
         id: number;
         line_no: string;
+        process_assembly_type:string;
         process_id: number;
         run_time: number;
         worker_cnt: number;
