@@ -36,6 +36,17 @@
                 <ngx-datatable-column prop="order_no" name="수주번호" cellClass="text-center"></ngx-datatable-column>
                 <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
                 <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+                <ngx-datatable-column prop="production_date" name="생산일자"></ngx-datatable-column>
+                <ngx-datatable-column prop="defect_qty" name="불량수량"></ngx-datatable-column>
+                <ngx-datatable-column prop="id" name="불량내용" [width]="80" [canAutoResize]="false" cellClass="text-center">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <div>
+                            <button (click)="openModal('note',value)" class="btn btn-xs btn-primary hidden-print">
+                                내역
+                            </button>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
             </ngx-datatable>
         </div>
     
@@ -168,6 +179,71 @@
     
             </div>
         </div>
+    </div>
+
+    <div bsModal #NoteFormModal="bs-modal" id="NoteFormModal" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="NoteFormModal.hide()"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{ noteFormTitle }}</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered view">
+          <tr>
+            <td>찍힘</td>
+            <td>
+              {{qty_0}}
+            </td>
+          </tr>
+          <tr>
+            <td>깨짐</td>
+            <td>
+              {{qty_1}}
+            </td>
+          </tr>
+          <tr>
+            <td>인쇄불량</td>
+            <td>
+              {{qty_2}}
+            </td>
+          </tr>
+          <tr>
+            <td>색상불량</td>
+            <td>
+              {{qty_3}}
+            </td>
+          </tr>
+          <tr>
+            <td>성형불량</td>
+            <td>
+              {{qty_4}}
+            </td>
+          </tr>
+          <tr>
+            <td>작업불량</td>
+            <td>
+              {{qty_5}}
+            </td>
+          </tr>
+          <tr>
+            <td>기타</td>
+            <td>
+              {{qty_6}}
+            </td>
+          </tr>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <button type="button" class="btn btn-primary btn-cancel" (click)="NoteFormModal.hide()">확인</button>
+        </div>
+      </div>
+    </div>
+    </div>
     </div>
     
     

@@ -25,6 +25,7 @@ export class ScreeningComponent implements OnInit {
   tDate = this.globals.tDate;
   panelTitle: string;
   inputFormTitle: string;
+  noteFormTitle: string;
   statusFormTitle: string;
   statusConfirmMsg: string;
   statusConfirmBtn: string;
@@ -63,6 +64,14 @@ export class ScreeningComponent implements OnInit {
   inputMaterials: any[] = [];
   editData: Item;
 
+  qty_0 = 0;
+  qty_1 = 0;
+  qty_2 = 0;
+  qty_3 = 0;
+  qty_4 = 0;
+  qty_5 = 0;
+  qty_6 = 0;
+
 
   public isCorrect: boolean;
 
@@ -75,6 +84,7 @@ export class ScreeningComponent implements OnInit {
   delOkMsg = '삭제되었습니다.';
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
+  @ViewChild('NoteFormModal') noteFormModal: ModalDirective;
 
   constructor(
     public electronService: ElectronService,
@@ -120,6 +130,7 @@ export class ScreeningComponent implements OnInit {
   ngOnInit() {
     this.panelTitle = '선별작업현황';
     this.inputFormTitle = '선별작업입력';
+    this.noteFormTitle = '불량내용';
 
     this.getAll();
 
@@ -261,6 +272,35 @@ export class ScreeningComponent implements OnInit {
                 product_type: this.formData.product_type,
               });
               console.log(this.inputForm.controls['sales_orders_detail_id'].value);
+            }
+          }
+        );
+        break;
+      case 'note':
+        // 실행권한
+        if (this.isExecutable == false) {
+          alert(this.globals.isNotExecutable);
+          return false;
+        }
+        this.noteFormModal.show();
+
+        // 입력폼 리셋
+
+        this.dataService.GetByNote(id).subscribe(
+          editData => {
+            if (editData['result'] == 'success') {
+              this.editData = editData;
+              this.formData = editData['data'];
+              console.log('!!!!!!!', this.formData);
+    
+              this.qty_0 = this.formData[0].qty
+              this.qty_1 = this.formData[1].qty
+              this.qty_2 = this.formData[2].qty
+              this.qty_3 = this.formData[3].qty
+              this.qty_4 = this.formData[4].qty
+              this.qty_5 = this.formData[5].qty
+              this.qty_6 = this.formData[6].qty
+    
             }
           }
         );

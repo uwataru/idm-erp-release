@@ -30,6 +30,9 @@ export class ScreeningService {
     GetById (id:string): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }
+    GetByNote (id:string): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl + '/technology/quality-status/'+id);
+    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
