@@ -165,7 +165,7 @@
                             전화번호
                         </label>
                         <div class="col-lg-10">
-                            <input type="text" formControlName="user_phone" id="user_phone" class="form-control w-sm" />
+                            <input type="text" (keyup)="addHyphen($event)" formControlName="user_phone" id="user_phone" class="form-control w-sm" />
                         </div>
                     </div>
                 </div>
