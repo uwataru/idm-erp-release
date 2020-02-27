@@ -119,6 +119,8 @@ export class MaterialsComponent implements OnInit {
 
     this.changeSubMenu(1);
 
+    this.getPaList();
+
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
       let modalHeader = $('.modal-header');
@@ -135,11 +137,21 @@ export class MaterialsComponent implements OnInit {
     this.getAll();
   }
 
+
   onSelect({selected}) {
     // console.log('Select Event', selected, this.selected);
 
     this.selected.splice(0, this.selected.length);
     this.selected.push(...selected);
+  }
+
+  getPaList(){
+    this.dataService.GetPaList()
+    .subscribe(
+      data => {
+        this.listPartners = data['data']
+      }
+    );
   }
 
   getAll(): void {
@@ -340,12 +352,6 @@ export class MaterialsComponent implements OnInit {
     }
     if (method == 'write') {
 
-      this.dataService.GetPaList()
-      .subscribe(
-        data => {
-          this.listPartners = data['data']
-        }
-      );
 
       if (id) {
         this.isEditMode = true;

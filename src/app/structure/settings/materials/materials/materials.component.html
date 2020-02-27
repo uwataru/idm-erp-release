@@ -9,7 +9,7 @@
         <form [formGroup]="searchForm">
           <input formControlName="sch_partner_name"
                  [typeahead]="listPartners"
-                 typeaheadOptionField="alias"
+                 typeaheadOptionField="name"
                  [typeaheadOptionsLimit]="50"
                  [typeaheadScrollable]="true"
                  [typeaheadMinLength]="0"
