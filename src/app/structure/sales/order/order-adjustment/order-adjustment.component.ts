@@ -113,7 +113,7 @@ export class OrderAdjustmentComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '수주 조정';
+        this.panelTitle = '수주조정';
         this.inputFormTitle = '수주 조정';
 
         this.getAll();

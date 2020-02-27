@@ -121,7 +121,7 @@ export class OrderRegistrationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panelTitle = '수주 현황';
+    this.panelTitle = '수주현황';
     this.inputFormTitle = '수주 등록';
 
     this.productDataCnt = 1;

@@ -66,6 +66,7 @@ export class AdminLayoutComponent implements OnInit {
     }
     
     createTab(no, path) {
+        console.log("TAB : ",path);
 
         let existTabs = false;
         for(let i in this.tmpTabs) {
@@ -78,7 +79,7 @@ export class AdminLayoutComponent implements OnInit {
             this.removeTabHandler(this.tmpTabs[this.tmpTabs.length-1]);    
         }
 
-        // console.warn('existTabs= ', existTabs);
+        console.warn('existTabs= ', existTabs);
         if(existTabs == false) {
 
             let tabTitleLength = this.activatedRoute.snapshot.children[0].firstChild.data.title.split('>').length;
@@ -99,14 +100,14 @@ export class AdminLayoutComponent implements OnInit {
                     customClass: 'ngxTab tabSub',
                     active : parseInt(i) == 0 ? true : false
                 });
-                // console.warn('active= ', parseInt(i), this.tmpTabs[i]);
+                console.warn('active= ', parseInt(i), this.tmpTabs[i]);
             }
 
         } else {
             for(let i in this.tabs) {
-                // console.warn('indexOf= ', this.tabs[i].routerUrl.indexOf(path));
+                console.warn('indexOf= ', this.tabs[i].routerUrl.indexOf(path));
                 if(this.tabs[i].routerUrl.indexOf(path) !== -1) {
-                    // console.warn('active= ', this.tabs[i]);
+                    console.warn('active= ', this.tabs[i]);
                     this.tabs[i].active = true;          
                 }
             }
@@ -114,6 +115,7 @@ export class AdminLayoutComponent implements OnInit {
     }
 
     goToLink(no, path, reDirectTo=false) { 
+        console.log('PATHPATH',no, path)
 
         setTimeout(() => {            
                 
@@ -158,6 +160,7 @@ export class AdminLayoutComponent implements OnInit {
                         } 
                         this.router.navigateByUrl(path).then(
                             success => {
+                                console.log("PATH2 : ",path);
                                 this.createTab(no,path);
                             }
                         );
