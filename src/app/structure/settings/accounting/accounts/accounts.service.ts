@@ -23,6 +23,9 @@ export class AccountsService {
         }
         return this.http.get<Item[]>(this.url + searchOptions);
     }
+    GetMgmtItems (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl + '/acct-mgmt-items/search');
+    }
 
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url + '/'+id);

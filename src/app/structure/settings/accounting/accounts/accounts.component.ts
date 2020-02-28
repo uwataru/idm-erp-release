@@ -99,6 +99,7 @@ export class AccountsComponent implements OnInit {
         this.deleteConfirmMsg = '선택하신 데이터를 삭제하시겠습니까?';
 
         this.getAll();
+        this.getMgmtItems();
 
         $(document).ready(function(){
             let modalContent: any = $('.modal-content');
@@ -140,6 +141,15 @@ export class AccountsComponent implements OnInit {
         }
 
         this.getAll();
+    }
+
+    getMgmtItems(){
+        this.dataService.GetMgmtItems().subscribe(
+            data =>
+            {
+                this.mgmtItems = data['data'];
+            }
+        )
     }
 
     Edit (id) {
