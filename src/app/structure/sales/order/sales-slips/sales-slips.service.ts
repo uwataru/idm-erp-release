@@ -22,6 +22,10 @@ export class SalesSlipsService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
+
     GetSlip (slipNo) {
         let currTime = (new Date()).getTime();
         return this.http.get(this.globals.serverUrl + '/slips/' + slipNo + '?t=' + currTime);

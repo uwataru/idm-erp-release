@@ -19,6 +19,10 @@ export class InferiorGoodsService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
+
    /**
     * Handle Http operation that failed.
     * Let the app continue.

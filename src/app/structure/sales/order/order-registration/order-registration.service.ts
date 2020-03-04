@@ -19,6 +19,9 @@ export class OrderRegistrationService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
     }
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
 
     GetProductInfo (code:string): Observable<Item> {
         return this.http.get<Item>(this.globals.serverUrl + '/products/code/' + code);

@@ -20,6 +20,10 @@ export class OrderChangeHistoryService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
+
     GetNote (id:string): Observable<NoteItem[]> {
         return this.http.get<NoteItem[]>(this.url+'/'+id);
     }

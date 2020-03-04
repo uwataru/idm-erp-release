@@ -22,6 +22,10 @@ export class CompletionWaitingService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
+    
     GetById (id:string): Observable<Item> {
         let currTime = (new Date()).getTime();
         return this.http.get<Item>(this.url + '/' + id + '?t=' + currTime);

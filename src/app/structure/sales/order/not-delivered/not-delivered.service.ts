@@ -21,6 +21,10 @@ export class OrderNotDeliveredService {
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
+    }
+
     GetExcelFile () {
         return this.http.get(this.url + '/exceldown', {responseType: 'blob'});
     }

@@ -113,6 +113,7 @@ export class CompletionWaitingComponent implements OnInit {
         this.inputFormTitle = '판매처리';
 
         this.getAll();
+        this.getPaList();
 
         $(document).ready(function () {
             let modalContent: any = $('.modal-content');
@@ -122,6 +123,14 @@ export class CompletionWaitingComponent implements OnInit {
                 handle: '.modal-header'
             });
         });
+    }
+
+    getPaList() {
+        this.dataService.GetPaList().subscribe(
+            data => {
+                this.partnerList = data['data'];
+            }
+        )
     }
 
     getAll(): void {

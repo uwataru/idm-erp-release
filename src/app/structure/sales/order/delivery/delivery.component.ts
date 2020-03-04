@@ -70,6 +70,7 @@ export class DeliveryComponent implements OnInit {
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
+        this.getPaList();
     }
 
     getAll(): void {
@@ -99,6 +100,14 @@ export class DeliveryComponent implements OnInit {
                 }
             );
         }, 10);
+    }
+
+    getPaList() {
+        this.dataService.GetPaList().subscribe(
+            data => {
+                this.listPartners = data['data'];
+            }
+        )
     }
 
     onSelectListPartner(event: TypeaheadMatch): void {

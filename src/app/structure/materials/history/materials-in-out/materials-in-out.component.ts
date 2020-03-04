@@ -97,6 +97,7 @@ export class MaterialsInOutComponent implements OnInit {
 
 
         this.getAll();
+        this.getPaList();
         this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
 
         $(document).ready(function () {
@@ -108,6 +109,14 @@ export class MaterialsInOutComponent implements OnInit {
             });
         });
     }
+
+    getPaList(){
+        this.dataService.GetPaList().subscribe(
+            listData => {
+              this.listPartners = listData['data'];
+            }
+          );
+      }
 
     getAll(): void {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;

@@ -349,7 +349,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" (keyup)="addHyphen($event)" formControlName="mobile" id="mobile" required nextFocus="addr1"
+                <input type="text" (keyup)="addHyphen($event)" formControlName="mobile" id="mobile"  nextFocus="addr1"
                        class="form-control input-sm w-md"/>
               </td>
             </tr>
@@ -359,7 +359,7 @@
                 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
               </th>
               <td>
-                <input type="text" (keyup)="addHyphen($event)" formControlName="phone" id="phone" required nextFocus="fax"
+                <input type="text" (keyup)="addHyphen($event)" formControlName="phone" id="phone"  nextFocus="fax"
                        class="form-control input-sm w-md"/>
               </td>
               <th>
@@ -400,7 +400,7 @@
 
         <div class="modal-footer">
           <div class="text-center">
-            <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
+            <button type="button" (click)="Save()" [disabled]="!inputForm.valid" id="save_btn" class="btn btn-primary btn-save">완료
             </button>
             <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
           </div>

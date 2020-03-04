@@ -108,6 +108,8 @@ export class SalesSlipsComponent implements OnInit {
         this.inputForm.controls['cr_acct_name'].setValue('매출액(제)');
         this.crAcctCode = '410011';
 
+        this.getPaList();
+
         $(document).ready(function(){
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
@@ -122,6 +124,14 @@ export class SalesSlipsComponent implements OnInit {
         this.rcvDate = this.datePipe.transform(value, 'yyyy-MM-dd');
         this.GetAll();
     }
+
+    getPaList(){
+        this.dataService.GetPaList().subscribe(
+          data => {
+            this.listPartners = data['data'];
+          }
+        )
+      }
 
     GetAll(): void {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;

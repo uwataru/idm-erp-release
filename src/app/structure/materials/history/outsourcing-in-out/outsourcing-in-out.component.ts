@@ -97,6 +97,7 @@ export class OutsourcingInOutComponent implements OnInit {
 
 
     this.getAll();
+    this.getPaList();
     this.searchForm.controls['sch_yearmonth'].setValue(this.tDate);
 
     $(document).ready(function () {
@@ -107,6 +108,14 @@ export class OutsourcingInOutComponent implements OnInit {
         handle: '.modal-header'
       });
     });
+  }
+
+  getPaList(){
+    this.dataService.GetPaList().subscribe(
+        listData => {
+          this.listPartners = listData['data'];
+        }
+      );
   }
 
   getAll(): void {

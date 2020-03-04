@@ -128,6 +128,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
         this.inputFormTitle = '원자재입고처리';
 
         this.getAll();
+        this.getPaList();
 
         $(document).ready(function(){
             let modalContent: any = $('.modal-content');
@@ -137,6 +138,14 @@ export class RawMaterialsReceivingComponent implements OnInit {
                 handle: '.modal-header'
             });
         });
+    }
+
+    getPaList(){
+        this.dataService.GetPaList().subscribe(
+            listData => {
+              this.listPartners = listData['data'];
+            }
+          );
     }
 
     getAll(): void {

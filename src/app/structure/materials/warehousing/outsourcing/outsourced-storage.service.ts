@@ -20,6 +20,10 @@ export class OutsourcedStorageService {
         return this.http.get<Item[]>(this.url+'/receiving-processing-list/N');
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype4');
+    }
+
     GetInventory (id): Observable<Item> {
         return this.http.get<Item>(this.url + '/' + id);
     }

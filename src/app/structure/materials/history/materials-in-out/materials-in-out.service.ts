@@ -18,6 +18,10 @@ export class MaterialsInOutService {
         return this.http.get<Item[]>(this.url + '/receiving-statement', {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype2');
+    }
+
     GetDetails (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
         return this.http.get<Item[]>(this.url + '/details?t=' + currTime, {params: params});

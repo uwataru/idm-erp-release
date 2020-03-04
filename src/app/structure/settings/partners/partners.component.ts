@@ -113,7 +113,7 @@ export class PartnersComponent implements OnInit {
       zipcode: '',
       zipcode2: '',
       email: '',
-      phone: '',
+      phone: ['', Validators.required],
       fax: '',
       biz_cate1: '',
       biz_cate2: ''
@@ -271,8 +271,8 @@ export class PartnersComponent implements OnInit {
 
   Save() {
     let formData = this.inputForm.value;
-
-    console.log('MOBILE', formData.mobile, formData.mobile2);
+    var isNumber =  /[^0-9]/g;
+    if(!isNumber)
     if (formData.mobile2 != null) {
       formData.mobile2 = formData.mobile2.replace(/\-/g, '');
     }
@@ -535,7 +535,38 @@ export class PartnersComponent implements OnInit {
     value = tel;
     return value;
   }
+  // numberCheck(event) {
+  //   if(event.keyCode < 48 || event.keyCode > 57) {
+  //     if(event.keyCode != 8 && event.keyCode != 13){
+  //       alert('숫자만 입력하세요.');
+  //       event.target.value = '';
+  //     }
+      
+  //   }else{
+  //     this.addHyphen(event);
+  //   }
+    
+  // }
+
+  checkNumber(event){
+    if(event.keyCode < 48 || event.keyCode > 57) {
+      if(event.keyCode != 8 && event.keyCode != 13&& event.keyCode != 37 && event.keyCode != 39){
+        alert('숫자만 입력하세요.');
+        // var btn = document.getElementById('save_btn');
+        console.log(event.target.id);
+        // event.target.value = '';
+        this.inputForm.controls[event.target.id].reset();
+      }
+    }
+    this.inputForm.controls[event.target.id].reset(event.target.value);
+  }
+
   addHyphen(event) {
+  
+
+  this.checkNumber(event);
+
+    
     var number = event.target.value.replace(/[^0-9]/g, "");
     var tel = "";
 
@@ -590,6 +621,11 @@ export class PartnersComponent implements OnInit {
       }
     }
     event.target.value = tel;
+    this.inputForm.controls[event.target.id].reset(tel);
+    console.log(event);
+    console.log(this.inputForm.valid);
+    
+    
   }
 
   //

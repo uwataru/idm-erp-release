@@ -117,6 +117,7 @@ export class OrderAdjustmentComponent implements OnInit {
         this.inputFormTitle = '수주 조정';
 
         this.getAll();
+        this.getPaList();
 
         $(document).ready(function () {
             let modalContent: any = $('.modal-content');
@@ -127,7 +128,14 @@ export class OrderAdjustmentComponent implements OnInit {
             });
         });
     }
-
+    
+    getPaList(){
+        this.dataService.GetPaList().subscribe(
+          data => {
+            this.partnerList = data['data'];
+          }
+        )
+      }
     getAll(): void {
         // this.selectedId = -1;
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;

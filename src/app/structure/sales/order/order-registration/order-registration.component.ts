@@ -127,6 +127,7 @@ export class OrderRegistrationComponent implements OnInit {
     this.productDataCnt = 1;
 
     this.getAll();
+    this.getPaList();
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -136,6 +137,15 @@ export class OrderRegistrationComponent implements OnInit {
         handle: '.modal-header'
       });
     });
+  }
+
+
+  getPaList(){
+    this.dataService.GetPaList().subscribe(
+      data => {
+        this.partnerList = data['data'];
+      }
+    )
   }
 
   getAll(): void {

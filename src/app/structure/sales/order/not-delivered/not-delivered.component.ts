@@ -116,6 +116,8 @@ export class OrderNotDeliveredComponent implements OnInit {
 
         this.changeSubMenu(1);
 
+        this.getPaList();
+
         $(document).ready(function () {
             let modalContent: any = $('.modal-content');
             let modalHeader = $('.modal-header');
@@ -128,6 +130,14 @@ export class OrderNotDeliveredComponent implements OnInit {
 
     changeSubMenu(st): void {
         this.getAll();
+    }
+
+    getPaList() {
+        this.dataService.GetPaList().subscribe(
+            data => {
+                this.partnerList = data['data'];
+            }
+        )
     }
 
     getAll(): void {

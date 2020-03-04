@@ -68,8 +68,16 @@ export class OrderChangeHistoryComponent implements OnInit {
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
-    }
 
+        this.getPaList();
+    }
+    getPaList(){
+        this.dataService.GetPaList().subscribe(
+          data => {
+            this.listPartners = data['data'];
+          }
+        )
+      }
     getAll(): void {
         document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 

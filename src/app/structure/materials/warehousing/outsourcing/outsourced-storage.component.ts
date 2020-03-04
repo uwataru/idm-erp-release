@@ -130,6 +130,7 @@ export class OutsourcedStorageComponent implements OnInit {
       this.inputFormTitle = '외주입고처리';
 
       this.getAll();
+      this.getPaList();
 
       $(document).ready(function(){
           let modalContent: any = $('.modal-content');
@@ -139,6 +140,14 @@ export class OutsourcedStorageComponent implements OnInit {
               handle: '.modal-header'
           });
       });
+  }
+
+  getPaList(){
+    this.dataService.GetPaList().subscribe(
+        listData => {
+          this.listPartners = listData['data'];
+        }
+      );
   }
 
   getAll(): void {

@@ -19,6 +19,10 @@ export class OutsourcingInOutService {
         return this.http.get<Item[]>(this.url + '/outsourcing-receiving-statement', {params: params});
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype4');
+    }
+
     GetDetails (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
         return this.http.get<Item[]>(this.url + '/details?t=' + currTime, {params: params});

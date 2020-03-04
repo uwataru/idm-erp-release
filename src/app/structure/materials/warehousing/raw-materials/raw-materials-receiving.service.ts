@@ -21,6 +21,10 @@ export class RawMaterialsReceivingService {
         return this.http.get<Item[]>(this.url+'/receiving-processing-list/Y');
     }
 
+    GetPaList (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype2');
+    }
+
     GetInventory (id): Observable<Item> {
         return this.http.get<Item>(this.url + '/' + id);
     }
