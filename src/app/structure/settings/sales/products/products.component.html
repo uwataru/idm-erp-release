@@ -240,7 +240,8 @@
                    id="material_wrap_{{index+1}}">
                 <th>
                   <label for="material_title_{{index+1}}">소요자재</label>
-<!--                  <span>{{index+1}}</span>-->
+                  <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                <!--                  <span>{{index+1}}</span>-->
                 </th>
                 <td>
                   <input formControlName="sch_materials_{{index+1}}" id="material_title_{{index+1}}"
@@ -254,16 +255,18 @@
                   <input type="hidden" formControlName="id_{{index+1}}" id="id_{{index+1}}"/>
                   <input type="hidden" formControlName="material_id_{{index+1}}" id="material_id_{{index+1}}"/>
                 </td>
-                <th>
+                <th style="width: 50px;">
                   <label for="material_qty_{{index+1}}">Qty</label>
+                  <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </th>
                 <td>
                   <input type="text" formControlName="material_qty_{{index+1}}" id="material_qty_{{index+1}}"
                     (keyup)="calculatePrice($event, index+1)"
                     class="form-control inline input-sm w-xs text-right"/>
                 </td>
-                <th>
+                <th style="width: 60px;">
                   <label for="material_price_{{index+1}}">단가</label>
+                  <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                 </th>
                 <td>
                   <input type="text" formControlName="material_price_{{index+1}}" id="material_price_{{index+1}}"

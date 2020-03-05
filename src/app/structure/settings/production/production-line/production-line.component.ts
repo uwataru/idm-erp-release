@@ -72,7 +72,7 @@ export class ProductionLineComponent implements OnInit {
             process_id: '',
             run_time: ['', [Validators.required]],
             worker_cnt: ['', [Validators.required]],
-            is_outsourcing: '',
+            is_outsourcing: ['', [Validators.required]],
             main_process: ['', [Validators.required]]
         });
     }

@@ -76,7 +76,7 @@
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
      aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="width: 880px !important;">
+    <div class="modal-content" style="width: 900px !important;">
       <form [formGroup]="inputForm">
         <div class="modal-header">
           <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
@@ -186,6 +186,7 @@
                        id="product_wrap_{{index+1}}">
                     <th>
                       <label for="sch_product_{{index+1}}">제품명</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                       <input formControlName="sch_product_{{index+1}}" id="sch_product_{{index+1}}"
@@ -200,6 +201,7 @@
                     </td>
                     <th>
                       <label for="product_type_{{index+1}}">규격</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                       <input type="text" formControlName="product_type_{{index+1}}" id="product_type_{{index+1}}"
@@ -207,6 +209,7 @@
                     </td>
                     <th>
                       <label for="prodcut_qty_{{index+1}}">수주수량</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                       <input type="text" formControlName="product_qty_{{index+1}}" id="product_qty_{{index+1}}"
@@ -215,6 +218,7 @@
                     </td>
                     <th>
                       <label for="product_unit_price_{{index+1}}">단가</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                       <input type="text" formControlName="product_unit_price_{{index+1}}" id="product_unit_price_{{index+1}}"
@@ -224,6 +228,7 @@
                     </td>
                     <th>
                       <label for="product_price_{{index+1}}">금액</label>
+                      <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                     </th>
                     <td>
                       <input type="text" formControlName="product_price_{{index+1}}" id="product_price_{{index+1}}"

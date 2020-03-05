@@ -112,7 +112,7 @@ export class ProductsComponent implements OnInit {
   buildInputFormGroup() {
     this.inputForm = this.fb.group({
       input_date: ['', Validators.required],
-      type: '',
+      type: ['', Validators.required],
       name: ['', Validators.required],
       product_price: ['', Validators.required],
       is_tmp_price: '',

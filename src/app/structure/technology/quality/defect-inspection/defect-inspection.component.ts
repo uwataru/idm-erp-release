@@ -108,9 +108,9 @@ export class DefectInspectionComponent implements OnInit {
             product_type: '',
             material_name: '',
             material_id: ['', Validators.required],
-            qty: '',
-            defect_content: '',
-            defect_content_id: '',
+            qty: ['', Validators.required],
+            defect_content: ['', Validators.required],
+            defect_content_id: ['', Validators.required],
             etc: '',
         });
     }
