@@ -9,6 +9,7 @@ import { AppGlobals } from '../../../../app.globals';
 import { delay } from 'q';
 import {ElectronService} from '../../../../providers/electron.service';
 import { UtilsService } from '../../../../utils.service';
+declare var $: any;
 
 @Component({
     selector: 'app-page',
@@ -60,6 +61,15 @@ export class GeneralLedgerComponent implements OnInit {
         this.panelTitle = '총계정원장';
 
         this.getAll();
+
+        $(document).ready(function () {
+            let modalContent: any = $('.modal-content');
+            let modalHeader = $('.modal-header');
+            modalHeader.addClass('cursor-all-scroll');
+            modalContent.draggable({
+                handle: '.modal-header'
+            });
+        });
     }
 
     getAll(): void {
