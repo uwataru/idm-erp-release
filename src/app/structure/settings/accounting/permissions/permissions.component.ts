@@ -8,6 +8,7 @@ import { AppGlobals } from '../../../../app.globals';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../../../message.service';
 import { Item } from './permissions.item';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 declare var $: any;
 @Component({
     selector: 'app-page',
@@ -88,6 +89,7 @@ export class PermissionsComponent implements OnInit {
         this.panelTitle = '사용자 권한';
 
         this.GetAll();
+        this.GetUser();
 
         $(document).ready(function(){
             let modalContent: any = $('.modal-content');
@@ -107,6 +109,15 @@ export class PermissionsComponent implements OnInit {
                 this.rows = listData['data'];
             }
         );
+    }
+
+    GetUser(){
+        this.dataService.GetUser().subscribe(
+            data =>
+            {
+                this.users = data['data'];
+            }
+        )
     }
 
     Edit (menuId, authType) {

@@ -19,6 +19,9 @@ export class PermissionsService {
     GetAll (): Observable<Item[]> {
         return this.http.get<Item[]>(this.url);
     }
+    GetUser (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/users/list');
+    }
 
     GetAuth (menuId, authType) {
         return this.http.get(this.url + '/' + menuId + '/' + authType);
