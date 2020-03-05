@@ -25,6 +25,7 @@ export class SignInComponent implements OnInit {
     returnUrl: string;
     loginForm: FormGroup;
     loginOkMsg: string = '로그인되었습니다.';
+    loginFailMsg: string = '아이디혹은 비밀번호를 확인하세요';
     errorMessage: string;
     user = new User();
     version = AppConfig.VERSION;
@@ -96,7 +97,11 @@ export class SignInComponent implements OnInit {
                             this.messageService.add(data['errorMessage']);
                         }
                     } else {
-                        this.messageService.add(data['errorMessage']);
+                        if(data['errorMessage'] == ''){
+                            this.messageService.add(this.loginFailMsg);
+                        }else{
+                            this.messageService.add(data['errorMessage']);
+                        }
                     }
 
                 },
