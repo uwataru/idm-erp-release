@@ -114,11 +114,11 @@ export class OutsourcingAssemblyWorkComponent implements OnInit {
     });
 
     this.lossForm = fb.group({
-      material_id: '',
-      name: '',
-      size: '',
-      input_date: '',
-      qty: '',
+      material_id: ['', Validators.required],
+      name: ['', Validators.required],
+      size: ['', Validators.required],
+      input_date: ['', Validators.required],
+      qty: ['', Validators.required],
     });
 
     // if (this.locationPartners.filter(v => v.id == 0).length < 1) {
