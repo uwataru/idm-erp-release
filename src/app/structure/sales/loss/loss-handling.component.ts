@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { DatePipe } from '@angular/common';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AppGlobals} from '../../../app.globals';
 import {ActivatedRoute} from '@angular/router';
 import {LossHandlingService} from './loss-handling.service';
@@ -69,7 +69,7 @@ export class LossHandlingComponent implements OnInit {
             history_type: '',
             product_id: '',
             input_date: '',
-            qty: '',
+            qty: ['', Validators.required],
           });
     }
 
