@@ -68,8 +68,8 @@ export class UsersComponent implements OnInit {
         this.inputForm = fb.group({
             user_id: ['', [Validators.required, Validators.minLength(4)]],
             user_pw: ['', [Validators.required, Validators.minLength(4)]],
-            user_name: '',
-            dept_name: '',
+            user_name: ['', Validators.required],
+            dept_name: ['', Validators.required],
             position_name: '',
             user_email: '',//['', ValidationService.emailValidator],
             joining_date: '',
