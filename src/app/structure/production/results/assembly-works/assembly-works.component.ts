@@ -104,10 +104,10 @@ export class AssemblyWorksComponent implements OnInit {
       sales_orders_detail_id: ['', Validators.required],
       promised_date: '',
       qty: '',
-      start_date: '',
-      end_date: '',
-      personnel_1: '',
-      personnel_id_1: '',
+      start_date: ['', Validators.required],
+      end_date: ['', Validators.required],
+      personnel_1: ['', Validators.required],
+      personnel_id_1: ['', Validators.required],
       is_all_checked: false
     });
   }
