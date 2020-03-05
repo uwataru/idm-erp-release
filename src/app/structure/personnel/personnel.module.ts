@@ -22,8 +22,8 @@ import {PersonnelManagementComponent} from "./personnel-management/personnel-man
 
 export const routes: Routes = [
   {path: '', redirectTo: 'personnel-register', pathMatch: 'full', canActivate: [AuthGuard]},
-  {path: 'personnel-register', component: PersonnelComponent, data: { title: '생산>생산인력등록', id: 45}},
-  {path: 'personnel-management', component: PersonnelManagementComponent, data: { title: '생산>생산인력관리', id: 46}}
+  {path: 'personnel-register', component: PersonnelComponent, data: { title: '인력관리>생산인력등록', id: 45}},
+  {path: 'personnel-management', component: PersonnelManagementComponent, data: { title: '인력관리>생산인력관리', id: 46}}
 ];
 
 // Datepicker Config
