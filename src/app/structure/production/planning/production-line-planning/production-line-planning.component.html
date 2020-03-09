@@ -56,6 +56,7 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div *ngIf="isEditTime(rowIndex)" style="margin-top: 5px">
             <timepicker class="custom_time_picker text-center"
+                        id="working_stime"
                         [(ngModel)]="row.working_stime"
                         (ngModelChange)="calWorkTime(row)"
                         (focusout)="timePickerFocusOut($event)"
@@ -69,9 +70,11 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
           <div *ngIf="isEditTime(rowIndex)" style="margin-top: 5px">
             <timepicker class="custom_time_picker text-center"
+                        id="working_etime"
                         [(ngModel)]="row.working_etime"
                         (ngModelChange)="calWorkTime(row)"
                         (focusout)="timePickerFocusOut($event)"
+                        (keyup.enter)="timePickerFocusOut($event)"
                         [showMeridian]="false" [showSpinners]="false"
                         [minuteStep]="10"></timepicker>
           </div>
@@ -80,11 +83,11 @@
       </ngx-datatable-column>
       <ngx-datatable-column prop="working_total_time" name="하루작업시간계" [sortable]="false" cellClass="text-center">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-          <div *ngIf="isEditTime(rowIndex)">
+          <!-- <div *ngIf="isEditTime(rowIndex)">
             <input type="text" id="working_total_time{{rowIndex+1}}" style="margin-top: 5px" value="{{row.total_work_time}}"
             (focusout)="totalWorkTimeFocusOut($event, row, value)" (keyup.enter)="totalWorkTimeFocusOut($event, row, value)" />
-          </div>
-          <div *ngIf="!isEditTime(rowIndex)">{{row.working_total_time}}</div>
+          </div> -->
+          <div>{{row.working_total_time}}</div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column prop="id" name="수정&middot;삭제" cellClass="text-center"

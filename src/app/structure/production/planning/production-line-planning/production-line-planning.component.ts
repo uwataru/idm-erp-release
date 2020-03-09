@@ -325,12 +325,23 @@ export class ProductionLinePlanningComponent implements OnInit {
   }
 
   calWorkTime(row){
-    // console.log('calWorkTime', row);
-    // row.working_total_time = row.working_stime.getHours();
+    console.log('calWorkTime', row.working_etime.getHours());
+    console.log('calWorkTime', row.working_etime.getMinutes());
+    let hh = row.working_etime.getHours() - row.working_stime.getHours();
+    let mm = row.working_etime.getMinutes() - row.working_stime.getMinutes();
+    
+    if(mm < 0){
+      hh = hh - 1;
+      mm = 60 + mm;
+    }
+    let resultH = hh;
+    let resultM = Math.floor(mm/60*10);
+    console.log("Result!", resultH, resultM);
+    row.working_total_time = resultH+'.'+resultM;
   }
 
   timePickerFocusOut(event){
-    // console.log('timePickerFocusOut', event.target);
+    console.log('timePickerFocusOut', event);
     if(event.target.placeholder == 'HH'){
       if(event.target.value > 24){
         alert('잘못된 시간입니다');
@@ -342,14 +353,14 @@ export class ProductionLinePlanningComponent implements OnInit {
         alert('잘못된 시간입니다');
       }
     }
-    // this.selectedIndex = -1;
-  }
-
-  totalWorkTimeFocusOut(event, row, value){
-    // console.log('totalWorkTimeFocusOut', event, row, value);
-    row.working_total_time = event.target.value;
     this.selectedIndex = -1;
   }
+
+  // totalWorkTimeFocusOut(event, row, value){
+  //   // console.log('totalWorkTimeFocusOut', event, row, value);
+  //   row.working_total_time = event.target.value;
+  //   this.selectedIndex = -1;
+  // }
 
   onValueChange(value: Date): void {
     // console.log(this.searchForm.controls['sch_yearmonth'].value);
