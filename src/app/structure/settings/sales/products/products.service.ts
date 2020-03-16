@@ -18,6 +18,10 @@ export class ProductsService {
         return this.http.get<Item[]>(this.url, {params: params});
     }
 
+    GetListMaterials (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/materials/search');
+    }
+
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
     }

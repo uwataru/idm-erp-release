@@ -131,6 +131,7 @@ export class ProductsComponent implements OnInit {
     this.uploadFormTitle = '제품 엑셀업로드';
 
     this.changeSubMenu(1);
+    this.GetListMaterials();
 
     this.materialDataCnt = 1;
 
@@ -157,6 +158,19 @@ export class ProductsComponent implements OnInit {
     this.selected.push(...selected);
   }
 
+  GetListMaterials(): void {
+
+    this.selected = [];
+    let formData = this.searchForm.value;
+
+    this.isLoadingProgress = true;
+    this.dataService.GetListMaterials().subscribe(
+      listData => {
+        this.listMaterials = listData['data'];
+
+      }
+    );
+  }
   getAll(): void {
     document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
 
