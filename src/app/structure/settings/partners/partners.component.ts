@@ -549,16 +549,19 @@ export class PartnersComponent implements OnInit {
   // }
 
   checkNumber(event){
-    if(event.keyCode < 48 || event.keyCode > 57) {
-      if(event.keyCode != 8 && event.keyCode != 13&& event.keyCode != 37 && event.keyCode != 39){
-        alert('숫자만 입력하세요.');
-        // var btn = document.getElementById('save_btn');
-        console.log(event.target.id);
-        // event.target.value = '';
-        this.inputForm.controls[event.target.id].reset();
+    if(event.keyCode < 96 || event.keyCode >105){
+      if(event.keyCode < 48 || event.keyCode > 57 ) {
+        if(event.keyCode != 8 && event.keyCode != 13&& event.keyCode != 37 && event.keyCode != 39){
+          alert('숫자만 입력하세요.');
+          // var btn = document.getElementById('save_btn');
+          console.log(event.keyCode);
+          // event.target.value = '';
+          this.inputForm.controls[event.target.id].reset();
+        }
       }
+      this.inputForm.controls[event.target.id].reset(event.target.value);
     }
-    this.inputForm.controls[event.target.id].reset(event.target.value);
+
   }
 
   addHyphen(event) {
