@@ -46,7 +46,8 @@ export class AppGlobals {
         this.serverUrl = ServerConfig.myDevServer;
       }else{
         // this.serverUrl='http://idm.innest.co.kr';
-        this.serverUrl='http://idm.innest.co.kr';
+        // this.serverUrl='http://idm.innest.co.kr';
+        this.serverUrl='http://idm.goinnest.co.kr:5009';
         // this.serverUrl='http://lucas.innest.co.kr';
       }
       return this.serverUrl;
