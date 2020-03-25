@@ -13,7 +13,8 @@
 			</button>
 			<!-- brand -->
 			<div class="navbar-brand text-lt">
-				<img src="assets/img/idm_logo.png" alt="idm_logo" class="logoimg"/>
+				<img *ngIf="isAsideFolded==false" src="assets/img/idm_logo_lg.png" alt="idm_logo_lg" class="logoimg"/>
+				<img *ngIf="isAsideFolded==true" src="assets/img/idm_logo_lg.png" alt="idm_logo_lg" class="logoimgSm"/>
 				<!-- <span class="hidden-folded m-l-xs">{{ title }}</span> -->
 			</div>
 			<!-- / brand -->
