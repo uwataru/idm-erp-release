@@ -120,6 +120,7 @@ export class ScreeningComponent implements OnInit {
       personnel_id: [''],
       product_name: [''],
       product_type: '',
+      production_qty: '',
       qty: ['', Validators.required],
       defect_content: ['', Validators.required],
       defect_content_id: ['', Validators.required],
@@ -211,19 +212,23 @@ export class ScreeningComponent implements OnInit {
     let formModel = this.inputForm.value;
     let qty = this.utils.removeComma(formModel.qty) * 1;
     formModel.input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+    
+    if(formModel.qty>formModel.production_qty){
+      alert('불량수량이 생산수량보다 많습니다');
+    }else{
+      let formData = {
+        qty: qty,
+        input_date: formModel.input_date,
+        sales_orders_detail_id: formModel.sales_orders_detail_id,
+        production_personnel_id: formModel.personnel_id,
+        settings_id: formModel.defect_content_id,
+        etc: formModel.etc
+  
+      };
+      this.Create(formData);
+      console.log(formData);
+    }
 
-
-    let formData = {
-      qty: qty,
-      input_date: formModel.input_date,
-      sales_orders_detail_id: formModel.sales_orders_detail_id,
-      production_personnel_id: formModel.personnel_id,
-      settings_id: formModel.defect_content_id,
-      etc: formModel.etc
-
-    };
-    this.Create(formData);
-    console.log(formData);
   }
 
   Create(data): void {
@@ -270,8 +275,10 @@ export class ScreeningComponent implements OnInit {
                 order_no: this.formData.order_no,
                 product_name: this.formData.product_name,
                 product_type: this.formData.product_type,
+                production_qty: this.formData.production_qty,
               });
               console.log(this.inputForm.controls['sales_orders_detail_id'].value);
+              console.log(this.inputForm.controls['production_qty'].value);
             }
           }
         );
