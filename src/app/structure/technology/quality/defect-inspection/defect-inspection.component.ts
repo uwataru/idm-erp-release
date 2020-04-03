@@ -106,6 +106,7 @@ export class DefectInspectionComponent implements OnInit {
             order_no: ['', Validators.required],
             product_name: ['', Validators.required],
             product_type: '',
+            production_qty: '',
             material_name: '',
             material_id: ['', Validators.required],
             qty: ['', Validators.required],
@@ -205,18 +206,22 @@ export class DefectInspectionComponent implements OnInit {
     save() {
         let formModel = this.inputForm.value;
         let qty = this.utils.removeComma(formModel.qty) * 1;
+        if(qty>formModel.production_qty){
+            alert('불량수량이 생산수량보다 많습니다!');
+        }else{
+            let formData = {
+                qty: qty,
+                assembly_performance_id: formModel.assembly_performance_id,
+                sales_orders_detail_id: formModel.sales_orders_detail_id,
+                material_id: formModel.material_id,
+                settings_id: formModel.defect_content_id,
+                etc: formModel.etc
+    
+            };
+            this.Create(formData);
+            console.log(formData);
+        }
 
-        let formData = {
-            qty: qty,
-            assembly_performance_id: formModel.assembly_performance_id,
-            sales_orders_detail_id: formModel.sales_orders_detail_id,
-            material_id: formModel.material_id,
-            settings_id: formModel.defect_content_id,
-            etc: formModel.etc
-
-        };
-        this.Create(formData);
-        console.log(formData);
     }
 
     Create(data): void {
@@ -266,6 +271,7 @@ export class DefectInspectionComponent implements OnInit {
                                 order_no: this.formData.order_no,
                                 product_name: this.formData.product_name,
                                 product_type: this.formData.product_type,
+                                production_qty: this.formData.production_qty,
                             });
                             console.log(this.inputForm.controls['sales_orders_detail_id'].value);
                         }

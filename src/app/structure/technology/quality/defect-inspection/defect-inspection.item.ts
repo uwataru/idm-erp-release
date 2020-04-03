@@ -9,6 +9,7 @@ export class Item {
     order_no: number,
     product_name: string,
     product_type: string,
+    production_qty: string,
     material_name: string,
     material_id: number,
     qty: number,
