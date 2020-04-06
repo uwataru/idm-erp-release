@@ -121,6 +121,7 @@ export class ScreeningComponent implements OnInit {
       product_name: [''],
       product_type: '',
       production_qty: '',
+      defect_qty: '',
       qty: ['', Validators.required],
       defect_content: ['', Validators.required],
       defect_content_id: ['', Validators.required],
@@ -205,7 +206,14 @@ export class ScreeningComponent implements OnInit {
 
   addCommaQty(): void {
     let formData = this.inputForm.value;
-    this.inputForm.controls['qty'].setValue(this.utils.addComma(formData.qty));
+    let defect_qty = parseInt(formData.qty)+ parseInt(formData.defect_qty);
+    console.log(defect_qty);
+    if(parseInt(formData.production_qty)<defect_qty){
+      alert('불량수량이 생산수량보다 많습니다!');
+      this.inputForm.controls['qty'].setValue('');
+    }else{
+      this.inputForm.controls['qty'].setValue(this.utils.addComma(formData.qty));
+    }
   }
 
   save() {
@@ -213,21 +221,17 @@ export class ScreeningComponent implements OnInit {
     let qty = this.utils.removeComma(formModel.qty) * 1;
     formModel.input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
     
-    if(formModel.qty>formModel.production_qty){
-      alert('불량수량이 생산수량보다 많습니다');
-    }else{
-      let formData = {
-        qty: qty,
-        input_date: formModel.input_date,
-        sales_orders_detail_id: formModel.sales_orders_detail_id,
-        production_personnel_id: formModel.personnel_id,
-        settings_id: formModel.defect_content_id,
-        etc: formModel.etc
-  
-      };
-      this.Create(formData);
-      console.log(formData);
-    }
+    let formData = {
+      qty: qty,
+      input_date: formModel.input_date,
+      sales_orders_detail_id: formModel.sales_orders_detail_id,
+      production_personnel_id: formModel.personnel_id,
+      settings_id: formModel.defect_content_id,
+      etc: formModel.etc
+
+    };
+    this.Create(formData);
+    console.log(formData);
 
   }
 
@@ -276,6 +280,7 @@ export class ScreeningComponent implements OnInit {
                 product_name: this.formData.product_name,
                 product_type: this.formData.product_type,
                 production_qty: this.formData.production_qty,
+                defect_qty: this.formData.defect_qty,
               });
               console.log(this.inputForm.controls['sales_orders_detail_id'].value);
               console.log(this.inputForm.controls['production_qty'].value);

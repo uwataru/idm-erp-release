@@ -13,6 +13,7 @@ export class Item {
       personnel: string,
       personnel_id: number,
       qty: number,
+      defect_qty: number,
       defect_content: string,
       defect_content_id: number,
       etc: string,
