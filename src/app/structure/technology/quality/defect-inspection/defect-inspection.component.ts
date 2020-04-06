@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UtilsService } from '../../../../utils.service';
 import { MessageService } from '../../../../message.service';
 import { Item } from './defect-inspection.item';
+import { stringify } from 'querystring';
 declare var $: any;
 
 @Component({
@@ -31,6 +32,7 @@ export class DefectInspectionComponent implements OnInit {
     hideConfirmMsg: string;
     isEditMode: boolean = false;
     etcMode: boolean = false;
+    qtyCheckNum: number;
 
     searchForm: FormGroup;
 
@@ -164,11 +166,17 @@ export class DefectInspectionComponent implements OnInit {
     onSelectInputproductionDate(event: TypeaheadMatch): void {
         this.inputForm.controls['assembly_performance_id'].setValue(event.item['assembly_performance_id']);
         console.log(this.inputForm.controls['assembly_performance_id'].value);
+        if(this.inputForm.controls['material_id'].value != null){
+            this.qtycheck();
+        }
     }
 
     onSelectInputMaterial(event: TypeaheadMatch): void {
         this.inputForm.controls['material_id'].setValue(event.item['material_id']);
         console.log(this.inputForm.controls['material_id'].value);
+        if(this.inputForm.controls['assembly_performance_id'].value != null){
+            this.qtycheck();
+        }
     }
 
     onSelectDefectContent(event: TypeaheadMatch): void {
@@ -200,28 +208,51 @@ export class DefectInspectionComponent implements OnInit {
 
     addCommaQty(): void {
         let formData = this.inputForm.value;
-        this.inputForm.controls['qty'].setValue(this.utils.addComma(formData.qty));
+        if(this.qtyCheckNum>formData.qty){
+            this.inputForm.controls['qty'].setValue(this.utils.addComma(formData.qty));
+        }else if(formData.qty != null){
+            alert('불량수량이 생산수량보다 많습니다!');
+            this.inputForm.controls['qty'].setValue('');
+
+        }
     }
 
     save() {
-        let formModel = this.inputForm.value;
-        let qty = this.utils.removeComma(formModel.qty) * 1;
-        if(qty>formModel.production_qty){
-            alert('불량수량이 생산수량보다 많습니다!');
-        }else{
-            let formData = {
-                qty: qty,
-                assembly_performance_id: formModel.assembly_performance_id,
-                sales_orders_detail_id: formModel.sales_orders_detail_id,
-                material_id: formModel.material_id,
-                settings_id: formModel.defect_content_id,
-                etc: formModel.etc
-    
-            };
-            this.Create(formData);
-            console.log(formData);
-        }
+    let formModel = this.inputForm.value;
+    let qty = this.utils.removeComma(formModel.qty) * 1;
+        let formData = {
+            qty: qty,
+            assembly_performance_id: formModel.assembly_performance_id,
+            sales_orders_detail_id: formModel.sales_orders_detail_id,
+            material_id: formModel.material_id,
+            settings_id: formModel.defect_content_id,
+            etc: formModel.etc
 
+        };
+        this.Create(formData);
+        console.log(formData);
+
+    }
+    qtycheck(){
+        let formModel = this.inputForm.value;
+        console.log(formModel);
+        let params = {
+            assembly_performance_id: String(formModel.assembly_performance_id) ,
+            sales_orders_detail_id: String(formModel.sales_orders_detail_id),
+            material_id: String(formModel.material_id)
+        }
+        this.dataService.GetQtyCheck(params)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.qtyCheckNum = data['qty'];
+                        console.log(this.qtyCheckNum);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                },
+                error => this.errorMessage = <any>error
+            );
     }
 
     Create(data): void {

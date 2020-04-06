@@ -29,6 +29,9 @@ export class DefectInspectionService {
     GetInputMaterials (id:string): Observable<Item[]> {
         return this.http.get<Item[]>(this.globals.serverUrl+'/sales/orders/search/material/'+id);
     }
+    GetQtyCheck (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url+'/material-production-qty-check', {params: params});
+    }
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
