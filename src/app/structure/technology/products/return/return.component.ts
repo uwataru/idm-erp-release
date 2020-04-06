@@ -45,6 +45,8 @@ export class ReturnComponent implements OnInit {
   gridHeight = this.globals.gridHeight;
   messages = this.globals.datatableMessages;
 
+  qtyCheckNum:number;
+
   returnReasonList: any[] = this.globals.configs['returnReasonList'];
   totalWeight: number;
   assembly_total: number;
@@ -90,6 +92,7 @@ export class ReturnComponent implements OnInit {
       settings_type: ['', Validators.required],
       settings_type_id: ['', Validators.required],
       qty: ['', Validators.required],
+      return_qty: ['', Validators.required],
       etc: '',
     });
   }
@@ -190,6 +193,16 @@ export class ReturnComponent implements OnInit {
     this.selectedId = event.selected[0].id;
   }
 
+  isQtyCheck(){
+    let formModel = this.inputForm.value;
+    let return_qty = parseInt(formModel.qty) + parseInt(formModel.return_qty)
+    console.log(return_qty, this.qtyCheckNum);
+    if(this.qtyCheckNum<return_qty){
+      alert('반품수량이 생산수량보다 많습니다');
+      this.inputForm.controls['qty'].setValue('');
+    }
+  }
+
   openModal(method, id) {
     // 실행권한
     if (method == 'write') {
@@ -203,13 +216,14 @@ export class ReturnComponent implements OnInit {
             this.formData = editData['data'];
 
             console.log('!!!!!!!', this.formData);
-
+            this.qtyCheckNum  = this.formData.qty;
             this.inputForm.patchValue({
               sales_delivery_id: this.formData.id,
               partner_name: this.formData.partner_name,
               product_name: this.formData.product_name,
               product_id: this.formData.product_id,
               product_type: this.formData.product_type,
+              return_qty: this.formData.return_qty,
             });
 
 

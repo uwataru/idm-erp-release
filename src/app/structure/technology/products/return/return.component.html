@@ -173,7 +173,8 @@
                       수량
                     </label>
                     <div class="col-lg-8">
-                      <input type="text" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
+                      <input type="text" (blur)="isQtyCheck()" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
+                      <input type="hidden" formControlName="return_qty" id="return_qty" class="form-control input-sm w-sm"/>
                     </div>
                   </div>
                 </div>

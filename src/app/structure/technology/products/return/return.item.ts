@@ -9,6 +9,7 @@ export class Item {
         product_type: string;
         partner_name: string;
         qty: number;
+        return_qty: number;
         return_date: number;
         price: number;
         type: boolean;
