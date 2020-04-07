@@ -58,7 +58,7 @@
 </div>
 
 <div bsModal #InputFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-md">
+	<div class="modal-dialog" style="width: 300px;">
 		<div class="modal-content">
 
             <form [formGroup]="inputForm">
@@ -68,136 +68,128 @@
 				<h4 class="modal-title">{{ inputFormTitle }}</h4>
 			</div>
 			<div class="modal-body">
+                <table>
+                    <tr>
+                        <th width="100px">
+                            <input type="hidden" formControlName="sales_orders_detail_id" id="sales_orders_detail_id" />
+                            <label for="production_date">
+                                생산일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </label>
+                        </th>
+                        <td>
+                            <input formControlName="production_date" id="production_date"
+                                [typeahead]="productionDate"
+                                typeaheadOptionField="production_date"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectInputproductionDate($event)"
+                                placeholder="생산일자"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input type="hidden" formControlName="assembly_performance_id" id="assembly_performance_id" />
+                        </td>
+                    </tr>
 
-                <div class="row">
-                    <div class="col-lg-6">
+                    <tr>
+                        <th>
+                            <label for="order_no">
+                                수주번호
+                            </label>
+                        </th>
+                        <td>
+                            <input type="text" formControlName="order_no" id="order_no" class="form-control w-sm" />
+                        </td>
+                    </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <input type="hidden" formControlName="sales_orders_detail_id" id="sales_orders_detail_id" />
-                                <label for="production_date" class="col-lg-4 control-label">
-                                    생산일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input formControlName="production_date" id="production_date"
-                                        [typeahead]="productionDate"
-                                        typeaheadOptionField="production_date"
-                                        [typeaheadOptionsLimit]="50"
-                                        [typeaheadScrollable]="true"
-                                        [typeaheadMinLength]="0"
-                                        (typeaheadOnSelect)="onSelectInputproductionDate($event)"
-                                        placeholder="생산일자"
-                                        class="input-sm form-control w-sm inline v-middle" />
-                                    <input type="hidden" formControlName="assembly_performance_id" id="assembly_performance_id" />
-                                </div>
-                            </div>
-                        </div>
+                    <tr>
+                        <th>
+                            <label for="product_name">
+                                제품명
+                            </label>
+                        </th>
+                        <td>
+                            <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
+                        </td>
+                    </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="order_no" class="col-lg-4 control-label">
-                                    수주번호
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="order_no" id="order_no" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
+                    <tr>
+                        <th>
+                            <label for="product_type">
+                                규격
+                            </label>
+                        </th>
+                        <td>
+                            <input type="text" formControlName="product_type" id="product_type" class="form-control w-sm" />
+                        </td>
+                    </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_name" class="col-lg-4 control-label">
-                                    제품명
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
+                    <tr>
+                        <th>
+                            <label for="material_name">
+                                자재명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </label>
+                        </th>
+                        <td>
+                            <input formControlName="material_name" id="material_name"
+                            [typeahead]="inputMaterials"
+                            typeaheadOptionField="material_name"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectInputMaterial($event)"
+                            placeholder="자재명"
+                            class="input-sm form-control w-sm inline v-middle" />
+                        <input type="hidden" formControlName="material_id" id="material_id" />
+                        </td>
+                    </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_type" class="col-lg-4 control-label">
-                                    규격
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" formControlName="product_type" id="product_type" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
+                    <tr>
+                        <th>
+                            <label for="qty">
+                                불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </label>
+                        </th>
+                        <td>
+                            <input type="text" (blur)="addCommaQty()" formControlName="qty" id="qty" class="form-control w-sm" />
+                        </td>
+                    </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="material_name" class="col-lg-4 control-label">
-                                    자재명 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input formControlName="material_name" id="material_name"
-                                    [typeahead]="inputMaterials"
-                                    typeaheadOptionField="material_name"
-                                    [typeaheadOptionsLimit]="50"
-                                    [typeaheadScrollable]="true"
-                                    [typeaheadMinLength]="0"
-                                    (typeaheadOnSelect)="onSelectInputMaterial($event)"
-                                    placeholder="자재명"
-                                    class="input-sm form-control w-sm inline v-middle" />
-                                <input type="hidden" formControlName="material_id" id="material_id" />
-                                </div>
-                            </div>
-                        </div>
+                    <tr>
+                        <th>
+                            <label for="defect_content">
+                                불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                            </label>
+                        </th>
+                        <td>
+                            <input formControlName="defect_content" id="defect_content"
+                            [typeahead]="defectContent"
+                            typeaheadOptionField="set_value"
+                            [typeaheadOptionsLimit]="50"
+                            [typeaheadScrollable]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="onSelectDefectContent($event)"
+                            placeholder="불량내용"
+                            class="input-sm form-control w-sm inline v-middle" />
+                        <input type="hidden" formControlName="defect_content_id" id="defect_content_id" />
+                        </td>
+                    </tr>
 
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="qty" class="col-lg-4 control-label">
-                                    불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input type="text" (blur)="addCommaQty()" formControlName="qty" id="qty" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="defect_content" class="col-lg-4 control-label">
-                                    불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                                </label>
-                                <div class="col-lg-8">
-                                    <input formControlName="defect_content" id="defect_content"
-                                    [typeahead]="defectContent"
-                                    typeaheadOptionField="set_value"
-                                    [typeaheadOptionsLimit]="50"
-                                    [typeaheadScrollable]="true"
-                                    [typeaheadMinLength]="0"
-                                    (typeaheadOnSelect)="onSelectDefectContent($event)"
-                                    placeholder="불량내용"
-                                    class="input-sm form-control w-sm inline v-middle" />
-                                <input type="hidden" formControlName="defect_content_id" id="defect_content_id" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="etc" class="col-lg-4 control-label">
-                                    기타내용
-                                </label>
-                                <div class="col-lg-8" *ngIf="etcMode==true;else readonly">
-                                    <input type="text" formControlName="etc" id="etc" class="form-control w-sm" />
-                                </div>
-                                <ng-template #readonly>
-                                    <div class="col-lg-8"  >
-                                        <input readonly type="text" formControlName="etc" id="etc" class="form-control w-sm" />
-                                    </div>
-                                </ng-template>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
+                    <tr>
+                        <th>
+                            <label for="etc">
+                                기타내용
+                            </label>
+                        </th>
+                        <td *ngIf="etcMode==true;else readonly">
+                            <input type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                        </td>
+                        <ng-template #readonly>
+                        <td>
+                            <input readonly type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                        </td>
+                        </ng-template>
+                    </tr>
+                </table>
 			</div>
 
             <div class="modal-footer">

@@ -79,95 +79,101 @@
                     <h4 class="modal-title">{{ inputFormTitle }}</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="row">
+                    <table>
+                        <tr>
+                            <th width="100px">
                                 <input type="hidden" formControlName="sales_orders_detail_id" id="sales_orders_detail_id" />
-                                <label for="input_date" class="col-lg-2 control-label">
+                                <label for="input_date">
                                     작업일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                 </label>
-                                <div class="col-lg-4">
-                                    <input type="text" bsDatepicker placement="bottom left" formControlName="input_date" id="input_date" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
+                            </th>
+                            <td>
+                                <input type="text" bsDatepicker placement="bottom left" formControlName="input_date" id="input_date" class="form-control w-sm" />
+                            </td>
+                        </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="personnel" class="col-lg-2 control-label">
+                        <tr>
+                            <th class="row">
+                                <label for="personnel">
                                     작업자
                                 </label>
-                                <div class="col-lg-4">
-                                    <input formControlName="personnel" id="personnel"
-                                    [typeahead]="personnelList"
-                                    typeaheadOptionField="name"
-                                    [typeaheadOptionsLimit]="50"
-                                    [typeaheadScrollable]="true"
-                                    [typeaheadMinLength]="0"
-                                    (typeaheadOnSelect)="onSelectPersonnel($event)"
-                                    placeholder="작업자"
-                                    class="input-sm form-control w-sm inline v-middle" />
-                                    <input type="hidden" formControlName="personnel_id" id="personnel_id" class="form-control w-sm" />
-                                </div>
-                                <label for="qty" class="col-lg-2 control-label">
+                            </th>
+                            <td>
+                                <input formControlName="personnel" id="personnel"
+                                [typeahead]="personnelList"
+                                typeaheadOptionField="name"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectPersonnel($event)"
+                                placeholder="작업자"
+                                class="input-sm form-control w-sm inline v-middle" />
+                                <input type="hidden" formControlName="personnel_id" id="personnel_id" class="form-control w-sm" />
+                            </td>
+                            <th>
+                                <label for="qty">
                                     불량수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                 </label>
-                                <div class="col-lg-4">
-                                    <input type="text" (blur)="addCommaQty()" formControlName="qty" id="qty" class="form-control w-sm" />
-                                    <input type="hidden"  formControlName="defect_qty" id="defect_qty" class="form-control w-sm" />
-                                </div>
-                            </div>
-                        </div>
+                            </th>
+                            <td>
+                                <input type="text" (blur)="addCommaQty()" formControlName="qty" id="qty" class="form-control w-sm" />
+                                <input type="hidden"  formControlName="defect_qty" id="defect_qty" class="form-control w-sm" />
+                            </td>
+                        </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_name" class="col-lg-2 control-label">
+                        <tr>
+                            <th>
+                                <label for="product_name">
                                     제품명
                                 </label>
-                                <div class="col-lg-4">
-                                    <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
-                                </div>
-                                <label for="defect_content" class="col-lg-2 control-label">
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_name" id="product_name" class="form-control w-sm" />
+                            </td>
+                            <th>
+                                <label for="defect_content">
                                     불량내용 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
                                 </label>
-                                <div class="col-lg-4">
-                                    <input formControlName="defect_content" id="defect_content"
-                                    [typeahead]="defectContent"
-                                    typeaheadOptionField="set_value"
-                                    [typeaheadOptionsLimit]="50"
-                                    [typeaheadScrollable]="true"
-                                    [typeaheadMinLength]="0"
-                                    (typeaheadOnSelect)="onSelectDefectContent($event)"
-                                    placeholder="불량내용"
-                                    class="input-sm form-control w-sm inline v-middle" />
-                                <input type="hidden" formControlName="defect_content_id" id="defect_content_id" />
-                                </div>
-                            </div>
-                        </div>
+                            </th>
+                            <td>
+                                <input formControlName="defect_content" id="defect_content"
+                                [typeahead]="defectContent"
+                                typeaheadOptionField="set_value"
+                                [typeaheadOptionsLimit]="50"
+                                [typeaheadScrollable]="true"
+                                [typeaheadMinLength]="0"
+                                (typeaheadOnSelect)="onSelectDefectContent($event)"
+                                placeholder="불량내용"
+                                class="input-sm form-control w-sm inline v-middle" />
+                            <input type="hidden" formControlName="defect_content_id" id="defect_content_id" />
+                            </td>
+                        </tr>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="product_type" class="col-lg-2 control-label">
+                        <tr>
+                            <th>
+                                <label for="product_type">
                                     규격
                                 </label>
-                                <div class="col-lg-4">
-                                    <input type="text" formControlName="product_type" id="product_type" class="form-control w-sm" />
-                                </div>
-                                <label for="etc" class="col-lg-2 control-label">
+                            </th>
+                            <td>
+                                <input type="text" formControlName="product_type" id="product_type" class="form-control w-sm" />
+                            </td>
+                            <th>
+                                <label for="etc">
                                     기타내용
                                 </label>
-                                <div class="col-lg-4" *ngIf="etcMode==true;else readonly">
-                                    <input type="text" formControlName="etc" id="etc" class="form-control w-sm" />
-                                </div>
-                                <ng-template #readonly>
-                                    <div class="col-lg-4"  >
-                                        <input readonly type="text" formControlName="etc" id="etc" class="form-control w-sm" />
-                                    </div>
-                                </ng-template>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
+                            </th>
+                            <td *ngIf="etcMode==true;else readonly">
+                                <input type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                            </td>
+                            <ng-template #readonly>
+                            <td>
+                                <input readonly type="text" formControlName="etc" id="etc" class="form-control w-sm" />
+                            </td>
+                            </ng-template>
+                        </tr>
+                    </table>
+                </div>
                 <div class="modal-footer">
                     <div class="text-center">
                         <button type="button" (click)="save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료</button>

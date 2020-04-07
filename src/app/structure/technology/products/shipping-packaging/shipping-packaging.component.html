@@ -69,7 +69,7 @@
       </div>
 
       <div bsModal #InputFormModal="bs-modal"  id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-md ">
+        <div class="modal-dialog" style="width: 300px;">
           <div class="modal-content">
 
             <form [formGroup]="inputForm">
@@ -81,113 +81,100 @@
                 <h4 class="modal-title">{{ inputFormTitle }}</h4>
               </div>
               <div class="modal-body">
-
-                <div class="row">
-                  <div class="col-lg-6">
-
-                    <div class="form-group">
-                        <input type="hidden" formControlName="id" id="id"/>
-                      <div class="row">
-                        <label for="input_date" class="col-lg-4 control-label">
-                          일자
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="order_no" class="col-lg-4 control-label">
-                          수주번호
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" readonly formControlName="order_no" id="order_no" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="partner_name" class="col-lg-4 control-label">
-                          거래처
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" readonly formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="product_name" class="col-lg-4 control-label">
-                          제품명
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" readonly formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="qty" class="col-lg-4 control-label">
-                          수량
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" formControlName="qty" id="qty" (blur)="CalculationPrice($event)" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="product_price" class="col-lg-4 control-label">
-                          단가
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" readonly formControlName="product_price" id="product_price" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="row">
-                        <label for="price" class="col-lg-4 control-label">
-                          금액
-                        </label>
-                        <div class="col-lg-8">
-                          <input type="text" formControlName="price" id="price" class="form-control input-sm w-sm"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                            <div class="row">
-                              <label for="package_shipment_type" class="col-lg-4 control-label">
-                                구분
-                              </label>
-                              <div class="col-lg-8">
-                                <input
-                                    formControlName="package_shipment_type"
-                                    id="package_shipment_type"
-                                    [typeahead]="PackageShipment"
-                                    typeaheadOptionField="set_value"
-                                    [typeaheadOptionsLimit]="50"
-                                    [typeaheadScrollable]="true"
-                                    [typeaheadMinLength]="0"
-                                    (typeaheadOnSelect)="onSelectPackageShipment($event)"
-                                    placeholder="구분"
-                                    class="input-sm form-control w-sm inline v-middle" />
-                                <input type="hidden" formControlName="package_shipment_type_id" id="package_shipment_type_id"/>
-                              </div>
-                            </div>
-                          </div>
-
-                  </div>
-
-                </div>
+                <table>
+                  <tr>
+                    <input type="hidden" formControlName="id" id="id"/>
+                    <th>
+                      <label for="input_date">
+                        일자
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" formControlName="input_date" id="input_date" bsDatepicker placement="bottom left" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="order_no">
+                        수주번호
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" readonly formControlName="order_no" id="order_no" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="partner_name">
+                        거래처
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" readonly formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="product_name">
+                        제품명
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" readonly formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="qty">
+                        수량
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" formControlName="qty" id="qty" (blur)="CalculationPrice($event)" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="product_price">
+                        단가
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" readonly formControlName="product_price" id="product_price" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="price">
+                        금액
+                      </label>
+                    </th>
+                    <td>
+                      <input type="text" formControlName="price" id="price" class="form-control input-sm w-sm"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      <label for="package_shipment_type">
+                        구분
+                      </label>
+                    </th>
+                    <td>
+                      <input
+                          formControlName="package_shipment_type"
+                          id="package_shipment_type"
+                          [typeahead]="PackageShipment"
+                          typeaheadOptionField="set_value"
+                          [typeaheadOptionsLimit]="50"
+                          [typeaheadScrollable]="true"
+                          [typeaheadMinLength]="0"
+                          (typeaheadOnSelect)="onSelectPackageShipment($event)"
+                          placeholder="구분"
+                          class="input-sm form-control w-sm inline v-middle" />
+                      <input type="hidden" formControlName="package_shipment_type_id" id="package_shipment_type_id"/>
+                    </td>
+                  </tr>
+                </table>
               </div>
 
               <div class="modal-footer">

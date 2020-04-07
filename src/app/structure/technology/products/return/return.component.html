@@ -65,7 +65,7 @@
   </div>
   
   <div bsModal #InputFormModal="bs-modal"  id="input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-md ">
+    <div class="modal-dialog" style="width: 300px;">
       <div class="modal-content">
   
         <form [formGroup]="inputForm">
@@ -76,121 +76,118 @@
           </div>
           <div class="modal-body">
   
-            <div class="row">
-              <div class="col-lg-6">
-  
-                <div class="form-group">
+            <table>
+                <tr>
                     <input type="hidden" formControlName="sales_delivery_id" id="sales_delivery_id"/>
-                  <div class="row">
-                    <label for="return_date" class="col-lg-4 control-label">
+                  <th width="100px">
+                    <label for="return_date">
                       반품일자
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" formControlName="return_date" id="return_date" bsDatepicker placement="bottom left" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input type="text" formControlName="return_date" id="return_date" bsDatepicker placement="bottom left" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
 
-                <div class="form-group">
-                  <div class="row">
-                    <label for="partner_name" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="partner_name">
                       거래처
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" readonly formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input type="text" readonly formControlName="partner_name" id="partner_name" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
   
-                <div class="form-group">
-                  <div class="row">
-                    <label for="product_name" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="product_name">
                       제품명
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" readonly formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
-                      <input type="hidden" formControlName="product_id" id="product_id" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input type="text" readonly formControlName="product_name" id="product_name" class="form-control input-sm w-sm"/>
+                    <input type="hidden" formControlName="product_id" id="product_id" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
   
-                <div class="form-group">
-                  <div class="row">
-                    <label for="product_type" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="product_type">
                       규격
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" readonly formControlName="product_type" id="product_type" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input type="text" readonly formControlName="product_type" id="product_type" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
   
-                <div class="form-group">
-                  <div class="row">
-                    <label for="type" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="type">
                       구분
                     </label>
-                    <div class="col-lg-8">
-                      <label class="i-checks">
-                          <input type="radio" formControlName="type" value="true" class="form-control input-xs">
-                          <i></i>
-                          입고
-                      </label>
-                      <label class="i-checks">
-                          <input type="radio" formControlName="type" value="false" class="form-control input-xs">
-                          <i></i>
-                          반출
-                      </label>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <label class="i-checks">
+                        <input type="radio" formControlName="type" value="true" class="form-control input-xs">
+                        <i></i>
+                        입고
+                    </label>
+                    <label class="i-checks">
+                        <input type="radio" formControlName="type" value="false" class="form-control input-xs">
+                        <i></i>
+                        반출
+                    </label>
+                  </td>
+                </tr>
 
-                <div class="form-group">
-                  <div class="row">
-                    <label for="settings_type" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="settings_type">
                       반품사유
                     </label>
-                    <div class="col-lg-8">
-                      <input
-                          formControlName="settings_type"
-                          id="settings_type"
-                          [typeahead]="returnReasonList"
-                          typeaheadOptionField="set_value"
-                          [typeaheadOptionsLimit]="50"
-                          [typeaheadScrollable]="true"
-                          [typeaheadMinLength]="0"
-                          (typeaheadOnSelect)="onSelectReturnReason($event)"
-                          placeholder="반품사유"
-                          class="input-sm form-control w-sm inline v-middle" />
-                      <input type="hidden" formControlName="settings_type_id" id="settings_type_id"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input
+                        formControlName="settings_type"
+                        id="settings_type"
+                        [typeahead]="returnReasonList"
+                        typeaheadOptionField="set_value"
+                        [typeaheadOptionsLimit]="50"
+                        [typeaheadScrollable]="true"
+                        [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="onSelectReturnReason($event)"
+                        placeholder="반품사유"
+                        class="input-sm form-control w-sm inline v-middle" />
+                    <input type="hidden" formControlName="settings_type_id" id="settings_type_id"/>
+                  </td>
+                </tr>
                 
-                  <div class="form-group">
-                  <div class="row">
-                    <label for="qty" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="qty">
                       수량
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" (blur)="isQtyCheck()" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
-                      <input type="hidden" formControlName="return_qty" id="return_qty" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
+                  </th>
+                  <td>
+                    <input type="text" (blur)="isQtyCheck()" formControlName="qty" id="qty" class="form-control input-sm w-sm"/>
+                    <input type="hidden" formControlName="return_qty" id="return_qty" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
 
-                <div class="form-group">
-                  <div class="row">
-                    <label for="etc" class="col-lg-4 control-label">
+                <tr>
+                  <th>
+                    <label for="etc">
                       특이사항
                     </label>
-                    <div class="col-lg-8">
-                      <input type="text" formControlName="etc" id="etc" class="form-control input-sm w-sm"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
+                  </th>
+                  <td>
+                    <input type="text" formControlName="etc" id="etc" class="form-control input-sm w-sm"/>
+                  </td>
+                </tr>
+              </table>
           </div>
   
           <div class="modal-footer">
