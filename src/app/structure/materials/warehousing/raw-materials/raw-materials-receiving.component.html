@@ -125,46 +125,49 @@
           <h4 class="modal-title">{{ inputFormTitle }}</h4>
         </div>
         <div class="modal-body">
-
-          <div class="form-group">
-            <div class="row">
-              <label for="receiving_date" class="col-lg-2 control-label">
-                입고일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-10">
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="receiving_date">
+                  입고일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
                 <input type="text" formControlName="receiving_date" id="receiving_date" bsDatepicker placement="bottom left" nextFocus="partner_name"
                        class="form-control input-sm w-sm"/>
-              </div>
-            </div>
-          </div>
+              </td>
+            </tr>
 
-          <div class="form-group">
-            <div class="row">
-              <label for="partner_name" class="col-lg-2 control-label">
-                거래처
-              </label>
-              <div class="col-lg-4">
+            <tr>
+              <th>
+                <label for="partner_name">
+                  거래처
+                </label>
+              </th>
+              <td>
                 <input formControlName="partner_name" id="partner_name"
                        readonly
                        class="input-sm form-control w-sm inline v-middle"/>
                 <input type="hidden" formControlName="partner_id" id="partner_id"/>
-              </div>
-              <label for="price" class="col-lg-2 control-label">
-                단가
-              </label>
-              <div class="col-lg-4">
+              </td>
+              <th>
+                <label for="price">
+                  단가
+                </label>
+              </th>  
+              <td>
                 <input readonly type="text" formControlName="price" id="price" nextFocus="result_type"
                        class="form-control input-sm w-sm text-right"/>
-              </div>              
-            </div>
-          </div>
+              </td>              
+            </tr>
 
-          <div class="form-group">
-            <div class="row">
-              <label for="receiving_type" class="col-lg-2 control-label">
-                입고 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-4">
+            <tr>
+              <th>
+                <label for="receiving_type">
+                  입고 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
                 <label class="i-checks">
                   <input type="radio" formControlName="receiving_type" value="1">
                   <i></i>입고
@@ -173,50 +176,56 @@
                   <input type="radio" formControlName="receiving_type" value="2">
                   <i></i>반품
                 </label>
-              </div>
-              <label for="receiving_qty" class="col-lg-2 control-label">
-                입고수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-              </label>
-              <div class="col-lg-4">
+              </td>
+              <th>  
+                <label for="receiving_qty">
+                  입고수량<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>  
+              <td>
                 <input type="text" formControlName="receiving_qty" id="receiving_qty" (blur)="CalculOrderAmount($event)"
                        decimal [(ngModel)]="receiving_qty" nextFocus="storage"
                        class="form-control input-sm w-sm text-right"/>
-              </div>
-            </div>
-          </div>
+              </td>
+            </tr>
 
-          <div class="form-group">
-            <div class="row">
-              <label for="name" class="col-lg-2 control-label">
-                자재명
-              </label>
-              <div class="col-lg-4">
+            <tr>
+              <th>
+                <label for="name">
+                  자재명
+                </label>
+              </th>
+              <td>
                 <input readonly type="text" formControlName="name" id="name" nextFocus="size"
                        class="form-control input-sm w-sm"/>
-              </div>
-              <label for="receiving_price" class="col-lg-2 control-label">
-                금액
-              </label>
-              <div class="col-lg-4">
+              </td>
+              <th>
+                <label for="receiving_price">
+                  금액
+                </label>
+              </th> 
+              <td>
                 <input type="text" formControlName="receiving_price" id="receiving_price"
                        class="form-control input-sm w-sm text-right"/>
-              </div>
-            </div>
-          </div>
+              </td>
+            </tr>
 
-          <div class="form-group">
-            <div class="row">
-              <label for="size" class="col-lg-2 control-label">
-                규격
-              </label>
-              <div class="col-lg-4">
+            <tr>
+              <th>
+                <label for="size">
+                  규격
+                </label>
+              </th>
+              <td>
                 <input readonly type="text" formControlName="size" id="size" nextFocus="price_per_unit"
                        class="form-control input-sm w-sm text-right"/>
-              </div>
-              <label for="receiving_location_name" class="col-lg-2 control-label">
-                입고장소
-              </label>
-              <div class="col-lg-4">
+              </td>
+              <th>
+                <label for="receiving_location_name">
+                  입고장소
+                </label>
+              </th>  
+              <td>
                 <input formControlName="receiving_location_name" id="receiving_location_name"
                        [typeahead]="storagePartners"
                        typeaheadOptionField="name"
@@ -228,10 +237,9 @@
                        autocomplete="off"
                        class="input-sm form-control w-sm inline v-middle"/>
                 <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
-              </div>
-            </div>
-          </div>
-
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="modal-footer">
           <div class="text-center">

@@ -81,7 +81,7 @@
 
 
 <div bsModal #LossFormModal="bs-modal" id="loss-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog" style="width: 300px;">
     <div class="modal-content">
 
       <form [formGroup]="lossForm">
@@ -92,46 +92,48 @@
         </div>
         <div class="modal-body">
         <input type="hidden" formControlName="material_id" id="material_id"/>
-            <div class="form-group">
-                <div class="row">
-                    <label for="input_date" class="col-lg-4 control-label">
-                        일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input type="text" formControlName="input_date" id="input_date" nextFocus="qty" class="form-control w-sm" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <label for="name" class="col-lg-4 control-label">
-                        자재명<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input type="text" formControlName="name" id="name" readonly class="form-control w-sm" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <label for="size" class="col-lg-4 control-label">
-                        규격<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input type="text" formControlName="size" id="size" readonly class="form-control w-sm" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <label for="qty" class="col-lg-4 control-label">
-                        개수<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input type="text" formControlName="qty" id="qty" class="form-control w-sm" />
-                    </div>
-                </div>
-            </div>
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="input_date">
+                  일자<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="input_date" id="input_date" nextFocus="qty" class="form-control w-sm" />
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="name">
+                  자재명<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="name" id="name" readonly class="form-control w-sm" />
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="size">
+                    규격<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                  <input type="text" formControlName="size" id="size" readonly class="form-control w-sm" />
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="qty">
+                    개수<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                  <input type="text" formControlName="qty" id="qty" class="form-control w-sm" />
+              </td>
+            </tr>
+          </table>
         </div>
 
         <div class="modal-footer">
@@ -162,106 +164,109 @@
           <h4 class="modal-title">{{ inputFormTitle }}</h4>
         </div>
         <div class="modal-body">
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="input_date" class="col-lg-2 control-label">
-                    발주일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="input_date" id="input_date" bsDatepicker
-                           placement="bottom left" nextFocus="order_weight1" class="form-control w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="partner_name" class="col-lg-2 control-label">
-                    거래처명
-                  </label>
-                  <div class="col-lg-4">
-                    <input readonly type="text" formControlName="partner_name" id="partner_name"
-                           class="input-sm form-control w-sm inline v-middle"/>
-                  </div>
-
-                  <label for="price" class="col-lg-2 control-label">
-                    단가
-                  </label>
-                  <div class="col-lg-4">
-                    <input readonly type="text" formControlName="price" id="price" nextFocus="order_date1"
-                           class="form-control w-sm text-right"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="name" class="col-lg-2 control-label">
-                    제품명
-                  </label>
-                  <div class="col-lg-4">
-                    <input readonly type="text" formControlName="name" id="name" nextFocus="size"
-                           class="form-control w-sm"/>
-                  </div>
-
-                  <label for="order_price" class="col-lg-2 control-label">
-                    금액
-                  </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="order_price" id="order_price" nextFocus="rcv_request_date1"
-                           class="form-control w-sm text-right"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="size" class="col-lg-2 control-label">
-                    규격
-                  </label>
-                  <div class="col-lg-4">
-                    <input readonly type="text" formControlName="size" id="size" nextFocus="maker"
-                           class="form-control w-sm"/>
-                  </div>
-                  <label for="promised_date" class="col-lg-2 control-label">
-                    납품요구일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="promised_date" id="promised_date" bsDatepicker
-                           placement="bottom left" nextFocus="rcv_location1" class="form-control w-sm"/>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <label for="order_qty" class="col-lg-2 control-label">
-                    수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-4">
-                    <input type="text" formControlName="order_qty" id="order_qty"
-                           (blur)="CalculOrderAmount($event)"
-                           class="form-control w-sm text-right"/>
-                  </div>
-                  <label for="receiving_location" class="col-lg-2 control-label">
-                    납품처 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
-                  </label>
-                  <div class="col-lg-4">
-                    <input formControlName="receiving_location" id="receiving_location"
-                           [typeahead]="locationPartners"
-                           typeaheadOptionField="name"
-                           [typeaheadOptionsLimit]="50"
-                           [typeaheadScrollable]="true"
-                           [typeaheadMinLength]="0"
-                           (typeaheadOnSelect)="onSelectLocationPartner($event)"
-                           placeholder="거래처명"
-                           autocomplete="off"
-                           class="form-control w-sm"/>
-                    <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
-                  </div>
-                </div>
-              </div>
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="input_date">
+                  발주일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="input_date" id="input_date" bsDatepicker
+                       placement="bottom left" nextFocus="order_weight1" class="form-control w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="partner_name">
+                  거래처명
+                </label>
+              </th>
+              <td>
+                <input readonly type="text" formControlName="partner_name" id="partner_name"
+                       class="input-sm form-control w-sm inline v-middle"/>
+              </td>
+              <th>
+                <label for="price">
+                  단가
+                </label>
+              </th>
+              <td>
+                <input readonly type="text" formControlName="price" id="price" nextFocus="order_date1"
+                       class="form-control w-sm text-right"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="name">
+                  제품명
+                </label>
+              </th>
+              <td>
+                <input readonly type="text" formControlName="name" id="name" nextFocus="size"
+                       class="form-control w-sm"/>
+              </td>
+              <th>
+                <label for="order_price">
+                  금액
+                </label>
+              </th>  
+              <td>
+                <input type="text" formControlName="order_price" id="order_price" nextFocus="rcv_request_date1"
+                       class="form-control w-sm text-right"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="size">
+                  규격
+                </label>
+              </th>
+              <td>
+                <input readonly type="text" formControlName="size" id="size" nextFocus="maker"
+                       class="form-control w-sm"/>
+              </td>
+              <th>
+                <label for="promised_date">
+                  납품요구일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>  
+              <td>
+                <input type="text" formControlName="promised_date" id="promised_date" bsDatepicker
+                       placement="bottom left" nextFocus="rcv_location1" class="form-control w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="order_qty">
+                  수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="order_qty" id="order_qty"
+                       (blur)="CalculOrderAmount($event)"
+                       class="form-control w-sm text-right"/>
+              </td>
+              <th>
+                <label for="receiving_location">
+                  납품처 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th> 
+              <td>
+                <input formControlName="receiving_location" id="receiving_location"
+                       [typeahead]="locationPartners"
+                       typeaheadOptionField="name"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="onSelectLocationPartner($event)"
+                       placeholder="거래처명"
+                       autocomplete="off"
+                       class="form-control w-sm"/>
+                <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="modal-footer">
           <div class="text-center">
