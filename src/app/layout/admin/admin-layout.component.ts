@@ -74,10 +74,16 @@ export class AdminLayoutComponent implements OnInit {
                 existTabs = true;        
             }
         }
-        
-        if(this.tmpTabs.length >= 9 && !existTabs) {
-            this.removeTabHandler(this.tmpTabs[this.tmpTabs.length-1]);    
+        if(this.electronService.isMobile == true){
+            if(this.tmpTabs.length >= 6 && !existTabs) {
+                this.removeTabHandler(this.tmpTabs[this.tmpTabs.length-1]);    
+            }
+        }else{
+            if(this.tmpTabs.length >= 9 && !existTabs) {
+               this.removeTabHandler(this.tmpTabs[this.tmpTabs.length-1]);    
+            }
         }
+
 
         console.warn('existTabs= ', existTabs);
         if(existTabs == false) {
