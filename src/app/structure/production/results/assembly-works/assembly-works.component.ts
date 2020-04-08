@@ -39,7 +39,7 @@ export class AssemblyWorksComponent implements OnInit {
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  personnelList: any[] = this.globals.configs['personnelList'];
+  personnelList: any[];
   productionLine: any[] = this.globals.configs['productionLine'];
   totalWeight: number;
   assembly_total: number;
@@ -149,6 +149,7 @@ export class AssemblyWorksComponent implements OnInit {
         this.isLoadingProgress = false;
       }
     );
+    this.getPersonnel();
   }
 
   Save() {
@@ -216,7 +217,16 @@ export class AssemblyWorksComponent implements OnInit {
       error => this.errorMessage = <any>error
     );
   }
+  getPersonnel(){
+    this.dataService.GetPersonnel().subscribe(
+      editData => {
+          this.personnelList = editData['data'];
 
+          console.log('!!!!!!!success');
+
+      }
+    );
+  }
   openModal(method) {
     // 실행권한
     if (this.isExecutable == true) {
@@ -234,14 +244,7 @@ export class AssemblyWorksComponent implements OnInit {
       this.buildInputFormGroup();
 
       // 절단작업지시 내용
-      this.dataService.GetPersonnel().subscribe(
-        editData => {
-            this.personnelList = editData['data'];
 
-            console.log('!!!!!!!success');
-
-        }
-      );
       this.dataService.GetById(this.selectedId).subscribe(
         editData => {
           if (editData['result'] == 'success') {
