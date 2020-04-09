@@ -39,7 +39,7 @@ export class AssemblyWorksComponent implements OnInit {
   messages = this.globals.datatableMessages;
 
   inputForm: FormGroup;
-  personnelList: any[];
+  personnelList: any[] = this.globals.configs['personnelList'];
   productionLine: any[] = this.globals.configs['productionLine'];
   totalWeight: number;
   assembly_total: number;
@@ -149,7 +149,6 @@ export class AssemblyWorksComponent implements OnInit {
         this.isLoadingProgress = false;
       }
     );
-    this.getPersonnel();
   }
 
   Save() {
@@ -220,7 +219,7 @@ export class AssemblyWorksComponent implements OnInit {
   getPersonnel(){
     this.dataService.GetPersonnel().subscribe(
       editData => {
-          this.personnelList = editData['data'];
+        this.personnelList = editData['data'];
 
           console.log('!!!!!!!success');
 
@@ -273,6 +272,7 @@ export class AssemblyWorksComponent implements OnInit {
           }
         }
       );
+      this.getPersonnel();
   }
 
   onSelect(event) {
