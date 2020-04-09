@@ -107,6 +107,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
             price: ['', Validators.required],
             receiving_type: ['', Validators.required],
             receiving_qty: ['', Validators.required],
+            order_qty: ['', Validators.required],
             name: '',
             receiving_price: '',
             // is_report: '',
@@ -195,11 +196,18 @@ export class RawMaterialsReceivingComponent implements OnInit {
 
     CalculOrderAmount (event): void {
         let formData = this.inputForm.value;
-        let f = event.target.id.replace('order_qty', 'receiving_price');
-        let q = this.utils.removeComma(event.target.value) * 1;
-        let p = this.utils.removeComma(formData.price) * 1;
-        let dp = this.utils.addComma(q * p)
-        this.inputForm.controls['receiving_price'].setValue(dp);
+        if(parseInt(formData.order_qty)<parseInt(formData.receiving_qty)){
+            alert('입고수량이 발주수량보다 많습니다!');
+            this.inputForm.controls['receiving_qty'].setValue('');
+            this.inputForm.controls['receiving_price'].setValue('');
+
+        }else{
+            let f = event.target.id.replace('order_qty', 'receiving_price');
+            let q = this.utils.removeComma(event.target.value) * 1;
+            let p = this.utils.removeComma(formData.price) * 1;
+            let dp = this.utils.addComma(q * p)
+            this.inputForm.controls['receiving_price'].setValue(dp);
+        }
     }
 
     Save () {
@@ -336,6 +344,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
                             material_id: this.formData.material_id,
                             partner_id: this.formData.partner_id,
                             partner_name: this.formData.partner_name,
+                            order_qty: this.formData.order_qty,
                             name: this.formData.name,
                             size: this.formData.size,
                             // receiving_qty: this.formData.receiving_qty,
@@ -345,6 +354,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
                         });
 
                         console.log(this.inputForm.value['material_id']);
+                        console.log("order_qty",this.inputForm.controls['order_qty'].value);
                     }
                 }
             );

@@ -73,7 +73,7 @@
         </button>
       </div>
       <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('receiving')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
+        <button (click)="openModal('receiving')"  class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>입고
         </button>
         <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
@@ -162,20 +162,13 @@
             </tr>
 
             <tr>
-              <th>
-                <label for="receiving_type">
-                  입고 구분<span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+              <th>  
+                <label for="order_qty">
+                  발주수량
                 </label>
-              </th>
+              </th>  
               <td>
-                <label class="i-checks">
-                  <input type="radio" formControlName="receiving_type" value="1">
-                  <i></i>입고
-                </label>
-                <label class="i-checks">
-                  <input type="radio" formControlName="receiving_type" value="2">
-                  <i></i>반품
-                </label>
+                <input type="text" readonly formControlName="order_qty" id="order_qty" class="form-control input-sm w-sm "/>
               </td>
               <th>  
                 <label for="receiving_qty">
