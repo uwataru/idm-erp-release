@@ -203,6 +203,7 @@ export class AdminLayoutComponent implements OnInit {
             this.titleService.setTitle(event['title']);
             this.page_title = event['title'];
         });
+        this.goToLink(5,'/production',false);
     }
 
     getActiveGroupMenu() {
