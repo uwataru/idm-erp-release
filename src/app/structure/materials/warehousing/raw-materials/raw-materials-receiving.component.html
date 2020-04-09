@@ -73,7 +73,7 @@
         </button>
       </div>
       <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('receiving')"  class="btn btn-sm btn-primary btn-addon">
+        <button (click)="openModal('receiving')" [disabled]="selectedCnt != 1" class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>입고
         </button>
         <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
