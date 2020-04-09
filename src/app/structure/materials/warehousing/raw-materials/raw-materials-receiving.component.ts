@@ -105,7 +105,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
             partner_name: ['', Validators.required],
             partner_id: ['', Validators.required],
             price: ['', Validators.required],
-            receiving_type: ['', Validators.required],
+            // receiving_type: ['', Validators.required],
             receiving_qty: ['', Validators.required],
             order_qty: ['', Validators.required],
             name: '',
@@ -216,13 +216,13 @@ export class RawMaterialsReceivingComponent implements OnInit {
         let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
         let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
 
-        let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+        // let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
 
         let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
 
         let formData = {
             material_id: formModel.material_id,
-            receiving_type: receiving_type,
+            receiving_type: 1,
             receiving_qty: receiving_qty,
             receiving_price: receiving_price,
             receiving_date: receiving_date,
@@ -236,6 +236,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
         };
 
         this.Create(this.selectedId,formData);
+        // console.log(this.selectedId,formData);
     }
 
     Create (id,data): void {
@@ -327,7 +328,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
             this.inputForm.controls['receiving_date'].setValue(this.tDate);
 
             // 입고구분
-            this.inputForm.controls['receiving_type'].setValue('1');
+            // this.inputForm.controls['receiving_type'].setValue('1');
 
 
             // 단조품정보

@@ -107,8 +107,9 @@ export class OutsourcedStorageComponent implements OnInit {
           partner_name: ['', Validators.required],
           partner_id: ['', Validators.required],
           price: ['', Validators.required],
-          receiving_type: ['', Validators.required],
+        //   receiving_type: ['', Validators.required],
           receiving_qty: ['', Validators.required],
+          order_qty: ['', Validators.required],
           name: '',
           receiving_price: '',
           // is_report: '',
@@ -198,11 +199,18 @@ export class OutsourcedStorageComponent implements OnInit {
 
   CalculOrderAmount (event): void {
       let formData = this.inputForm.value;
-      let f = event.target.id.replace('order_qty', 'receiving_price');
-      let q = this.utils.removeComma(event.target.value) * 1;
-      let p = this.utils.removeComma(formData.price) * 1;
-      let dp = this.utils.addComma(q * p)
-      this.inputForm.controls['receiving_price'].setValue(dp);
+
+      if(parseInt(formData.order_qty)<parseInt(formData.receiving_qty)){
+      alert('입고수량이 발주수량보다 많습니다!');
+      this.inputForm.controls['receiving_qty'].setValue('');
+      this.inputForm.controls['receiving_price'].setValue('');
+      } else {
+        let f = event.target.id.replace('order_qty', 'receiving_price');
+        let q = this.utils.removeComma(event.target.value) * 1;
+        let p = this.utils.removeComma(formData.price) * 1;
+        let dp = this.utils.addComma(q * p)
+        this.inputForm.controls['receiving_price'].setValue(dp);
+      }
   }
 
   Save () {
@@ -212,7 +220,7 @@ export class OutsourcedStorageComponent implements OnInit {
         let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
         let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
   
-        let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+        // let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
   
         let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
   
@@ -220,7 +228,7 @@ export class OutsourcedStorageComponent implements OnInit {
   
       let formData = {
           material_id: formModel.material_id,
-          receiving_type: receiving_type,
+          receiving_type: 1,
           receiving_qty: receiving_qty,
           receiving_price: receiving_price,
           receiving_date: receiving_date,
@@ -329,7 +337,7 @@ export class OutsourcedStorageComponent implements OnInit {
           this.inputForm.controls['receiving_date'].setValue(this.tDate);
 
           // 입고구분
-          this.inputForm.controls['receiving_type'].setValue('1');
+        //   this.inputForm.controls['receiving_type'].setValue('1');
 
 
           // 단조품정보
@@ -350,6 +358,7 @@ export class OutsourcedStorageComponent implements OnInit {
                           size: this.formData.size,
                         //   receiving_qty: this.formData.receiving_qty,
                           price: price,
+                          order_qty: this.formData.order_qty,
                           receiving_location_name: this.formData.receiving_location_name,
                           receiving_location_id: this.formData.receiving_location_id,
                       });
