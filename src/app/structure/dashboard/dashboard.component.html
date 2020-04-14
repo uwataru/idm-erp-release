@@ -55,9 +55,9 @@
                 </tr>
                 <tr>
                     <th>월매출</th>
-                    <td>{{salesRealData[0]/1000 | numberFormat}}</td>
-                    <td>{{salesRealData[1]/1000 | numberFormat}}</td>
-                    <td>{{salesRealData[2]/1000 | numberFormat}}</td>
+                    <td>{{salesRealData[0]| numberFormat}}</td>
+                    <td>{{salesRealData[1] | numberFormat}}</td>
+                    <td>{{salesRealData[2] | numberFormat}}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -70,9 +70,9 @@
                 </tr>
                 <tr>
                     <th>매출누계</th>
-                    <td>{{salesChartData[1]/1000 | numberFormat}}</td>
-                    <td>{{salesChartData[2]/1000 | numberFormat}}</td>
-                    <td>{{salesChartData[3]/1000 | numberFormat}}</td>
+                    <td>{{salesChartData[1] | numberFormat}}</td>
+                    <td>{{salesChartData[2] | numberFormat}}</td>
+                    <td>{{salesChartData[3] | numberFormat}}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -167,7 +167,7 @@
         </div>
         <div class="chart-container">
             <label style="font-size: 20px;">제품별재고현황</label>
-            <span style="float: right; font-size: 20px; font-weight: bold;">2020.04.13</span>
+            <span style="float: right; font-size: 20px; font-weight: bold;">{{tDate}}</span>
             <table class="table table-bordered table-condensed b-light" style="width: 650px;">
                 <tr>
                     <th>제품명</th>
@@ -235,21 +235,6 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                </tr>
-                <tr>
-                    <th>목표</th>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
-                    <td>30</td>
                 </tr>
             </table>
             <canvas baseChart width="650" height="240"

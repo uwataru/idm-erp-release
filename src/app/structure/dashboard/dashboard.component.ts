@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
 
     lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12];
     lineChartData: Array<any> = [
-        { lineTension: 0, data: [], label: '목표(단위:백만)', pointRadius: 3 },
-        { lineTension: 0, data: [], label: '매출(단위:백만)', pointRadius: 3 }
+        { lineTension: 0, data: [], label: '목표(단위:천원)', pointRadius: 3 },
+        { lineTension: 0, data: [], label: '매출(단위:천원)', pointRadius: 3 }
     ];
     lineChartData_2: Array<any> = [
         { lineTension: 0, data: [], label: '불량율', pointRadius: 3 },
@@ -39,9 +39,9 @@ export class DashboardComponent implements OnInit {
         { lineTension: 0, data: [], label: '납품소요기간', pointRadius: 3 },
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
     ];
-    salesTargetChartData = [0,25000000,50000000,75000000,100000000,1250000000,1500000000,1750000000,2000000000,2250000000,2500000000,2750000000,3000000000];
-    salesChartData = [0,27170000,27720000,75000000,96946666,121183333,145420000,169656666,193893333,218130000,242366666,266603333,290840000];
-    salesRealData = [27170000,550000,44990000]
+    salesTargetChartData = [0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000];
+    salesChartData = [0,27170,27720,72710,96947,121183,145420,169657,193893,218130,242367,266603,290840];
+    salesRealData = [27170,550,44990]
     // salesTargetData = [27170000,550000,44990000]
     defectData = [0,2.02,2.01,1.09];
     necessaryPeriodData = [0,43,20,26];
@@ -95,12 +95,13 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.panelTitle = '메인화면';
-        this.salesTarget = 300000000;
-        this.expectedSales = 290840000;
+        this.panelTitle = '종합현황판';
+        this.salesTarget = 300000;
+        this.expectedSales = 290840;
         this.targetAttainmentRate = 97;
 
         this.loadData();
+        this.tDate = this.datePipe.transform(this.tDate, 'yyyy.MM.dd');
     }
 
     loadData() {
@@ -111,7 +112,7 @@ export class DashboardComponent implements OnInit {
             this.lineChartData[0].data[i] = this.salesTargetChartData[i];
             this.lineChartData[1].data[i] = this.salesChartData[i];
             this.lineChartData_2[0].data[i] = this.defectData[i];
-            this.lineChartData_2[1].data[i] = 0.01;
+            this.lineChartData_2[1].data[i] = 1.0;
             this.lineChartData_3[0].data[i] = this.necessaryPeriodData[i];
             this.lineChartData_3[1].data[i] = 30;
         }
