@@ -38,6 +38,7 @@ export function getDatepickerConfig(): BsDatepickerConfig {
         BsDatepickerModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
+        SharedModule,
         RouterModule.forChild(routes)
     ],
     declarations: [
