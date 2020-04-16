@@ -42,17 +42,15 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span></ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="demand_date" name="요구일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
+      <!-- <ngx-datatable-column prop="demand_date" name="요구일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-center"></ngx-datatable-column> -->
       <ngx-datatable-column prop="delivery_date" name="납품일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-center"></ngx-datatable-column>
-      <ngx-datatable-column prop="promised_date" name="약속일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
-                            cellClass="text-center"></ngx-datatable-column>
-      <!-- <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+      <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span></ng-template>
-      </ngx-datatable-column> -->
+      </ngx-datatable-column>
       <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"
                             cellClass="text-right">
@@ -63,16 +61,14 @@
                             [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
-          <span>{{ value | numberFormat }}</span></ng-template>
+          <span *ngIf="value>0">{{ value | numberFormat }}</span>
+          <span *ngIf="0 > value" style="color: red;">{{ value | numberFormat }}</span>
+        </ng-template>
       </ngx-datatable-column>
-      
-<!--      <ngx-datatable-column name="내역" [width]="80" [canAutoResize]="false" [resizeable]="false" cellClass="text-center">-->
-<!--        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">-->
-<!--          <button data-toggle="modal" data-target="#input-form" (click)="openModal(row.poc_no)"-->
-<!--                  class="btn btn-xs btn-primary">내역-->
-<!--          </button>-->
-<!--        </ng-template>-->
-<!--      </ngx-datatable-column>-->
+      <ngx-datatable-column prop="promised_date" name="약속일자" [width]="120" [canAutoResize]="false" [resizeable]="false"
+        cellClass="text-center"></ngx-datatable-column>
+      <ngx-datatable-column prop="remaining_period" name="납기까지남은기간" [width]="120" [canAutoResize]="false" [resizeable]="false"
+        cellClass="text-center"></ngx-datatable-column>
     </ngx-datatable>
   </div>
 
