@@ -42,10 +42,26 @@
             [rowHeight]="30"
             [scrollbarV]="true"
             [scrollbarH]="false"
+            [selected]="selected"
+            [selectionType]="'checkbox'"
+            (select)="onSelect($event)"
+            [selectAllRowsOnPage]="false"
             [summaryRow]="true"
             [summaryPosition]="'bottom'"
             [summaryHeight]="35"
             [messages]="messages">
+            <ngx-datatable-column prop="input_date" [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false" headerClass="checkAll" cellClass="text-center">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/><i></i>
+                    </label>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <label class="i-checks i-checks-sm m-b-none hidden-print">
+                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/><i></i>
+                    </label>
+                </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column prop="input_date" name="납품일자" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_label">
                 <ng-template #total_label let-row="row" let-value="value">
                   <div style="margin-top: 6px; text-align: center"><span><b>합계</b></span></div>

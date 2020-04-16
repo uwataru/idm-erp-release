@@ -40,6 +40,7 @@ export class DeliveryComponent implements OnInit {
     rows = [];
     printMessageTop: string;
     printMessageFoot: string;
+    selected = [];
 
     messages = this.globals.datatableMessages;
 
@@ -126,6 +127,13 @@ export class DeliveryComponent implements OnInit {
     }
     print(){
         this.printFormModal.show();
+    }
+
+    onSelect({ selected }) {
+        console.log('Select Event', selected, this.selected);
+
+        this.selected.splice(0, this.selected.length);
+        this.selected.push(...selected);
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {
