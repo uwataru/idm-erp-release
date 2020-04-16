@@ -32,6 +32,7 @@ export class TotalInventorySituationComponent implements OnInit {
   filteredPartners: any[] = [];
 
   rows = [];
+  ProductsRows = [];
 
   detailsTitle: string;
 
@@ -77,7 +78,9 @@ export class TotalInventorySituationComponent implements OnInit {
 
     this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
     this.searchForm.controls['sch_edate'].setValue(this.tDate);
+    this.tDate = this.datePipe.transform(this.globals.tDate,'yyyy.MM.dd');
     this.getAll();
+    this.getAllProductList();
 
     $(document).ready(function () {
       let modalContent: any = $('.modal-content');
@@ -87,6 +90,27 @@ export class TotalInventorySituationComponent implements OnInit {
         handle: '.modal-header'
       });
     });
+  }
+
+  getAllProductList(): void {
+    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+
+    setTimeout(() => {
+      this.ProductsRows = [];
+      this.isLoadingProgress = true;
+      this.dataService.GetAllProductList().subscribe(
+        data => {
+          this.ProductsRows = data['data'];
+
+          for (let i in this.ProductsRows) {
+            this.ProductsRows[i].not_delivered_qty = this.ProductsRows[i].order_qty - this.ProductsRows[i].delivery_qty;
+            this.ProductsRows[i].short_qty = this.ProductsRows[i].not_delivered_qty - this.ProductsRows[i].current_qty;
+          }
+
+          this.isLoadingProgress = false;
+        }
+      );
+    }, 10);
   }
 
   getAll(): void {

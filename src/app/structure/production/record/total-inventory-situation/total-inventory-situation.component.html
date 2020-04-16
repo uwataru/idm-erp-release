@@ -4,28 +4,71 @@
     <div class="text-center">
       <span class="h4 block m-b-sm">{{ panelTitle }}</span>
     </div>
-    <div class="m-l-xs">
+
+  </div>
+
+  <div class="panel-body">
+    <div style="width: 60%; padding-bottom: 40px;">
+    <span>제품별재고상황</span><span style="float: right;">{{tDate}}</span>
+    <ngx-datatable
+    class="bootstrap"
+    [rows]="ProductsRows"
+    [columnMode]="'force'"
+    [headerHeight]="30"
+    [rowHeight]="30"
+    [messages]="messages">
+    <ngx-datatable-column prop="product_name"name="제품명"></ngx-datatable-column>
+    <ngx-datatable-column prop="order_qty" name="수주수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                          cellClass="text-right">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+        <span>{{ value | numberFormat }}</span></ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="delivery_qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                          cellClass="text-right">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+        <span>{{ value | numberFormat }}</span></ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="not_delivered_qty" name="미납수량" [width]="100" [canAutoResize]="false"
+                          [resizeable]="false"
+                          cellClass="text-right">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+        <span>{{ value | numberFormat }}</span></ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="current_qty" name="제품재고" [width]="100" [canAutoResize]="false"
+                          [resizeable]="false"
+                          cellClass="text-right">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+        <span *ngIf="value>0">{{ value | numberFormat }}</span>
+        <span *ngIf="0 > value" style="color: red;">{{ value | numberFormat }}</span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="short_qty" name="과부족"cellClass="text-right"  [width]="100" [canAutoResize]="false" [resizeable]="false" >
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+        <span *ngIf="0>value">{{ value*-1 | numberFormat }}</span>
+        <span *ngIf="value>0" style="color: red;">{{ value*-1 | numberFormat }}</span>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</div>
+    <div class="m-l-xs" style="padding: 10px;">
       <form [formGroup]="searchForm">
-        <input formControlName="sch_partner_name"
-               [typeahead]="listPartners"
-               typeaheadOptionField="name"
-               [typeaheadOptionsLimit]="50"
-               [typeaheadScrollable]="true"
-               [typeaheadMinLength]="0"
-               (typeaheadOnSelect)="onSelectListPartner($event)"
-               placeholder="거래처명"
-               class="input-sm form-control w-sm inline v-middle"/>
-        <label for="sch_sdate" class="control-label text-sm m-l">기간</label>
+        <label for="sch_sdate" class="control-label text-sm m-l">조회기간</label>
         <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
                class="input-sm form-control w-xs inline v-middle"/> ~
         <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
                class="input-sm form-control w-xs inline v-middle"/>
+        <input formControlName="sch_partner_name"
+        [typeahead]="listPartners"
+        typeaheadOptionField="name"
+        [typeaheadOptionsLimit]="50"
+        [typeaheadScrollable]="true"
+        [typeaheadMinLength]="0"
+        (typeaheadOnSelect)="onSelectListPartner($event)"
+        placeholder="거래처명"
+        class="input-sm form-control w-sm inline v-middle"/>
         <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
       </form>
     </div>
-  </div>
-
-  <div class="panel-body">
     <ngx-datatable
       class="bootstrap"
       [rows]="rows"
@@ -57,7 +100,7 @@
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
           <span>{{ value | numberFormat }}</span></ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column prop="current_qty" name="제품재고" [width]="100" [canAutoResize]="false"
+      <ngx-datatable-column prop="current_qty" name="납품후재고" [width]="100" [canAutoResize]="false"
                             [resizeable]="false"
                             cellClass="text-right">
         <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">

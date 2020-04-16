@@ -14,6 +14,10 @@ export class TotalInventorySituationService {
     private url = this.globals.serverUrl + '/materials/synthesis';
 
     /** GET data from the server */
+    GetAllProductList (): Observable<Item[]> {
+        let currTime = (new Date()).getTime();
+        return this.http.get<Item[]>(this.globals.serverUrl+'/products/synthesis');
+    }
     GetAll (params): Observable<Item[]> {
         let currTime = (new Date()).getTime();
         return this.http.get<Item[]>(this.url + '?t=' + currTime, {params: params});
