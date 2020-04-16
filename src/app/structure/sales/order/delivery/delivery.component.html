@@ -42,30 +42,61 @@
             [rowHeight]="30"
             [scrollbarV]="true"
             [scrollbarH]="false"
-            [virtualization]="false"
+            [summaryRow]="true"
+            [summaryPosition]="'bottom'"
+            [summaryHeight]="35"
             [messages]="messages">
-            <ngx-datatable-column prop="input_date" name="납품일자" [width]="120" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="input_date" name="납품일자" [width]="120" [canAutoResize]="false" [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_label">
+                <ng-template #total_label let-row="row" let-value="value">
+                  <div style="margin-top: 6px; text-align: center"><span><b>합계</b></span></div>
+                </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column prop="partner_name" name="거래처"></ngx-datatable-column>
             <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
             <ngx-datatable-column prop="order_no" name="수주번호" [width]="150" [canAutoResize]="false"
                                   [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
-            <ngx-datatable-column prop="qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
-                                  cellClass="text-right">
+            <ngx-datatable-column prop="order_qty" name="수주수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                                  cellClass="text-right" [summaryTemplate]="total_order_qty">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
+                </ng-template>
+                <ng-template #total_order_qty let-row="row" let-value="value">
+                    <span>{{ listData.total_order_qty | numberFormat }}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="qty" name="납품수량" [width]="100" [canAutoResize]="false" [resizeable]="false"
+                                  cellClass="text-right" [summaryTemplate]="total_delivery_qty">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+                    <span>{{ value | numberFormat }}</span>
+                </ng-template>
+                <ng-template #total_delivery_qty let-row="row" let-value="value">
+                    <span>{{ listData.total_delivery_qty | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column prop="product_price" name="단가" [width]="100" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-right">
+                                  [resizeable]="false" cellClass="text-right" [summaryTemplate]="product_price">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
                 </ng-template>
+                <ng-template #product_price let-row="row" let-value="value">
+                    <span> </span>
+                </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column prop="sales_price" name="금액" [width]="120" [canAutoResize]="false"
-                                  [resizeable]="false" cellClass="text-right">
+            <ngx-datatable-column prop="sales_price" name="납품금액" [width]="120" [canAutoResize]="false"
+                                  [resizeable]="false" cellClass="text-right" [summaryTemplate]="total_sales_price">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
                     <span>{{ value | numberFormat }}</span>
+                </ng-template>
+                <ng-template #total_sales_price let-row="row" let-value="value">
+                    <span>{{ TotalSalesPrice | numberFormat}}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="registration_date" name="수주등록일" [width]="100" [canAutoResize]="false"
+            [resizeable]="false" cellClass="text-center"></ngx-datatable-column>
+            <ngx-datatable-column prop="required_period" name="납품소요기간(일)" [width]="100" [canAutoResize]="false"
+            [resizeable]="false" cellClass="text-center" [summaryTemplate]="total_required_period">
+                <ng-template #total_required_period let-row="row" let-value="value">
+                    <span>{{ listData.total_required_period | numberFormat }}</span>
                 </ng-template>
             </ngx-datatable-column>
         </ngx-datatable>
@@ -83,7 +114,376 @@
                 <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
                     <i class="glyphicon glyphicon-download-alt"></i>엑셀
                 </button>
+                <button class="btn btn-sm btn-info btn-addon" (click)="print()">
+                    <i class="glyphicon glyphicon-print"></i>인쇄
+                </button>
     		</div>
         </div>
 	</footer>
+</div>
+
+<div bsModal #PrintFormModal="bs-modal" id="input-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="PrintFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">인쇄페이지</h4>
+        </div>
+        <div class="modal-body " id="print-target-delivery-modal" style="height: 700px !important; overflow-y: scroll;">
+            <span class="print-color" style="color: blue;">{{printMessageTop}}</span>
+            <table class="print-table print-color" style="text-align: center!important; color: blue; border: 1px solid blue;">
+              <tr>
+                  <td rowspan="2" colspan="12" class="border-bottom-solid font-size-lg" style="padding: 0px;">거래명세표</td>
+                  <td colspan="7">일자</td>
+                  <td colspan="10"></td>
+                  <td colspan="7">No</td>
+                  <td colspan="14"></td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td colspan="10" class="border-bottom-solid" style="padding: 0px;">공급자 연락처</td>
+                  <td colspan="28" class="border-bottom-solid"></td>
+              </tr>
+              <tr>
+                  <td colspan="10"width="15%" style="padding: 0px;">공급자</td>
+                  <td colspan="15"width="35%" style="padding: 0px;"></td>
+                  <td colspan="10"width="15%">공급 받는 자</td>
+                  <td colspan="15"width="35%"></td>
+              </tr>
+              <tr>
+                  <td colspan="4" width="8%">상호</td>
+                  <td colspan="8" width="16%"></td>
+                  <td colspan="4" width="8%">성명</td>
+                  <td colspan="8" width="16%"></td>
+                  <td colspan="1" width="2%">(인)</td>
+                  <td colspan="4" width="8%">상호</td>
+                  <td colspan="8" width="16%"></td>
+                  <td colspan="4" width="8%">성명</td>
+                  <td colspan="8" width="16%"></td>
+                  <td colspan="1" width="2%">(인)</td>
+              </tr>
+              <tr>
+                  <td colspan="8">주소</td>
+                  <td colspan="17"></td>
+                  <td colspan="8">주소</td>
+                  <td colspan="17"></td>
+              </tr>
+              <tr class="border-bottom">
+                  <td colspan="4" width="7%">업태</td>
+                  <td colspan="9" width="18%"></td>
+                  <td colspan="4" width="7%">종목</td>
+                  <td colspan="9" width="18%"></td>
+                  <td colspan="3" width="7%">비고</td>
+                  <td colspan="8" width="17%"></td>
+                  <td colspan="4" width="8%">인수자</td>
+                  <td colspan="9" width="18%"></td>
+              </tr>
+              <tr>
+                  <th colspan="3">월일</th>
+                  <th colspan="10">품명/규격</th>
+                  <th colspan="3">단위</th>
+                  <th colspan="3">수량</th>
+                  <th colspan="5">단가</th>
+                  <th colspan="9">공급가액</th>
+                  <th colspan="9">세액</th>
+                  <th colspan="8">비고/합계</th>
+              </tr>
+              <tr>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="10"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="5"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="10"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="5"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="10"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="5"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="10"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="5"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="10"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="3"></td>
+                  <td class="height" colspan="5"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="9"></td>
+                  <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+              </tr>
+              <tr>
+                  <td colspan="3" class="border-bottom-solid">합계</td>
+                  <td colspan="27" class="border-bottom-solid"></td>
+                  <td colspan="6">전 잔금</td>
+                  <td colspan="14" style="text-align: left;">&#8361;</td>
+              </tr>
+              <tr>
+                  <td colspan="3">메모</td>
+                  <td colspan="27"></td>
+                  <td colspan="6">총 잔금</td>
+                  <td colspan="14" style="text-align: left;">&#8361;</td>
+              </tr>
+            </table>
+          <hr style="border: 0.5px dotted black !important; margin-top: 15px!important; margin-bottom: 15px!important;">
+          <span style="color: red;">{{printMessageFoot}}</span>
+          <table class="print-table print-color page-break" style="text-align: center!important; color: red; border: 1px solid red;">
+            <tr>
+                <td rowspan="2" colspan="12" class="border-bottom-solid font-size-lg">거래명세표</td>
+                <td colspan="7">일자</td>
+                <td colspan="10"></td>
+                <td colspan="7">No</td>
+                <td colspan="14"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="10" class="border-bottom-solid">공급자 연락처</td>
+                <td colspan="28" class="border-bottom-solid"></td>
+            </tr>
+            <tr>
+                <td colspan="10"width="15%">공급자</td>
+                <td colspan="15"width="35%"></td>
+                <td colspan="10"width="15%">공급 받는 자</td>
+                <td colspan="15"width="35%"></td>
+            </tr>
+            <tr>
+                <td colspan="4" width="8%">상호</td>
+                <td colspan="8" width="16%"></td>
+                <td colspan="4" width="8%">성명</td>
+                <td colspan="8" width="16%"></td>
+                <td colspan="1" width="2%">(인)</td>
+                <td colspan="4" width="8%">상호</td>
+                <td colspan="8" width="16%"></td>
+                <td colspan="4" width="8%">성명</td>
+                <td colspan="8" width="16%"></td>
+                <td colspan="1" width="2%">(인)</td>
+            </tr>
+            <tr>
+                <td colspan="8">주소</td>
+                <td colspan="17"></td>
+                <td colspan="8">주소</td>
+                <td colspan="17"></td>
+            </tr>
+            <tr class="border-bottom">
+                <td colspan="4" width="7%">업태</td>
+                <td colspan="9" width="18%"></td>
+                <td colspan="4" width="7%">종목</td>
+                <td colspan="9" width="18%"></td>
+                <td colspan="3" width="7%">비고</td>
+                <td colspan="8" width="17%"></td>
+                <td colspan="4" width="8%">인수자</td>
+                <td colspan="9" width="18%"></td>
+            </tr>
+            <tr>
+                <th colspan="3">월일</th>
+                <th colspan="10">품명/규격</th>
+                <th colspan="3">단위</th>
+                <th colspan="3">수량</th>
+                <th colspan="5">단가</th>
+                <th colspan="9">공급가액</th>
+                <th colspan="9">세액</th>
+                <th colspan="8">비고/합계</th>
+            </tr>
+            <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="10"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="3"></td>
+                <td class="height" colspan="5"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="9"></td>
+                <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="10"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="5"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="10"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="5"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="10"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="5"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="10"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="5"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="10"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="3"></td>
+              <td class="height" colspan="5"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="9"></td>
+              <td class="height" colspan="8"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="border-bottom-solid">합계</td>
+                <td colspan="27" class="border-bottom-solid"></td>
+                <td colspan="6">전 잔금</td>
+                <td colspan="14" style="text-align: left;">&#8361;</td>
+            </tr>
+            <tr>
+                <td colspan="3">메모</td>
+                <td colspan="27"></td>
+                <td colspan="6">총 잔금</td>
+                <td colspan="14" style="text-align: left;">&#8361;</td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="elSrv.readyPrint('print-target-delivery-modal', '', '')" class="btn btn-primary btn-save">인쇄
+            </button>
+            <button type="button" (click)="PrintFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+          </div>
+        </div>
+
+    </div>
+  </div>
 </div>

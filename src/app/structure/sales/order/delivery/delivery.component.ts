@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, ViewChild, ElementRef, ViewEncapsulation } f
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/typeahead-match.class';
 import { DatePipe } from '@angular/common';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { DeliveryService } from './delivery.service';
 import { AppGlobals } from '../../../../app.globals';
 import { UtilsService } from '../../../../utils.service';
@@ -35,7 +36,10 @@ export class DeliveryComponent implements OnInit {
     filteredPartners: any[] = [];
     sch_order_no: string;
     sch_st: number;
+    TotalSalesPrice: number;
     rows = [];
+    printMessageTop: string;
+    printMessageFoot: string;
 
     messages = this.globals.datatableMessages;
 
@@ -48,6 +52,7 @@ export class DeliveryComponent implements OnInit {
     @ViewChild('hideFormClose') hideFormClose: ElementRef;
     @ViewChild('uploadFormClose') uploadFormClose: ElementRef;
     @ViewChild('uploadFileSrc') uploadFileSrc: ElementRef;
+    @ViewChild('PrintFormModal') printFormModal: ModalDirective;
 
     constructor(
         public elSrv: ElectronService,
@@ -67,10 +72,13 @@ export class DeliveryComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '납품명세서';
+        this.printMessageTop = "<공급 받는 자 보관용>";
+        this.printMessageFoot = "<공급자 보관용>";
         this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
         this.searchForm.controls['sch_edate'].setValue(this.tDate);
         this.getAll();
         this.getPaList();
+        this.TotalSalesPrice = 0;
     }
 
     getAll(): void {
@@ -95,7 +103,9 @@ export class DeliveryComponent implements OnInit {
 
                     for (let i = 0; i < this.rows.length; i++) {
                         listData['data'][i].sales_price = listData['data'][i].qty * listData['data'][i].product_price;
+                        this.TotalSalesPrice += listData['data'][i].sales_price;
                     }
+                    console.log(this.TotalSalesPrice);
                     this.isLoadingProgress = false;
                 }
             );
@@ -113,6 +123,9 @@ export class DeliveryComponent implements OnInit {
     onSelectListPartner(event: TypeaheadMatch): void {
         this.searchForm.controls['sch_partner_name'].setValue(event.item['name']);
         this.getAll();
+    }
+    print(){
+        this.printFormModal.show();
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

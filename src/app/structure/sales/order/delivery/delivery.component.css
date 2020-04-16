@@ -18,4 +18,55 @@
     .datatable-row-wrapper {
         page-break-inside: avoid;
     }
+    /* #print-target-delivery-modal{
+        page-break-inside: avoid;
+    } */
+    .print-table{
+        width: 100% !important;
+        border-collapse: unset !important;
+        /* page-break-inside: avoid; */
+    }
+    .print-table .page-break{
+        page-break-inside: avoid;
+    }
+    .print-table .print-color{
+        color: unset!important;
+    }
+
 }
+.print-table{
+    border-collapse: unset;
+    font-size: 10px;
+}
+.print-table .font-size-lg {
+    font-size: 16px;
+    font-weight: bold;
+}
+.print-table th {
+    text-align: center!important;
+    font-weight: unset!important;
+    border-top: 1px solid!important;
+    border-right: 0.5px dotted;
+    border-bottom: 0.5px dotted;
+}
+.print-table .height {
+    height: 25px;
+}
+.border-bottom-solid {
+    border-bottom: 1px solid !important;
+}
+.print-table td{
+    border:0.5px dotted;
+    border-top: none;
+    border-left: none;
+    height: 26px;
+}
+.print-table .border-bottom td, .print-table tr:nth-last-child(1) td{
+    border-bottom: none!important;
+}
+.print-table tr td:nth-last-child(1), .print-table tr th:nth-last-child(1){
+    border-right: none!important;
+}
+
+
+
