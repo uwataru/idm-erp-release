@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '../../../../config.service';
 import { DatePipe } from '@angular/common';
 import { MessageService } from '../../../../message.service';
+import {BsDatepickerConfig, BsDatepickerViewMode} from "ngx-bootstrap/datepicker";
 
 import { Item } from './quality-status.item';
 import { QualityStatusService } from './quality-status.service';
@@ -24,6 +25,7 @@ export class QualityStatusComponent implements OnInit {
   panelTitle: string;
   inputFormTitle: string;
   searchForm: FormGroup;
+  searchProductForm: FormGroup;
   tDate = this.globals.tDate;
   isLoadingProgress: boolean = false;
 
@@ -63,6 +65,11 @@ export class QualityStatusComponent implements OnInit {
   editOkMsg = '수정이 완료되었습니다.';
   delOkMsg = '삭제되었습니다.';
 
+  bsConfig: Partial<BsDatepickerConfig> = Object.assign({}, {
+    minMode : 'month' as BsDatepickerViewMode,
+    dateInputFormat: 'YYYY-MM'
+  });
+
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('ProductsFormModal') ProductsFormModal: ModalDirective;
 
@@ -79,6 +86,9 @@ export class QualityStatusComponent implements OnInit {
       sch_sdate: '',
       sch_edate: '',
     });
+    this.searchProductForm = fb.group({
+      sch_yyMM: '',
+    });
 
   }
 
@@ -88,10 +98,17 @@ export class QualityStatusComponent implements OnInit {
 
     this.searchForm.controls['sch_sdate'].setValue(this.utils.getFirstDate(this.tDate));
     this.searchForm.controls['sch_edate'].setValue(this.tDate);
+    this.searchProductForm.controls['sch_yyMM'].setValue(this.tDate);
 
     this.getAll();
     this.getAllProductList();
   }
+
+  onValueChange(value: Date): void {
+    // console.log(this.searchForm.controls['sch_yearmonth'].value);
+    this.searchProductForm.controls['sch_yyMM'].setValue(value);
+    this.getAllProductList();
+}
 
   getAllProductList(): void {
     document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
@@ -99,13 +116,11 @@ export class QualityStatusComponent implements OnInit {
     setTimeout(() => {
       this.ProductRows = [];
 
-      let formData = this.searchForm.value;
+      let formData = this.searchProductForm.value;
 
       let params = {
-        sch_yearmonth: this.datePipe.transform(formData.sch_sdate, 'yyyy-MM'),
-        order: ['asc'],
-        maxResultCount: 10000
-      }
+          sch_yearmonth: this.datePipe.transform(formData.sch_yyMM, 'yyyy-MM')
+      };
         this.schYM = params.sch_yearmonth;
       this.isLoadingProgress = true;
       this.dataService.GetAllProductList(params).subscribe(

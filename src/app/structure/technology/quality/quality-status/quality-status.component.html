@@ -4,30 +4,21 @@
     <div class="text-center">
       <span class="h4 block m-t-sm">{{ panelTitle }}</span>
     </div>
-    <div class="row">
-      <div class="col-sm-6 m-b-xs">
-        <form [formGroup]="searchForm">
-          <form [formGroup]="searchForm">
-            <label for="sch_sdate" class="control-label text-sm">조회기간</label>
-            <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
-                   class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
-            <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
-                   class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
-            <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
-          </form>
-        </form>
-      </div>
-      <div class="col-sm-6 text-right">
-        <!--
-        <button class="btn btn-sm btn-success btn-addon">
-        <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button>
-        -->
-      </div>
-    </div>
+
   </div>
   <div class="panel-body">
-    <div style="width: 70%; padding-bottom: 5px;">
+    <div class="row">
+      <div class="col-sm-6 m-b-xs">
+        <form [formGroup]="searchProductForm">
+            <label for="sch_yyMM" class="control-label text-sm">조회년월</label>
+            <input type="text" formControlName="sch_yyMM" bsDatepicker [bsConfig]="bsConfig"
+            (bsValueChange)="onValueChange($event)" placement="bottom left"
+                   class="input-sm form-control w-xs inline v-middle" id="sch_yyMM"/>
+            <button (click)="getAllProductList()" class="btn btn-sm btn-default hidden-print">검색</button>
+        </form>
+      </div>
+    </div>
+    <div style="width: 70%; padding-bottom: 20px;">
       <span>제품별불량율</span>
       <ngx-datatable
       [style.height.px]="120"
@@ -71,6 +62,18 @@
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 m-b-xs">
+        <form [formGroup]="searchForm">
+          <label for="sch_sdate" class="control-label text-sm">조회기간</label>
+          <input type="text" formControlName="sch_sdate" bsDatepicker placement="bottom left"
+                 class="input-sm form-control w-xs inline v-middle" id="sch_sdate"/> ~
+          <input type="text" formControlName="sch_edate" bsDatepicker placement="bottom left"
+                 class="input-sm form-control w-xs inline v-middle" id="sch_edate"/>
+          <button (click)="getAll()" class="btn btn-sm btn-default hidden-print">검색</button>
+        </form>
+      </div>
     </div>
     <span>수주별불량율</span>
     <ngx-datatable
