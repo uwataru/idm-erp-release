@@ -19,6 +19,9 @@ export class RawMaterialsService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.globals.serverUrl + '/materials/list/ptype2', {params: params});
     }
+    GetAllGroup (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl + '/materials-orders/group');
+    }
 
     GetPaList (): Observable<Item[]> {
         return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype2');
@@ -27,11 +30,20 @@ export class RawMaterialsService {
     GetMaterialInfo (id:string): Observable<Item> {
         return this.http.get<Item>(this.globals.serverUrl +'/materials/'+ id);
     }
+    GetGroupInfo (id:string): Observable<Item> {
+        return this.http.get<Item>(this.globals.serverUrl +'/materials-orders/group/'+ id);
+    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (data:Item): Observable<Item> {
         return this.http.post<Item>(this.globals.serverUrl +'/materials-orders', data, httpOptions).pipe(
+            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Create'))
+        );
+    }
+    CreateGroup (data:Item): Observable<Item> {
+        return this.http.post<Item>(this.globals.serverUrl +'/materials-orders/group', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

@@ -27,6 +27,7 @@ export class RawMaterialsComponent implements OnInit {
   isEditMode: boolean = false;
 
   searchForm: FormGroup;
+  searchGroupForm: FormGroup;
 
   listData: Item[];
   formData: Item['data'];
@@ -40,6 +41,8 @@ export class RawMaterialsComponent implements OnInit {
   sch_st: number;
   st: number;
   rows = [];
+  groupRows = [];
+  groupInfoRows = [];
   materialRows = [];
   selectedRcvItems = [];
 
@@ -54,15 +57,16 @@ export class RawMaterialsComponent implements OnInit {
 
   inputForm: FormGroup;
   lossForm: FormGroup;
+  groupForm: FormGroup;
   inputPartners: any[] = this.globals.configs['partnerList'];
   locationPartners: any[] = this.globals.configs['partnerList'];
-
+  currTab: number;
   inputMakers: any[] = this.globals.configs['maker'];
   product_price: number;
   isTmpPrice: boolean;
   editData: Item;
   data: Date;
-
+  order_qty:number;
   isExecutable: boolean = false;
   isPrintable: boolean = false;
 
@@ -73,6 +77,7 @@ export class RawMaterialsComponent implements OnInit {
 
   @ViewChild('InputFormModal') inputFormModal: ModalDirective;
   @ViewChild('LossFormModal') lossFormModal: ModalDirective;
+  @ViewChild('GroupFormModal') groupFormModal: ModalDirective;
 
   constructor(
     @Inject(FormBuilder) fb: FormBuilder,
@@ -100,6 +105,9 @@ export class RawMaterialsComponent implements OnInit {
     this.searchForm = fb.group({
       sch_partner_name: '',
     });
+    this.searchGroupForm = fb.group({
+      sch_product_name: '',
+    });
     this.inputForm = fb.group({
       material_id: '',
       input_date: ['', Validators.required],
@@ -120,6 +128,15 @@ export class RawMaterialsComponent implements OnInit {
       size: ['', Validators.required],
       input_date: ['', Validators.required],
       qty: ['', Validators.required],
+    });
+    this.groupForm = fb.group({
+      production_plan_id: ['', Validators.required],
+      order_qty: ['', Validators.required],
+      order_price: ['', Validators.required],
+      input_date: ['', Validators.required],
+      promised_date: ['', Validators.required],
+      receiving_location: ['', Validators.required],
+      receiving_location_id: ['', Validators.required],
     });
 
     // if (this.locationPartners.filter(v => v.id == 0).length < 1) {
@@ -145,14 +162,60 @@ export class RawMaterialsComponent implements OnInit {
     });
   }
 
+  calRowHeight(row) {
+    if (row.height === undefined) {
+      let addHeight = 0;
+      if (row.material.length > 1) {
+        addHeight = (row.material.length - 1) * 21;
+      }
+      return 30 + addHeight;
+    }
+  }
+
+  materialTab(type) {
+
+    if(type == 1) {
+        this.getAllGroup();
+    } else {
+        this.getAll();
+    }
+  }
+
+  getAllGroup(): void {
+    this.currTab = 1;
+    setTimeout(() => {
+      document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    }, 10);
+
+    setTimeout(() => {
+      this.groupRows = [];
+      
+
+      this.isLoadingProgress = true;
+      this.dataService.GetAllGroup().subscribe(
+        listData => {
+          this.listData = listData;
+          this.temp = listData['data'];
+          this.groupRows = listData['data'];
+          this.isLoadingProgress = false;
+        }
+        );
+
+          
+        }, 15);
+  }
+
   getAll(): void {
-    document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    this.currTab = 2;
+    setTimeout(() => {
+      document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+    }, 10);
 
     setTimeout(() => {
       this.selectedId = '';
       this.selected = [];
       this.rows = [];
-
+      
       let formData = this.searchForm.value;
       let params = {
         partner_name: formData.sch_partner_name,
@@ -173,17 +236,18 @@ export class RawMaterialsComponent implements OnInit {
           this.rows = listData['data'];
           this.isLoadingProgress = false;
         }
-      );
-      this.dataService.GetPaList().subscribe(
-        listData => {
-          this.listPartners = listData['data'];
-        }
-      );
-    }, 10);
+        );
+        this.dataService.GetPaList().subscribe(
+          listData => {
+            this.listPartners = listData['data'];
+          }
+          );
+          
+        }, 15);
   }
-
+      
   onSelectListPartner(event: TypeaheadMatch): void {
-    if (event.item['id'] == '') {
+        if (event.item['id'] == '') {
       this.listSltdPaCode = 0;
     } else {
       this.listSltdPaCode = event.item['id'];
@@ -198,11 +262,11 @@ export class RawMaterialsComponent implements OnInit {
 
     // filter data
     const temp = this.temp.filter(function (d) {
-      return d.material.indexOf(val) !== -1 || !val;
+      return d.product_name.indexOf(val) !== -1 || !val;
     });
 
     // update the rows
-    this.rows = temp;
+    this.groupRows = temp;
     // 필터 변경될때마다 항상 첫 페이지로 이동.
     //this.table.offset = 0;
   }
@@ -214,6 +278,23 @@ export class RawMaterialsComponent implements OnInit {
     let p = formData.price * 1;
     let dp = this.utils.addComma(q * p);
     this.inputForm.controls[f].setValue(dp);
+  }
+  CalculOrderAmountGroup(event): void {
+    console.log(this.groupInfoRows[0].qty);
+    let formData = this.groupForm.value;
+    this.order_qty = formData.order_qty;
+    let price = 0;
+    for(let i=0; i<this.groupInfoRows.length; i++){
+      let qty = this.groupInfoRows[i]['qty'] * this.order_qty;
+      let tmp_price = qty * this.groupInfoRows[i]['price'];
+
+      price += tmp_price;
+    }
+    // let f = event.target.id.replace('order_qty', 'order_price');
+    // let q = this.utils.removeComma(event.target.value) * 1;
+    // let p = formData.price * 1;
+    // let dp = this.utils.addComma(q * p);
+    this.groupForm.controls['order_price'].setValue(this.utils.addComma(price));
   }
 
   onValueChange(value: Date): void {
@@ -276,6 +357,33 @@ export class RawMaterialsComponent implements OnInit {
 
     this.Create(formData);
   }
+  SaveGroup() {
+    let formModel = this.groupForm.value;
+
+
+    let input_date = this.datePipe.transform(formModel['input_date'], 'yyyy-MM-dd');
+
+    let production_plan_id = this.utils.removeComma(formModel['production_plan_id']) * 1;
+
+    let order_qty = this.utils.removeComma(formModel['order_qty']) * 1;
+
+    let order_price = this.utils.removeComma(formModel['order_price']) * 1;
+
+    let promised_date = this.datePipe.transform(formModel['promised_date'], 'yyyy-MM-dd');
+
+
+    let formData = {
+      production_plan_id: production_plan_id,
+      order_type: true,
+      order_qty: order_qty,
+      promised_date: promised_date,
+      receiving_location_id: formModel.receiving_location_id,
+      input_date: input_date,
+    };
+
+    console.log(formData);
+    this.CreateGroup(formData);
+  }
 
   Create(data): void {
     this.dataService.Create(data)
@@ -294,7 +402,24 @@ export class RawMaterialsComponent implements OnInit {
       );
   }
 
-  openModal(type) {
+  CreateGroup(data): void {
+    this.dataService.CreateGroup(data)
+      .subscribe(
+        data => {
+          if (data['result'] == 'success') {
+            this.groupForm.reset();
+            this.getAllGroup();
+            this.messageService.add(this.addOkMsg);
+          } else {
+            this.messageService.add(data['errorMessage']);
+          }
+          this.groupFormModal.hide();
+        },
+        error => this.errorMessage = <any>error
+      );
+  }
+
+  openModal(type,id) {
     // 실행권한
     if (this.isExecutable == false) {
       alert(this.globals.isNotExecutable);
@@ -346,6 +471,40 @@ export class RawMaterialsComponent implements OnInit {
         name: this.selectedName,
         size: this.selectedSize,
       });
+    }else {
+      this.groupForm.reset();
+
+      this.order_qty = 10;
+      this.groupFormModal.show();
+
+      this.groupForm.controls['input_date'].setValue(this.tDate);
+      this.groupForm.controls['production_plan_id'].setValue(id);
+      myForm = this.groupForm;
+
+      this.dataService.GetGroupInfo(id).subscribe(
+        editData => {
+          if (editData['result'] == 'success') {
+            this.editData = editData;
+            this.formData = editData['data'];
+            this.groupInfoRows = this.editData['data']['material'];
+            // let price_per_unit = this.utils.addComma(this.formData.order_price);
+            
+            console.log(this.groupInfoRows);
+
+            myForm.patchValue({
+              order_qty: this.order_qty,
+            });
+
+          }
+          this.CalculOrderAmountGroup('');
+        }
+      );
+
+      this.dataService.GetPaList().subscribe(
+      listData => {
+        this.listPartners = listData['data'];
+      }
+      );
     }
 
 
@@ -367,6 +526,13 @@ export class RawMaterialsComponent implements OnInit {
       this.inputForm.controls['receiving_location_id'].setValue('');
     } else {
       this.inputForm.controls['receiving_location_id'].setValue(event.item.id);
+    }
+  }
+  onSelectLocationPartnerGroup(event: TypeaheadMatch): void {
+    if (event.item == '') {
+      this.groupForm.controls['receiving_location_id'].setValue('');
+    } else {
+      this.groupForm.controls['receiving_location_id'].setValue(event.item.id);
     }
   }
 

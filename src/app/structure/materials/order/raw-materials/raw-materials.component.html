@@ -4,8 +4,21 @@
     <div class="text-center">
       <span class="h4 block m-b-sm">{{ panelTitle }}</span>
     </div>
-    <div class="row">
-      <div class="col-sm-8 m-b-xs pos-rlt">
+
+  </div>
+
+  <div class="panel-body">
+    
+    <ul class="nav nav-tabs">
+      <li *ngIf="currTab == 1" class="active"><a (click)="materialTab(1)">제품별그룹발주</a></li>
+      <li *ngIf="currTab != 1"><a (click)="materialTab(1)">제품별그룹발주</a></li>
+
+      <li *ngIf="currTab == 2" class="active"><a (click)="materialTab(2)">개별발주</a></li>
+      <li *ngIf="currTab != 2"><a (click)="materialTab(2)">개별발주</a></li>
+    </ul>
+    <br/>
+    <div class="row" >
+      <div class="col-sm-8 m-b-xs pos-rlt" *ngIf="currTab == 2">
         <form [formGroup]="searchForm">
           <input formControlName="sch_partner_name"
                  [typeahead]="listPartners"
@@ -19,16 +32,73 @@
           <button (click)="getAll()" class="btn btn-sm btn-default">검색</button>
         </form>
       </div>
-      <div class="col-sm-4 text-right">
-        <!-- <button class="btn btn-sm btn-success btn-addon" data-toggle="modal" data-target="#upload-form" (click)="openModal('upload','')">
-        <i class="glyphicon glyphicon-upload"></i>엑셀업로드
-        </button> -->
+      <div class="col-sm-8 m-b-xs" *ngIf="currTab == 1">
+        <form [formGroup]="searchGroupForm">
+          <label for="sch_product_name" class="control-label text-sm">제품명</label>
+          <input type="text" formControlName="sch_product_name" id="sch_product_name" (keyup)="updateFilter($event)" class="input-sm form-control w-sm inline v-middle"/>
+          <button (click)="getAllGroup()" class="btn btn-sm btn-default hidden-print">검색</button>
+        </form>
       </div>
     </div>
-  </div>
+    <br/>
+    <ngx-datatable *ngIf="currTab == 1"
+      [style.height.px]=gridHeight
+      class="bootstrap"
+      [rows]="groupRows"
+      [columnMode]="'force'"
+      [headerHeight]="30"
+      [rowHeight]="calRowHeight"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [messages]="messages">
+      <ngx-datatable-column prop="product_name" name="제품명"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_type" name="규격"></ngx-datatable-column>
+      <ngx-datatable-column prop="product_price" name="제품단가" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                            cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+          <span>{{ value | numberFormat }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="소요자재" prop="">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+            <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+            '3px;' : '0px;', 'margin-left':'10px'}">{{item.name}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Qty" prop=""  [width]="80" [canAutoResize]="false"
+                          [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+          <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+            '3px' : '0px', 'margin-right':'10px' }">{{item.qty}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="자재단가" prop=""  [width]="80" [canAutoResize]="false"
+                          [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+          <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+            '3px' : '0px', 'margin-right':'10px' }">{{item.price}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="재고" prop=""  [width]="80" [canAutoResize]="false"
+                          [resizeable]="false" cellClass="text-right">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row.material">
+          <div *ngFor="let item of row; let index = index;" [ngStyle]="{ 'margin-top' : (index+1 == 1)?
+            '3px' : '0px', 'margin-right':'10px' }">{{item.current_qty}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="id" name="발주" [width]="80" [canAutoResize]="false"
+                            cellClass="text-center">
+        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+          <div>
+            <button (click)="openModal('',value)" class="btn btn-xs btn-primary hidden-print">
+              발주
+            </button>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
 
-  <div class="panel-body">
-    <ngx-datatable
+    <ngx-datatable *ngIf="currTab == 2"
       [style.height.px]=gridHeight
       class="bootstrap"
       [rows]="rows"
@@ -67,11 +137,11 @@
       <div class="col-sm-6 hidden-xs">
 
       </div>
-      <div class="col-sm-6 text-right text-center-xs">
-        <button (click)="openModal('order')" [disabled]="selectedId == ''" class="btn btn-sm btn-primary btn-addon">
+      <div class="col-sm-6 text-right text-center-xs" *ngIf="currTab == 2">
+        <button (click)="openModal('order','')" [disabled]="selectedId == ''" class="btn btn-sm btn-primary btn-addon">
           <i class="glyphicon glyphicon-plus"></i>발주
         </button>
-        <button (click)="openModal('loss')" [disabled]="selectedId == ''" class="btn btn-sm btn-success btn-addon">
+        <button (click)="openModal('loss','')" [disabled]="selectedId == ''" class="btn btn-sm btn-success btn-addon">
           <i class="glyphicon glyphicon-plus"></i>LOSS처리
         </button>
       </div>
@@ -273,6 +343,117 @@
             <button type="button" (click)="Save()" [disabled]="!inputForm.valid" class="btn btn-primary btn-save">완료
             </button>
             <button type="button" (click)="InputFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<div bsModal #GroupFormModal="bs-modal" id="group-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+      <form [formGroup]="groupForm">
+        <input type="hidden" formControlName="production_plan_id" id="production_plan_id"/>
+        <div class="modal-header">
+          <button type="button" class="close" (click)="InputFormModal.hide()"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{ inputFormTitle }}</h4>
+        </div>
+        <div class="modal-body" style="max-height: 700px !important; overflow-y: scroll;">
+          <table>
+            <tr>
+              <th width="100px">
+                <label for="input_date">
+                  발주일자 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="input_date" id="input_date" bsDatepicker
+                       placement="bottom left" nextFocus="order_weight1" class="form-control w-sm"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="order_qty">
+                  주문수량 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="order_qty" id="order_qty"
+                       (blur)="CalculOrderAmountGroup($event)"
+                       class="form-control w-sm text-right"/>
+              </td>
+              <th width="100px">
+                <label for="order_price">
+                  주문금액
+                </label>
+              </th>
+              <td>
+                <input type="text" formControlName="order_price" id="order_price" nextFocus="rcv_request_date1"
+                       class="form-control w-sm text-right"/>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <label for="promised_date">
+                  입고요구일 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>  
+              <td>
+                <input type="text" formControlName="promised_date" id="promised_date" bsDatepicker
+                       placement="bottom left" nextFocus="rcv_location1" class="form-control w-sm"/>
+              </td>
+              <th>
+                <label for="receiving_location">
+                  입고장소 <span class="text-xs text-danger glyphicon glyphicon-asterisk"></span>
+                </label>
+              </th>  
+              <td>
+                <input formControlName="receiving_location" id="receiving_location"
+                       [typeahead]="locationPartners"
+                       typeaheadOptionField="name"
+                       [typeaheadOptionsLimit]="50"
+                       [typeaheadScrollable]="true"
+                       [typeaheadMinLength]="0"
+                       (typeaheadOnSelect)="onSelectLocationPartnerGroup($event)"
+                       placeholder="거래처명"
+                       autocomplete="off"
+                       class="form-control w-sm"/>
+                <input type="hidden" formControlName="receiving_location_id" id="receiving_location_id"/>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <ngx-datatable
+          [style.height.px]=gridHeight-200
+          class="bootstrap"
+          [rows]="groupInfoRows"
+          [columnMode]="'force'"
+          [headerHeight]="30"
+          [rowHeight]="30"
+          [scrollbarV]="true"
+          [scrollbarH]="false"
+          [messages]="messages">
+          <ngx-datatable-column prop="name" name="자재명"></ngx-datatable-column>
+          <ngx-datatable-column prop="size" name="규격"></ngx-datatable-column>
+          <!-- <ngx-datatable-column prop="price" name="가격" [width]="0px" ></ngx-datatable-column> -->
+          <ngx-datatable-column prop="qty" name="주문수량" [width]="120" [canAutoResize]="false" [resizeable]="false"
+                                cellClass="text-right">
+            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value">
+              <span>{{ value*order_qty | numberFormat }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center">
+            <button type="button" (click)="SaveGroup()" [disabled]="!groupForm.valid" class="btn btn-primary btn-save">완료
+            </button>
+            <button type="button" (click)="GroupFormModal.hide()" class="btn btn-primary btn-cancel">취소</button>
           </div>
         </div>
       </form>
