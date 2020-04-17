@@ -19,6 +19,12 @@ export class QualityStatusService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url, {params: params});
     }
+    GetAllProductList (params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/products/quality', {params: params});
+    }
+    GetAllProductListDetail (id,params): Observable<Item[]> {
+        return this.http.get<Item[]>(this.globals.serverUrl+'/products/quality/'+id, {params: params});
+    }
 
     GetById (id:number): Observable<Item> {
         return this.http.get<Item>(this.url+'/'+id);
