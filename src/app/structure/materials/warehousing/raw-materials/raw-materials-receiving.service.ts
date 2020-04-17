@@ -20,6 +20,9 @@ export class RawMaterialsReceivingService {
     GetAll (params): Observable<Item[]> {
         return this.http.get<Item[]>(this.url+'/receiving-processing-list/Y');
     }
+    GetAllGroup (): Observable<Item[]> {
+        return this.http.get<Item[]>(this.url+'/group-receiving-processing-list');
+    }
 
     GetPaList (): Observable<Item[]> {
         return this.http.get<Item[]>(this.globals.serverUrl+ '/partners/search?ptype=ptype2');
@@ -32,11 +35,20 @@ export class RawMaterialsReceivingService {
     GetById (id): Observable<Item> {
         return this.http.get<Item>(this.url + '/' + id);
     }
+    GetByIdGroup (id): Observable<Item> {
+        return this.http.get<Item>(this.url + '/group-receiving-processing-list/' + id);
+    }
 
     //======= 저장 =======//
     /** POST: 데이터 추가 */
     Create (id,data:Item): Observable<Item> {
         return this.http.put<Item>(this.url+'/receiving-processing/'+id, data, httpOptions).pipe(
+            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Create'))
+        );
+    }
+    CreateGroup (id,data:Item): Observable<Item> {
+        return this.http.put<Item>(this.url+'/group-receiving-processing/'+id, data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

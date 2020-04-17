@@ -47,18 +47,21 @@ export class RawMaterialsReceivingComponent implements OnInit {
     sch_st: number;
     st: number;
     rows = [];
+    groupRows = [];
+    groupInfoRows = [];
     delId = [];
     gridHeight = this.globals.gridHeight;
     messages = this.globals.datatableMessages;
+    currTab: number;
 
     inputForm: FormGroup;
+    groupForm: FormGroup;
     inputPartners: any[] = this.globals.configs['partnerList'];
     storagePartners: any[] = this.globals.configs['partnerList'];
     inputMakers: any[] = this.globals.configs['maker'];
     receiving_qty: number;
     editData: Item;
     data: Date;
-
     isExecutable: boolean = false;
     isPrintable: boolean = false;
 
@@ -68,6 +71,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
     delOkMsg = '삭제되었습니다.';
 
     @ViewChild('InputFormModal') inputFormModal: ModalDirective;
+    @ViewChild('GroupFormModal') groupFormModal: ModalDirective;
     @ViewChild('StatusFormModal') statusFormModal: ModalDirective;
 
     constructor(
@@ -117,6 +121,15 @@ export class RawMaterialsReceivingComponent implements OnInit {
             receiving_location_name: ['', Validators.required],
             receiving_location_id: ['', Validators.required],
         });
+        this.groupForm = fb.group({
+            receiving_date: ['', Validators.required],
+            id: ['', Validators.required],
+            receiving_qty: ['', Validators.required],
+            order_qty: ['', Validators.required],
+            receiving_price: '',
+            receiving_location_name: ['', Validators.required],
+            receiving_location_id: ['', Validators.required],
+        });
 
 
         // if( this.storagePartners.filter(v => v.Code == 0).length < 1 ) {
@@ -141,6 +154,15 @@ export class RawMaterialsReceivingComponent implements OnInit {
         });
     }
 
+    materialTab(type) {
+
+        if(type == 1) {
+            this.getAllGroup();
+        } else {
+            this.getAll();
+        }
+      }
+
     getPaList(){
         this.dataService.GetPaList().subscribe(
             listData => {
@@ -149,7 +171,43 @@ export class RawMaterialsReceivingComponent implements OnInit {
           );
     }
 
+    getAllGroup(): void {
+        this.currTab = 1;
+        setTimeout(() => {
+          document.getElementsByTagName('datatable-body')[0].scrollTop = 1;
+        }, 10);
+    
+        setTimeout(() => {
+          this.groupRows = [];
+          
+    
+          this.isLoadingProgress = true;
+          this.dataService.GetAllGroup().subscribe(
+            listData => {
+              this.listData = listData;
+            //   this.temp = listData['data'];
+              this.groupRows = listData['data'];
+              this.isLoadingProgress = false;
+            }
+            );
+    
+              
+            }, 15);
+    }
+
+    calRowHeight(row) {
+        if (row.height === undefined) {
+          let addHeight = 0;
+          if (row.material.length > 1) {
+            addHeight = (row.material.length - 1) * 21;
+          }
+          return 30 + addHeight;
+        }
+    }
+
     getAll(): void {
+        this.currTab = 2;
+
         this.selectedCnt = 0;
         this.selectedId = '';
         this.selected = [];
@@ -209,6 +267,28 @@ export class RawMaterialsReceivingComponent implements OnInit {
             this.inputForm.controls['receiving_price'].setValue(dp);
         }
     }
+    CalculOrderAmountGroup (event): void {
+        let formData = this.groupForm.value;
+        if(parseInt(formData.order_qty)<parseInt(formData.receiving_qty)){
+            alert('입고수량이 발주수량보다 많습니다!');
+            this.inputForm.controls['receiving_qty'].setValue('');
+            this.inputForm.controls['receiving_price'].setValue('');
+
+        }else{
+            console.log(this.groupInfoRows[0].qty);
+            let formData = this.groupForm.value;
+            this.receiving_qty = formData.receiving_qty;
+            let price = 0;
+            for(let i=0; i<this.groupInfoRows.length; i++){
+              let qty = this.groupInfoRows[i]['qty'] * this.receiving_qty;
+              let tmp_price = qty * this.groupInfoRows[i]['price'];
+        
+              price += tmp_price;
+            }
+            
+            this.groupForm.controls['receiving_price'].setValue(this.utils.addComma(price));
+        }
+    }
 
     Save () {
         let formModel = this.inputForm.value;
@@ -238,7 +318,44 @@ export class RawMaterialsReceivingComponent implements OnInit {
         this.Create(this.selectedId,formData);
         // console.log(this.selectedId,formData);
     }
+    SaveGroup() {
+        let formModel = this.groupForm.value;
+    
+        let receiving_price = this.utils.removeComma(formModel['receiving_price']) * 1;
+        let receiving_qty = this.utils.removeComma(formModel['receiving_qty']) * 1;
 
+        // let receiving_type = this.utils.removeComma(formModel['receiving_type']) * 1;
+
+        let receiving_date = this.datePipe.transform(formModel['receiving_date'], 'yyyy-MM-dd');
+
+        let formData = {
+            receiving_type: 1,
+            receiving_qty: receiving_qty,
+            receiving_price: receiving_price,
+            receiving_date: receiving_date,
+            receiving_location_id: formModel.receiving_location_id
+        };
+
+        console.log(formModel.id,formData);
+        this.CreateGroup(formModel.id,formData);
+    }
+
+    CreateGroup(id,data): void {
+        this.dataService.CreateGroup(id,data)
+            .subscribe(
+                data => {
+                    if (data['result'] == "success") {
+                        this.groupForm.reset();
+                        this.getAllGroup();
+                        this.messageService.add(this.addOkMsg);
+                    } else {
+                        this.messageService.add(data['errorMessage']);
+                    }
+                    this.groupFormModal.hide();
+                },
+                error => this.errorMessage = <any>error
+            );
+    }
     Create (id,data): void {
         this.dataService.Create(id,data)
             .subscribe(
@@ -286,7 +403,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
         );
     }
 
-    openModal(method) {
+    openModal(method ,id) {
         // 실행권한
         if (this.isExecutable == true) {
             if (method == 'receiving') {
@@ -308,6 +425,8 @@ export class RawMaterialsReceivingComponent implements OnInit {
                     // }
                 // );
 
+            }else{
+                this.groupFormModal.show();
             }
         } else {
             alert(this.globals.isNotExecutable);
@@ -317,7 +436,7 @@ export class RawMaterialsReceivingComponent implements OnInit {
          if(method == 'cancel') {
             this.statusFormTitle = '입고 취소';
             this.statusConfirmMsg = '선택하신 데이터를 취소하시겠습니까?';
-        } else {
+        } else if(method == 'receiving') {
 
             // 입력폼 리셋
             this.inputForm.reset();
@@ -357,6 +476,41 @@ export class RawMaterialsReceivingComponent implements OnInit {
                         console.log(this.inputForm.value['material_id']);
                         console.log("order_qty",this.inputForm.controls['order_qty'].value);
                     }
+                }
+            );
+        }else {
+            this.groupInfoRows = [];
+            this.groupForm.reset();
+            // 주문 ID
+            this.groupForm.controls['id'].setValue(id);
+
+            // 입력일
+            this.groupForm.controls['receiving_date'].setValue(this.tDate);
+
+            this.receiving_qty = 10;
+
+
+            // 단조품정보
+            this.dataService.GetByIdGroup(id).subscribe(
+                editData =>
+                {
+                    if (editData['result'] == "success") {
+                        this.editData = editData;
+                        this.formData = editData['data'];
+                        this.groupInfoRows = this.editData['data']['material'];
+
+                        // let receiving_price = this.utils.addComma(this.formData.receiving_price);
+                        this.groupForm.patchValue({
+                            order_qty: this.formData.order_qty,
+                            receiving_qty: this.receiving_qty,
+                            // receiving_price: receiving_price,
+                            receiving_location_name: this.formData.receiving_location_name,
+                            receiving_location_id: this.formData.receiving_location_id,
+                        });
+
+                        console.log("order_qty",this.groupForm.controls['order_qty'].value);
+                    }
+                    this.CalculOrderAmountGroup('');
                 }
             );
         }
