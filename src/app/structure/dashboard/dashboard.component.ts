@@ -32,12 +32,12 @@ export class DashboardComponent implements OnInit {
         { lineTension: 0, data: [], label: '매출(단위:천원)', pointRadius: 3 }
     ];
     lineChartData_2: Array<any> = [
-        { lineTension: 0, data: [], label: '불량율', pointRadius: 3 },
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
+        { lineTension: 0, data: [], label: '불량율', pointRadius: 3 },
     ];
     lineChartData_3: Array<any> = [
-        { lineTension: 0, data: [], label: '납품소요기간', pointRadius: 3 },
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
+        { lineTension: 0, data: [], label: '납품소요기간', pointRadius: 3 },
     ];
     salesTargetChartData = [0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000];
     salesChartData = [0,27170,27720,72710,96947,121183,145420,169657,193893,218130,242367,266603,290840];
@@ -111,10 +111,10 @@ export class DashboardComponent implements OnInit {
         for (let i = 0; i < this.lineChartLabels.length; i++) {
             this.lineChartData[0].data[i] = this.salesTargetChartData[i];
             this.lineChartData[1].data[i] = this.salesChartData[i];
-            this.lineChartData_2[0].data[i] = this.defectData[i];
-            this.lineChartData_2[1].data[i] = 1.0;
-            this.lineChartData_3[0].data[i] = this.necessaryPeriodData[i];
-            this.lineChartData_3[1].data[i] = 30;
+            this.lineChartData_2[1].data[i] = this.defectData[i];
+            this.lineChartData_2[0].data[i] = 1.0;
+            this.lineChartData_3[1].data[i] = this.necessaryPeriodData[i];
+            this.lineChartData_3[0].data[i] = 30;
         }
 
         setTimeout(() => {
