@@ -42,6 +42,8 @@ export class DeliveryComponent implements OnInit {
     printMessageFoot: string;
     selected = [];
 
+    addOkMsg = '완료되었습니다';
+
     messages = this.globals.datatableMessages;
 
     errorMessage: string;
@@ -134,6 +136,32 @@ export class DeliveryComponent implements OnInit {
 
         this.selected.splice(0, this.selected.length);
         this.selected.push(...selected);
+    }
+
+    statement(){
+        let statment_id ='';
+        for(let i=0; i<this.selected.length; i++){
+            if(i == 0){
+                statment_id += this.selected[i].id;
+            }else{
+                statment_id += ','+this.selected[i].id;
+            }
+        }
+        this.Create(statment_id);
+        console.log('statement',this.selected, statment_id);
+        this.elSrv.readyPrint('print-target-delivery-modal', '', '');
+    }
+    
+    Create(data){
+        this.dataService.statement(data).subscribe(data =>{
+            if (data['result'] == "success") {
+                this.getAll();
+                this.messageService.add(this.addOkMsg);
+            } else {
+                this.messageService.add(data['errorMessage']);
+            }
+            this.printFormModal.hide();
+        })
     }
 
     exportExcel(type: EXPORT_EXCEL_MODE, fileName: string = '') {

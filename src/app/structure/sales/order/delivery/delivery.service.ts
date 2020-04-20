@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Item } from './delivery.item';
 import { AppGlobals } from '../../../../app.globals';
+const httpOptions = {};
 
 @Injectable()
 export class DeliveryService {
@@ -23,6 +25,14 @@ export class DeliveryService {
         return this.http.get<Item[]>(this.globals.serverUrl+'/partners/search?ptype=nptype2');
     }
 
+    // postData
+    statement (data): Observable<Item> {
+        return this.http.post<Item>(this.globals.serverUrl+'/sales/delivery/statement', data, httpOptions).pipe(
+            tap((data: Item) => this.log(`added data w/ id=${data}`)),
+            catchError(this.handleError<Item>('Create'))
+        );
+    }
+
    /**
     * Handle Http operation that failed.
     * Let the app continue.
@@ -41,5 +51,10 @@ export class DeliveryService {
             // Let the app keep running by returning an empty result.
             return of(result as T);
         };
+    }
+
+    private log(message: string) {
+        console.log(message);
+        //this.messageService.add('오류: ' + message);
     }
 }
