@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'; 
+import { NgModule } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -34,25 +34,25 @@ import { TrialBalanceComponent } from './balance/trial-balance/trial-balance.com
 
 export const routes: Routes = [
     { path: '', redirectTo: 'slips/common-slips', pathMatch: 'full', canActivate: [AuthGuard] },
-    { path: 'slips/common-slips', component: SlipsComponent, data: { title: '관리/회계 > 일반전표입력', id:146 }, canActivate: [AuthGuard] },
-    { path: 'slips/expendables-slips', component: ExpendablesSlipsComponent, data: { title: '자재/외주 > 소모품입고전표처리', id:137 }, canActivate: [AuthGuard] },
-    { path: 'slips/create-materials-vat-slips', component: MaterialsVatSlipsComponent, data: { title: '관리/회계 > 원자재부가세전표처리', id:147 }, canActivate: [AuthGuard] },
-    { path: 'slips/create-expendables-vat-slips', component: ExpendablesVatSlipsComponent, data: { title: '관리/회계 > 소모품부가세전표처리', id:148 }, canActivate: [AuthGuard] },
-    { path: 'slips/create-outsourcing-vat-slips', component: OutsourcingVatSlipsComponent, data: { title: '관리/회계 > 외주부가세전표처리', id:149 }, canActivate: [AuthGuard] },
-    { path: 'slips/create-sales-vat-slips', component: SalesVatSlipsComponent, data: { title: '관리/회계 > 판매부가세전표처리', id:150 }, canActivate: [AuthGuard] },
-    { path: 'slips/slips-approval', component: SlipsApprovalComponent, data: { title: '관리/회계 > 전표결재', id:151 }, canActivate: [AuthGuard] },
-    { path: 'closing/accounting-closing', component: AccountingClosingComponent, data: { title: '관리/회계 > 마감작업', id:152 }, canActivate: [AuthGuard] },
-    { path: 'closing/payment-plan', component: PaymentPlanComponent, data: { title: '관리/회계 > 지불계획서', id:152 }, canActivate: [AuthGuard] },
-    { path: 'ledger/account-ledger', component: AccountLedgerComponent, data: { title: '관리/회계 > 계정별원장', id:153 }, canActivate: [AuthGuard] },
-    { path: 'aggregation/monthly-sum-by-account', component: MonthlySumByAccountComponent, data: { title: '관리/회계 > 계정별월집계', id:154 }, canActivate: [AuthGuard] },
-    { path: 'ledger/general-ledger', component: GeneralLedgerComponent, data: { title: '관리/회계 > 총계정원장', id:155 }, canActivate: [AuthGuard] },
-    { path: 'ledger/man-items-ledger', component: ManItemsLedgerComponent, data: { title: '관리/회계 > 관리내역별원장', id:156 }, canActivate: [AuthGuard] },
-    { path: 'aggregation/monthly-sum-by-man-items', component: MonthlySumByManItemsComponent, data: { title: '관리/회계 > 관리내역별월집계', id:157 }, canActivate: [AuthGuard] },
-    { path: 'balance/balance-by-man-items', component: BalanceByManItemsComponent, data: { title: '관리/회계 > 관리내역별잔액', id:158 }, canActivate: [AuthGuard] },
-    { path: 'notes/payable-notes', component: PayableNotesComponent, data: { title: '관리/회계 > 지급어음명세서', id:159 }, canActivate: [AuthGuard] },
-    { path: 'notes/receivable-notes', component: ReceivableNotesComponent, data: { title: '관리/회계 > 받을어음명세서', id:160 }, canActivate: [AuthGuard] },
-    { path: 'aggregation/vat-sum', component: VatSumComponent, data: { title: '관리/회계 > 부가세집계표', id:161 }, canActivate: [AuthGuard] },
-    { path: 'balance/trial-balance', component: TrialBalanceComponent, data: { title: '관리/회계 > 시산표', id:162 }, canActivate: [AuthGuard] },
+    { path: 'slips/common-slips', component: SlipsComponent, data: { title: '관리/회계 > 일반전표입력', id:64 }, canActivate: [AuthGuard] },
+    { path: 'slips/expendables-slips', component: ExpendablesSlipsComponent, data: { title: '자재/외주 > 소모품입고전표처리', id:65 }, canActivate: [AuthGuard] },
+    { path: 'slips/create-materials-vat-slips', component: MaterialsVatSlipsComponent, data: { title: '관리/회계 > 원자재부가세전표처리', id:66 }, canActivate: [AuthGuard] },
+    { path: 'slips/create-expendables-vat-slips', component: ExpendablesVatSlipsComponent, data: { title: '관리/회계 > 소모품부가세전표처리', id:67 }, canActivate: [AuthGuard] },
+    { path: 'slips/create-outsourcing-vat-slips', component: OutsourcingVatSlipsComponent, data: { title: '관리/회계 > 외주부가세전표처리', id:68 }, canActivate: [AuthGuard] },
+    { path: 'slips/create-sales-vat-slips', component: SalesVatSlipsComponent, data: { title: '관리/회계 > 판매부가세전표처리', id:69 }, canActivate: [AuthGuard] },
+    { path: 'slips/slips-approval', component: SlipsApprovalComponent, data: { title: '관리/회계 > 전표결재', id:70 }, canActivate: [AuthGuard] },
+    { path: 'closing/accounting-closing', component: AccountingClosingComponent, data: { title: '관리/회계 > 마감작업', id:71 }, canActivate: [AuthGuard] },
+    { path: 'closing/payment-plan', component: PaymentPlanComponent, data: { title: '관리/회계 > 지불계획서', id:72 }, canActivate: [AuthGuard] },
+    { path: 'ledger/account-ledger', component: AccountLedgerComponent, data: { title: '관리/회계 > 계정별원장', id:73 }, canActivate: [AuthGuard] },
+    { path: 'aggregation/monthly-sum-by-account', component: MonthlySumByAccountComponent, data: { title: '관리/회계 > 계정별월집계', id:74 }, canActivate: [AuthGuard] },
+    { path: 'ledger/general-ledger', component: GeneralLedgerComponent, data: { title: '관리/회계 > 총계정원장', id:75 }, canActivate: [AuthGuard] },
+    { path: 'ledger/man-items-ledger', component: ManItemsLedgerComponent, data: { title: '관리/회계 > 관리내역별원장', id:76 }, canActivate: [AuthGuard] },
+    { path: 'aggregation/monthly-sum-by-man-items', component: MonthlySumByManItemsComponent, data: { title: '관리/회계 > 관리내역별월집계', id:77 }, canActivate: [AuthGuard] },
+    { path: 'balance/balance-by-man-items', component: BalanceByManItemsComponent, data: { title: '관리/회계 > 관리내역별잔액', id:78 }, canActivate: [AuthGuard] },
+    { path: 'notes/payable-notes', component: PayableNotesComponent, data: { title: '관리/회계 > 지급어음명세서', id:79 }, canActivate: [AuthGuard] },
+    { path: 'notes/receivable-notes', component: ReceivableNotesComponent, data: { title: '관리/회계 > 받을어음명세서', id:80 }, canActivate: [AuthGuard] },
+    { path: 'aggregation/vat-sum', component: VatSumComponent, data: { title: '관리/회계 > 부가세집계표', id:81 }, canActivate: [AuthGuard] },
+    { path: 'balance/trial-balance', component: TrialBalanceComponent, data: { title: '관리/회계 > 시산표', id:82 }, canActivate: [AuthGuard] },
 ];
 
 // Datepicker Config
