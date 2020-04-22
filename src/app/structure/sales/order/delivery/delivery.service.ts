@@ -26,8 +26,8 @@ export class DeliveryService {
     }
 
     // postData
-    statement (data): Observable<Item> {
-        return this.http.post<Item>(this.globals.serverUrl+'/sales/delivery/statement', data, httpOptions).pipe(
+    statement (data): Observable<Item[]> {
+        return this.http.post<Item[]>(this.globals.serverUrl+'/sales/delivery/statement', data, httpOptions).pipe(
             tap((data: Item) => this.log(`added data w/ id=${data}`)),
             catchError(this.handleError<Item>('Create'))
         );

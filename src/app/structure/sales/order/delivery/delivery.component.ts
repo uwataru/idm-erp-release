@@ -11,6 +11,7 @@ import { Item } from './delivery.item';
 import { ElectronService, EXPORT_EXCEL_MODE } from "../../../../providers/electron.service";
 import { Alignment, Border, Borders, Fill, Font, Workbook } from "exceljs";
 import { saveAs as importedSaveAs } from "file-saver";
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
     selector: 'app-page',
@@ -25,6 +26,7 @@ export class DeliveryComponent implements OnInit {
     isLoadingProgress: boolean = false;
 
     searchForm: FormGroup;
+    printForm: FormGroup;
 
     listData: Item[];
     formData: Item['data'];
@@ -38,11 +40,16 @@ export class DeliveryComponent implements OnInit {
     sch_st: number;
     TotalSalesPrice: number;
     rows = [];
+    prints = [];
+    nullItem = 0;
+    nullItems = [];
     printMessageTop: string;
     printMessageFoot: string;
     selected = [];
 
     addOkMsg = '완료되었습니다';
+
+
 
     messages = this.globals.datatableMessages;
 
@@ -128,6 +135,22 @@ export class DeliveryComponent implements OnInit {
         this.getAll();
     }
     print(){
+        this.nullItem = 0;
+        this.nullItems = [];
+        let statment_id ='';
+        for(let i=0; i<this.selected.length; i++){
+            if(i == 0){
+                statment_id += this.selected[i].id;
+            }else{
+                statment_id += ','+this.selected[i].id;
+            }
+        }
+        let data = {
+            id: statment_id
+        }
+        this.Create(data);
+        console.log('statement',this.selected, statment_id);
+        
         this.printFormModal.show();
     }
 
@@ -139,28 +162,35 @@ export class DeliveryComponent implements OnInit {
     }
 
     statement(){
-        let statment_id ='';
-        for(let i=0; i<this.selected.length; i++){
-            if(i == 0){
-                statment_id += this.selected[i].id;
-            }else{
-                statment_id += ','+this.selected[i].id;
-            }
-        }
-        this.Create(statment_id);
-        console.log('statement',this.selected, statment_id);
+
         this.elSrv.readyPrint('print-target-delivery-modal', '', '');
     }
     
     Create(data){
         this.dataService.statement(data).subscribe(data =>{
             if (data['result'] == "success") {
+                this.prints = data['data'];
+                console.log('PrintData',this.prints);
+                for(let j = this.prints.length-1; j>=0; j--){
+                // console.log(j)
+                    if(this.prints[j].item.length<10){
+                        this.nullItem = 10- this.prints[j]['item'].length;
+                        console.log(this.nullItem);
+                        this.nullItems = [];
+                        for(let i=0; i<this.nullItem; i++){
+                            console.log(i);
+                            this.nullItems[i] = '';
+                        }
+                        // console.log(this.nullItems);
+                    }
+                }
+                
                 this.getAll();
                 this.messageService.add(this.addOkMsg);
             } else {
                 this.messageService.add(data['errorMessage']);
             }
-            this.printFormModal.hide();
+            // this.printFormModal.hide();
         })
     }
 

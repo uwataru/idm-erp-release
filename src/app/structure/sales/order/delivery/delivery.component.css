@@ -23,12 +23,21 @@
     } */
     .print-table{
         width: 100% !important;
+        height: 45%!important;
         border-collapse: unset !important;
         /* page-break-inside: avoid; */
     }
-    .print-table .page-break{
-        page-break-inside: avoid;
+    /* .page-break{
+        page-break-after: always;
+    } */
+    /* .print-table .page-break-before{
+        page-break-before: always;
+    } */
+
+    .print_size {
+        page-break-after: avoid;
     }
+    
     .print-table .print-color{
         color: unset!important;
     }
@@ -37,6 +46,7 @@
 .print-table{
     border-collapse: unset;
     font-size: 10px;
+    height: 40%!important;
 }
 .print-table .font-size-lg {
     font-size: 16px;
