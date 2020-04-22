@@ -190,10 +190,14 @@ th {
 }
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
+  *:not(.print-color),
+  *:before:not(.print-color),
+  *:after:not(.print-color) {
+    color: #000 !important;
+  }
   *,
   *:before,
   *:after {
-    color: #000 !important;
     text-shadow: none !important;
     background: transparent !important;
     -webkit-box-shadow: none !important;
