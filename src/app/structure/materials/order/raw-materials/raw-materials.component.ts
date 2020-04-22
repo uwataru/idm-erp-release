@@ -501,11 +501,15 @@ export class RawMaterialsComponent implements OnInit {
       );
 
       this.dataService.GetPaList().subscribe(
-      listData => {
-        this.listPartners = listData['data'];
-      }
+        listData => {
+          this.listPartners = listData['data'];
+        }
       );
-    }
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 250);
+  }
+
 
 
   }
