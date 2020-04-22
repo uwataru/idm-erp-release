@@ -487,9 +487,8 @@ export class RawMaterialsReceivingComponent implements OnInit {
             // 입력일
             this.groupForm.controls['receiving_date'].setValue(this.tDate);
 
-            this.receiving_qty = 10;
-
-
+            
+            
             // 단조품정보
             this.dataService.GetByIdGroup(id).subscribe(
                 editData =>
@@ -498,21 +497,25 @@ export class RawMaterialsReceivingComponent implements OnInit {
                         this.editData = editData;
                         this.formData = editData['data'];
                         this.groupInfoRows = this.editData['data']['material'];
-
+                        
                         // let receiving_price = this.utils.addComma(this.formData.receiving_price);
                         this.groupForm.patchValue({
                             order_qty: this.formData.order_qty,
-                            receiving_qty: this.receiving_qty,
+                            receiving_qty: this.formData.order_qty,
                             // receiving_price: receiving_price,
                             receiving_location_name: this.formData.receiving_location_name,
                             receiving_location_id: this.formData.receiving_location_id,
                         });
-
+                        
                         console.log("order_qty",this.groupForm.controls['order_qty'].value);
                     }
+                    this.receiving_qty = this.formData.order_qty;
                     this.CalculOrderAmountGroup('');
                 }
-            );
+                );
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+            }, 250)
         }
     }
 
