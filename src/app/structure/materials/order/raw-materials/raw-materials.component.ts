@@ -474,13 +474,12 @@ export class RawMaterialsComponent implements OnInit {
     }else {
       this.groupForm.reset();
 
-      this.order_qty = 10;
       this.groupFormModal.show();
-
+      
       this.groupForm.controls['input_date'].setValue(this.tDate);
       this.groupForm.controls['production_plan_id'].setValue(id);
       myForm = this.groupForm;
-
+      
       this.dataService.GetGroupInfo(id).subscribe(
         editData => {
           if (editData['result'] == 'success') {
@@ -490,12 +489,13 @@ export class RawMaterialsComponent implements OnInit {
             // let price_per_unit = this.utils.addComma(this.formData.order_price);
             
             console.log(this.groupInfoRows);
-
+            
             myForm.patchValue({
-              order_qty: this.order_qty,
+              order_qty: this.formData['qty'],
             });
-
+            
           }
+          this.order_qty = this.formData['qty'];
           this.CalculOrderAmountGroup('');
         }
       );
