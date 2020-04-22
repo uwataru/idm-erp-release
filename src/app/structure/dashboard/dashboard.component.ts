@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
 
     lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12];
     lineChartData: Array<any> = [
-        { lineTension: 0, data: [], label: '목표(단위:천원)', pointRadius: 3 },
-        { lineTension: 0, data: [], label: '매출(단위:천원)', pointRadius: 3 }
+        { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
+        { lineTension: 0, data: [], label: '매출', pointRadius: 3 }
     ];
     lineChartData_2: Array<any> = [
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
@@ -39,8 +39,8 @@ export class DashboardComponent implements OnInit {
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
         { lineTension: 0, data: [], label: '납품소요기간', pointRadius: 3 },
     ];
-    salesTargetChartData = [0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000];
-    salesChartData = [0,27170,27720,72710,96947,121183,145420,169657,193893,218130,242367,266603,290840];
+    salesTargetChartData = [0,25000000,50000000,75000000,100000000,125000000,150000000,175000000,200000000,225000000,250000000,275000000,300000000];
+    salesChartData = [0,27170000,27720000,72710000,96947000,121183000,145420000,169657000,193893000,218130000,242367000,266603000,290840000];
     salesRealData = [27170,550,44990]
     // salesTargetData = [27170000,550000,44990000]
     defectData = [0,2.02,2.01,1.09];
@@ -96,8 +96,8 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
         this.panelTitle = '종합현황판';
-        this.salesTarget = 300000;
-        this.expectedSales = 290840;
+        this.salesTarget = 300000000;
+        this.expectedSales = 290840000;
         this.targetAttainmentRate = 97;
 
         this.loadData();
