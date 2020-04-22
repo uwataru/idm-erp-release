@@ -333,16 +333,18 @@ export class OrderRegistrationComponent implements OnInit {
         data => {
           this.productList = data['data'];
         })
+      // 입력폼 리셋
+      this.productDataCnt = 1;
+      this.inputForm.reset();
+      this.buildInputFormGroup();
+
       this.inputFormModal.show();
     } else {
       alert(this.globals.isNotExecutable);
       return false;
     }
 
-    // 입력폼 리셋
 
-    this.inputForm.reset();
-    this.buildInputFormGroup();
 
     // 수주구분1 기본값
     this.inputForm.controls['order_type'].setValue('Y');
