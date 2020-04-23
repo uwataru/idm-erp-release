@@ -41,13 +41,11 @@ export class DeliveryComponent implements OnInit {
     TotalSalesPrice: number;
     rows = [];
     prints = [];
-    nullItem = 0;
-    nullItems = [];
     printMessageTop: string;
     printMessageFoot: string;
     selected = [];
 
-    addOkMsg = '완료되었습니다';
+    // addOkMsg = '완료되었습니다';
 
 
 
@@ -135,8 +133,6 @@ export class DeliveryComponent implements OnInit {
         this.getAll();
     }
     print(){
-        this.nullItem = 0;
-        this.nullItems = [];
         let statment_id ='';
         for(let i=0; i<this.selected.length; i++){
             if(i == 0){
@@ -171,22 +167,21 @@ export class DeliveryComponent implements OnInit {
             if (data['result'] == "success") {
                 this.prints = data['data'];
                 console.log('PrintData',this.prints);
-                for(let j = this.prints.length-1; j>=0; j--){
-                // console.log(j)
+                let cnt = 0;
+                for(let j = 0; j<=this.prints.length-1; j++){
+                    console.log(this.prints[cnt],"CNT");
                     if(this.prints[j].item.length<10){
-                        this.nullItem = 10- this.prints[j]['item'].length;
-                        console.log(this.nullItem);
-                        this.nullItems = [];
-                        for(let i=0; i<this.nullItem; i++){
+                        let item = 10-this.prints[j]['item'].length;
+                        for(let i=this.prints[j]['item'].length; i<10; i++){
                             console.log(i);
-                            this.nullItems[i] = '';
+                            this.prints[j]['item'][i] = '';
                         }
-                        // console.log(this.nullItems);
                     }
+                    cnt++;
                 }
                 
                 this.getAll();
-                this.messageService.add(this.addOkMsg);
+                // this.messageService.add(this.addOkMsg);
             } else {
                 this.messageService.add(data['errorMessage']);
             }

@@ -149,6 +149,7 @@
         </div>
         <div class="modal-body " id="print-target-delivery-modal" style="height: 700px !important; overflow-y: scroll;" >
             <div class="print_size" *ngFor="let print of prints; index as i">
+                <div *ngIf="10>=print.item.length">
                 <span class="print-color page-break-before" style="color: blue;">{{printMessageTop}}</span>
                 <table class="print-table print-color" style="text-align: center!important; color: blue; border: 1px solid blue;">
                   <tr>
@@ -183,50 +184,39 @@
                   </tr>
                   <tr>
                       <td colspan="8">주소</td>
-                      <td colspan="17">{{print.invoicee_partner.addr1}}</td>
+                      <td colspan="17" style="font-size: 8.5px!important;">{{print.invoicee_partner.addr1}}</td>
                       <td colspan="8">주소</td>
-                      <td colspan="17">{{print.trustee_partner.addr1}}</td>
+                      <td colspan="17" style="font-size: 8.5px!important;">{{print.trustee_partner.addr1}}</td>
                   </tr>
                   <tr class="border-bottom">
-                      <td colspan="4" width="7%">업태</td>
-                      <td colspan="9" width="18%"></td>
-                      <td colspan="4" width="7%">종목</td>
-                      <td colspan="9" width="18%"></td>
-                      <td colspan="3" width="7%">비고</td>
-                      <td colspan="8" width="17%"></td>
-                      <td colspan="4" width="8%">인수자</td>
-                      <td colspan="9" width="18%"></td>
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">업태</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">종목</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                      <td colspan="3" style="font-size: 9px!important; height: 12.5px;" width="7%">비고</td>
+                      <td colspan="8" style="font-size: 9px!important; height: 12.5px;" width="17%"></td>
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="8%">인수자</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
                   </tr>
                   <tr>
-                      <th colspan="3">월일</th>
+                      <th colspan="4">월일</th>
                       <th colspan="10">품명/규격</th>
                       <th colspan="3">단위</th>
                       <th colspan="3">수량</th>
-                      <th colspan="5">단가</th>
+                      <th colspan="6">단가</th>
                       <th colspan="9">공급가액</th>
-                      <th colspan="9">세액</th>
+                      <th colspan="7">세액</th>
                       <th colspan="8">비고/합계</th>
                   </tr>
                   <tr *ngFor="let items of print.item">
-                      <td class="height" colspan="3">{{items.input_date}}</td>
-                      <td class="height" colspan="10">{{items.product_name}}/{{items.product_size}}</td>
+                      <td class="height" colspan="4" style="font-size: 9px!important;">{{items.input_date}}</td>
+                      <td class="height" colspan="10"><span *ngIf="items != ''">{{items.product_name}}/{{items.product_size}}</span></td>
                       <td class="height" colspan="3">{{items.unit}}</td>
                       <td class="height" colspan="3">{{items.qty}}</td>
-                      <td class="height" colspan="5">{{items.price}}</td>
+                      <td class="height" colspan="6">{{items.price}}</td>
                       <td class="height" colspan="9">{{items.supply_cost}}</td>
-                      <td class="height" colspan="9">{{items.tax}}</td>
+                      <td class="height" colspan="7">{{items.tax}}</td>
                       <td class="height" colspan="8"></td>
-                  </tr>
-                  
-                  <tr *ngFor="let items of nullItems">
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="10"></td>
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="5"></td>
-                    <td class="height" colspan="9"></td>
-                    <td class="height" colspan="9"></td>
-                    <td class="height" colspan="8"></td>
                   </tr>
                   <tr>
                       <td colspan="3" class="border-bottom-solid">합계</td>
@@ -241,9 +231,94 @@
                       <td colspan="14" style="text-align: left;">&#8361;</td>
                   </tr>
                 </table>
-              <hr style="border: 0.5px dotted black !important; margin-top: 15px!important; margin-bottom: 15px!important;">
+                </div>
+                <div *ngIf="print.item.length>10" style="page-break-after: always;">
+                <span class="print-color" style="color: blue;">{{printMessageTop}}</span>
+                <table class="print-table print-color" style="text-align: center!important; color: blue; border: 1px solid blue;">
+                  <tr>
+                      <td rowspan="2" colspan="12" class="border-bottom-solid font-size-lg" style="padding: 0px;">거래명세표</td>
+                      <td colspan="7">일자</td>
+                      <td colspan="10"></td>
+                      <td colspan="7">No</td>
+                      <td colspan="14"></td>
+                      <td></td>
+                  </tr>
+                  <tr>
+                      <td colspan="10" class="border-bottom-solid" style="padding: 0px;">공급자 연락처</td>
+                      <td colspan="28" class="border-bottom-solid"></td>
+                  </tr>
+                  <tr>
+                      <td colspan="10"width="15%" style="padding: 0px;">공급자</td>
+                      <td colspan="15"width="35%" style="padding: 0px;">{{print.invoicee_partner.costumer}}</td>
+                      <td colspan="10"width="15%">공급 받는 자</td>
+                      <td colspan="15"width="35%">{{print.trustee_partner.costumer}}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="4" width="8%">상호</td>
+                      <td colspan="8" width="16%">{{print.invoicee_partner.name}}</td>
+                      <td colspan="4" width="8%">성명</td>
+                      <td colspan="8" width="16%">{{print.invoicee_partner.ceo}}</td>
+                      <td colspan="1" width="2%">(인)</td>
+                      <td colspan="4" width="8%">상호</td>
+                      <td colspan="8" width="16%">{{print.trustee_partner.name}}</td>
+                      <td colspan="4" width="8%">성명</td>
+                      <td colspan="8" width="16%">{{print.trustee_partner.ceo}}</td>
+                      <td colspan="1" width="2%">(인)</td>
+                  </tr>
+                  <tr>
+                      <td colspan="8">주소</td>
+                      <td colspan="17" style="font-size: 8.5px!important;">{{print.invoicee_partner.addr1}}</td>
+                      <td colspan="8">주소</td>
+                      <td colspan="17" style="font-size: 8.5px!important;">{{print.trustee_partner.addr1}}</td>
+                  </tr>
+                  <tr class="border-bottom">
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">업태</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">종목</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                      <td colspan="3" style="font-size: 9px!important; height: 12.5px;" width="7%">비고</td>
+                      <td colspan="8" style="font-size: 9px!important; height: 12.5px;" width="17%"></td>
+                      <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="8%">인수자</td>
+                      <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                  </tr>
+                  <tr>
+                      <th colspan="4">월일</th>
+                      <th colspan="10">품명/규격</th>
+                      <th colspan="3">단위</th>
+                      <th colspan="3">수량</th>
+                      <th colspan="6">단가</th>
+                      <th colspan="9">공급가액</th>
+                      <th colspan="7">세액</th>
+                      <th colspan="8">비고/합계</th>
+                  </tr>
+                  <tr *ngFor="let items of print.item">
+                      <td class="height" colspan="4" style="font-size: 9px!important;">{{items.input_date}}</td>
+                      <td class="height" colspan="10"><span *ngIf="items != ''">{{items.product_name}}/{{items.product_size}}</span></td>
+                      <td class="height" colspan="3">{{items.unit}}</td>
+                      <td class="height" colspan="3">{{items.qty}}</td>
+                      <td class="height" colspan="6">{{items.price}}</td>
+                      <td class="height" colspan="9">{{items.supply_cost}}</td>
+                      <td class="height" colspan="7">{{items.tax}}</td>
+                      <td class="height" colspan="8"></td>
+                  </tr>
+                  <tr>
+                      <td colspan="3" class="border-bottom-solid">합계</td>
+                      <td colspan="27" class="border-bottom-solid">{{print.total_amount}}</td>
+                      <td colspan="6">전 잔금</td>
+                      <td colspan="14" style="text-align: left;">&#8361;</td>
+                  </tr>
+                  <tr>
+                      <td colspan="3">메모</td>
+                      <td colspan="27"></td>
+                      <td colspan="6">총 잔금</td>
+                      <td colspan="14" style="text-align: left;">&#8361;</td>
+                  </tr>
+                </table>
+                </div>
+              <hr style="border: 0.5px dotted black !important; margin-top: 13px!important; margin-bottom: 13px!important;">
+              <div class="page-break">
               <span style="color: red;">{{printMessageFoot}}</span>
-              <table class="print-table print-color page-break" style="text-align: center!important; color: red; border: 1px solid red;">
+              <table class="print-table print-color" style="text-align: center!important; color: red; border: 1px solid red;">
                 <tr>
                     <td rowspan="2" colspan="12" class="border-bottom-solid font-size-lg" style="padding: 0px;">거래명세표</td>
                     <td colspan="7">일자</td>
@@ -276,48 +351,38 @@
                 </tr>
                 <tr>
                     <td colspan="8">주소</td>
-                    <td colspan="17">{{print.invoicee_partner.addr1}}</td>
+                    <td colspan="17" style="font-size: 8.5px!important;">{{print.invoicee_partner.addr1}}</td>
                     <td colspan="8">주소</td>
-                    <td colspan="17">{{print.trustee_partner.addr1}}</td>
+                    <td colspan="17" style="font-size: 8.5px!important;">{{print.trustee_partner.addr1}}</td>
                 </tr>
                 <tr class="border-bottom">
-                    <td colspan="4" width="7%">업태</td>
-                    <td colspan="9" width="18%"></td>
-                    <td colspan="4" width="7%">종목</td>
-                    <td colspan="9" width="18%"></td>
-                    <td colspan="3" width="7%">비고</td>
-                    <td colspan="8" width="17%"></td>
-                    <td colspan="4" width="8%">인수자</td>
-                    <td colspan="9" width="18%"></td>
+                    <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">업태</td>
+                    <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                    <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="7%">종목</td>
+                    <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
+                    <td colspan="3" style="font-size: 9px!important; height: 12.5px;" width="7%">비고</td>
+                    <td colspan="8" style="font-size: 9px!important; height: 12.5px;" width="17%"></td>
+                    <td colspan="4" style="font-size: 9px!important; height: 12.5px;" width="8%">인수자</td>
+                    <td colspan="9" style="font-size: 9px!important; height: 12.5px;" width="18%"></td>
                 </tr>
                 <tr>
-                    <th colspan="3">월일</th>
+                    <th colspan="4">월일</th>
                     <th colspan="10">품명/규격</th>
                     <th colspan="3">단위</th>
                     <th colspan="3">수량</th>
-                    <th colspan="5">단가</th>
+                    <th colspan="6">단가</th>
                     <th colspan="9">공급가액</th>
-                    <th colspan="9">세액</th>
+                    <th colspan="7">세액</th>
                     <th colspan="8">비고/합계</th>
                 </tr>
                 <tr *ngFor="let items of print.item" >
-                    <td class="height" colspan="3">{{items.input_date}}</td>
-                    <td class="height" colspan="10">{{items.product_name}}/{{items.product_size}}</td>
+                    <td class="height" colspan="4" style="font-size: 9px!important;">{{items.input_date}}</td>
+                    <td class="height" colspan="10"><span *ngIf="items != ''">{{items.product_name}}/{{items.product_size}}</span></td>
                     <td class="height" colspan="3">{{items.unit}}</td>
                     <td class="height" colspan="3">{{items.qty}}</td>
-                    <td class="height" colspan="5">{{items.price}}</td>
+                    <td class="height" colspan="6">{{items.price}}</td>
                     <td class="height" colspan="9">{{items.supply_cost}}</td>
-                    <td class="height" colspan="9">{{items.tax}}</td>
-                    <td class="height" colspan="8"></td>
-                </tr>
-                <tr *ngFor="let items of nullItems">
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="10"></td>
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="3"></td>
-                    <td class="height" colspan="5"></td>
-                    <td class="height" colspan="9"></td>
-                    <td class="height" colspan="9"></td>
+                    <td class="height" colspan="7">{{items.tax}}</td>
                     <td class="height" colspan="8"></td>
                 </tr>
                 <tr>
@@ -333,6 +398,7 @@
                     <td colspan="14" style="text-align: left;">&#8361;</td>
                 </tr>
               </table>
+              </div>
             </div>
         </div>
         <div class="modal-footer">
