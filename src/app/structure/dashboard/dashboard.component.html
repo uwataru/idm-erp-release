@@ -26,7 +26,7 @@
     <div class="panel-body">
         <div class="chart-container">
             <label style="font-size: 20px;">매출현황</label>
-            <span style="float: right;">매출목표: {{salesTarget | numberFormat}} &nbsp; 예상매출: {{expectedSales | numberFormat}} &nbsp; 목표달성율: {{targetAttainmentRate}}%</span>
+            <span style="float: right;">매출목표: {{mainList.sales_target_price | numberFormat}} &nbsp; 예상매출: {{mainList.sales_expect_price | numberFormat}} &nbsp; 목표달성율: {{targetAttainmentRate}}%</span>
             <canvas baseChart width="650" height="240"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
@@ -37,7 +37,7 @@
                 (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)">
             </canvas>
-            <table class="table table-bordered table-condensed b-light" style="width: 650px;">
+            <table class="table table-bordered table-condensed b-light" style="width: 650px!important;">
                 <tr>
                     <th width="80px">구분</th>
                     <td>1 월</td>
@@ -55,33 +55,33 @@
                 </tr>
                 <tr>
                     <th>월매출</th>
-                    <td>{{salesRealData[0]| numberFormat}}</td>
-                    <td>{{salesRealData[1] | numberFormat}}</td>
-                    <td>{{salesRealData[2] | numberFormat}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[0].price/1000| numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[1].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[2].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[3].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[4].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[5].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[6].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[7].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[8].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[9].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[10].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data[11].price/1000 | numberFormat}}</td>
                 </tr>
                 <tr>
                     <th>매출누계</th>
-                    <td>{{salesChartData[1]/1000 | numberFormat}}</td>
-                    <td>{{salesChartData[2]/1000 | numberFormat}}</td>
-                    <td>{{salesChartData[3]/1000 | numberFormat}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[0].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[1].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[2].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[3].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[4].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[5].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[6].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[7].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[8].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[9].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[10].price/1000 | numberFormat}}</td>
+                    <td style="font-size: 11px; padding: 4px 0px !important;">{{sales_situation_data2[11].price/1000 | numberFormat}}</td>
                 </tr>
             </table>
         </div>
@@ -117,51 +117,51 @@
                 </tr>
                 <tr>
                     <th>생산수량</th>
-                    <td>198</td>
-                    <td>298</td>
-                    <td>183</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>679</td>
+                    <td><span *ngIf="defect_situation_data[0]!=undefined"> {{defect_situation_data[0].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[1]!=undefined"> {{defect_situation_data[1].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[2]!=undefined"> {{defect_situation_data[2].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[3]!=undefined"> {{defect_situation_data[3].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[4]!=undefined"> {{defect_situation_data[4].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[5]!=undefined"> {{defect_situation_data[5].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[6]!=undefined"> {{defect_situation_data[6].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[7]!=undefined"> {{defect_situation_data[7].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[8]!=undefined"> {{defect_situation_data[8].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[9]!=undefined"> {{defect_situation_data[9].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[10] !=undefined"> {{defect_situation_data[10].qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[11] !=undefined"> {{defect_situation_data[11].qty}} </span></td>
+                    <td>{{totalQty}}</td>
                 </tr>
                 <tr>
                     <th>불량수량</th>
-                    <td>4</td>
-                    <td>6</td>
-                    <td>2</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>12</td>
+                    <td><span *ngIf="defect_situation_data[0] != undefined"> {{defect_situation_data[0].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[1] != undefined"> {{defect_situation_data[1].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[2] != undefined"> {{defect_situation_data[2].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[3] != undefined"> {{defect_situation_data[3].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[4] != undefined"> {{defect_situation_data[4].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[5] != undefined"> {{defect_situation_data[5].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[6] != undefined"> {{defect_situation_data[6].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[7] != undefined"> {{defect_situation_data[7].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[8] != undefined"> {{defect_situation_data[8].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[9] != undefined"> {{defect_situation_data[9].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[10] != undefined"> {{defect_situation_data[10].defect_qty}} </span></td>
+                    <td><span *ngIf="defect_situation_data[11] != undefined"> {{defect_situation_data[11].defect_qty}} </span></td>
+                    <td>{{totalDefectQty}}</td>
                 </tr>
                 <tr>
                     <th>불량율</th>
-                    <td>2.02%</td>
-                    <td>2.01%</td>
-                    <td>1.09%</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>1.77%</td>
+                    <td><span *ngIf="defect_situation_data[0] != undefined">{{defectRate[0]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[1] != undefined">{{defectRate[1]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[2] != undefined">{{defectRate[2]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[3] != undefined">{{defectRate[3]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[4] != undefined">{{defectRate[4]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[5] != undefined">{{defectRate[5]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[6] != undefined">{{defectRate[6]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[7] != undefined">{{defectRate[7]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[8] != undefined">{{defectRate[8]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[9] != undefined">{{defectRate[9]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[10] != undefined">{{defectRate[10]}}%</span></td>
+                    <td><span *ngIf="defect_situation_data[11] != undefined">{{defectRate[11]}}%</span></td>
+                    <td>{{totalDefectRate}}%</td>
                 </tr>
             </table>
         </div>
@@ -177,29 +177,16 @@
                     <th>제품재고</th>
                     <th>과부족</th>
                 </tr>
-                <tr>
-                    <td>BARAMI5-BK</td>
-                    <td style="text-align: right;">520</td>
-                    <td style="text-align: right;">-</td>
-                    <td style="text-align: right;">520</td>
-                    <td style="text-align: right;">252</td>
-                    <td style="color: red; text-align: right;">-268</td>
-                </tr>
-                <tr>
-                    <td>BARAMI5-SV</td>
-                    <td style="text-align: right;">420</td>
-                    <td style="text-align: right;">-</td>
-                    <td style="text-align: right;">420</td>
-                    <td style="text-align: right;">242</td>
-                    <td style="color: red; text-align: right;">-178</td>
-                </tr>
-                <tr>
-                    <td>BARAMI5-GD</td>
-                    <td style="text-align: right;">-</td>
-                    <td style="text-align: right;">-</td>
-                    <td style="text-align: right;">-</td>
-                    <td style="text-align: right;">2</td>
-                    <td style="text-align: right;">2</td>
+                <tr *ngFor="let data of product_situation_data">
+                    <td>{{data.product_name}}</td>
+                    <td style="text-align: right;">{{data.order_qty}}</td>
+                    <td style="text-align: right;">{{data.delivery_qty}}</td>
+                    <td style="text-align: right;">{{data.order_qty - data.delivery_qty}}</td>
+                    <td style="text-align: right;">{{data.current_qty}}</td>
+                    <td>
+                        <span *ngIf="((data.order_qty - data.delivery_qty)-data.current_qty)*-1>0">{{((data.order_qty - data.delivery_qty)-data.current_qty)*-1}}</span>
+                        <span *ngIf="0>((data.order_qty - data.delivery_qty)-data.current_qty)*-1" style="color: red; text-align: right;">{{((data.order_qty - data.delivery_qty)-data.current_qty)*-1}}</span>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -223,18 +210,18 @@
                 </tr>
                 <tr>
                     <th>소요기간</th>
-                    <td>43</td>
-                    <td>20</td>
-                    <td>26</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><span *ngIf="delivery_situation_data[0] != undefined">{{delivery_situation_data[0].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[1] != undefined">{{delivery_situation_data[1].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[2] != undefined">{{delivery_situation_data[2].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[3] != undefined">{{delivery_situation_data[3].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[4] != undefined">{{delivery_situation_data[4].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[5] != undefined">{{delivery_situation_data[5].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[6] != undefined">{{delivery_situation_data[6].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[7] != undefined">{{delivery_situation_data[7].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[8] != undefined">{{delivery_situation_data[8].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[9] != undefined">{{delivery_situation_data[9].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[10] != undefined">{{delivery_situation_data[10].required_period}}</span></td>
+                    <td><span *ngIf="delivery_situation_data[11] != undefined">{{delivery_situation_data[11].required_period}}</span></td>
                 </tr>
             </table>
             <canvas baseChart width="650" height="240"

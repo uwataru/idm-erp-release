@@ -20,13 +20,24 @@ export class DashboardComponent implements OnInit {
     tDate = this.globals.tDate;
     panelTitle: string;
     inputFormTitle: string;
+    mainList: any[] = this.globals.configs['main'];
     PlannedSaleAmount: number;
     planned_sales_amount: number;
     isLoadingProgress: boolean = false;
+    totalQty=0;
+    totalDefectQty=0;
+    defectRate=[];
+    totalDefectRate=0;
+
+    defect_situation_data = [];
+    delivery_situation_data = [];
+    product_situation_data = [];
+    sales_situation_data = [];
+    sales_situation_data2 = [];
 
     // searchForm: FormGroup;
 
-    lineChartLabels = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+    lineChartLabels = [1,2,3,4,5,6,7,8,9,10,11,12];
     lineChartData: Array<any> = [
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
         { lineTension: 0, data: [], label: '매출', pointRadius: 3 }
@@ -39,12 +50,6 @@ export class DashboardComponent implements OnInit {
         { lineTension: 0, data: [], label: '목표', pointRadius: 3 },
         { lineTension: 0, data: [], label: '납품소요기간', pointRadius: 3 },
     ];
-    salesTargetChartData = [0,25000000,50000000,75000000,100000000,125000000,150000000,175000000,200000000,225000000,250000000,275000000,300000000];
-    salesChartData = [0,27170000,27720000,72710000,96947000,121183000,145420000,169657000,193893000,218130000,242367000,266603000,290840000];
-    salesRealData = [27170,550,44990]
-    // salesTargetData = [27170000,550000,44990000]
-    defectData = [0,2.02,2.01,1.09];
-    necessaryPeriodData = [0,43,20,26];
     selected = [];
     rows = [];
     isEditMode: boolean = false;
@@ -95,13 +100,33 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(this.mainList);
         this.panelTitle = '종합현황판';
-        this.salesTarget = 300000000;
-        this.expectedSales = 290840000;
-        this.targetAttainmentRate = 97;
+        this.targetAttainmentRate = Math.round((this.mainList['sales_expect_price']/this.mainList['sales_target_price'])*100);
 
+        this.defect_situation_data = this.mainList['defect_situation_data'];
+        this.delivery_situation_data = this.mainList['delivery_situation_data'];
+        this.product_situation_data = this.mainList['product_situation_data'];
+        this.sales_situation_data = this.mainList['sales_situation_data'];
+        this.sales_situation_data2 = this.mainList['sales_situation_data2'];
+        console.log('defect',this.defect_situation_data);
+        this.totalData();
         this.loadData();
         this.tDate = this.datePipe.transform(this.tDate, 'yyyy.MM.dd');
+    }
+    totalData(){
+        this.totalQty = 0;
+        this.totalDefectQty = 0;
+        this.totalDefectRate = 0;
+        let sumDefectRate=0;
+        for(let i=0;i<this.defect_situation_data.length;i++){
+            this.totalQty+=this.defect_situation_data[i].qty;
+            this.totalDefectQty+=this.defect_situation_data[i].defect_qty;
+            this.defectRate[i] =((this.defect_situation_data[i].defect_qty/this.defect_situation_data[i].qty)*100).toFixed(2);
+            sumDefectRate += Number(this.defectRate[i]);
+            console.log(sumDefectRate,"sumRate");
+        }
+        this.totalDefectRate= Number((sumDefectRate/this.defect_situation_data.length).toFixed(2));
     }
 
     loadData() {
@@ -109,12 +134,14 @@ export class DashboardComponent implements OnInit {
 
 
         for (let i = 0; i < this.lineChartLabels.length; i++) {
-            this.lineChartData[0].data[i] = this.salesTargetChartData[i];
-            this.lineChartData[1].data[i] = this.salesChartData[i];
-            this.lineChartData_2[1].data[i] = this.defectData[i];
+            this.lineChartData[0].data[i] = this.sales_situation_data2[i].target_price;
+            this.lineChartData[1].data[i] = this.sales_situation_data2[i].price;
             this.lineChartData_2[0].data[i] = 1.0;
-            this.lineChartData_3[1].data[i] = this.necessaryPeriodData[i];
+            this.lineChartData_3[1].data[i] = this.delivery_situation_data[i].required_period;
             this.lineChartData_3[0].data[i] = 30;
+        }
+        for (let i = 0; i < this.defect_situation_data.length; i++) {
+            this.lineChartData_2[1].data[i] = this.defectRate[i];
         }
 
         setTimeout(() => {

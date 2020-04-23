@@ -13,6 +13,7 @@ export class ConfigService {
     public isCorrect : boolean;
     private currTime = (new Date()).getTime();
     // private url = this.globals.serverUrl + '/configs.json';
+    private mainAPI = this.globals.serverUrl;
     private menuAPI = this.globals.serverUrl+ '/menu';
     private partnerAPI = this.globals.serverUrl+'/partners/search';
     private MaterialAPI = this.globals.serverUrl+'/materials/search';
@@ -45,9 +46,24 @@ export class ConfigService {
             });
         })
     }
+    public getConfigDataMain(apiURL, configKey) {
+        return new Promise((resolve, reject) => {
+            this.http.get(apiURL).subscribe((responseData) => {
+                this.globals.configs[configKey] = responseData;
+                resolve(true);
+                this.isCorrect = true;
+
+            }, error => {
+                console.log(error);
+                resolve(false);
+                this.isCorrect = false;
+            });
+        })
+    }
 
     public load() {     //todo 재질, 제품등은 해당 페이지 생성시 재로딩해서 사용하도록 수정
-        return this.getConfigData(this.menuAPI, 'menu')
+        return this.getConfigDataMain(this.mainAPI, 'main')
+            .then(() => this.getConfigData(this.menuAPI, 'menu'))
             .then(() => this.getConfigData(this.partnerAPI, 'partnerList'))
             .then(() => this.getConfigData(this.MaterialAPI, 'schMaterials'))
             .then(() => this.getConfigData(this.userAPI, 'users'))
