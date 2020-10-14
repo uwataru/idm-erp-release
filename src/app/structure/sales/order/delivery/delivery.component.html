@@ -130,7 +130,7 @@
                 <button class="btn btn-sm btn-success btn-addon" (click)="exportExcel(elSrv.EXPORT_EXCEL_MODE.LIST)">
                     <i class="glyphicon glyphicon-download-alt"></i>엑셀
                 </button>
-                <button class="btn btn-sm btn-info btn-addon" [disabled]="selected==0" (click)="print()">
+                <button class="btn btn-sm btn-info btn-addon" [disabled]="selected[0]==0" (click)="print()">
                     <i class="glyphicon glyphicon-print"></i>인쇄
                 </button>
     		</div>

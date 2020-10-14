@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
-        // console.log(this.mainList);
+        //  console.log(this.mainList);
         this.panelTitle = '종합현황판';
         this.targetAttainmentRate = Math.round((this.mainList['sales_expect_price']/this.mainList['sales_target_price'])*100);
 

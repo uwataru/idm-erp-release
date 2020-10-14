@@ -26,7 +26,7 @@
     <div class="panel-body">
         <div class="chart-container">
             <label style="font-size: 20px;">매출현황</label>
-            <span style="float: right;">매출목표: {{mainList.sales_target_price | numberFormat}} &nbsp; 예상매출: {{mainList.sales_expect_price | numberFormat}} &nbsp; 목표달성율: {{targetAttainmentRate}}%</span>
+            <!-- <span style="float: right;">매출목표: {{mainList.sales_target_price | numberFormat}} &nbsp; 예상매출: {{mainList.sales_expect_price | numberFormat}} &nbsp; 목표달성율: {{targetAttainmentRate}}%</span> -->
             <canvas baseChart width="650" height="240"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"

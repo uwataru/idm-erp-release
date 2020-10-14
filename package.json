@@ -1,7 +1,7 @@
 {
   "name": "IDM-ERP",
-  "version": "1.1.23",
-  "webview_version": "1.0.23",
+  "version": "1.1.25",
+  "webview_version": "1.0.25",
   "description": "IDM-ERP(PC) ",
   "homepage": "http://IDM.innest.co.kr",
   "author": {
@@ -58,6 +58,7 @@
     "ng2-dragula": "^1.5.0",
     "ngx-barcode": "^0.2.4",
     "ngx-bootstrap": "^3.0.1",
+    "node-sass": "^4.14.1",
     "popper.js": "^1.15.0",
     "rxjs-compat": "^6.2.1"
   },
